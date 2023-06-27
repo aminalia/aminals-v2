@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 contract Aminals {
-    mapping(uint256 aminalId => Aminal) public aminals;
+    mapping(uint256 aminalId => Aminal aminal) public aminals;
 
     struct Aminal {
         uint128 totalLove;
@@ -91,9 +91,10 @@ contract Aminals {
 
     function addVisuals() public {}
 
-    function callSkill(uint256 aminalId) public payable {
+    function callSkill(uint256 aminalId, bytes32 skillId, bytes32 data) public payable {
         squeak((aminalId));
         // TODO: Call skill based on data in the SkillsRegistry
+        // We'll likely want to use DELEGATECALL here
     }
 
     // TODO: Switch to passing the Aminal struct instead of the aminalId
