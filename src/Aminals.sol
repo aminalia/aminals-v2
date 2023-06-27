@@ -76,6 +76,7 @@ contract Aminals {
 
     // This function consumes energy and can be called by both skill contracts
     // and users
+    // TODO: Allow users to specify the number of squeaks
     function squeak(uint256 aminalId) public payable {
         require(msg.value >= 0.01 ether, "Not enough ether");
 
