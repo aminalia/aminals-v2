@@ -46,7 +46,12 @@ contract Aminals {
         // (possibly a polynomic function), not a direct addition. The bonding
         // curve should be configured so that energy should never reach 100 (the
         // max). Energy can reach 0
-        aminal.energy += uint8(amount);
+
+        // aminal.energy += uint8(amount);
+
+        // assuming a linear bonding curve, where d(e) = (1 - e/100)**2
+        aminal.energy += (1 - aminal.energy/100) ** 2;
+
     }
 
     function breedWith(uint256 aminalIdOne, uint256 aminalIdTwo) public payable {
@@ -83,7 +88,10 @@ contract Aminals {
         Aminal storage aminal = aminals[aminalId];
 
         require(aminal.lovePerUser[msg.sender] >= 1, "Not enough love");
-        aminal.energy -= 1;
+        
+        // ensure that aminal.energy never goes below 0
+        if(aminal.energy >= 1) {     aminal.energy -= 1; }
+        
         // TODO: Migrate the bool to a constant for convenience
         adjustLove(aminalId, 1, msg.sender, false);
     }
