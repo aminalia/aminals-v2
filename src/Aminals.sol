@@ -6,12 +6,12 @@ import "forge-std/Test.sol";
 
 import "./utils/FeedBondingCurve.sol";
 import "./libs/ABDKMathQuad.sol";
+import "./nft/AminalsDescriptor.sol";
 
-
-
-
-
-contract Aminals {
+contract Aminals is 
+    ERC721S("Aminals", "AMINALS"), 
+    AminalsDescriptor
+{
     mapping(uint256 aminalId => Aminal aminal) public aminals;
 
     struct Aminal {
@@ -44,7 +44,11 @@ contract Aminals {
         string functionSignature;
     }
 
-    function getAminalLoveTotal(uint256 aminalID) public view returns (uint256) {
+    function tokenURI(uint256 aminalID) public view override returns (string memory) {
+        return dataURI(aminalID);
+    }
+
+    function getAminalLoveTotal(uint256 aminalID) public view returns (uint128) {
        Aminal storage aminal = aminals[aminalID];
         return aminal.totalLove;
     }
