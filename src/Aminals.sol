@@ -117,6 +117,8 @@ contract Aminals {
         if (aminalTwo.breedableWith[aminalIdOne]) {
             require(aminalOne.energy >= 10 && aminalTwo.energy >= 10, "Aminal does not have enough energy to breed");
 
+            VisualsAuction auction = new VisualsAuction(aminals);
+
             // TODO: Initiate voting for traits on the Visual registry. Voting is
             // denominated in the combined love of both Aminal One and Aminal Two
         } else {
@@ -163,6 +165,28 @@ contract Aminals {
 
     // TODO: Add delegation to other addresses. This will likely end up wrapping
     // msg.sender functionality in a library that checks for delegation
+
+
+      function loveDrivenPrice(uint256 aminalId, address sender) public view returns (uint128) {
+        // the higher the love, the cheaper the function calls
+        //
+       // Aminals.Aminal storage aminal = aminals.aminals[aminalId];
+       // Aminals.Aminal storage aminal = aminals.getAminalById(aminalId);
+        uint128 price;
+        uint256 love = aminals.getAminalLoveByIdByUser(aminalId, sender);
+        uint256 totlove = aminals.getAminalLoveTotal(aminalId);
+        uint256 ratio = love / totlove;
+        if (ratio == 0) price = 100; // max multiplier is 100;
+
+        else price = uint128(100 / ratio);
+        // ensure that price is between 1 and 10;
+        price = price / 10;
+        if (price < 1) price++;
+
+        return price;
+    }
+
+
 
     function log2(uint256 x) private returns (uint256 y) {
         assembly {
