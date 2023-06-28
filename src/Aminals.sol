@@ -89,8 +89,9 @@ contract Aminals {
         // bytes16 delta = ABDKMathQuad.div( ABDKMathQuad.sub(ABDKMathQuad.fromInt(100), aminal.energy), ABDKMathQuad.fromInt(100) );
         // aminal.energy = ABDKMathQuad.add(aminal.energy, ABDKMathQuad.mul(delta, ABDKMathQuad.fromUInt(amount)));
 
+        uint256 gap = 10**18 - aminal.energy;
 
-        uint256 delta = aminal.energy 
+        uint256 delta = amount * gap / 10**18; 
         aminal.energy += delta;
 
         // using the bonding curve system 
