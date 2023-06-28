@@ -5,6 +5,7 @@ import "forge-std/console.sol";
 import "forge-std/Test.sol";
 
 import "./utils/FeedBondingCurve.sol";
+import "./utils/VisualsAuction.sol";
 import "./libs/ABDKMathQuad.sol";
 
 contract Aminals {
@@ -45,11 +46,22 @@ contract Aminals {
         string functionSignature;
     }
 
-    function spawnAminal(uint256 aminalOne, uint256 aminalTwo, uint256 bodyId, uint256 hatId, uint256 eyesId, uint256 mouthId, uint256 noseId, uint256 limbsId, uint256 tailId, uint256 miscId, uint256 miscId) {
-        Aminal aminal = new Aminal();
+    function spawnAminal(
+        uint256 aminalOne,
+        uint256 aminalTwo,
+        uint256 bodyId,
+        uint256 hatId,
+        uint256 eyesId,
+        uint256 mouthId,
+        uint256 noseId,
+        uint256 limbsId,
+        uint256 tailId,
+        uint256 miscId
+    ) public {
+        Aminal storage aminal = new Aminal();
         aminal.mom = aminalOne;
         aminal.dad = aminalTwo;
-        Visuals visuals = new Visuals();
+        Visuals storage visuals = new Visuals();
         visuals.bodyId = bodyId;
         visuals.hatId = hatId;
         visuals.eyesId = eyesId;
@@ -186,12 +198,11 @@ contract Aminals {
     // TODO: Add delegation to other addresses. This will likely end up wrapping
     // msg.sender functionality in a library that checks for delegation
 
-
-      function loveDrivenPrice(uint256 aminalId, address sender) public view returns (uint128) {
+    function loveDrivenPrice(uint256 aminalId, address sender) public view returns (uint128) {
         // the higher the love, the cheaper the function calls
         //
-       // Aminals.Aminal storage aminal = aminals.aminals[aminalId];
-       // Aminals.Aminal storage aminal = aminals.getAminalById(aminalId);
+        // Aminals.Aminal storage aminal = aminals.aminals[aminalId];
+        // Aminals.Aminal storage aminal = aminals.getAminalById(aminalId);
         uint128 price;
         uint256 love = aminals.getAminalLoveByIdByUser(aminalId, sender);
         uint256 totlove = aminals.getAminalLoveTotal(aminalId);
@@ -205,8 +216,6 @@ contract Aminals {
 
         return price;
     }
-
-
 
     function log2(uint256 x) private returns (uint256 y) {
         assembly {
