@@ -26,6 +26,7 @@ contract VisualsAuction {
     struct Auction {
         uint256 aminalIdOne;
         uint256 aminalIdTwo;
+        uint256 totalLove;
         // Max of 10 trait options can be proposed per Aminal. 2 slots are used
         // by the Aminals' current trains, and the other 8 slots are used by
         // proposed traits.
@@ -34,6 +35,8 @@ contract VisualsAuction {
         // If 0, auction has not yet concluded
         // The auctionId will be used as the child Aminal's ID
         uint256 childAminalId;
+
+        uint256[8] winnerId;
     }
 
     function startAuction(uint256 aminalIdOne, uint256 aminalIdTwo) public returns (bytes32) {
@@ -48,6 +51,7 @@ contract VisualsAuction {
         VisualsAuction auction = new VisualsAuction();
         auction.aminalIdOne = aminalIdOne;
         auction.aminalIdTwo = aminalIdTwo;
+        auction.totalLove = aminals.getAminalLoveTotal(aminalIdOne) + aminals.getAminalLoveTotal(aminalIdTwo);
 
         // register the new auction into the global auction registry
         auction.childAminalId = ++auctionCnt;
@@ -93,12 +97,38 @@ contract VisualsAuction {
 
     }
 
+    function voteVisual(uint256 auctionId, uint category, uint i) public payable {
+
+        Auction auction = auctions[auctionId];
+        uint256 totallove = getAminalLoveByIdByUser(auction.aminalIdOne, msg.sender) + getAminalLoveByIdByUser(auction.aminalIdTwo, msg.sender); 
+
+        auction.visualIdVotes[category][i] += totallove;
+
+    }
+
     function removeVisual(uint256 auctionId, uint256 visualId) public payable {
         // the loved ones can vote to remove a trait from the auction
 
     }
 
-    function vote(bytes32 auctionId, uint256 visualId, uint256 aminalId) public {}
+    function endAuction(bytes32 auctionId) public {
 
-    function endAuction(bytes32 auctionId) public {}
+        Auction auction = auctions[auctionId];
+
+        // loop through all the Visuals and identify the winner;
+        uint maxVotes[];
+
+        for(uint i = 0; i < 8; i++ ) {
+            uint256[] arrVisuals = auction.visualIds[i];
+
+            for(uint j = 0; j < arrVisuals.length(); j++ ) {
+                if(arrVisualsId[i][j] > maxVotes[i]) {
+                    maxVotes[i] = arrVisualsId[i][j];
+                    auction.winnerId[i] = j;
+                }
+            }
+        } 
+
+    }
+
 }
