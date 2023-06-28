@@ -13,6 +13,23 @@ contract CounterTest is Test {
         aminals = new Aminals();
     }
 
+    function testRegisterVisuals() public {
+
+        registry = new VisualsRegistry();
+        registry.registerVisual(BODY, "body1");
+        registry.registerVisual(BODY, "body2");
+        registry.registerVisual(HAT, "hat1");
+        registry.registerVisual(HAT, "hat2");
+        registry.registerVisual(EYES, "eyes1");
+        registry.registerVisual(EYES, "eyes2");
+
+    }
+
+    function testSpawnAminals() public {
+        aminals.spawnAminal(0, 0,   0, 0, 0, 0, 0, 0, 0, 0);
+        aminals.spawnAminal(0, 0,   1, 1, 1, 0, 0, 0, 0, 0);
+    }
+
     function testSqueak() public {
         vm.expectRevert("Not enough ether");
         console.log("Squeak without 0.01 ether");

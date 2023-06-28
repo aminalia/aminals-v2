@@ -11,6 +11,8 @@ contract Aminals {
     mapping(uint256 aminalId => Aminal aminal) public aminals;
 
     struct Aminal {
+        uint256 momId;
+        uint256 dadId;
         uint256 totalLove;
         // TODO: Check whether gas usage is the same for a uint128
         uint256 energy;
@@ -22,15 +24,17 @@ contract Aminals {
     }
 
     // TODO: Migrate to VisualsRegistry
+    // Question: this should stay here, and reference the visuals in the VisualsRegistry, right ?
+
     struct Visuals {
-        uint256 body;
-        uint256 hat;
-        uint256 eyes;
-        uint256 mouth;
-        uint256 nose;
-        uint256 limbs;
-        uint256 tail;
-        uint256 accessories;
+        uint256 bodyId;
+        uint256 hatId;
+        uint256 eyesId;
+        uint256 mouthId;
+        uint256 noseId;
+        uint256 limbsId;
+        uint256 tailId;
+        uint256 miscId;
     }
 
     // TODO: Migrate to SkillsRegistry
@@ -39,6 +43,22 @@ contract Aminals {
         address contractAddress;
         // Human-readable ABI format
         string functionSignature;
+    }
+
+    function spawnAminal(uint256 aminalOne, uint256 aminalTwo, uint256 bodyId, uint256 hatId, uint256 eyesId, uint256 mouthId, uint256 noseId, uint256 limbsId, uint256 tailId, uint256 miscId, uint256 miscId) {
+        Aminal aminal = new Aminal();
+        aminal.mom = aminalOne;
+        aminal.dad = aminalTwo;
+        Visuals visuals = new Visuals();
+        visuals.bodyId = bodyId;
+        visuals.hatId = hatId;
+        visuals.eyesId = eyesId;
+        visuals.mouthId = mouthId;
+        visuals.noseId = noseId;
+        visuals.limbsId = limbsId;
+        visuals.tailId = tailId;
+        visuals.miscId = miscId;
+        aminal.visuals = visuals;
     }
 
     function getAminalLoveTotal(uint256 aminalID) public view returns (uint256) {
