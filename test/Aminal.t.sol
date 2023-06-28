@@ -60,4 +60,20 @@ contract CounterTest is Test {
         console.log(aminals.getAminalLoveByIdByUser(1, owner));
 
     }
+
+    function testBreed() public {
+        address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
+        vm.prank(owner); 
+        console.log("Breeding the aminals");
+        aminals.breedWith{value:0.05 ether}(1, 2);
+        vm.expectRevert("Not enough love");
+        aminals.breedWith{value:0.05 ether}(2, 1);
+        console.log(aminals.feed{value:0.08 ether}(2));
+        aminals.breedWith{value:0.05 ether}(1, 2);
+    } 
+
+
+
+
+    }
 }
