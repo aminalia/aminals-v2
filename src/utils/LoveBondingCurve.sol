@@ -4,11 +4,11 @@ pragma solidity ^0.8.20;
 import "../Aminals.sol";
 
 contract LoveBondingCurve {
-    Aminals public aminals;
+    Aminals public aminalz;
 
     constructor() {
         // TODO: Replace with Aminals contract address
-        aminals = new Aminals();
+        aminalz = new Aminals();
     }
     // TODO: Add bonding curve for how love is allocated
 
@@ -18,7 +18,7 @@ contract LoveBondingCurve {
     function loveDrivenPrice(uint256 aminalId) public view returns (uint128) {
         // the higher the love, the cheaper the function calls
         //
-        Aminals.Aminal storage aminal = aminals.aminals(aminalId);
+        Aminals.Aminal storage aminal = aminalz.aminals(aminalId);
         uint128 price;
         uint256 love = aminal.lovePerUser[msg.sender];
         uint128 totlove = aminal.totalLove;
