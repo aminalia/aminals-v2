@@ -1,13 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.20;
 
+
+import "./utils/FeedBondingCurve.sol";
+import "./libs/ABDKMathQuad.sol";
+
 contract Aminals {
     mapping(uint256 aminalId => Aminal aminal) public aminals;
 
     struct Aminal {
         uint128 totalLove;
         // TODO: Check whether gas usage is the same for a uint128
-        uint8 energy;
+        bytes16 energy;
         mapping(uint256 aminalTwoId => bool readyToBreed) breedableWith;
         mapping(address user => uint8 love) lovePerUser;
         Visuals visuals;
@@ -34,12 +38,20 @@ contract Aminals {
         string functionSignature;
     }
 
-    function feed(uint256 aminalId) public payable {
+    function getEnergy(uint256 aminalID) public view returns (bytes16)  {
+        Aminal storage aminal = aminals[aminalID];
+        return aminal.energy;
+    }
+
+
+    function feed(uint256 aminalId) public payable returns (uint256) {
+        require(msg.value >= 0.01 ether, "Not enough ether");
         Aminal storage aminal = aminals[aminalId];
+
 
         // TODO: Amount of love should be on a bonding curve, not a direct
         // addition
-        uint256 amount = msg.value;
+        uint256 amount = (msg.value / 10**16);
         // TODO: Change adjustLove bool to a constant
         adjustLove(aminalId, uint8(amount), msg.sender, true);
         // TODO: Energy should be on a bonding curve that creates an asymptote
@@ -49,8 +61,20 @@ contract Aminals {
 
         // aminal.energy += uint8(amount);
 
-        // assuming a linear bonding curve, where d(e) = (1 - e/100)**2
-        aminal.energy += (1 - aminal.energy/100) ** 2;
+        // assuming a simple bonding curve, where d(e) = ETH * (1 - e/100)**2
+       // aminal.energy = aminal.energy + (amount * ((1 - aminal.energy/100) ** 2));
+        
+        // assuming a simple bonding curve, where d(e) = (100 - e)/100
+        bytes16 delta = ABDKMathQuad.div( ABDKMathQuad.sub(ABDKMathQuad.fromInt(100), aminal.energy), ABDKMathQuad.fromInt(100) );
+        aminal.energy = ABDKMathQuad.add(aminal.energy, ABDKMathQuad.mul(delta, ABDKMathQuad.fromUInt(amount)));
+
+
+        // using the bonding curve system 
+       // FeedBondingCurve feedcurve = new FeedBondingCurve();
+       // aminal.energy = feedcurve.feedBondingCurve(amount, aminal.energy);
+
+        return ABDKMathQuad.toUInt(ABDKMathQuad.mul(ABDKMathQuad.fromUInt(amount), delta));
+            return ABDKMathQuad.toUInt(delta);
 
     }
 
@@ -70,7 +94,7 @@ contract Aminals {
         // the user has high enough love on Aminal Two to maintain simplicity --
         // a wrapper contract can always do this atomically in one transaction)
         if (aminalTwo.breedableWith[aminalIdOne]) {
-            require(aminalOne.energy >= 10 && aminalTwo.energy >= 10, "Aminal does not have enough energy");
+            require(ABDKMathQuad.toInt(aminalOne.energy) >= 10 && ABDKMathQuad.toInt(aminalTwo.energy) >= 10, "Aminal does not have enough energy");
 
             // TODO: Initiate voting for traits on the Visual registry. Voting is
             // denominated in the combined love of both Aminal One and Aminal Two
@@ -90,7 +114,7 @@ contract Aminals {
         require(aminal.lovePerUser[msg.sender] >= 1, "Not enough love");
         
         // ensure that aminal.energy never goes below 0
-        if(aminal.energy >= 1) {     aminal.energy -= 1; }
+        if(ABDKMathQuad.toInt(aminal.energy) >= 1) {     aminal.energy = ABDKMathQuad.sub(aminal.energy, ABDKMathQuad.fromInt(1)); }
         
         // TODO: Migrate the bool to a constant for convenience
         adjustLove(aminalId, 1, msg.sender, false);

@@ -20,4 +20,20 @@ contract CounterTest is Test {
         aminals.squeak{value: 0.01 ether}(1);
         console.log("Squeak completed");
     }
+
+    function testFeed() public {
+        console.log("Feeding the aminal");
+        vm.expectRevert("Not enough ether");
+        console.log(uint256(aminals.feed(1)));
+        console.log(aminals.feed{value:0.01 ether}(1));
+        console.log(aminals.feed{value:0.01 ether}(1));
+        console.log(aminals.feed{value:0.03 ether}(1));
+        console.log(aminals.feed{value:0.02 ether}(1));
+        console.log(aminals.feed{value:0.08 ether}(1));
+        console.log(aminals.feed{value:0.08 ether}(1));
+        console.log(aminals.feed{value:0.08 ether}(1));
+        console.log(aminals.feed{value:0.08 ether}(1));
+        console.log(aminals.feed{value:0.08 ether}(1));
+
+    }
 }
