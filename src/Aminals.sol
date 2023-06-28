@@ -38,6 +38,16 @@ contract Aminals {
         string functionSignature;
     }
 
+    function getAminalLoveTotal(uint256 aminalID) public view returns (uint128) {
+       Aminal storage aminal = aminals[aminalID];
+        return aminal.totalLove;
+    }
+
+    function getAminalLoveByIdByUser(uint256 aminalID, address user) public view returns (uint128)  {
+        Aminal storage aminal = aminals[aminalID];
+        return aminal.lovePerUser[user];
+    }
+
     function getEnergy(uint256 aminalID) public view returns (bytes16)  {
         Aminal storage aminal = aminals[aminalID];
         return aminal.energy;
