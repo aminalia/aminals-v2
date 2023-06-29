@@ -175,12 +175,32 @@ contract VisualsAuction is IAminal {
                     auction.winnerId[i] = j;
                 }
             }
+            
+                // if( auction.winnerId[i] == 0) { // this means that nobody has voted on the traits, we use random to assign
+                //     uint randomness = random(uint(auction.visualIds[i].length), 0);
+                //      console.log("random == ", randomness);
+                //      console.log("visualIds - ", i, "- length", auction.visualIds[i].length);
+                //     // uint256 k = random % auction.visualIds[i].length;
+                    // console.log("kKKKK = ", k);
+                    //  auction.winnerId[i] = randomness;
+                // }
+            
         }
 
         // Zero breeding flag via a setter
         aminals.setBreeding(auction.aminalIdOne, false);
         aminals.setBreeding(auction.aminalIdTwo, false);
 
+    }
 
+    function random(uint maxNumber,uint minNumber) public view returns (uint amount) {
+     amount = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, block.number))) % (maxNumber-minNumber);
+     amount = amount + minNumber;
+     return amount;
+} 
+
+    // Randomness provided by this is predicatable. Use with care!
+    function randomNumber(uint i) internal view returns (uint) {
+        return uint(blockhash(block.number - 1));
     }
 }
