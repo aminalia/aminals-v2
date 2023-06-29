@@ -28,6 +28,7 @@ contract CounterTest is Test {
         proposeTraits(i);
         listAuctionedVisuals(i);
         voteTraits(i);
+        listAuctionedVisuals(i);
 
     }
 
@@ -53,10 +54,13 @@ contract CounterTest is Test {
     }
 
     function voteTraits(uint auctionID) public {
-        
+
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
-        visualsAuction.voteVisual(auctionID, VisualsRegistry.VisualsCat.EYES, 3);
+        visualsAuction.voteVisual(auctionID, VisualsRegistry.VisualsCat.EYES, 2);
+
+        VisualsAuction.Auction memory auction;
+        auction = visualsAuction.getAuctionByID(auctionID);
 
 
 
@@ -67,12 +71,9 @@ contract CounterTest is Test {
         VisualsAuction.Auction memory auction;
          auction = visualsAuction.getAuctionByID(auctionID);
 
-         console.log("CONTRACT ADDRESS: ", address(visualsAuction));
-        
-
+        //  console.log("CONTRACT ADDRESS: ", address(visualsAuction)); 
         // console.log("Now.--.---.----------", auction.visualIds[2][0]);
-         console.log("Now.--.---.----------", auction.aminalIdOne);
-
+        //  console.log("Now.--.---.----------", auction.aminalIdOne);
         // console.log("displaying visuals for auction id = ", auctionID);
 
         for(uint i=0; i<8; i++) {
@@ -80,6 +81,7 @@ contract CounterTest is Test {
 
             for(uint j=0; j < 2 || auction.visualIds[i][j] > 0; j++) {
                  console.log("---> ", j, " = " , auction.visualIds[i][j]);
+                 console.log("---> VOTES: === ", auction.visualIdVotes[i][j]);
                 //   console.log( registry.visuals(VisualsRegistry.VisualsCat(i),j) );
                 console.log(registry.getVisuals(i, j));
              }

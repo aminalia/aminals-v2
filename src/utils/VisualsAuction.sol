@@ -147,7 +147,13 @@ contract VisualsAuction is IAminal {
         uint256 totallove = aminals.getAminalLoveByIdByUser(auction.aminalIdOne, msg.sender)
             + aminals.getAminalLoveByIdByUser(auction.aminalIdTwo, msg.sender);
 
+        console.log("********** a vote has been casted on ", category, " / " , i);
+        console.log (" == with weight = ", totallove, " .  on auctionId = ", auctionId);
+
         auction.visualIdVotes[category][i] += totallove;
+
+        console.log("---------------------> ", auction.visualIdVotes[2][3]);
+
     }
 
     function removeVisual(uint256 auctionId, VisualsRegistry.VisualsCat catEnum, uint256 visualId) public payable {
