@@ -8,16 +8,19 @@ import "./IAminal.sol";
 import "./utils/FeedBondingCurve.sol";
 import "./utils/VisualsAuction.sol";
 import "./libs/ABDKMathQuad.sol";
+import "./nft/AminalsDescriptor.sol";
+import "./nft/ERC721S.sol";
 
-contract Aminals is IAminal {
+contract Aminals is IAminal,
+    ERC721S("Aminals", "AMINALS"), 
+    AminalsDescriptor
+{
     mapping(uint256 aminalId => Aminal aminal) public aminals;
     uint256 lastAminalId;
-    VisualsRegistry public visualsRegistry;
     VisualsAuction public visualsAuction;
 
     constructor() {
-        visualsRegistry = new VisualsRegistry();
-        visualsAuction = new VisualsAuction(address(this), address(visualsRegistry));
+        visualsAuction = new VisualsAuction(address(this));
     }
 
     function spawnAminal(
@@ -51,9 +54,12 @@ contract Aminals is IAminal {
         return aminals[aminalID].visuals;
     }
 
+    function tokenURI(uint256 aminalID) public view override returns (string memory) {
+        return dataURI(aminalID);
+    }
 
     function getAminalLoveTotal(uint256 aminalID) public view returns (uint256) {
-        Aminal storage aminal = aminals[aminalID];
+       Aminal storage aminal = aminals[aminalID];
         return aminal.totalLove;
     }
 
@@ -69,18 +75,25 @@ contract Aminals is IAminal {
 
     function feed(uint256 aminalId) public payable returns (uint256) {
         require(msg.value >= 0.01 ether, "Not enough ether");
+        _feed(aminalId, msg.sender, msg.value);
+    }
+    
+    function feedFrom(uint256 aminalId, address feeder) public payable returns (uint256) {
+        require(msg.value >= 0.01 ether, "Not enough ether");
+        _feed(aminalId, feeder, msg.value);
+    } 
+
+    function _feed(uint256 aminalId, address feeder, uint256 amount) internal returns (uint256) {
         Aminal storage aminal = aminals[aminalId];
 
-        //console.log("TESTESTEST: ", msg.sender);
+        //console.log("TESTESTEST: ", feeder);
 
         // TODO: Amount of love should be on a bonding curve, not a direct
         // addition
         //  uint256 amount = (msg.value / 10**16);
 
-        uint256 amount = msg.value;
-
         // TODO: Change adjustLove bool to a constant
-        adjustLove(aminalId, amount, msg.sender, true);
+        adjustLove(aminalId, amount, feeder, true);
         // TODO: Energy should be on a bonding curve that creates an asymptote
         // (possibly a polynomic function), not a direct addition. The bonding
         // curve should be configured so that energy should never reach 100 (the

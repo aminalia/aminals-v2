@@ -4,17 +4,14 @@ pragma solidity ^0.8.13;
 import "forge-std/Test.sol";
 import "../src/Aminals.sol";
 import "../src/IAminal.sol";
-import "../src/utils/VisualsRegistry.sol";
 import "../src/utils/VisualsAuction.sol";
 
 contract CounterTest is Test {
     Aminals public aminals;
-    VisualsRegistry public registry;
     VisualsAuction public visualsAuction;
 
     function setUp() public {
         aminals = new Aminals();
-        registry = new VisualsRegistry();
         visualsAuction = VisualsAuction(aminals.visualsAuction());
         }
 
@@ -34,23 +31,30 @@ contract CounterTest is Test {
     }
 
     function registerVisuals() public {
-        registry.registerVisual(VisualsRegistry.VisualsCat.BODY, "body1");
-        registry.registerVisual(VisualsRegistry.VisualsCat.BODY, "body2");
-        registry.registerVisual(VisualsRegistry.VisualsCat.HAT, "hat1");
-        registry.registerVisual(VisualsRegistry.VisualsCat.HAT, "hat2");
-        registry.registerVisual(VisualsRegistry.VisualsCat.EYES, "eyes1");
-        registry.registerVisual(VisualsRegistry.VisualsCat.EYES, "eyes2");
-        registry.registerVisual(VisualsRegistry.VisualsCat.MOUTH, "mouth1");
-        registry.registerVisual(VisualsRegistry.VisualsCat.MOUTH, "mouth2");
-
+        // first aminal
+        aminals.addBackground("bg1");
+        aminals.addArm("arm");
+        aminals.addTail("tail");
+        aminals.addEar("ear");
+        aminals.addBody("body");
+        aminals.addFace("face");
+        aminals.addMouth("mouth");
+        // second aminal
+        aminals.addBackground("bg1");
+        aminals.addArm("arm2");
+        aminals.addTail("tail2");
+        aminals.addEar("ear2");
+        aminals.addBody("body2");
+        aminals.addFace("face2");
+        aminals.addMouth("mouth2");
     }
 
     function proposeTraits(uint auctionID) public {
-        uint id1 = registry.registerVisual(VisualsRegistry.VisualsCat.EYES, "eyes3");
-        uint id2 = registry.registerVisual(VisualsRegistry.VisualsCat.HAT, "hat3");
+        uint id1 = aminals.addFace("face3");
+        uint id2 = aminals.addBody("body3");
 
-        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsRegistry.VisualsCat.EYES, id1);
-        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsRegistry.VisualsCat.HAT, id2);
+        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.FACE, id1);
+        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id2);
 
     }
 
@@ -58,14 +62,14 @@ contract CounterTest is Test {
 
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
-        visualsAuction.voteVisual(auctionID, VisualsRegistry.VisualsCat.EYES, 1);
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.EARS, 1);
 
         VisualsAuction.Auction memory auction;
         auction = visualsAuction.getAuctionByID(auctionID);
 
         address owner2 = 0x2D3C242d2C074D523112093C67d1c01Bb27ca40D;
         vm.prank(owner2);
-        visualsAuction.voteVisual(auctionID, VisualsRegistry.VisualsCat.EYES, 2);
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.EARS, 2);
     }
 
     function endAuction(uint auctionID) public {
@@ -77,7 +81,7 @@ contract CounterTest is Test {
         console.log("We got a winner :::::: ");
         for(uint256 i = 0; i<8; i++) {
             console.log(auction.winnerId[i]);
-            console.log(registry.getVisuals(i, auction.winnerId[i]));
+            console.log(aminals.getVisuals(i, auction.winnerId[i]));
         }
 
     }
@@ -99,7 +103,7 @@ contract CounterTest is Test {
                  console.log("---> ", j, " = " , auction.visualIds[i][j]);
                  console.log("---> VOTES: === ", auction.visualIdVotes[i][j]);
                 //   console.log( registry.visuals(VisualsRegistry.VisualsCat(i),j) );
-                console.log(registry.getVisuals(i, j));
+                console.log(aminals.getVisuals(i, j));
              }
         }
     }
@@ -110,16 +114,16 @@ contract CounterTest is Test {
         uint a2 = aminals.spawnAminal(0, 0,    1, 2, 2, 2, 2, 2, 2, 2);
         console.log("spawned.... ", a1, " & ", a2);
 
-          // Get only the Visuals struct from the mapping
-       Aminals.Visuals memory visualsOne;
-       Aminals.Visuals memory visualsTwo;
-         (,,,,, visualsOne) = aminals.aminals(1);
-         (,,,,, visualsTwo) = aminals.aminals(2);
+        // Get only the Visuals struct from the mapping
+        Aminals.Visuals memory visualsOne;
+        Aminals.Visuals memory visualsTwo;
+        (,,,,, visualsOne) = aminals.aminals(1);
+        (,,,,, visualsTwo) = aminals.aminals(2);
 
         // Aminals.Visuals storage visuals = aminals.getAminalVisualsById(1);
         // uint256 love = aminals.getAminalLoveTotal(1);
 
-        console.log("aminal 2 visuals EYES-id = ", visualsTwo.eyesId);
+        // console.log("aminal 2 visuals EYES-id = ", visualsTwo.eyesId);
 
     }
 
