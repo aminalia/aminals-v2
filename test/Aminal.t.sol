@@ -64,11 +64,11 @@ contract CounterTest is Test {
         uint a2 = aminals.spawnAminal(0, 0,    2, 2, 2, 2, 2, 2, 2, 2);
         console.log("spawned.... ", a1, " & ", a2);
 
-          // Get only the Visuals struct from the mapping
-       Aminals.Visuals memory visualsOne;
-       Aminals.Visuals memory visualsTwo;
-         (,,,,, visualsOne) = aminals.aminals(1);
-         (,,,,, visualsTwo) = aminals.aminals(2);
+        // Get only the Visuals struct from the mapping
+        Aminals.Visuals memory visualsOne;
+        Aminals.Visuals memory visualsTwo;
+        (,,,,, visualsOne) = aminals.aminals(1);
+        (,,,,, visualsTwo) = aminals.aminals(2);
 
         // Aminals.Visuals storage visuals = aminals.getAminalVisualsById(1);
         // uint256 love = aminals.getAminalLoveTotal(1);

@@ -11,7 +11,7 @@ import "./libs/ABDKMathQuad.sol";
 import "./nft/AminalsDescriptor.sol";
 import "./nft/ERC721S.sol";
 
-contract Aminals is 
+contract Aminals is IAminal,
     ERC721S("Aminals", "AMINALS"), 
     AminalsDescriptor
 {
@@ -60,7 +60,7 @@ contract Aminals is
         return dataURI(aminalID);
     }
 
-    function getAminalLoveTotal(uint256 aminalID) public view returns (uint128) {
+    function getAminalLoveTotal(uint256 aminalID) public view returns (uint256) {
        Aminal storage aminal = aminals[aminalID];
         return aminal.totalLove;
     }
@@ -77,18 +77,27 @@ contract Aminals is
 
     function feed(uint256 aminalId) public payable returns (uint256) {
         require(msg.value >= 0.01 ether, "Not enough ether");
+        _feed(aminalId, msg.sender, msg.value) 
+
+    }
+    
+    function feedFrom(uint256 aminalId, address feeder) public payable returns (uint256) {
+        require(msg.value >= 0.01 ether, "Not enough ether");
+        _feed(aminalId, feeder, msg.value) 
+    } 
+
+
+    function _feed(uint256 aminalId, address feeder, uint256 amount) internal payable returns (uint256) {
         Aminal storage aminal = aminals[aminalId];
 
-        //console.log("TESTESTEST: ", msg.sender);
+        //console.log("TESTESTEST: ", feeder);
 
         // TODO: Amount of love should be on a bonding curve, not a direct
         // addition
         //  uint256 amount = (msg.value / 10**16);
 
-        uint256 amount = msg.value;
-
         // TODO: Change adjustLove bool to a constant
-        adjustLove(aminalId, amount, msg.sender, true);
+        adjustLove(aminalId, amount, feeder, true);
         // TODO: Energy should be on a bonding curve that creates an asymptote
         // (possibly a polynomic function), not a direct addition. The bonding
         // curve should be configured so that energy should never reach 100 (the

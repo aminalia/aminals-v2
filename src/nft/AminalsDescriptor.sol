@@ -127,7 +127,7 @@ abstract contract AminalsDescriptor is NFTDescriptor {
     /**
      * @notice NFT Atrributes based on Token ID
      */
-    function generateAttributesList(uint256 tokenId) public view returns (string memory) {
+    function generateAttributesList(uint256 tokenId) public pure returns (string memory) {
         return string(
             abi.encodePacked(
                 '{"trait_type":"Aminal ID","value":', toString(tokenId),'}'
@@ -144,7 +144,7 @@ abstract contract AminalsDescriptor is NFTDescriptor {
         string memory _description,
         string memory _image,
         string memory _attributes
-    ) public view returns (string memory) {
+    ) public pure returns (string memory) {
         TokenURIParams memory params = TokenURIParams({
             name: _name,
             description: _description,
