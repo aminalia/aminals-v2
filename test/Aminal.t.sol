@@ -25,6 +25,8 @@ contract CounterTest is Test {
         proposeTraits(i);
         listAuctionedVisuals(i);
         voteTraits(i);
+        listAuctionedVisuals(i);
+        endAuction(i);
 
     }
 
@@ -57,10 +59,31 @@ contract CounterTest is Test {
     }
 
     function voteTraits(uint auctionID) public {
-        
+
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.FACE, 3);
+        visualsAuction.voteVisual(auctionID, VisualsRegistry.VisualsCat.EYES, 1);
+
+        VisualsAuction.Auction memory auction;
+        auction = visualsAuction.getAuctionByID(auctionID);
+
+        address owner2 = 0x2D3C242d2C074D523112093C67d1c01Bb27ca40D;
+        vm.prank(owner2);
+        visualsAuction.voteVisual(auctionID, VisualsRegistry.VisualsCat.EYES, 2);
+    }
+
+    function endAuction(uint auctionID) public {
+        visualsAuction.endAuction(auctionID);
+
+        VisualsAuction.Auction memory auction;
+        auction = visualsAuction.getAuctionByID(auctionID);
+
+        console.log("We got a winner :::::: ");
+        for(uint256 i = 0; i<8; i++) {
+            console.log(auction.winnerId[i]);
+            console.log(registry.getVisuals(i, auction.winnerId[i]));
+        }
+
     }
 
     function listAuctionedVisuals(uint auctionID) public view {
@@ -68,12 +91,9 @@ contract CounterTest is Test {
         VisualsAuction.Auction memory auction;
          auction = visualsAuction.getAuctionByID(auctionID);
 
-         console.log("CONTRACT ADDRESS: ", address(visualsAuction));
-        
-
+        //  console.log("CONTRACT ADDRESS: ", address(visualsAuction)); 
         // console.log("Now.--.---.----------", auction.visualIds[2][0]);
-         console.log("Now.--.---.----------", auction.aminalIdOne);
-
+        //  console.log("Now.--.---.----------", auction.aminalIdOne);
         // console.log("displaying visuals for auction id = ", auctionID);
 
         for(uint i=0; i<8; i++) {
@@ -81,6 +101,7 @@ contract CounterTest is Test {
 
             for(uint j=0; j < 2 || auction.visualIds[i][j] > 0; j++) {
                  console.log("---> ", j, " = " , auction.visualIds[i][j]);
+                 console.log("---> VOTES: === ", auction.visualIdVotes[i][j]);
                 //   console.log( registry.visuals(VisualsRegistry.VisualsCat(i),j) );
                 console.log(aminals.getVisuals(i, j));
              }
@@ -132,8 +153,15 @@ contract CounterTest is Test {
         console.log(aminals.feed{value: 0.08 ether}(1));
         console.log(aminals.feed{value: 0.08 ether}(1));
 
+        address owner2 = 0x2D3C242d2C074D523112093C67d1c01Bb27ca40D;
+        vm.prank(owner2);
+        vm.deal(owner2, 1 ether);
+        aminals.feed{value: 0.03 ether}(1);
+
         console.log("Checking amount of love for user");
         console.log(aminals.getAminalLoveByIdByUser(1, owner));
+        console.log(aminals.getAminalLoveByIdByUser(1, owner2));
+
     }
 
     function breed() public returns (uint) {
