@@ -183,10 +183,6 @@ contract Aminals is IAminal {
         return price;
     }
 
-    function getAminalById(uint256 aminalId) public view returns (Aminal memory) {
-        return aminals[aminalId];
-    }
-
     function log2(uint256 x) private returns (uint256 y) {
         assembly {
             let arg := x

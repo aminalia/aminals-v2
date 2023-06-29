@@ -6,8 +6,8 @@ import "../Aminals.sol";
 import "./VisualsRegistry.sol";
 
 contract VisualsAuction is IAminal {
-    Aminals internal aminals;
-    VisualsRegistry internal vRegistry;
+    Aminals public aminals;
+    VisualsRegistry public vRegistry;
 
     constructor(address _aminals, address _registry) {
         // TODO: Replace with Aminals contract address
@@ -36,9 +36,17 @@ contract VisualsAuction is IAminal {
 
     function startAuction(uint256 aminalIdOne, uint256 aminalIdTwo) public returns (bytes32) {
         // Set the breeding flag on each Aminal
+        aminals.addSkill();
 
-        Aminal memory aminalOne = aminals.getAminalById(aminalIdOne);
-        Aminal memory aminalTwo = aminals.getAminalById(aminalIdTwo);
+        Aminal storage aminalOne;
+        Aminal storage aminalTwo;
+        Visuals memory visualsOne;
+        Visuals memory visualsTwo;
+
+        (aminalOne.momId, aminalOne.dadId, aminalOne.totalLove, aminalOne.energy, aminalOne.breeding, visualsOne) =
+            aminals.aminals(aminalIdOne);
+        (aminalTwo.momId, aminalTwo.dadId, aminalTwo.totalLove, aminalTwo.energy, aminalTwo.breeding, visualsTwo) =
+            aminals.aminals(aminalIdTwo);
 
         aminalOne.breeding = aminalTwo.breeding = true;
 
@@ -60,22 +68,22 @@ contract VisualsAuction is IAminal {
         // struct. i.e. Index [N][0] is AminalIdOne's traits, Index [N][1] is
         // AminalIdTwo's traits.
 
-        auction.visualIds[0][0] = aminalOne.body;
-        auction.visualIds[0][1] = aminalTwo.body;
-        auction.visualIds[1][0] = aminalOne.hat;
-        auction.visualIds[1][1] = aminalTwo.hat;
-        auction.visualIds[2][0] = aminalTwo.eyes;
-        auction.visualIds[2][1] = aminalTwo.eyes;
-        auction.visualIds[3][0] = aminalTwo.mouth;
-        auction.visualIds[3][1] = aminalTwo.mouth;
-        auction.visualIds[4][0] = aminalTwo.nose;
-        auction.visualIds[4][1] = aminalTwo.nose;
-        auction.visualIds[5][0] = aminalTwo.limbs;
-        auction.visualIds[5][1] = aminalTwo.limbs;
-        auction.visualIds[6][0] = aminalOne.tail;
-        auction.visualIds[6][1] = aminalTwo.tail;
-        auction.visualIds[7][0] = aminalTwo.accessories;
-        auction.visualIds[7][1] = aminalTwo.accessories;
+        auction.visualIds[0][0] = visualsOne.bodyId;
+        auction.visualIds[0][1] = visualsTwo.bodyId;
+        auction.visualIds[1][0] = visualsOne.hatId;
+        auction.visualIds[1][1] = visualsTwo.hatId;
+        auction.visualIds[2][0] = visualsTwo.eyesId;
+        auction.visualIds[2][1] = visualsTwo.eyesId;
+        auction.visualIds[3][0] = visualsTwo.mouthId;
+        auction.visualIds[3][1] = visualsTwo.mouthId;
+        auction.visualIds[4][0] = visualsTwo.noseId;
+        auction.visualIds[4][1] = visualsTwo.noseId;
+        auction.visualIds[5][0] = visualsTwo.limbsId;
+        auction.visualIds[5][1] = visualsTwo.limbsId;
+        auction.visualIds[6][0] = visualsOne.tailId;
+        auction.visualIds[6][1] = visualsTwo.tailId;
+        auction.visualIds[7][0] = visualsTwo.miscId;
+        auction.visualIds[7][1] = visualsTwo.miscId;
     }
 
     function proposeVisual(uint256 auctionId, uint256 category, uint256 visualId) public payable {
