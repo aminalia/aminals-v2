@@ -34,21 +34,20 @@ contract VisualsAuction is IAminal {
         uint256[8] winnerId;
     }
 
-    function startAuction(uint256 aminalIdOne, uint256 aminalIdTwo) public returns (bytes32) {
+    // TODO: Add return value of auction ID and also emit events
+    function startAuction(uint256 aminalIdOne, uint256 aminalIdTwo) public {
         // Set the breeding flag on each Aminal
         aminals.addSkill();
 
-        Aminal storage aminalOne;
-        Aminal storage aminalTwo;
         Visuals memory visualsOne;
         Visuals memory visualsTwo;
 
-        (aminalOne.momId, aminalOne.dadId, aminalOne.totalLove, aminalOne.energy, aminalOne.breeding, visualsOne) =
-            aminals.aminals(aminalIdOne);
-        (aminalTwo.momId, aminalTwo.dadId, aminalTwo.totalLove, aminalTwo.energy, aminalTwo.breeding, visualsTwo) =
-            aminals.aminals(aminalIdTwo);
+        // Get only the Visuals struct from the mapping
+        (,,,,, visualsOne) = aminals.aminals(aminalIdOne);
+        (,,,,, visualsTwo) = aminals.aminals(aminalIdTwo);
 
-        aminalOne.breeding = aminalTwo.breeding = true;
+        // TODO: Set breeding flag via a setter
+        // aminalOne.breeding = aminalTwo.breeding = true;
 
         // initialize the new auction
         // Cannot realistically overflow
