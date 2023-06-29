@@ -95,20 +95,20 @@ contract VisualsAuction is IAminal {
         // AminalIdTwo's traits.
 
 
-        auction.visualIds[0][0] = visualsOne.bodyId;
-        auction.visualIds[0][1] = visualsTwo.bodyId;
-        auction.visualIds[1][0] = visualsOne.hatId;
-        auction.visualIds[1][1] = visualsTwo.hatId;
-        auction.visualIds[2][0] = visualsOne.eyesId;
-        auction.visualIds[2][1] = visualsTwo.eyesId;
-        auction.visualIds[3][0] = visualsOne.mouthId;
-        auction.visualIds[3][1] = visualsTwo.mouthId;
-        auction.visualIds[4][0] = visualsOne.noseId;
-        auction.visualIds[4][1] = visualsTwo.noseId;
-        auction.visualIds[5][0] = visualsOne.limbsId;
-        auction.visualIds[5][1] = visualsTwo.limbsId;
-        auction.visualIds[6][0] = visualsOne.tailId;
-        auction.visualIds[6][1] = visualsTwo.tailId;
+        auction.visualIds[0][0] = visualsOne.backId;
+        auction.visualIds[0][1] = visualsTwo.backId;
+        auction.visualIds[1][0] = visualsOne.armId;
+        auction.visualIds[1][1] = visualsTwo.armId;
+        auction.visualIds[2][0] = visualsOne.tailId;
+        auction.visualIds[2][1] = visualsTwo.tailId;
+        auction.visualIds[3][0] = visualsOne.earsId;
+        auction.visualIds[3][1] = visualsTwo.earsId;
+        auction.visualIds[4][0] = visualsOne.bodyId;
+        auction.visualIds[4][1] = visualsTwo.bodyId;
+        auction.visualIds[5][0] = visualsOne.faceId;
+        auction.visualIds[5][1] = visualsTwo.faceId;
+        auction.visualIds[6][0] = visualsOne.mouthId;
+        auction.visualIds[6][1] = visualsTwo.mouthId;
         auction.visualIds[7][0] = visualsOne.miscId;
         auction.visualIds[7][1] = visualsTwo.miscId;
 

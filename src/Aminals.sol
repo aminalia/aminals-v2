@@ -26,25 +26,25 @@ contract Aminals is IAminal,
     function spawnAminal(
         uint256 aminalOne,
         uint256 aminalTwo,
-        uint256 bodyId,
-        uint256 hatId,
-        uint256 eyesId,
-        uint256 mouthId,
-        uint256 noseId,
-        uint256 limbsId,
+        uint256 backId,
+        uint256 armId,
         uint256 tailId,
+        uint256 earsId,
+        uint256 bodyId,
+        uint256 faceId,
+        uint256 mouthId,
         uint256 miscId
     ) public returns (uint256) {
         Aminal storage aminal = aminals[++lastAminalId];
         aminal.momId = aminalOne;
         aminal.dadId = aminalTwo;
-        aminal.visuals.bodyId = bodyId;
-        aminal.visuals.hatId = hatId;
-        aminal.visuals.eyesId = eyesId;
-        aminal.visuals.mouthId = mouthId;
-        aminal.visuals.noseId = noseId;
-        aminal.visuals.limbsId = limbsId;
+        aminal.visuals.backId = backId;
+        aminal.visuals.armId = armId;
         aminal.visuals.tailId = tailId;
+        aminal.visuals.earsId = earsId;
+        aminal.visuals.bodyId = bodyId;
+        aminal.visuals.faceId = faceId;
+        aminal.visuals.mouthId = mouthId;
         aminal.visuals.miscId = miscId;
 
         return lastAminalId;

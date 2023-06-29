@@ -19,13 +19,13 @@ interface IAminal {
     // Question: this should stay here, and reference the visuals in the VisualsRegistry, right ?
 
     struct Visuals {
-        uint256 bodyId;
-        uint256 hatId;
-        uint256 eyesId;
-        uint256 mouthId;
-        uint256 noseId;
-        uint256 limbsId;
+        uint256 backId;
+        uint256 armId;
         uint256 tailId;
+        uint256 earsId;
+        uint256 bodyId;
+        uint256 faceId;
+        uint256 mouthId;
         uint256 miscId;
     }
 
