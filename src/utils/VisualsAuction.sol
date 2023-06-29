@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.20;
 
+import "../IAminal.sol";
 import "../Aminals.sol";
 import "./VisualsRegistry.sol";
 
-contract VisualsAuction {
-    Aminals public aminals;
-    VisualsRegistry vRegistry;
+contract VisualsAuction is IAminal {
+    Aminals internal aminals;
+    VisualsRegistry internal vRegistry;
 
     constructor(address _aminals, address _registry) {
         // TODO: Replace with Aminals contract address
@@ -36,13 +37,17 @@ contract VisualsAuction {
     function startAuction(uint256 aminalIdOne, uint256 aminalIdTwo) public returns (bytes32) {
         // Set the breeding flag on each Aminal
 
-        Aminals.Aminal storage aminalOne = aminals.aminals(aminalIdOne);
-        Aminals.Aminal storage aminalTwo = aminals.aminals(aminalIdTwo);
+        Aminal memory aminalOne = aminals.getAminalById(aminalIdOne);
+        Aminal memory aminalTwo = aminals.getAminalById(aminalIdTwo);
+
         aminalOne.breeding = aminalTwo.breeding = true;
 
         // initialize the new auction
-
-        VisualsAuction auction = new VisualsAuction();
+        // Cannot realistically overflow
+        unchecked {
+            ++auctionCnt;
+        }
+        Auction storage auction = auctions[auctionCnt];
         auction.aminalIdOne = aminalIdOne;
         auction.aminalIdTwo = aminalIdTwo;
         auction.totalLove = aminals.getAminalLoveTotal(aminalIdOne) + aminals.getAminalLoveTotal(aminalIdTwo);

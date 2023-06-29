@@ -4,47 +4,13 @@ pragma solidity ^0.8.20;
 import "forge-std/console.sol";
 import "forge-std/Test.sol";
 
+import "./IAminal.sol";
 import "./utils/FeedBondingCurve.sol";
 import "./utils/VisualsAuction.sol";
 import "./libs/ABDKMathQuad.sol";
 
-contract Aminals {
+contract Aminals is IAminal {
     mapping(uint256 aminalId => Aminal aminal) public aminals;
-
-    struct Aminal {
-        uint256 momId;
-        uint256 dadId;
-        uint256 totalLove;
-        // TODO: Check whether gas usage is the same for a uint128
-        uint256 energy;
-        bool breeding;
-        mapping(uint256 aminalTwoId => bool readyToBreed) breedableWith;
-        mapping(address user => uint256 love) lovePerUser;
-        Visuals visuals;
-        mapping(uint8 => Skills) skills;
-    }
-
-    // TODO: Migrate to VisualsRegistry
-    // Question: this should stay here, and reference the visuals in the VisualsRegistry, right ?
-
-    struct Visuals {
-        uint256 bodyId;
-        uint256 hatId;
-        uint256 eyesId;
-        uint256 mouthId;
-        uint256 noseId;
-        uint256 limbsId;
-        uint256 tailId;
-        uint256 miscId;
-    }
-
-    // TODO: Migrate to SkillsRegistry
-    struct Skills {
-        string name;
-        address contractAddress;
-        // Human-readable ABI format
-        string functionSignature;
-    }
 
     function spawnAminal(
         uint256 aminalOne,
@@ -215,6 +181,10 @@ contract Aminals {
         if (price < 1) price++;
 
         return price;
+    }
+
+    function getAminalById(uint256 aminalId) public view returns (Aminal memory) {
+        return aminals[aminalId];
     }
 
     function log2(uint256 x) private returns (uint256 y) {
