@@ -25,6 +25,8 @@ contract CounterTest is Test {
         feed();
         uint i = breed();
         listAuctionedVisuals(i);
+        proposeTraits(i);
+        listAuctionedVisuals(i);
     }
 
     function registerVisuals() public {
@@ -34,6 +36,16 @@ contract CounterTest is Test {
         registry.registerVisual(VisualsRegistry.VisualsCat.HAT, "hat2");
         registry.registerVisual(VisualsRegistry.VisualsCat.EYES, "eyes1");
         registry.registerVisual(VisualsRegistry.VisualsCat.EYES, "eyes2");
+    }
+
+    function proposeTraits(uint auctionID) public {
+        uint id1 = registry.registerVisual(VisualsRegistry.VisualsCat.EYES, "eyes3");
+        uint id2 = registry.registerVisual(VisualsRegistry.VisualsCat.HAT, "hat3");
+
+        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsRegistry.VisualsCat.EYES, id1);
+        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsRegistry.VisualsCat.HAT, id2);
+ 
+
     }
 
     function listAuctionedVisuals(uint auctionID) public view {
@@ -50,7 +62,7 @@ contract CounterTest is Test {
         // console.log("displaying visuals for auction id = ", auctionID);
 
         for(uint i=0; i<8; i++) {
-            // console.log("iterating through category ", i);
+             console.log("iterating through category ", i);
 
             for(uint j=0; j < 2 || auction.visualIds[i][j] > 0; j++) {
                  console.log("---> ", j, " = " , auction.visualIds[i][j]);
