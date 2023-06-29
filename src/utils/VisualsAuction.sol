@@ -167,13 +167,20 @@ contract VisualsAuction is IAminal {
         // loop through all the Visuals and identify the winner;
         uint256[8] memory maxVotes;
 
-        for (uint256 i = 0; i < 8; i++) {
+        for (uint256 i = 0; i < 8; i++) { // iterate through each category
 
-            for (uint256 j = 0; j < auction.visualIds[i].length; j++) {
+            uint256 j;
+            for (j = 0; j < 2 || auction.visualIds[i][j] > 0; j++) {
                 if (auction.visualIdVotes[i][j] > maxVotes[i]) {
                     maxVotes[i] = auction.visualIdVotes[i][j];
                     auction.winnerId[i] = j;
                 }
+            }
+
+            if(auction.winnerId[i] == 0) { // no one has voted, so used randomness instead
+                uint randomness = random(j, 0);
+                console.log("random = ", randomness, "for length = ", j);
+                auction.winnerId[i] = randomness;
             }
             
                 // if( auction.winnerId[i] == 0) { // this means that nobody has voted on the traits, we use random to assign
