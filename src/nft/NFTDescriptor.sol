@@ -4,7 +4,7 @@
 
 pragma solidity ^0.8.20;
 
-import { Base64 } from '../Utils/Base64.sol';
+import { Base64 } from '../utils/Base64.sol';
 
 contract NFTDescriptor {
     struct TokenURIParams {

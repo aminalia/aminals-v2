@@ -9,6 +9,7 @@ import "./utils/FeedBondingCurve.sol";
 import "./utils/VisualsAuction.sol";
 import "./libs/ABDKMathQuad.sol";
 import "./nft/AminalsDescriptor.sol";
+import "./nft/ERC721S.sol";
 
 contract Aminals is 
     ERC721S("Aminals", "AMINALS"), 
