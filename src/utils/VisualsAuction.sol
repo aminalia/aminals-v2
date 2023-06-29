@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.20;
 
+import "forge-std/console.sol";
+import "forge-std/Test.sol";
+
 import "../IAminal.sol";
 import "../Aminals.sol";
 import "./VisualsRegistry.sol";
@@ -13,11 +16,13 @@ contract VisualsAuction is IAminal {
         // TODO: Replace with Aminals contract address
         aminals = Aminals(_aminals);
         vRegistry = VisualsRegistry(_registry);
+
+        console.log(address(this));
     }
 
     // TODO: Maintain an index of pending Aminals based on breeding in progress
     mapping(uint256 auctionId => Auction auction) public auctions;
-    uint256 auctionCnt = 2; // assuming there are only 2 initially deployed aminals
+    uint256 public auctionCnt = 2; // assuming there are only 2 initially deployed aminals
 
     struct Auction {
         uint256 aminalIdOne;
@@ -34,55 +39,78 @@ contract VisualsAuction is IAminal {
         uint256[8] winnerId;
     }
 
+    function getAuctionByID(uint256 auctionID) public view returns (Auction memory) {
+        console.log("returning for auction ID = ", auctionID);
+        return auctions[auctionID];
+    }
+
     // TODO: Add return value of auction ID and also emit events
-    function startAuction(uint256 aminalIdOne, uint256 aminalIdTwo) public {
+    function startAuction(uint256 aminalIdOne, uint256 aminalIdTwo) public returns (uint256) {
         // Set the breeding flag on each Aminal
-        aminals.addSkill();
+        //aminals.addSkill();
 
         Visuals memory visualsOne;
         Visuals memory visualsTwo;
+
+        console.log("Auction starting for pregnancy of ", aminalIdOne, " and ", aminalIdTwo);
 
         // Get only the Visuals struct from the mapping
         (,,,,, visualsOne) = aminals.aminals(aminalIdOne);
         (,,,,, visualsTwo) = aminals.aminals(aminalIdTwo);
 
-        // TODO: Set breeding flag via a setter
-        // aminalOne.breeding = aminalTwo.breeding = true;
 
+        // Reset breedable variable to zero for both aminals
+        aminals.disableBreedable(aminalIdOne, aminalIdTwo);
+
+        // Set breeding flag via a setter
+        aminals.setBreeding(aminalIdOne, true);
+        aminals.setBreeding(aminalIdTwo, true);
+        
         // initialize the new auction
         // Cannot realistically overflow
         unchecked {
             ++auctionCnt;
         }
+
         Auction storage auction = auctions[auctionCnt];
         auction.aminalIdOne = aminalIdOne;
         auction.aminalIdTwo = aminalIdTwo;
         auction.totalLove = aminals.getAminalLoveTotal(aminalIdOne) + aminals.getAminalLoveTotal(aminalIdTwo);
 
+        console.log("recording auctions at count ", auctionCnt, "with aminalIdOne = ", aminalIdOne);
+        console.log("resulting in ", auctions[auctionCnt].aminalIdOne);
+
         // register the new auction into the global auction registry
-        auction.childAminalId = ++auctionCnt;
+        auction.childAminalId = auctionCnt;
         auctions[auction.childAminalId] = auction;
 
         // Loop through each current visual per Aminal and write it to the
         // struct. i.e. Index [N][0] is AminalIdOne's traits, Index [N][1] is
         // AminalIdTwo's traits.
 
+
+        console.log("..................................... visuals: ", visualsOne.eyesId);
+
         auction.visualIds[0][0] = visualsOne.bodyId;
         auction.visualIds[0][1] = visualsTwo.bodyId;
         auction.visualIds[1][0] = visualsOne.hatId;
         auction.visualIds[1][1] = visualsTwo.hatId;
-        auction.visualIds[2][0] = visualsTwo.eyesId;
+        auction.visualIds[2][0] = visualsOne.eyesId;
         auction.visualIds[2][1] = visualsTwo.eyesId;
-        auction.visualIds[3][0] = visualsTwo.mouthId;
+        auction.visualIds[3][0] = visualsOne.mouthId;
         auction.visualIds[3][1] = visualsTwo.mouthId;
-        auction.visualIds[4][0] = visualsTwo.noseId;
+        auction.visualIds[4][0] = visualsOne.noseId;
         auction.visualIds[4][1] = visualsTwo.noseId;
-        auction.visualIds[5][0] = visualsTwo.limbsId;
+        auction.visualIds[5][0] = visualsOne.limbsId;
         auction.visualIds[5][1] = visualsTwo.limbsId;
         auction.visualIds[6][0] = visualsOne.tailId;
         auction.visualIds[6][1] = visualsTwo.tailId;
-        auction.visualIds[7][0] = visualsTwo.miscId;
+        auction.visualIds[7][0] = visualsOne.miscId;
         auction.visualIds[7][1] = visualsTwo.miscId;
+
+        console.log("____________________________ visuals::: ", auction.visualIds[2][0]);
+
+        return auctionCnt;
     }
 
     function proposeVisual(uint256 auctionId, uint256 category, uint256 visualId) public payable {
@@ -134,5 +162,11 @@ contract VisualsAuction is IAminal {
                 }
             }
         }
+
+        // Zero breeding flag via a setter
+        aminals.setBreeding(auction.aminalIdOne, false);
+        aminals.setBreeding(auction.aminalIdTwo, false);
+
+
     }
 }

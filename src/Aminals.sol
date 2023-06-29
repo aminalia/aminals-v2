@@ -31,21 +31,26 @@ contract Aminals is IAminal {
         uint256 limbsId,
         uint256 tailId,
         uint256 miscId
-    ) public {
-        Aminal storage aminal = aminals[lastAminalId];
+    ) public returns (uint256) {
+        Aminal storage aminal = aminals[++lastAminalId];
         aminal.momId = aminalOne;
         aminal.dadId = aminalTwo;
-        Visuals storage visuals = aminal.visuals;
-        visuals.bodyId = bodyId;
-        visuals.hatId = hatId;
-        visuals.eyesId = eyesId;
-        visuals.mouthId = mouthId;
-        visuals.noseId = noseId;
-        visuals.limbsId = limbsId;
-        visuals.tailId = tailId;
-        visuals.miscId = miscId;
-        aminal.visuals = visuals;
+        aminal.visuals.bodyId = bodyId;
+        aminal.visuals.hatId = hatId;
+        aminal.visuals.eyesId = eyesId;
+        aminal.visuals.mouthId = mouthId;
+        aminal.visuals.noseId = noseId;
+        aminal.visuals.limbsId = limbsId;
+        aminal.visuals.tailId = tailId;
+        aminal.visuals.miscId = miscId;
+
+        return lastAminalId;
     }
+
+    function getAminalVisualsByID(uint256 aminalID) public view returns (Visuals memory) {
+        return aminals[aminalID].visuals;
+    }
+
 
     function getAminalLoveTotal(uint256 aminalID) public view returns (uint256) {
         Aminal storage aminal = aminals[aminalID];
@@ -105,7 +110,20 @@ contract Aminals is IAminal {
         return delta;
     }
 
-    function breedWith(uint256 aminalIdOne, uint256 aminalIdTwo) public payable {
+    function setBreeding(uint256 aminalID, bool breeding) public  {
+        Aminal storage aminal = aminals[aminalID];
+        aminal.breeding = breeding;
+    }
+
+    function disableBreedable(uint256 aminalIdOne, uint256 aminalIdTwo) public {
+        Aminal storage aminalOne = aminals[aminalIdOne];
+        Aminal storage aminalTwo = aminals[aminalIdTwo];
+
+        aminalOne.breedableWith[aminalIdTwo] = false;
+        aminalTwo.breedableWith[aminalIdOne] = false;
+    }
+
+    function breedWith(uint256 aminalIdOne, uint256 aminalIdTwo) public payable returns (uint256 ret) {
         require(msg.value >= 0.01 ether, "Not enough ether");
 
         Aminal storage aminalOne = aminals[aminalIdOne];
@@ -121,14 +139,18 @@ contract Aminals is IAminal {
         // the user has high enough love on Aminal Two to maintain simplicity --
         // a wrapper contract can always do this atomically in one transaction)
         if (aminalTwo.breedableWith[aminalIdOne]) {
+            console.log("IF");
             require(aminalOne.energy >= 10 && aminalTwo.energy >= 10, "Aminal does not have enough energy to breed");
 
-            visualsAuction.startAuction(aminalIdOne, aminalIdTwo);
+            return visualsAuction.startAuction(aminalIdOne, aminalIdTwo); // remember to undo the breedableWith then auction ends!
 
             // TODO: Initiate voting for traits on the Visual registry. Voting is
             // denominated in the combined love of both Aminal One and Aminal Two
         } else {
             aminalOne.breedableWith[aminalIdTwo] = true;
+            console.log("aminal (" , aminalIdOne , ") is now breedable with " , aminalIdTwo);
+
+            return 0;
         }
     }
 
