@@ -62,14 +62,14 @@ contract CounterTest is Test {
 
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
-        visualsAuction.voteVisual(auctionID, VisualsRegistry.VisualsCat.EYES, 1);
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.EARS, 1);
 
         VisualsAuction.Auction memory auction;
         auction = visualsAuction.getAuctionByID(auctionID);
 
         address owner2 = 0x2D3C242d2C074D523112093C67d1c01Bb27ca40D;
         vm.prank(owner2);
-        visualsAuction.voteVisual(auctionID, VisualsRegistry.VisualsCat.EYES, 2);
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.EARS, 2);
     }
 
     function endAuction(uint auctionID) public {
@@ -81,7 +81,7 @@ contract CounterTest is Test {
         console.log("We got a winner :::::: ");
         for(uint256 i = 0; i<8; i++) {
             console.log(auction.winnerId[i]);
-            console.log(registry.getVisuals(i, auction.winnerId[i]));
+            console.log(aminals.getVisuals(i, auction.winnerId[i]));
         }
 
     }
