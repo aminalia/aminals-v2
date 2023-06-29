@@ -8,8 +8,12 @@ import "./IAminal.sol";
 import "./utils/FeedBondingCurve.sol";
 import "./utils/VisualsAuction.sol";
 import "./libs/ABDKMathQuad.sol";
+import "./nft/AminalsDescriptor.sol";
 
-contract Aminals is IAminal {
+contract Aminals is 
+    ERC721S("Aminals", "AMINALS"), 
+    AminalsDescriptor
+{
     mapping(uint256 aminalId => Aminal aminal) public aminals;
     uint256 lastAminalId;
     VisualsRegistry public visualsRegistry;
@@ -51,9 +55,12 @@ contract Aminals is IAminal {
         return aminals[aminalID].visuals;
     }
 
+    function tokenURI(uint256 aminalID) public view override returns (string memory) {
+        return dataURI(aminalID);
+    }
 
-    function getAminalLoveTotal(uint256 aminalID) public view returns (uint256) {
-        Aminal storage aminal = aminals[aminalID];
+    function getAminalLoveTotal(uint256 aminalID) public view returns (uint128) {
+       Aminal storage aminal = aminals[aminalID];
         return aminal.totalLove;
     }
 
