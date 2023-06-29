@@ -50,7 +50,7 @@ contract Aminals is IAminal,
         return lastAminalId;
     }
 
-    function getAminalVisualsByID(uint256 aminalID) public view returns (Visuals memory) {
+    function getAminalVisualsByID(uint256 aminalID) public view override returns (Visuals memory) {
         return aminals[aminalID].visuals;
     }
 
