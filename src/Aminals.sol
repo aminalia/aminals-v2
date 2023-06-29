@@ -151,7 +151,7 @@ contract Aminals is IAminal {
 
     function addSkill() public {}
 
-    function callSkill(uint256 aminalId, bytes32 skillId, bytes32 data) public payable {
+    function callSkill(uint256 aminalId, bytes32 /* skillId */, bytes32 /* data */) public payable {
         squeak((aminalId));
         // TODO: Call skill based on data in the SkillsRegistry
         // We'll likely want to use DELEGATECALL here
@@ -192,7 +192,7 @@ contract Aminals is IAminal {
         return price;
     }
 
-    function log2(uint256 x) private returns (uint256 y) {
+    function log2(uint256 x) pure private returns  (uint256 y) {
         assembly {
             let arg := x
             x := sub(x, 1)

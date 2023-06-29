@@ -14,7 +14,15 @@ contract CounterTest is Test {
         registry = new VisualsRegistry();
     }
 
-    function testRegisterVisuals() public {
+    function testRun() public {
+        registerVisuals();
+        spawnAminals();
+        squeak();
+        feed();
+        breed();
+    }
+
+    function registerVisuals() public {
         registry = new VisualsRegistry();
         registry.registerVisual(VisualsRegistry.VisualsCat.BODY, "body1");
         registry.registerVisual(VisualsRegistry.VisualsCat.BODY, "body2");
@@ -24,12 +32,12 @@ contract CounterTest is Test {
         registry.registerVisual(VisualsRegistry.VisualsCat.EYES, "eyes2");
     }
 
-    function testSpawnAminals() public {
+    function spawnAminals() public {
         aminals.spawnAminal(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         aminals.spawnAminal(0, 0, 1, 1, 1, 0, 0, 0, 0, 0);
     }
 
-    function testSqueak() public {
+    function squeak() public {
         vm.expectRevert("Not enough ether");
         console.log("Squeak without 0.01 ether");
         aminals.squeak(1);
@@ -39,7 +47,7 @@ contract CounterTest is Test {
         console.log("Squeak completed");
     }
 
-    function testFeed() public {
+    function feed() public {
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
         console.log("Feeding the aminal");
@@ -59,7 +67,7 @@ contract CounterTest is Test {
         console.log(aminals.getAminalLoveByIdByUser(1, owner));
     }
 
-    function testBreed() public {
+    function breed() public {
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
         console.log("Breeding the aminals");
