@@ -16,12 +16,12 @@ contract CounterTest is Test {
 
     function testRegisterVisuals() public {
         registry = new VisualsRegistry();
-        registry.registerVisual(VisualsRegistry.BODY, "body1");
-        registry.registerVisual(VisualsRegistry.BODY, "body2");
-        registry.registerVisual(VisualsRegistry.HAT, "hat1");
-        registry.registerVisual(VisualsRegistry.HAT, "hat2");
-        registry.registerVisual(VisualsRegistry.EYES, "eyes1");
-        registry.registerVisual(VisualsRegistry.EYES, "eyes2");
+        registry.registerVisual(VisualsRegistry.VisualsCat.BODY, "body1");
+        registry.registerVisual(VisualsRegistry.VisualsCat.BODY, "body2");
+        registry.registerVisual(VisualsRegistry.VisualsCat.HAT, "hat1");
+        registry.registerVisual(VisualsRegistry.VisualsCat.HAT, "hat2");
+        registry.registerVisual(VisualsRegistry.VisualsCat.EYES, "eyes1");
+        registry.registerVisual(VisualsRegistry.VisualsCat.EYES, "eyes2");
     }
 
     function testSpawnAminals() public {
