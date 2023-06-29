@@ -75,12 +75,12 @@ contract Aminals is IAminal,
 
     function feed(uint256 aminalId) public payable returns (uint256) {
         require(msg.value >= 0.01 ether, "Not enough ether");
-        _feed(aminalId, msg.sender, msg.value);
+        return _feed(aminalId, msg.sender, msg.value);
     }
     
     function feedFrom(uint256 aminalId, address feeder) public payable returns (uint256) {
         require(msg.value >= 0.01 ether, "Not enough ether");
-        _feed(aminalId, feeder, msg.value);
+        return _feed(aminalId, feeder, msg.value);
     } 
 
     function _feed(uint256 aminalId, address feeder, uint256 amount) internal returns (uint256) {
