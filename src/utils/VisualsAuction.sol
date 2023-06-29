@@ -6,17 +6,22 @@ import "forge-std/Test.sol";
 
 import "../IAminal.sol";
 import "../Aminals.sol";
-import "./VisualsRegistry.sol";
 
 contract VisualsAuction is IAminal {
     Aminals public aminals;
-    VisualsRegistry public vRegistry;
-
-    constructor(address _aminals, address _registry) {
+    enum VisualsCat {
+        BACK,
+        ARM,
+        TAIL,
+        EARS,
+        BODY,
+        FACE,
+        MOUTH,
+        MISC
+    }
+    constructor(address _aminals) {
         // TODO: Replace with Aminals contract address
         aminals = Aminals(_aminals);
-        vRegistry = VisualsRegistry(_registry);
-
         console.log(address(this));
     }
 
@@ -114,7 +119,7 @@ contract VisualsAuction is IAminal {
         return auctionCnt;
     }
 
-    function proposeVisual(uint256 auctionId, VisualsRegistry.VisualsCat catEnum, uint256 visualId) public payable {
+    function proposeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId) public payable {
         // anyone can propose new visuals, but the cost depends on how much they love you in order to avoid ppl from spamming the available slots.abi
 
         uint category = uint256(catEnum);
@@ -140,7 +145,7 @@ contract VisualsAuction is IAminal {
         }
     }
 
-    function voteVisual(uint256 auctionId, VisualsRegistry.VisualsCat catEnum, uint256 i) public payable {
+    function voteVisual(uint256 auctionId, VisualsCat catEnum, uint256 i) public payable {
         uint category = uint256(catEnum);
 
         Auction storage auction = auctions[auctionId];
@@ -150,7 +155,7 @@ contract VisualsAuction is IAminal {
         auction.visualIdVotes[category][i] += totallove;
     }
 
-    function removeVisual(uint256 auctionId, VisualsRegistry.VisualsCat catEnum, uint256 visualId) public payable {
+    function removeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId) public payable {
         uint category = uint256(catEnum);
 
         // the loved ones can vote to remove a trait from the auction

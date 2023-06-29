@@ -17,12 +17,10 @@ contract Aminals is IAminal,
 {
     mapping(uint256 aminalId => Aminal aminal) public aminals;
     uint256 lastAminalId;
-    VisualsRegistry public visualsRegistry;
     VisualsAuction public visualsAuction;
 
     constructor() {
-        visualsRegistry = new VisualsRegistry();
-        visualsAuction = new VisualsAuction(address(this), address(visualsRegistry));
+        visualsAuction = new VisualsAuction(address(this));
     }
 
     function spawnAminal(
@@ -77,17 +75,15 @@ contract Aminals is IAminal,
 
     function feed(uint256 aminalId) public payable returns (uint256) {
         require(msg.value >= 0.01 ether, "Not enough ether");
-        _feed(aminalId, msg.sender, msg.value) 
-
+        _feed(aminalId, msg.sender, msg.value);
     }
     
     function feedFrom(uint256 aminalId, address feeder) public payable returns (uint256) {
         require(msg.value >= 0.01 ether, "Not enough ether");
-        _feed(aminalId, feeder, msg.value) 
+        _feed(aminalId, feeder, msg.value);
     } 
 
-
-    function _feed(uint256 aminalId, address feeder, uint256 amount) internal payable returns (uint256) {
+    function _feed(uint256 aminalId, address feeder, uint256 amount) internal returns (uint256) {
         Aminal storage aminal = aminals[aminalId];
 
         //console.log("TESTESTEST: ", feeder);
