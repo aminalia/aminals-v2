@@ -90,8 +90,6 @@ contract VisualsAuction is IAminal {
         // AminalIdTwo's traits.
 
 
-        console.log("..................................... visuals: ", visualsOne.eyesId);
-
         auction.visualIds[0][0] = visualsOne.bodyId;
         auction.visualIds[0][1] = visualsTwo.bodyId;
         auction.visualIds[1][0] = visualsOne.hatId;
@@ -108,8 +106,6 @@ contract VisualsAuction is IAminal {
         auction.visualIds[6][1] = visualsTwo.tailId;
         auction.visualIds[7][0] = visualsOne.miscId;
         auction.visualIds[7][1] = visualsTwo.miscId;
-
-        console.log("____________________________ visuals::: ", auction.visualIds[2][0]);
 
         return auctionCnt;
     }
@@ -132,7 +128,7 @@ contract VisualsAuction is IAminal {
 
         // This starts at 2 because the first two array values are used by the Aminal's traits
         for (uint256 i = 2; i < 10; i++) {
-            console.log("Iterating thourgh .... ", i, " . -- where auction.visualsIds cat = ", category);
+            // console.log("Iterating thourgh .... ", i, " . -- where auction.visualsIds cat = ", category);
             if (auction.visualIds[category][i] == 0) {
                 auction.visualIds[category][i] = visualId;
                 break;
@@ -152,8 +148,6 @@ contract VisualsAuction is IAminal {
 
         auction.visualIdVotes[category][i] += totallove;
 
-        console.log("---------------------> ", auction.visualIdVotes[2][3]);
-
     }
 
     function removeVisual(uint256 auctionId, VisualsRegistry.VisualsCat catEnum, uint256 visualId) public payable {
@@ -166,15 +160,13 @@ contract VisualsAuction is IAminal {
         Auction storage auction = auctions[auctionId];
 
         // loop through all the Visuals and identify the winner;
-        uint256[] memory maxVotes;
-        uint256[8][10] memory arrVisuals;
+        uint256[8] memory maxVotes;
 
         for (uint256 i = 0; i < 8; i++) {
-            arrVisuals[i] = auction.visualIds[i];
 
-            for (uint256 j = 0; j < arrVisuals.length; j++) {
-                if (arrVisuals[i][j] > maxVotes[i]) {
-                    maxVotes[i] = arrVisuals[i][j];
+            for (uint256 j = 0; j < auction.visualIds[i].length; j++) {
+                if (auction.visualIdVotes[i][j] > maxVotes[i]) {
+                    maxVotes[i] = auction.visualIdVotes[i][j];
                     auction.winnerId[i] = j;
                 }
             }
