@@ -4,7 +4,9 @@ pragma solidity ^0.8.20;
 import "forge-std/console.sol";
 import "forge-std/Test.sol";
 
+import "./IAminal.sol";
 import "./utils/FeedBondingCurve.sol";
+import "./utils/VisualsAuction.sol";
 import "./libs/ABDKMathQuad.sol";
 import "./nft/AminalsDescriptor.sol";
 
@@ -13,35 +15,44 @@ contract Aminals is
     AminalsDescriptor
 {
     mapping(uint256 aminalId => Aminal aminal) public aminals;
+    uint256 lastAminalId;
+    VisualsRegistry public visualsRegistry;
+    VisualsAuction public visualsAuction;
 
-    struct Aminal {
-        uint256 totalLove;
-        // TODO: Check whether gas usage is the same for a uint128
-        uint256 energy;
-        mapping(uint256 aminalTwoId => bool readyToBreed) breedableWith;
-        mapping(address user => uint256 love) lovePerUser;
-        Visuals visuals;
-        mapping(uint8 => Skills) skills;
+    constructor() {
+        visualsRegistry = new VisualsRegistry();
+        visualsAuction = new VisualsAuction(address(this), address(visualsRegistry));
     }
 
-    // TODO: Migrate to VisualsRegistry
-    struct Visuals {
-        string body;
-        string hat;
-        string eyes;
-        string mouth;
-        string nose;
-        string limbs;
-        string tail;
-        string accessories;
+    function spawnAminal(
+        uint256 aminalOne,
+        uint256 aminalTwo,
+        uint256 bodyId,
+        uint256 hatId,
+        uint256 eyesId,
+        uint256 mouthId,
+        uint256 noseId,
+        uint256 limbsId,
+        uint256 tailId,
+        uint256 miscId
+    ) public returns (uint256) {
+        Aminal storage aminal = aminals[++lastAminalId];
+        aminal.momId = aminalOne;
+        aminal.dadId = aminalTwo;
+        aminal.visuals.bodyId = bodyId;
+        aminal.visuals.hatId = hatId;
+        aminal.visuals.eyesId = eyesId;
+        aminal.visuals.mouthId = mouthId;
+        aminal.visuals.noseId = noseId;
+        aminal.visuals.limbsId = limbsId;
+        aminal.visuals.tailId = tailId;
+        aminal.visuals.miscId = miscId;
+
+        return lastAminalId;
     }
 
-    // TODO: Migrate to SkillsRegistry
-    struct Skills {
-        string name;
-        address contractAddress;
-        // Human-readable ABI format
-        string functionSignature;
+    function getAminalVisualsByID(uint256 aminalID) public view returns (Visuals memory) {
+        return aminals[aminalID].visuals;
     }
 
     function tokenURI(uint256 aminalID) public view override returns (string memory) {
@@ -53,16 +64,15 @@ contract Aminals is
         return aminal.totalLove;
     }
 
-    function getAminalLoveByIdByUser(uint256 aminalID, address user) public view returns (uint256)  {
+    function getAminalLoveByIdByUser(uint256 aminalID, address user) public view returns (uint256) {
         Aminal storage aminal = aminals[aminalID];
         return aminal.lovePerUser[user];
     }
 
-    function getEnergy(uint256 aminalID) public view returns (uint256)  {
+    function getEnergy(uint256 aminalID) public view returns (uint256) {
         Aminal storage aminal = aminals[aminalID];
         return aminal.energy;
     }
-
 
     function feed(uint256 aminalId) public payable returns (uint256) {
         require(msg.value >= 0.01 ether, "Not enough ether");
@@ -70,10 +80,9 @@ contract Aminals is
 
         //console.log("TESTESTEST: ", msg.sender);
 
-
         // TODO: Amount of love should be on a bonding curve, not a direct
         // addition
-      //  uint256 amount = (msg.value / 10**16);
+        //  uint256 amount = (msg.value / 10**16);
 
         uint256 amount = msg.value;
 
@@ -87,29 +96,41 @@ contract Aminals is
         // aminal.energy += uint8(amount);
 
         // assuming a simple bonding curve, where d(e) = ETH * (1 - e/100)**2
-       // aminal.energy = aminal.energy + (amount * ((1 - aminal.energy/100) ** 2));
-        
+        // aminal.energy = aminal.energy + (amount * ((1 - aminal.energy/100) ** 2));
+
         // assuming a simple bonding curve, where d(e) = (100 - e)/100
         // bytes16 delta = ABDKMathQuad.div( ABDKMathQuad.sub(ABDKMathQuad.fromInt(100), aminal.energy), ABDKMathQuad.fromInt(100) );
         // aminal.energy = ABDKMathQuad.add(aminal.energy, ABDKMathQuad.mul(delta, ABDKMathQuad.fromUInt(amount)));
 
-        uint256 gap = 10**18 - aminal.energy;
+        uint256 gap = 10 ** 18 - aminal.energy;
 
-        uint256 delta = amount * gap / 10**18; 
+        uint256 delta = amount * gap / 10 ** 18;
         aminal.energy += delta;
 
-        // using the bonding curve system 
-       // FeedBondingCurve feedcurve = new FeedBondingCurve();
-       // aminal.energy = feedcurve.feedBondingCurve(amount, aminal.energy);
+        // using the bonding curve system
+        // FeedBondingCurve feedcurve = new FeedBondingCurve();
+        // aminal.energy = feedcurve.feedBondingCurve(amount, aminal.energy);
 
         // return ABDKMathQuad.toUInt(ABDKMathQuad.mul(ABDKMathQuad.fromUInt(amount), delta));
         //     return ABDKMathQuad.toUInt(delta);
 
         return delta;
-
     }
 
-    function breedWith(uint256 aminalIdOne, uint256 aminalIdTwo) public payable {
+    function setBreeding(uint256 aminalID, bool breeding) public  {
+        Aminal storage aminal = aminals[aminalID];
+        aminal.breeding = breeding;
+    }
+
+    function disableBreedable(uint256 aminalIdOne, uint256 aminalIdTwo) public {
+        Aminal storage aminalOne = aminals[aminalIdOne];
+        Aminal storage aminalTwo = aminals[aminalIdTwo];
+
+        aminalOne.breedableWith[aminalIdTwo] = false;
+        aminalTwo.breedableWith[aminalIdOne] = false;
+    }
+
+    function breedWith(uint256 aminalIdOne, uint256 aminalIdTwo) public payable returns (uint256 ret) {
         require(msg.value >= 0.01 ether, "Not enough ether");
 
         Aminal storage aminalOne = aminals[aminalIdOne];
@@ -125,12 +146,18 @@ contract Aminals is
         // the user has high enough love on Aminal Two to maintain simplicity --
         // a wrapper contract can always do this atomically in one transaction)
         if (aminalTwo.breedableWith[aminalIdOne]) {
-            require(aminalOne.energy >=10 && aminalTwo.energy >=10, "Aminal does not have enough energy to breed");
-            
+            console.log("IF");
+            require(aminalOne.energy >= 10 && aminalTwo.energy >= 10, "Aminal does not have enough energy to breed");
+
+            return visualsAuction.startAuction(aminalIdOne, aminalIdTwo); // remember to undo the breedableWith then auction ends!
+
             // TODO: Initiate voting for traits on the Visual registry. Voting is
             // denominated in the combined love of both Aminal One and Aminal Two
         } else {
             aminalOne.breedableWith[aminalIdTwo] = true;
+            console.log("aminal (" , aminalIdOne , ") is now breedable with " , aminalIdTwo);
+
+            return 0;
         }
     }
 
@@ -143,19 +170,17 @@ contract Aminals is
         Aminal storage aminal = aminals[aminalId];
 
         require(aminal.lovePerUser[msg.sender] >= 1, "Not enough love");
-        
+
         // ensure that aminal.energy never goes below 0
-        if(aminal.energy >= 1) { aminal.energy--; }
-        
+        if (aminal.energy >= 1) aminal.energy--;
+
         // TODO: Migrate the bool to a constant for convenience
         adjustLove(aminalId, 1, msg.sender, false);
     }
 
     function addSkill() public {}
 
-    function addVisuals() public {}
-
-    function callSkill(uint256 aminalId, bytes32 skillId, bytes32 data) public payable {
+    function callSkill(uint256 aminalId, bytes32 /* skillId */, bytes32 /* data */) public payable {
         squeak((aminalId));
         // TODO: Call skill based on data in the SkillsRegistry
         // We'll likely want to use DELEGATECALL here
@@ -163,7 +188,6 @@ contract Aminals is
 
     // TODO: Switch to passing the Aminal struct instead of the aminalId
     function adjustLove(uint256 aminalId, uint256 love, address sender, bool increment) internal {
-        
         Aminal storage aminal = aminals[aminalId];
         if (!increment) {
             aminal.lovePerUser[sender] -= love;
@@ -177,36 +201,54 @@ contract Aminals is
     // TODO: Add delegation to other addresses. This will likely end up wrapping
     // msg.sender functionality in a library that checks for delegation
 
+    function loveDrivenPrice(uint256 aminalId, address sender) public view returns (uint128) {
+        Aminal storage aminal = aminals[aminalId];
+        // the higher the love, the cheaper the function calls
+        //
+        // Aminals.Aminal storage aminal = aminals.aminals[aminalId];
+        // Aminals.Aminal storage aminal = aminals.getAminalById(aminalId);
+        uint128 price;
+        uint256 love = aminal.lovePerUser[sender];
+        uint256 totlove = aminal.totalLove;
+        uint256 ratio = love / totlove;
+        if (ratio == 0) price = 100; // max multiplier is 100;
 
+        else price = uint128(100 / ratio);
+        // ensure that price is between 1 and 10;
+        price = price / 10;
+        if (price < 1) price++;
 
-   function log2(uint x) private returns (uint y){
-   assembly {
-        let arg := x
-        x := sub(x,1)
-        x := or(x, div(x, 0x02))
-        x := or(x, div(x, 0x04))
-        x := or(x, div(x, 0x10))
-        x := or(x, div(x, 0x100))
-        x := or(x, div(x, 0x10000))
-        x := or(x, div(x, 0x100000000))
-        x := or(x, div(x, 0x10000000000000000))
-        x := or(x, div(x, 0x100000000000000000000000000000000))
-        x := add(x, 1)
-        let m := mload(0x40)
-        mstore(m,           0xf8f9cbfae6cc78fbefe7cdc3a1793dfcf4f0e8bbd8cec470b6a28a7a5a3e1efd)
-        mstore(add(m,0x20), 0xf5ecf1b3e9debc68e1d9cfabc5997135bfb7a7a3938b7b606b5b4b3f2f1f0ffe)
-        mstore(add(m,0x40), 0xf6e4ed9ff2d6b458eadcdf97bd91692de2d4da8fd2d0ac50c6ae9a8272523616)
-        mstore(add(m,0x60), 0xc8c0b887b0a8a4489c948c7f847c6125746c645c544c444038302820181008ff)
-        mstore(add(m,0x80), 0xf7cae577eec2a03cf3bad76fb589591debb2dd67e0aa9834bea6925f6a4a2e0e)
-        mstore(add(m,0xa0), 0xe39ed557db96902cd38ed14fad815115c786af479b7e83247363534337271707)
-        mstore(add(m,0xc0), 0xc976c13bb96e881cb166a933a55e490d9d56952b8d4e801485467d2362422606)
-        mstore(add(m,0xe0), 0x753a6d1b65325d0c552a4d1345224105391a310b29122104190a110309020100)
-        mstore(0x40, add(m, 0x100))
-        let magic := 0x818283848586878898a8b8c8d8e8f929395969799a9b9d9e9faaeb6bedeeff
-        let shift := 0x100000000000000000000000000000000000000000000000000000000000000
-        let a := div(mul(x, magic), shift)
-        y := div(mload(add(m,sub(255,a))), shift)
-        y := add(y, mul(256, gt(arg, 0x8000000000000000000000000000000000000000000000000000000000000000)))
-    }  
-}
+        return price;
+    }
+
+    function log2(uint256 x) pure private returns  (uint256 y) {
+        assembly {
+            let arg := x
+            x := sub(x, 1)
+            x := or(x, div(x, 0x02))
+            x := or(x, div(x, 0x04))
+            x := or(x, div(x, 0x10))
+            x := or(x, div(x, 0x100))
+            x := or(x, div(x, 0x10000))
+            x := or(x, div(x, 0x100000000))
+            x := or(x, div(x, 0x10000000000000000))
+            x := or(x, div(x, 0x100000000000000000000000000000000))
+            x := add(x, 1)
+            let m := mload(0x40)
+            mstore(m, 0xf8f9cbfae6cc78fbefe7cdc3a1793dfcf4f0e8bbd8cec470b6a28a7a5a3e1efd)
+            mstore(add(m, 0x20), 0xf5ecf1b3e9debc68e1d9cfabc5997135bfb7a7a3938b7b606b5b4b3f2f1f0ffe)
+            mstore(add(m, 0x40), 0xf6e4ed9ff2d6b458eadcdf97bd91692de2d4da8fd2d0ac50c6ae9a8272523616)
+            mstore(add(m, 0x60), 0xc8c0b887b0a8a4489c948c7f847c6125746c645c544c444038302820181008ff)
+            mstore(add(m, 0x80), 0xf7cae577eec2a03cf3bad76fb589591debb2dd67e0aa9834bea6925f6a4a2e0e)
+            mstore(add(m, 0xa0), 0xe39ed557db96902cd38ed14fad815115c786af479b7e83247363534337271707)
+            mstore(add(m, 0xc0), 0xc976c13bb96e881cb166a933a55e490d9d56952b8d4e801485467d2362422606)
+            mstore(add(m, 0xe0), 0x753a6d1b65325d0c552a4d1345224105391a310b29122104190a110309020100)
+            mstore(0x40, add(m, 0x100))
+            let magic := 0x818283848586878898a8b8c8d8e8f929395969799a9b9d9e9faaeb6bedeeff
+            let shift := 0x100000000000000000000000000000000000000000000000000000000000000
+            let a := div(mul(x, magic), shift)
+            y := div(mload(add(m, sub(255, a))), shift)
+            y := add(y, mul(256, gt(arg, 0x8000000000000000000000000000000000000000000000000000000000000000)))
+        }
+    }
 }
