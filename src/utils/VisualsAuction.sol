@@ -72,7 +72,8 @@ contract VisualsAuction is IAminal {
             ++auctionCnt;
         }
 
-        Auction storage auction = auctions[auctionCnt];
+         Auction storage auction = auctions[auctionCnt];
+        //Auction storage auction;
         auction.aminalIdOne = aminalIdOne;
         auction.aminalIdTwo = aminalIdTwo;
         auction.totalLove = aminals.getAminalLoveTotal(aminalIdOne) + aminals.getAminalLoveTotal(aminalIdTwo);
@@ -113,8 +114,10 @@ contract VisualsAuction is IAminal {
         return auctionCnt;
     }
 
-    function proposeVisual(uint256 auctionId, uint256 category, uint256 visualId) public payable {
+    function proposeVisual(uint256 auctionId, VisualsRegistry.VisualsCat catEnum, uint256 visualId) public payable {
         // anyone can propose new visuals, but the cost depends on how much they love you in order to avoid ppl from spamming the available slots.abi
+
+        uint category = uint256(catEnum);
 
         Auction storage auction = auctions[auctionId];
 
@@ -123,17 +126,23 @@ contract VisualsAuction is IAminal {
 
         uint256 price = priceOne + priceTwo;
 
+        console.log("required ether to submit new visual === ", price);
+
         require(msg.value >= price, "Not enough ether to propose a new Visual");
 
         // This starts at 2 because the first two array values are used by the Aminal's traits
         for (uint256 i = 2; i < 10; i++) {
+            console.log("Iterating thourgh .... ", i, " . -- where auction.visualsIds cat = ", category);
             if (auction.visualIds[category][i] == 0) {
                 auction.visualIds[category][i] = visualId;
+                break;
             }
         }
     }
 
-    function voteVisual(uint256 auctionId, uint256 category, uint256 i) public payable {
+    function voteVisual(uint256 auctionId, VisualsRegistry.VisualsCat catEnum, uint256 i) public payable {
+        uint category = uint256(catEnum);
+
         Auction storage auction = auctions[auctionId];
         uint256 totallove = aminals.getAminalLoveByIdByUser(auction.aminalIdOne, msg.sender)
             + aminals.getAminalLoveByIdByUser(auction.aminalIdTwo, msg.sender);
@@ -141,7 +150,9 @@ contract VisualsAuction is IAminal {
         auction.visualIdVotes[category][i] += totallove;
     }
 
-    function removeVisual(uint256 auctionId, uint256 visualId) public payable {
+    function removeVisual(uint256 auctionId, VisualsRegistry.VisualsCat catEnum, uint256 visualId) public payable {
+        uint category = uint256(catEnum);
+
         // the loved ones can vote to remove a trait from the auction
     }
 

@@ -25,6 +25,10 @@ contract CounterTest is Test {
         feed();
         uint i = breed();
         listAuctionedVisuals(i);
+        proposeTraits(i);
+        listAuctionedVisuals(i);
+        voteTraits(i);
+
     }
 
     function registerVisuals() public {
@@ -34,6 +38,28 @@ contract CounterTest is Test {
         registry.registerVisual(VisualsRegistry.VisualsCat.HAT, "hat2");
         registry.registerVisual(VisualsRegistry.VisualsCat.EYES, "eyes1");
         registry.registerVisual(VisualsRegistry.VisualsCat.EYES, "eyes2");
+        registry.registerVisual(VisualsRegistry.VisualsCat.MOUTH, "mouth1");
+        registry.registerVisual(VisualsRegistry.VisualsCat.MOUTH, "mouth2");
+
+    }
+
+    function proposeTraits(uint auctionID) public {
+        uint id1 = registry.registerVisual(VisualsRegistry.VisualsCat.EYES, "eyes3");
+        uint id2 = registry.registerVisual(VisualsRegistry.VisualsCat.HAT, "hat3");
+
+        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsRegistry.VisualsCat.EYES, id1);
+        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsRegistry.VisualsCat.HAT, id2);
+
+    }
+
+    function voteTraits(uint auctionID) public {
+        
+        address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
+        vm.prank(owner);
+        visualsAuction.voteVisual(auctionID, VisualsRegistry.VisualsCat.EYES, 3);
+
+
+
     }
 
     function listAuctionedVisuals(uint auctionID) public view {
@@ -50,10 +76,12 @@ contract CounterTest is Test {
         // console.log("displaying visuals for auction id = ", auctionID);
 
         for(uint i=0; i<8; i++) {
-            // console.log("iterating through category ", i);
+             console.log("iterating through category ", i);
 
             for(uint j=0; j < 2 || auction.visualIds[i][j] > 0; j++) {
                  console.log("---> ", j, " = " , auction.visualIds[i][j]);
+                //   console.log( registry.visuals(VisualsRegistry.VisualsCat(i),j) );
+                console.log(registry.getVisuals(i, j));
              }
         }
     }
@@ -61,7 +89,7 @@ contract CounterTest is Test {
     function spawnAminals() public {
         console.log("SPawning aminals...........");
         uint a1 = aminals.spawnAminal(0, 0,    1, 1, 1, 1, 1, 1, 1, 1);
-        uint a2 = aminals.spawnAminal(0, 0,    2, 2, 2, 2, 2, 2, 2, 2);
+        uint a2 = aminals.spawnAminal(0, 0,    1, 2, 2, 2, 2, 2, 2, 2);
         console.log("spawned.... ", a1, " & ", a2);
 
         // Get only the Visuals struct from the mapping
