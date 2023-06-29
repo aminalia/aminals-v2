@@ -140,7 +140,9 @@ contract VisualsAuction is IAminal {
         }
     }
 
-    function voteVisual(uint256 auctionId, uint256 category, uint256 i) public payable {
+    function voteVisual(uint256 auctionId, VisualsRegistry.VisualsCat catEnum, uint256 i) public payable {
+        uint category = uint256(catEnum);
+
         Auction storage auction = auctions[auctionId];
         uint256 totallove = aminals.getAminalLoveByIdByUser(auction.aminalIdOne, msg.sender)
             + aminals.getAminalLoveByIdByUser(auction.aminalIdTwo, msg.sender);
@@ -148,7 +150,9 @@ contract VisualsAuction is IAminal {
         auction.visualIdVotes[category][i] += totallove;
     }
 
-    function removeVisual(uint256 auctionId, uint256 visualId) public payable {
+    function removeVisual(uint256 auctionId, VisualsRegistry.VisualsCat catEnum, uint256 visualId) public payable {
+        uint category = uint256(catEnum);
+
         // the loved ones can vote to remove a trait from the auction
     }
 

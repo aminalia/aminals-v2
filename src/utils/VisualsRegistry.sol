@@ -15,10 +15,19 @@ contract VisualsRegistry {
         MISC
     }
 
-    mapping(VisualsCat => bytes32[]) public Visuals;
+    mapping(VisualsCat => string[]) public visuals;
 
-    function registerVisual(VisualsCat category, bytes32 svg) public returns (uint256) {
-        Visuals[category].push(svg);
-        return Visuals[category].length - 1;
+    function getVisuals(uint category, uint id) public view returns (string memory) {
+        if(visuals[VisualsCat(category)].length > 0) {
+            return visuals[VisualsCat(category)][id];
+        } else {
+            return "";
+        }
+    }
+
+
+    function registerVisual(VisualsCat category, string memory svg) public returns (uint256) {
+        visuals[category].push(svg);
+        return visuals[category].length;
     }
 }
