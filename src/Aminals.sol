@@ -11,6 +11,14 @@ import "./libs/ABDKMathQuad.sol";
 
 contract Aminals is IAminal {
     mapping(uint256 aminalId => Aminal aminal) public aminals;
+    uint256 lastAminalId;
+    VisualsRegistry public visualsRegistry;
+    VisualsAuction public visualsAuction;
+
+    constructor() {
+        visualsRegistry = new VisualsRegistry();
+        visualsAuction = new VisualsAuction(address(this), address(visualsRegistry));
+    }
 
     function spawnAminal(
         uint256 aminalOne,
@@ -24,10 +32,10 @@ contract Aminals is IAminal {
         uint256 tailId,
         uint256 miscId
     ) public {
-        Aminal storage aminal = new Aminal();
-        aminal.mom = aminalOne;
-        aminal.dad = aminalTwo;
-        Visuals storage visuals = new Visuals();
+        Aminal storage aminal = aminals[lastAminalId];
+        aminal.momId = aminalOne;
+        aminal.dadId = aminalTwo;
+        Visuals storage visuals = aminal.visuals;
         visuals.bodyId = bodyId;
         visuals.hatId = hatId;
         visuals.eyesId = eyesId;
@@ -115,7 +123,7 @@ contract Aminals is IAminal {
         if (aminalTwo.breedableWith[aminalIdOne]) {
             require(aminalOne.energy >= 10 && aminalTwo.energy >= 10, "Aminal does not have enough energy to breed");
 
-            VisualsAuction auction = new VisualsAuction(aminals);
+            visualsAuction.startAuction(aminalIdOne, aminalIdTwo);
 
             // TODO: Initiate voting for traits on the Visual registry. Voting is
             // denominated in the combined love of both Aminal One and Aminal Two
@@ -165,13 +173,14 @@ contract Aminals is IAminal {
     // msg.sender functionality in a library that checks for delegation
 
     function loveDrivenPrice(uint256 aminalId, address sender) public view returns (uint128) {
+        Aminal storage aminal = aminals[aminalId];
         // the higher the love, the cheaper the function calls
         //
         // Aminals.Aminal storage aminal = aminals.aminals[aminalId];
         // Aminals.Aminal storage aminal = aminals.getAminalById(aminalId);
         uint128 price;
-        uint256 love = aminals.getAminalLoveByIdByUser(aminalId, sender);
-        uint256 totlove = aminals.getAminalLoveTotal(aminalId);
+        uint256 love = aminal.lovePerUser[sender];
+        uint256 totlove = aminal.totalLove;
         uint256 ratio = love / totlove;
         if (ratio == 0) price = 100; // max multiplier is 100;
 

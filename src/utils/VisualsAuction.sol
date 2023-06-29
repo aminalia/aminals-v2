@@ -91,14 +91,19 @@ contract VisualsAuction is IAminal {
 
         Auction storage auction = auctions[auctionId];
 
-        uint256 priceOne = Aminals.loveDrivenPrice(auction.aminalIdOne, msg.sender);
-        uint256 priceTwo = Aminals.loveDrivenPrice(auction.aminalIdTwo, msg.sender);
+        uint256 priceOne = aminals.loveDrivenPrice(auction.aminalIdOne, msg.sender);
+        uint256 priceTwo = aminals.loveDrivenPrice(auction.aminalIdTwo, msg.sender);
 
         uint256 price = priceOne + priceTwo;
 
         require(msg.value >= price, "Not enough ether to propose a new Visual");
 
-        auction.visualIds[category].push(visualId);
+        // This starts at 2 because the first two array values are used by the Aminal's traits
+        for (uint256 i = 2; i < 10; i++) {
+            if (auction.visualIds[category][i] == 0) {
+                auction.visualIds[category][i] = visualId;
+            }
+        }
     }
 
     function voteVisual(uint256 auctionId, uint256 category, uint256 i) public payable {
@@ -113,16 +118,17 @@ contract VisualsAuction is IAminal {
         // the loved ones can vote to remove a trait from the auction
     }
 
-    function endAuction(bytes32 auctionId) public {
+    function endAuction(uint256 auctionId) public {
         Auction storage auction = auctions[auctionId];
 
         // loop through all the Visuals and identify the winner;
         uint256[] memory maxVotes;
+        uint256[8][10] memory arrVisuals;
 
         for (uint256 i = 0; i < 8; i++) {
-            uint256[] memory arrVisuals = auction.visualIds[i];
+            arrVisuals[i] = auction.visualIds[i];
 
-            for (uint256 j = 0; j < arrVisuals.length(); j++) {
+            for (uint256 j = 0; j < arrVisuals.length; j++) {
                 if (arrVisuals[i][j] > maxVotes[i]) {
                     maxVotes[i] = arrVisuals[i][j];
                     auction.winnerId[i] = j;
