@@ -39,6 +39,7 @@ contract CounterTest is Test {
         aminals.addBody("body");
         aminals.addFace("face");
         aminals.addMouth("mouth");
+        aminals.addMisc("misc");
         // second aminal
         aminals.addBackground("bg1");
         aminals.addArm("arm2");
@@ -47,6 +48,8 @@ contract CounterTest is Test {
         aminals.addBody("body2");
         aminals.addFace("face2");
         aminals.addMouth("mouth2");
+        aminals.addMisc("misc2");
+
     }
 
     function proposeTraits(uint auctionID) public {

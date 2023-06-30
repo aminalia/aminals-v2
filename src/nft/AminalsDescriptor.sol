@@ -136,7 +136,6 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
     }
 
     function getVisuals(uint category, uint id) public view returns (string memory) {
-        string[] memory visual;
         if (VisualsCat(category) == VisualsCat.BACK) {
             if( backgrounds.length > id ) return backgrounds[id];
         } else if (VisualsCat(category) == VisualsCat.ARM) {
