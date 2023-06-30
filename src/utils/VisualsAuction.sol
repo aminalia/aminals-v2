@@ -29,6 +29,13 @@ contract VisualsAuction is IAminal {
     mapping(uint256 auctionId => Auction auction) public auctions;
     uint256 public auctionCnt = 2; // assuming there are only 2 initially deployed aminals
 
+    // keep track of who has voted already in a particular auction and category
+    mapping(address voter => uint256[99][8]) visualVoted; 
+
+
+
+
+
     struct Auction {
         uint256 aminalIdOne;
         uint256 aminalIdTwo;
@@ -95,20 +102,20 @@ contract VisualsAuction is IAminal {
         // AminalIdTwo's traits.
 
 
-        auction.visualIds[0][0] = visualsOne.bodyId;
-        auction.visualIds[0][1] = visualsTwo.bodyId;
-        auction.visualIds[1][0] = visualsOne.hatId;
-        auction.visualIds[1][1] = visualsTwo.hatId;
-        auction.visualIds[2][0] = visualsOne.eyesId;
-        auction.visualIds[2][1] = visualsTwo.eyesId;
-        auction.visualIds[3][0] = visualsOne.mouthId;
-        auction.visualIds[3][1] = visualsTwo.mouthId;
-        auction.visualIds[4][0] = visualsOne.noseId;
-        auction.visualIds[4][1] = visualsTwo.noseId;
-        auction.visualIds[5][0] = visualsOne.limbsId;
-        auction.visualIds[5][1] = visualsTwo.limbsId;
-        auction.visualIds[6][0] = visualsOne.tailId;
-        auction.visualIds[6][1] = visualsTwo.tailId;
+        auction.visualIds[0][0] = visualsOne.backId;
+        auction.visualIds[0][1] = visualsTwo.backId;
+        auction.visualIds[1][0] = visualsOne.armId;
+        auction.visualIds[1][1] = visualsTwo.armId;
+        auction.visualIds[2][0] = visualsOne.tailId;
+        auction.visualIds[2][1] = visualsTwo.tailId;
+        auction.visualIds[3][0] = visualsOne.earsId;
+        auction.visualIds[3][1] = visualsTwo.earsId;
+        auction.visualIds[4][0] = visualsOne.bodyId;
+        auction.visualIds[4][1] = visualsTwo.bodyId;
+        auction.visualIds[5][0] = visualsOne.faceId;
+        auction.visualIds[5][1] = visualsTwo.faceId;
+        auction.visualIds[6][0] = visualsOne.mouthId;
+        auction.visualIds[6][1] = visualsTwo.mouthId;
         auction.visualIds[7][0] = visualsOne.miscId;
         auction.visualIds[7][1] = visualsTwo.miscId;
 
@@ -145,13 +152,19 @@ contract VisualsAuction is IAminal {
         uint category = uint256(catEnum);
 
         Auction storage auction = auctions[auctionId];
+
+
         uint256 totallove = aminals.getAminalLoveByIdByUser(auction.aminalIdOne, msg.sender)
             + aminals.getAminalLoveByIdByUser(auction.aminalIdTwo, msg.sender);
 
+         require( visualVoted[msg.sender][auctionId][category] < totallove , "Already consumed all of your love with votes");
+        
         console.log("********** a vote has been casted on ", category, " / " , i);
         console.log (" == with weight = ", totallove, " .  on auctionId = ", auctionId);
 
-        auction.visualIdVotes[category][i] += totallove;
+        auction.visualIdVotes[category][i] += (totallove); /* - visualVoted[msg.sender][auctionId][category]); */
+
+        visualVoted[msg.sender][auctionId][category] = totallove;
 
     }
 
@@ -167,13 +180,20 @@ contract VisualsAuction is IAminal {
         // loop through all the Visuals and identify the winner;
         uint256[8] memory maxVotes;
 
-        for (uint256 i = 0; i < 8; i++) {
+        for (uint256 i = 0; i < 8; i++) { // iterate through each category
 
-            for (uint256 j = 0; j < auction.visualIds[i].length; j++) {
+            uint256 j;
+            for (j = 0; j < 2 || auction.visualIds[i][j] > 0; j++) {
                 if (auction.visualIdVotes[i][j] > maxVotes[i]) {
                     maxVotes[i] = auction.visualIdVotes[i][j];
                     auction.winnerId[i] = j;
                 }
+            }
+
+            if(auction.winnerId[i] == 0) { // no one has voted, so used randomness instead
+                uint randomness = random(i, j, 0);
+                console.log("random = ", randomness, "for length = ", j);
+                 auction.winnerId[i] = randomness;
             }
             
                 // if( auction.winnerId[i] == 0) { // this means that nobody has voted on the traits, we use random to assign
@@ -193,8 +213,10 @@ contract VisualsAuction is IAminal {
 
     }
 
-    function random(uint maxNumber,uint minNumber) public view returns (uint amount) {
-     amount = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, block.number))) % (maxNumber-minNumber);
+    function random(uint i, uint maxNumber,uint minNumber) public view returns (uint amount) {
+     amount = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, i)));
+     console.log("AMOUNT --- = ", amount);
+     amount = amount % (maxNumber-minNumber);
      amount = amount + minNumber;
      return amount;
 } 

@@ -26,31 +26,31 @@ contract Aminals is IAminal,
     function spawnAminal(
         uint256 aminalOne,
         uint256 aminalTwo,
-        uint256 bodyId,
-        uint256 hatId,
-        uint256 eyesId,
-        uint256 mouthId,
-        uint256 noseId,
-        uint256 limbsId,
+        uint256 backId,
+        uint256 armId,
         uint256 tailId,
+        uint256 earsId,
+        uint256 bodyId,
+        uint256 faceId,
+        uint256 mouthId,
         uint256 miscId
     ) public returns (uint256) {
         Aminal storage aminal = aminals[++lastAminalId];
         aminal.momId = aminalOne;
         aminal.dadId = aminalTwo;
-        aminal.visuals.bodyId = bodyId;
-        aminal.visuals.hatId = hatId;
-        aminal.visuals.eyesId = eyesId;
-        aminal.visuals.mouthId = mouthId;
-        aminal.visuals.noseId = noseId;
-        aminal.visuals.limbsId = limbsId;
+        aminal.visuals.backId = backId;
+        aminal.visuals.armId = armId;
         aminal.visuals.tailId = tailId;
+        aminal.visuals.earsId = earsId;
+        aminal.visuals.bodyId = bodyId;
+        aminal.visuals.faceId = faceId;
+        aminal.visuals.mouthId = mouthId;
         aminal.visuals.miscId = miscId;
 
         return lastAminalId;
     }
 
-    function getAminalVisualsByID(uint256 aminalID) public view returns (Visuals memory) {
+    function getAminalVisualsByID(uint256 aminalID) public view override returns (Visuals memory) {
         return aminals[aminalID].visuals;
     }
 
@@ -75,12 +75,12 @@ contract Aminals is IAminal,
 
     function feed(uint256 aminalId) public payable returns (uint256) {
         require(msg.value >= 0.01 ether, "Not enough ether");
-        _feed(aminalId, msg.sender, msg.value);
+        return _feed(aminalId, msg.sender, msg.value);
     }
     
     function feedFrom(uint256 aminalId, address feeder) public payable returns (uint256) {
         require(msg.value >= 0.01 ether, "Not enough ether");
-        _feed(aminalId, feeder, msg.value);
+        return _feed(aminalId, feeder, msg.value);
     } 
 
     function _feed(uint256 aminalId, address feeder, uint256 amount) internal returns (uint256) {

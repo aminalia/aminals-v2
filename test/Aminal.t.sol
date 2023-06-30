@@ -39,6 +39,7 @@ contract CounterTest is Test {
         aminals.addBody("body");
         aminals.addFace("face");
         aminals.addMouth("mouth");
+        aminals.addMisc("misc");
         // second aminal
         aminals.addBackground("bg1");
         aminals.addArm("arm2");
@@ -47,6 +48,8 @@ contract CounterTest is Test {
         aminals.addBody("body2");
         aminals.addFace("face2");
         aminals.addMouth("mouth2");
+        aminals.addMisc("misc2");
+
     }
 
     function proposeTraits(uint auctionID) public {
@@ -69,7 +72,10 @@ contract CounterTest is Test {
 
         address owner2 = 0x2D3C242d2C074D523112093C67d1c01Bb27ca40D;
         vm.prank(owner2);
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.EARS, 2);
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, 2);
+        vm.prank(owner2);
+        vm.expectRevert("Already consumed all of your love with votes");
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, 1);
     }
 
     function endAuction(uint auctionID) public {
