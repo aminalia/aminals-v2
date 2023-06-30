@@ -11,14 +11,10 @@ import "./libs/ABDKMathQuad.sol";
 import "./nft/AminalsDescriptor.sol";
 import "./nft/ERC721S.sol";
 
-contract Aminals is IAminal,
-    ERC721S("Aminals", "AMINALS"), 
-    AminalsDescriptor
-{
+contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
     mapping(uint256 aminalId => Aminal aminal) public aminals;
     uint256 lastAminalId;
     VisualsAuction public visualsAuction;
-
 
     modifier _onlyAuction() {
         require(msg.sender == address(visualsAuction));
@@ -37,7 +33,7 @@ contract Aminals is IAminal,
         addBody(emptySVG);
         addFace(emptySVG);
         addMouth(emptySVG);
-        addMisc(emptySVG); 
+        addMisc(emptySVG);
     }
 
     function spawnAminal(
@@ -78,11 +74,15 @@ contract Aminals is IAminal,
     }
 
     function getAminalLoveTotal(uint256 aminalID) public view returns (uint256) {
-       Aminal storage aminal = aminals[aminalID];
+        Aminal storage aminal = aminals[aminalID];
         return aminal.totalLove;
     }
 
-    function getAminalLoveByIdByUser(uint256 aminalID, address user) public view returns (uint256) {
+    function getAminalLoveByIdByUser(uint256 aminalID, address user)
+        public
+        view
+        returns (uint256)
+    {
         Aminal storage aminal = aminals[aminalID];
         return aminal.lovePerUser[user];
     }
@@ -96,11 +96,11 @@ contract Aminals is IAminal,
         require(msg.value >= 0.01 ether, "Not enough ether");
         return _feed(aminalId, msg.sender, msg.value);
     }
-    
+
     function feedFrom(uint256 aminalId, address feeder) public payable returns (uint256) {
         require(msg.value >= 0.01 ether, "Not enough ether");
         return _feed(aminalId, feeder, msg.value);
-    } 
+    }
 
     function _feed(uint256 aminalId, address feeder, uint256 amount) internal returns (uint256) {
         Aminal storage aminal = aminals[aminalId];
@@ -124,8 +124,11 @@ contract Aminals is IAminal,
         // aminal.energy = aminal.energy + (amount * ((1 - aminal.energy/100) ** 2));
 
         // assuming a simple bonding curve, where d(e) = (100 - e)/100
-        // bytes16 delta = ABDKMathQuad.div( ABDKMathQuad.sub(ABDKMathQuad.fromInt(100), aminal.energy), ABDKMathQuad.fromInt(100) );
-        // aminal.energy = ABDKMathQuad.add(aminal.energy, ABDKMathQuad.mul(delta, ABDKMathQuad.fromUInt(amount)));
+        // bytes16 delta = ABDKMathQuad.div( ABDKMathQuad.sub(ABDKMathQuad.fromInt(100),
+        // aminal.energy),
+        // ABDKMathQuad.fromInt(100) );
+        // aminal.energy = ABDKMathQuad.add(aminal.energy, ABDKMathQuad.mul(delta,
+        // ABDKMathQuad.fromUInt(amount)));
 
         uint256 gap = 10 ** 18 - aminal.energy;
 
@@ -142,12 +145,12 @@ contract Aminals is IAminal,
         return delta;
     }
 
-    function setBreeding(uint256 aminalID, bool breeding) _onlyAuction() public  {
+    function setBreeding(uint256 aminalID, bool breeding) public _onlyAuction {
         Aminal storage aminal = aminals[aminalID];
         aminal.breeding = breeding;
     }
 
-    function disableBreedable(uint256 aminalIdOne, uint256 aminalIdTwo) _onlyAuction() public {
+    function disableBreedable(uint256 aminalIdOne, uint256 aminalIdTwo) public _onlyAuction {
         Aminal storage aminalOne = aminals[aminalIdOne];
         Aminal storage aminalTwo = aminals[aminalIdTwo];
 
@@ -155,7 +158,11 @@ contract Aminals is IAminal,
         aminalTwo.breedableWith[aminalIdOne] = false;
     }
 
-    function breedWith(uint256 aminalIdOne, uint256 aminalIdTwo) public payable returns (uint256 ret) {
+    function breedWith(uint256 aminalIdOne, uint256 aminalIdTwo)
+        public
+        payable
+        returns (uint256 ret)
+    {
         require(msg.value >= 0.01 ether, "Not enough ether");
 
         Aminal storage aminalOne = aminals[aminalIdOne];
@@ -172,15 +179,19 @@ contract Aminals is IAminal,
         // a wrapper contract can always do this atomically in one transaction)
         if (aminalTwo.breedableWith[aminalIdOne]) {
             console.log("IF");
-            require(aminalOne.energy >= 10 && aminalTwo.energy >= 10, "Aminal does not have enough energy to breed");
+            require(
+                aminalOne.energy >= 10 && aminalTwo.energy >= 10,
+                "Aminal does not have enough energy to breed"
+            );
 
-            return visualsAuction.startAuction(aminalIdOne, aminalIdTwo); // remember to undo the breedableWith then auction ends!
+            return visualsAuction.startAuction(aminalIdOne, aminalIdTwo); // remember to undo the
+                // breedableWith then auction ends!
 
             // TODO: Initiate voting for traits on the Visual registry. Voting is
             // denominated in the combined love of both Aminal One and Aminal Two
         } else {
             aminalOne.breedableWith[aminalIdTwo] = true;
-            console.log("aminal (" , aminalIdOne , ") is now breedable with " , aminalIdTwo);
+            console.log("aminal (", aminalIdOne, ") is now breedable with ", aminalIdTwo);
 
             return 0;
         }
@@ -205,7 +216,10 @@ contract Aminals is IAminal,
 
     function addSkill() public {}
 
-    function callSkill(uint256 aminalId, bytes32 /* skillId */, bytes32 /* data */) public payable {
+    function callSkill(uint256 aminalId, bytes32, /* skillId */ bytes32 /* data */ )
+        public
+        payable
+    {
         squeak((aminalId));
         // TODO: Call skill based on data in the SkillsRegistry
         // We'll likely want to use DELEGATECALL here
@@ -246,7 +260,7 @@ contract Aminals is IAminal,
         return price;
     }
 
-    function log2(uint256 x) pure private returns  (uint256 y) {
+    function log2(uint256 x) private pure returns (uint256 y) {
         assembly {
             let arg := x
             x := sub(x, 1)
@@ -273,7 +287,13 @@ contract Aminals is IAminal,
             let shift := 0x100000000000000000000000000000000000000000000000000000000000000
             let a := div(mul(x, magic), shift)
             y := div(mload(add(m, sub(255, a))), shift)
-            y := add(y, mul(256, gt(arg, 0x8000000000000000000000000000000000000000000000000000000000000000)))
+            y :=
+                add(
+                    y,
+                    mul(
+                        256, gt(arg, 0x8000000000000000000000000000000000000000000000000000000000000000)
+                    )
+                )
         }
     }
 }

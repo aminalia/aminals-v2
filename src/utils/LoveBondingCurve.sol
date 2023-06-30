@@ -18,8 +18,8 @@ contract LoveBondingCurve {
     function loveDrivenPrice(uint256 aminalId) public view returns (uint128) {
         // the higher the love, the cheaper the function calls
         //
-       // Aminals.Aminal storage aminal = aminals.aminals[aminalId];
-       // Aminals.Aminal storage aminal = aminals.getAminalById(aminalId);
+        // Aminals.Aminal storage aminal = aminals.aminals[aminalId];
+        // Aminals.Aminal storage aminal = aminals.getAminalById(aminalId);
         uint128 price;
         uint256 love = aminals.getAminalLoveByIdByUser(aminalId, msg.sender);
         uint256 totlove = aminals.getAminalLoveTotal(aminalId);

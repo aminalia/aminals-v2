@@ -13,14 +13,14 @@ contract CounterTest is Test {
     function setUp() public {
         aminals = new Aminals();
         visualsAuction = VisualsAuction(aminals.visualsAuction());
-        }
+    }
 
     function testRun() public {
         registerVisuals();
         spawnAminals();
         squeak();
         feed();
-        uint i = breed();
+        uint256 i = breed();
         // listAuctionedVisuals(i);
         proposeTraits(i);
         // listAuctionedVisuals(i);
@@ -30,7 +30,6 @@ contract CounterTest is Test {
         listAuctionedVisuals(i);
         uint256[8] memory arr = endAuction(i);
         spawnNewAminal(1, 2, arr);
-
     }
 
     function registerVisuals() public {
@@ -54,21 +53,23 @@ contract CounterTest is Test {
         aminals.addMisc("misc2");
 
         // aminals.setBreeding(1, true);
-
     }
 
-    function proposeTraits(uint auctionID) public {
-        uint id1 = aminals.addFace("face3");
-        uint id2 = aminals.addBody("body3");
+    function proposeTraits(uint256 auctionID) public {
+        uint256 id1 = aminals.addFace("face3");
+        uint256 id2 = aminals.addBody("body3");
         console.log("FACE 3 = ", id1);
 
-        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.FACE, id1);
-        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id2);
-
+        visualsAuction.proposeVisual{value: 0.01 ether}(
+            auctionID, VisualsAuction.VisualsCat.FACE, id1
+        );
+        visualsAuction.proposeVisual{value: 0.01 ether}(
+            auctionID, VisualsAuction.VisualsCat.BODY, id2
+        );
     }
 
-    function removeTraits(uint auctionID) public {
-        uint id1 = 3;
+    function removeTraits(uint256 auctionID) public {
+        uint256 id1 = 3;
 
         address owner2 = 0x2D3C242d2C074D523112093C67d1c01Bb27ca40D;
         vm.prank(owner2);
@@ -76,8 +77,7 @@ contract CounterTest is Test {
         visualsAuction.removeVisual(auctionID, VisualsAuction.VisualsCat.FACE, id1);
     }
 
-    function voteTraits(uint auctionID) public {
-
+    function voteTraits(uint256 auctionID) public {
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
         visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.EARS, 0);
@@ -93,53 +93,62 @@ contract CounterTest is Test {
         visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, 1);
     }
 
-    function endAuction(uint auctionID) public returns (uint256[8] memory) {
+    function endAuction(uint256 auctionID) public returns (uint256[8] memory) {
         visualsAuction.endAuction(auctionID);
 
         VisualsAuction.Auction memory auction;
         auction = visualsAuction.getAuctionByID(auctionID);
 
         console.log("We got a winner :::::: ");
-        for(uint256 i = 0; i<8; i++) {
+        for (uint256 i = 0; i < 8; i++) {
             console.log("category ", i);
             console.log(auction.winnerId[i]);
             console.log(aminals.getVisuals(i, auction.winnerId[i]));
         }
 
         return auction.winnerId;
-
     }
 
-    function listAuctionedVisuals(uint auctionID) public view {
-        
+    function listAuctionedVisuals(uint256 auctionID) public view {
         VisualsAuction.Auction memory auction;
-         auction = visualsAuction.getAuctionByID(auctionID);
+        auction = visualsAuction.getAuctionByID(auctionID);
 
-        //  console.log("CONTRACT ADDRESS: ", address(visualsAuction)); 
+        // console.log("CONTRACT ADDRESS: ", address(visualsAuction));
         // console.log("Now.--.---.----------", auction.visualIds[2][0]);
-        //  console.log("Now.--.---.----------", auction.aminalIdOne);
+        // console.log("Now.--.---.----------", auction.aminalIdOne);
         // console.log("displaying visuals for auction id = ", auctionID);
 
-        for(uint i=0; i<8; i++) {
-             console.log("iterating through category ", i);
+        for (uint256 i = 0; i < 8; i++) {
+            console.log("iterating through category ", i);
 
-            for(uint j=0; j < 2 || auction.visualIds[i][j] > 0; j++) {
-                  console.log("---> index: ", j, " === value: " , auction.visualIds[i][j]);
-                  console.log("---> VOTES: === ", auction.visualIdVotes[i][j]);
+            for (uint256 j = 0; j < 2 || auction.visualIds[i][j] > 0; j++) {
+                console.log("---> index: ", j, " === value: ", auction.visualIds[i][j]);
+                console.log("---> VOTES: === ", auction.visualIdVotes[i][j]);
                 console.log(aminals.getVisuals(i, auction.visualIds[i][j]));
-             }
+            }
         }
     }
 
-    function spawnNewAminal(uint mom, uint dad, uint256[8] memory winnerIds) public {
-        aminals.spawnAminal(mom, dad, winnerIds[0], winnerIds[1], winnerIds[2], winnerIds[3], winnerIds[4], winnerIds[5], winnerIds[6], winnerIds[7]);
+    function spawnNewAminal(uint256 mom, uint256 dad, uint256[8] memory winnerIds) public {
+        aminals.spawnAminal(
+            mom,
+            dad,
+            winnerIds[0],
+            winnerIds[1],
+            winnerIds[2],
+            winnerIds[3],
+            winnerIds[4],
+            winnerIds[5],
+            winnerIds[6],
+            winnerIds[7]
+        );
         console.log("spawned a new aminal with the new traits :)");
     }
 
     function spawnAminals() public {
         console.log("SPawning aminals...........");
-        uint a1 = aminals.spawnAminal(0, 0,    1, 1, 1, 1, 1, 1, 1, 1);
-        uint a2 = aminals.spawnAminal(0, 0,    2, 2, 2, 2, 2, 2, 2, 2);
+        uint256 a1 = aminals.spawnAminal(0, 0, 1, 1, 1, 1, 1, 1, 1, 1);
+        uint256 a2 = aminals.spawnAminal(0, 0, 2, 2, 2, 2, 2, 2, 2, 2);
         console.log("spawned.... ", a1, " & ", a2);
 
         // Get only the Visuals struct from the mapping
@@ -152,7 +161,6 @@ contract CounterTest is Test {
         // uint256 love = aminals.getAminalLoveTotal(1);
 
         // console.log("aminal 2 visuals EYES-id = ", visualsTwo.eyesId);
-
     }
 
     function squeak() public {
@@ -189,10 +197,9 @@ contract CounterTest is Test {
         console.log("Checking amount of love for user");
         console.log(aminals.getAminalLoveByIdByUser(1, owner));
         console.log(aminals.getAminalLoveByIdByUser(1, owner2));
-
     }
 
-    function breed() public returns (uint) {
+    function breed() public returns (uint256) {
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
         console.log("Breeding the aminals");

@@ -36,5 +36,4 @@ interface IAminal {
         // Human-readable ABI format
         string functionSignature;
     }
-
 }
