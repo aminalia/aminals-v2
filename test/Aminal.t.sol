@@ -25,7 +25,9 @@ contract CounterTest is Test {
         proposeTraits(i);
         // listAuctionedVisuals(i);
         voteTraits(i);
-        // listAuctionedVisuals(i);
+        listAuctionedVisuals(i);
+        removeTraits(i);
+        listAuctionedVisuals(i);
         uint256[8] memory arr = endAuction(i);
         spawnNewAminal(1, 2, arr);
 
@@ -65,11 +67,20 @@ contract CounterTest is Test {
 
     }
 
+    function removeTraits(uint auctionID) public {
+        uint id1 = 3;
+
+        address owner2 = 0x2D3C242d2C074D523112093C67d1c01Bb27ca40D;
+        vm.prank(owner2);
+
+        visualsAuction.removeVisual(auctionID, VisualsAuction.VisualsCat.FACE, id1);
+    }
+
     function voteTraits(uint auctionID) public {
 
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.EARS, 1);
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.EARS, 0);
 
         VisualsAuction.Auction memory auction;
         auction = visualsAuction.getAuctionByID(auctionID);
@@ -113,9 +124,8 @@ contract CounterTest is Test {
              console.log("iterating through category ", i);
 
             for(uint j=0; j < 2 || auction.visualIds[i][j] > 0; j++) {
-                 console.log("---> index: ", j, " === value: " , auction.visualIds[i][j]);
-                //  console.log("---> VOTES: === ", auction.visualIdVotes[i][j]);
-                //   console.log( registry.visuals(VisualsRegistry.VisualsCat(i),j) );
+                  console.log("---> index: ", j, " === value: " , auction.visualIds[i][j]);
+                  console.log("---> VOTES: === ", auction.visualIdVotes[i][j]);
                 console.log(aminals.getVisuals(i, auction.visualIds[i][j]));
              }
         }

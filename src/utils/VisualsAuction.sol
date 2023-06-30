@@ -219,31 +219,29 @@ contract VisualsAuction is IAminal {
         }
 
 
-        
-
-        // the loved ones can vote to remove a trait from the auction
     }
 
     function endAuction(uint256 auctionId) _auctionRunning (auctionId) public {
         Auction storage auction = auctions[auctionId];
 
         // loop through all the Visuals and identify the winner;
-        uint256[8] memory maxVotes;
+        int256[8] memory maxVotes = [int256(-1),int256(-1),int256(-1),int256(-1),int256(-1),int256(-1),int256(-1),int256(-1)];
 
         for (uint256 i = 0; i < 8; i++) { // iterate through each category
 
             uint256 j;
             for (j = 0; j < 2 || auction.visualIds[i][j] > 0; j++) {
-                if (auction.visualIdVotes[i][j] > maxVotes[i]) {
-                    maxVotes[i] = auction.visualIdVotes[i][j];
-                    auction.winnerId[i] = j;
-                    // console.log("jjj = ", j);
+                if (auction.visualIdVotes[i][j] != 0 && int256(auction.visualIdVotes[i][j]) > maxVotes[i]) {
+                    maxVotes[i] = int256(auction.visualIdVotes[i][j]);
+                    auction.winnerId[i] = auction.visualIds[i][j];
+                     console.log("jjj = ", j, " for category ", i);
                 }
             }
 
-            if(auction.winnerId[i] == 0) { // no one has voted, so used randomness instead
+            if(maxVotes[i] < 0) { // no one has voted, so used randomness instead
                 uint randomness = random(i, j, 1);
-                //  console.log("random = ", randomness, "for length = ", j);
+                console.log("random = ", randomness);
+                console.log("for length = ", j, "category: ", i);
                 auction.winnerId[i] = auction.visualIds[i][randomness];
             }
             
