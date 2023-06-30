@@ -30,8 +30,8 @@ contract VisualsAuction is IAminal {
     uint256 public auctionCnt = 2; // assuming there are only 2 initially deployed aminals
 
     // keep track of who has voted already in a particular auction and category
-    mapping(address voter => uint256[99][8]) visualVoted; 
-
+    // mapping(address voter => uint256[99][8]) visualVoted; 
+    mapping(address => mapping(uint256 => uint256[8])) internal visualVoted;
 
 
 
