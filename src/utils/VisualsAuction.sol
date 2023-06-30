@@ -45,6 +45,7 @@ contract VisualsAuction is IAminal {
         // proposed traits.
         uint256[8][10] visualIds;
         uint256[8][10] visualIdVotes;
+        uint256[8][10] visualNoVotes;
         // If 0, auction has not yet concluded
         // The auctionId will be used as the child Aminal's ID
         uint256 childAminalId;
@@ -186,6 +187,39 @@ contract VisualsAuction is IAminal {
 
     function removeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId) _auctionRunning (auctionId) public payable {
         uint category = uint256(catEnum);
+
+        Auction storage auction = auctions[auctionId];
+
+        uint256 totallove = aminals.getAminalLoveByIdByUser(auction.aminalIdOne, msg.sender)
+            + aminals.getAminalLoveByIdByUser(auction.aminalIdTwo, msg.sender); 
+
+        require( totallove > 0, "You need love to remove a trait from the auction");
+
+        auction.visualNoVotes[category][visualId] += (totallove);
+
+        if(auction.visualNoVotes[category][visualId] > auction.totalLove / 3) { // a third of lovers has voted to remove the visual trait from the auction
+
+                int i;
+                // identify the location of the visualId
+                for(i=2; i < 10; i++ ) { // start with i=2 because we don't want people to remove the 2 parent's traits
+                    if(auction.visualIds[category][uint256(i)] == visualId) {
+                        break;
+                    } else { i = 0; } // nothing was found !
+                }
+
+                if(i != 0) {
+                    // reset all values, so that new visuals can be submitted
+                    for(uint256 j = uint256(i); j < 10 && auction.visualIds[category][j] != 0; j++) {
+                        auction.visualIds[category][j] = auction.visualIds[category][j+1];
+                        auction.visualIdVotes[category][j] = auction.visualIdVotes[category][j+1];
+                        auction.visualNoVotes[category][j] = auction.visualNoVotes[category][j+1];
+                    }
+                }
+
+        }
+
+
+        
 
         // the loved ones can vote to remove a trait from the auction
     }
