@@ -21,6 +21,17 @@ contract Aminals is IAminal,
 
     constructor() {
         visualsAuction = new VisualsAuction(address(this));
+
+        // initialize the AminalsDescriptor with empty SVG for index 0
+        string memory emptySVG = "<svg></svg>";
+        console.log("Adding bg empty = ", addBackground(emptySVG));
+        addArm(emptySVG);
+        addTail(emptySVG);
+        addEar(emptySVG);
+        addBody(emptySVG);
+        addFace(emptySVG);
+        addMouth(emptySVG);
+        addMisc(emptySVG); 
     }
 
     function spawnAminal(

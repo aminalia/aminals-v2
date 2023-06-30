@@ -32,7 +32,7 @@ contract CounterTest is Test {
 
     function registerVisuals() public {
         // first aminal
-        aminals.addBackground("bg1");
+        console.log("aminal bg1 = ", aminals.addBackground("bg1"));
         aminals.addArm("arm");
         aminals.addTail("tail");
         aminals.addEar("ear");
@@ -41,7 +41,7 @@ contract CounterTest is Test {
         aminals.addMouth("mouth");
         aminals.addMisc("misc");
         // second aminal
-        aminals.addBackground("bg1");
+        aminals.addBackground("bg2");
         aminals.addArm("arm2");
         aminals.addTail("tail2");
         aminals.addEar("ear2");
@@ -55,6 +55,7 @@ contract CounterTest is Test {
     function proposeTraits(uint auctionID) public {
         uint id1 = aminals.addFace("face3");
         uint id2 = aminals.addBody("body3");
+        console.log("FACE 3 = ", id1);
 
         visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.FACE, id1);
         visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id2);
@@ -86,6 +87,7 @@ contract CounterTest is Test {
 
         console.log("We got a winner :::::: ");
         for(uint256 i = 0; i<8; i++) {
+            console.log("category ", i);
             console.log(auction.winnerId[i]);
             console.log(aminals.getVisuals(i, auction.winnerId[i]));
         }
@@ -106,10 +108,10 @@ contract CounterTest is Test {
              console.log("iterating through category ", i);
 
             for(uint j=0; j < 2 || auction.visualIds[i][j] > 0; j++) {
-                 console.log("---> ", j, " = " , auction.visualIds[i][j]);
-                 console.log("---> VOTES: === ", auction.visualIdVotes[i][j]);
+                 console.log("---> index: ", j, " === value: " , auction.visualIds[i][j]);
+                //  console.log("---> VOTES: === ", auction.visualIdVotes[i][j]);
                 //   console.log( registry.visuals(VisualsRegistry.VisualsCat(i),j) );
-                console.log(aminals.getVisuals(i, j));
+                console.log(aminals.getVisuals(i, auction.visualIds[i][j]));
              }
         }
     }
@@ -117,7 +119,7 @@ contract CounterTest is Test {
     function spawnAminals() public {
         console.log("SPawning aminals...........");
         uint a1 = aminals.spawnAminal(0, 0,    1, 1, 1, 1, 1, 1, 1, 1);
-        uint a2 = aminals.spawnAminal(0, 0,    1, 2, 2, 2, 2, 2, 2, 2);
+        uint a2 = aminals.spawnAminal(0, 0,    2, 2, 2, 2, 2, 2, 2, 2);
         console.log("spawned.... ", a1, " & ", a2);
 
         // Get only the Visuals struct from the mapping

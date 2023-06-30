@@ -187,13 +187,14 @@ contract VisualsAuction is IAminal {
                 if (auction.visualIdVotes[i][j] > maxVotes[i]) {
                     maxVotes[i] = auction.visualIdVotes[i][j];
                     auction.winnerId[i] = j;
+                    console.log("jjj = ", j);
                 }
             }
 
             if(auction.winnerId[i] == 0) { // no one has voted, so used randomness instead
-                uint randomness = random(i, j, 0);
-                console.log("random = ", randomness, "for length = ", j);
-                 auction.winnerId[i] = randomness;
+                uint randomness = random(i, j, 1);
+                 console.log("random = ", randomness, "for length = ", j);
+                auction.winnerId[i] = auction.visualIds[i][randomness];
             }
             
                 // if( auction.winnerId[i] == 0) { // this means that nobody has voted on the traits, we use random to assign
