@@ -187,13 +187,13 @@ contract VisualsAuction is IAminal {
                 if (auction.visualIdVotes[i][j] > maxVotes[i]) {
                     maxVotes[i] = auction.visualIdVotes[i][j];
                     auction.winnerId[i] = j;
-                    console.log("jjj = ", j);
+                    // console.log("jjj = ", j);
                 }
             }
 
             if(auction.winnerId[i] == 0) { // no one has voted, so used randomness instead
                 uint randomness = random(i, j, 1);
-                 console.log("random = ", randomness, "for length = ", j);
+                //  console.log("random = ", randomness, "for length = ", j);
                 auction.winnerId[i] = auction.visualIds[i][randomness];
             }
             
@@ -216,14 +216,14 @@ contract VisualsAuction is IAminal {
 
     function random(uint i, uint maxNumber,uint minNumber) public view returns (uint amount) {
      amount = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, i)));
-     console.log("AMOUNT --- = ", amount);
+    //  console.log("AMOUNT --- = ", amount);
      amount = amount % (maxNumber-minNumber);
      amount = amount + minNumber;
      return amount;
 } 
 
     // Randomness provided by this is predicatable. Use with care!
-    function randomNumber(uint i) internal view returns (uint) {
+    function randomNumber(uint ) internal view returns (uint) {
         return uint(blockhash(block.number - 1));
     }
 }

@@ -21,12 +21,13 @@ contract CounterTest is Test {
         squeak();
         feed();
         uint i = breed();
-        listAuctionedVisuals(i);
+        // listAuctionedVisuals(i);
         proposeTraits(i);
-        listAuctionedVisuals(i);
+        // listAuctionedVisuals(i);
         voteTraits(i);
-        listAuctionedVisuals(i);
-        endAuction(i);
+        // listAuctionedVisuals(i);
+        uint256[8] memory arr = endAuction(i);
+        spawnNewAminal(1, 2, arr);
 
     }
 
@@ -79,7 +80,7 @@ contract CounterTest is Test {
         visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, 1);
     }
 
-    function endAuction(uint auctionID) public {
+    function endAuction(uint auctionID) public returns (uint256[8] memory) {
         visualsAuction.endAuction(auctionID);
 
         VisualsAuction.Auction memory auction;
@@ -91,6 +92,8 @@ contract CounterTest is Test {
             console.log(auction.winnerId[i]);
             console.log(aminals.getVisuals(i, auction.winnerId[i]));
         }
+
+        return auction.winnerId;
 
     }
 
@@ -114,6 +117,11 @@ contract CounterTest is Test {
                 console.log(aminals.getVisuals(i, auction.visualIds[i][j]));
              }
         }
+    }
+
+    function spawnNewAminal(uint mom, uint dad, uint256[8] memory winnerIds) public {
+        aminals.spawnAminal(mom, dad, winnerIds[0], winnerIds[1], winnerIds[2], winnerIds[3], winnerIds[4], winnerIds[5], winnerIds[6], winnerIds[7]);
+        console.log("spawned a new aminal with the new traits :)");
     }
 
     function spawnAminals() public {
