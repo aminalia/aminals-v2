@@ -70,6 +70,9 @@ contract CounterTest is Test {
         address owner2 = 0x2D3C242d2C074D523112093C67d1c01Bb27ca40D;
         vm.prank(owner2);
         visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, 2);
+        vm.prank(owner2);
+        vm.expectRevert("Already consumed all of your love with votes");
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, 1);
     }
 
     function endAuction(uint auctionID) public {

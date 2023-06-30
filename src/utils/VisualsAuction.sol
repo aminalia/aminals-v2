@@ -29,6 +29,13 @@ contract VisualsAuction is IAminal {
     mapping(uint256 auctionId => Auction auction) public auctions;
     uint256 public auctionCnt = 2; // assuming there are only 2 initially deployed aminals
 
+    // keep track of who has voted already in a particular auction and category
+    mapping(address voter => uint256[99][8]) visualVoted; 
+
+
+
+
+
     struct Auction {
         uint256 aminalIdOne;
         uint256 aminalIdTwo;
@@ -145,13 +152,19 @@ contract VisualsAuction is IAminal {
         uint category = uint256(catEnum);
 
         Auction storage auction = auctions[auctionId];
+
+
         uint256 totallove = aminals.getAminalLoveByIdByUser(auction.aminalIdOne, msg.sender)
             + aminals.getAminalLoveByIdByUser(auction.aminalIdTwo, msg.sender);
 
+         require( visualVoted[msg.sender][auctionId][category] < totallove , "Already consumed all of your love with votes");
+        
         console.log("********** a vote has been casted on ", category, " / " , i);
         console.log (" == with weight = ", totallove, " .  on auctionId = ", auctionId);
 
-        auction.visualIdVotes[category][i] += totallove;
+        auction.visualIdVotes[i][category] += (totallove - visualVoted[msg.sender][auctionId][category]);
+
+        visualVoted[msg.sender][auctionId][category] = totallove;
 
     }
 
@@ -201,7 +214,9 @@ contract VisualsAuction is IAminal {
     }
 
     function random(uint maxNumber,uint minNumber) public view returns (uint amount) {
-     amount = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, block.number))) % (maxNumber-minNumber);
+     amount = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, block.number)));
+     console.log("AMOUNT --- = ", amount);
+     amount = amount % (maxNumber-minNumber);
      amount = amount + minNumber;
      return amount;
 } 
