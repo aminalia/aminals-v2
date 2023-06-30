@@ -162,7 +162,7 @@ contract VisualsAuction is IAminal {
         console.log("********** a vote has been casted on ", category, " / " , i);
         console.log (" == with weight = ", totallove, " .  on auctionId = ", auctionId);
 
-        auction.visualIdVotes[i][category] += (totallove - visualVoted[msg.sender][auctionId][category]);
+        auction.visualIdVotes[category][i] += (totallove); /* - visualVoted[msg.sender][auctionId][category]); */
 
         visualVoted[msg.sender][auctionId][category] = totallove;
 
@@ -191,9 +191,9 @@ contract VisualsAuction is IAminal {
             }
 
             if(auction.winnerId[i] == 0) { // no one has voted, so used randomness instead
-                uint randomness = random(j, 0);
+                uint randomness = random(i, j, 0);
                 console.log("random = ", randomness, "for length = ", j);
-                auction.winnerId[i] = randomness;
+                 auction.winnerId[i] = randomness;
             }
             
                 // if( auction.winnerId[i] == 0) { // this means that nobody has voted on the traits, we use random to assign
@@ -213,8 +213,8 @@ contract VisualsAuction is IAminal {
 
     }
 
-    function random(uint maxNumber,uint minNumber) public view returns (uint amount) {
-     amount = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, block.number)));
+    function random(uint i, uint maxNumber,uint minNumber) public view returns (uint amount) {
+     amount = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, i)));
      console.log("AMOUNT --- = ", amount);
      amount = amount % (maxNumber-minNumber);
      amount = amount + minNumber;
