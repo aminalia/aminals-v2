@@ -58,6 +58,8 @@ contract Aminals is IAminal,
         aminal.visuals.mouthId = mouthId;
         aminal.visuals.miscId = miscId;
 
+        // here need to mint the nft based on the svg information.
+
         return lastAminalId;
     }
 

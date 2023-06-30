@@ -49,7 +49,18 @@ contract VisualsAuction is IAminal {
         // The auctionId will be used as the child Aminal's ID
         uint256 childAminalId;
         uint256[8] winnerId;
+        bool ended;
     }
+
+
+
+    modifier AuctionRunning (uint256 auctionID) {
+       Auction storage auction = auctions[auctionID];
+        require(auction.ended == false);
+        _;
+    }
+
+
 
     function getAuctionByID(uint256 auctionID) public view returns (Auction memory) {
         console.log("returning for auction ID = ", auctionID);
@@ -122,7 +133,7 @@ contract VisualsAuction is IAminal {
         return auctionCnt;
     }
 
-    function proposeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId) public payable {
+    function proposeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId) AuctionRunning (auctionId) public payable {
         // anyone can propose new visuals, but the cost depends on how much they love you in order to avoid ppl from spamming the available slots.abi
 
         uint category = uint256(catEnum);
@@ -148,7 +159,7 @@ contract VisualsAuction is IAminal {
         }
     }
 
-    function voteVisual(uint256 auctionId, VisualsCat catEnum, uint256 i) public payable {
+    function voteVisual(uint256 auctionId, VisualsCat catEnum, uint256 i) AuctionRunning (auctionId) public payable {
         uint category = uint256(catEnum);
 
         Auction storage auction = auctions[auctionId];
@@ -168,13 +179,13 @@ contract VisualsAuction is IAminal {
 
     }
 
-    function removeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId) public payable {
+    function removeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId) AuctionRunning (auctionId) public payable {
         uint category = uint256(catEnum);
 
         // the loved ones can vote to remove a trait from the auction
     }
 
-    function endAuction(uint256 auctionId) public {
+    function endAuction(uint256 auctionId) AuctionRunning (auctionId) public {
         Auction storage auction = auctions[auctionId];
 
         // loop through all the Visuals and identify the winner;
@@ -205,6 +216,7 @@ contract VisualsAuction is IAminal {
                     // console.log("kKKKK = ", k);
                     //  auction.winnerId[i] = randomness;
                 // }
+            auction.ended = true;
             
         }
 
