@@ -225,7 +225,6 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
 
     // TODO: Add delegation to other addresses. This will likely end up wrapping
     // msg.sender functionality in a library that checks for delegation
-
     function loveDrivenPrice(uint256 aminalId, address sender) public view returns (uint128) {
         Aminal storage aminal = aminals[aminalId];
         // the higher the love, the cheaper the function calls

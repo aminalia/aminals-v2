@@ -40,7 +40,7 @@ contract VisualsAuction is IAminal {
         uint256 aminalIdTwo;
         uint256 totalLove;
         // Max of 10 trait options can be proposed per Aminal. 2 slots are used
-        // by the Aminals' current trains, and the other 8 slots are used by
+        // by the Aminals' current traits, and the other 8 slots are used by
         // proposed traits.
         uint256[8][10] visualIds;
         uint256[8][10] visualIdVotes;
@@ -137,9 +137,8 @@ contract VisualsAuction is IAminal {
         payable
         _auctionRunning(auctionId)
     {
-        // anyone can propose new visuals, but the cost depends on how much they love you in order
-        // to
-        // avoid ppl from spamming the available slots.abi
+        // Anyone can propose new visuals, but the cost depends on how much they
+        // love you in order to avoid ppl from spamming the available slots.abi
 
         uint256 category = uint256(catEnum);
 
@@ -180,8 +179,7 @@ contract VisualsAuction is IAminal {
         console.log("********** a vote has been casted on ", category, " / ", i);
         console.log(" == with weight = ", totallove, " .  on auctionId = ", auctionId);
 
-        auction.visualIdVotes[category][i] += (totallove); /* -
-      visualVoted[msg.sender][auctionId][category]); */
+        auction.visualIdVotes[category][i] += (totallove);
 
         visualVoted[msg.sender][auctionId][category] = totallove;
     }
@@ -204,17 +202,17 @@ contract VisualsAuction is IAminal {
 
         if (auction.visualNoVotes[category][visualId] > auction.totalLove / 3) {
             // a third of lovers has voted to remove the visual trait from the auction
-            int256 i;
+            uint256 i;
             // identify the location of the visualId
             for (i = 2; i < 10; i++) {
                 // start with i=2 because we don't want people to remove the 2 parent's traits
-                if (auction.visualIds[category][uint256(i)] == visualId) break;
+                if (auction.visualIds[category][i] == visualId) break;
                 else i = 0; // nothing was found !
             }
 
             if (i != 0) {
                 // reset all values, so that new visuals can be submitted
-                for (uint256 j = uint256(i); j < 10 && auction.visualIds[category][j] != 0; j++) {
+                for (uint256 j = i; j < 10 && auction.visualIds[category][j] != 0; j++) {
                     auction.visualIds[category][j] = auction.visualIds[category][j + 1];
                     auction.visualIdVotes[category][j] = auction.visualIdVotes[category][j + 1];
                     auction.visualNoVotes[category][j] = auction.visualNoVotes[category][j + 1];
@@ -223,9 +221,12 @@ contract VisualsAuction is IAminal {
         }
     }
 
+    // TODO limits on when this can be called?
+    // TODO generate new aminal
     function endAuction(uint256 auctionId) public _auctionRunning(auctionId) {
         Auction storage auction = auctions[auctionId];
 
+        // TODO better comment
         // loop through all the Visuals and identify the winner;
         uint256[8] memory maxVotes = [
             type(uint256).max,

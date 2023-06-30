@@ -6,7 +6,7 @@ import "../src/Aminals.sol";
 import "../src/IAminal.sol";
 import "../src/utils/VisualsAuction.sol";
 
-contract CounterTest is Test {
+contract AminalTest is Test {
     Aminals public aminals;
     VisualsAuction public visualsAuction;
 
@@ -53,92 +53,6 @@ contract CounterTest is Test {
         aminals.addMisc("misc2");
 
         // aminals.setBreeding(1, true);
-    }
-
-    function proposeTraits(uint256 auctionID) public {
-        uint256 id1 = aminals.addFace("face3");
-        uint256 id2 = aminals.addBody("body3");
-        console.log("FACE 3 = ", id1);
-
-        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.FACE, id1);
-        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id2);
-    }
-
-    function removeTraits(uint256 auctionID) public {
-        uint256 id1 = 3;
-
-        address owner2 = 0x2D3C242d2C074D523112093C67d1c01Bb27ca40D;
-        vm.prank(owner2);
-
-        visualsAuction.removeVisual(auctionID, VisualsAuction.VisualsCat.FACE, id1);
-    }
-
-    function voteTraits(uint256 auctionID) public {
-        address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
-        vm.prank(owner);
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.EARS, 0);
-
-        VisualsAuction.Auction memory auction;
-        auction = visualsAuction.getAuctionByID(auctionID);
-
-        address owner2 = 0x2D3C242d2C074D523112093C67d1c01Bb27ca40D;
-        vm.prank(owner2);
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, 2);
-        vm.prank(owner2);
-        vm.expectRevert("Already consumed all of your love with votes");
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, 1);
-    }
-
-    function endAuction(uint256 auctionID) public returns (uint256[8] memory) {
-        visualsAuction.endAuction(auctionID);
-
-        VisualsAuction.Auction memory auction;
-        auction = visualsAuction.getAuctionByID(auctionID);
-
-        console.log("We got a winner :::::: ");
-        for (uint256 i = 0; i < 8; i++) {
-            console.log("category ", i);
-            console.log(auction.winnerId[i]);
-            console.log(aminals.getVisuals(i, auction.winnerId[i]));
-        }
-
-        return auction.winnerId;
-    }
-
-    function listAuctionedVisuals(uint256 auctionID) public view {
-        VisualsAuction.Auction memory auction;
-        auction = visualsAuction.getAuctionByID(auctionID);
-
-        // console.log("CONTRACT ADDRESS: ", address(visualsAuction));
-        // console.log("Now.--.---.----------", auction.visualIds[2][0]);
-        // console.log("Now.--.---.----------", auction.aminalIdOne);
-        // console.log("displaying visuals for auction id = ", auctionID);
-
-        for (uint256 i = 0; i < 8; i++) {
-            console.log("iterating through category ", i);
-
-            for (uint256 j = 0; j < 2 || auction.visualIds[i][j] > 0; j++) {
-                console.log("---> index: ", j, " === value: ", auction.visualIds[i][j]);
-                console.log("---> VOTES: === ", auction.visualIdVotes[i][j]);
-                console.log(aminals.getVisuals(i, auction.visualIds[i][j]));
-            }
-        }
-    }
-
-    function spawnNewAminal(uint256 mom, uint256 dad, uint256[8] memory winnerIds) public {
-        aminals.spawnAminal(
-            mom,
-            dad,
-            winnerIds[0],
-            winnerIds[1],
-            winnerIds[2],
-            winnerIds[3],
-            winnerIds[4],
-            winnerIds[5],
-            winnerIds[6],
-            winnerIds[7]
-        );
-        console.log("spawned a new aminal with the new traits :)");
     }
 
     function spawnAminals() public {
@@ -204,5 +118,91 @@ contract CounterTest is Test {
         aminals.breedWith{value: 0.05 ether}(2, 1);
         console.log(aminals.feed{value: 0.08 ether}(2));
         return aminals.breedWith{value: 0.05 ether}(2, 1);
+    }
+
+    function proposeTraits(uint256 auctionID) public {
+        uint256 id1 = aminals.addFace("face3");
+        uint256 id2 = aminals.addBody("body3");
+        console.log("FACE 3 = ", id1);
+
+        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.FACE, id1);
+        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id2);
+    }
+
+    function voteTraits(uint256 auctionID) public {
+        address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
+        vm.prank(owner);
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.EARS, 0);
+
+        VisualsAuction.Auction memory auction;
+        auction = visualsAuction.getAuctionByID(auctionID);
+
+        address owner2 = 0x2D3C242d2C074D523112093C67d1c01Bb27ca40D;
+        vm.prank(owner2);
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, 2);
+        vm.prank(owner2);
+        vm.expectRevert("Already consumed all of your love with votes");
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, 1);
+    }
+
+    function listAuctionedVisuals(uint256 auctionID) public view {
+        VisualsAuction.Auction memory auction;
+        auction = visualsAuction.getAuctionByID(auctionID);
+
+        // console.log("CONTRACT ADDRESS: ", address(visualsAuction));
+        // console.log("Now.--.---.----------", auction.visualIds[2][0]);
+        // console.log("Now.--.---.----------", auction.aminalIdOne);
+        // console.log("displaying visuals for auction id = ", auctionID);
+
+        for (uint256 i = 0; i < 8; i++) {
+            console.log("iterating through category ", i);
+
+            for (uint256 j = 0; j < 2 || auction.visualIds[i][j] > 0; j++) {
+                console.log("---> index: ", j, " === value: ", auction.visualIds[i][j]);
+                console.log("---> VOTES: === ", auction.visualIdVotes[i][j]);
+                console.log(aminals.getVisuals(i, auction.visualIds[i][j]));
+            }
+        }
+    }
+
+    function removeTraits(uint256 auctionID) public {
+        uint256 id1 = 3;
+
+        address owner2 = 0x2D3C242d2C074D523112093C67d1c01Bb27ca40D;
+        vm.prank(owner2);
+
+        visualsAuction.removeVisual(auctionID, VisualsAuction.VisualsCat.FACE, id1);
+    }
+
+    function endAuction(uint256 auctionID) public returns (uint256[8] memory) {
+        visualsAuction.endAuction(auctionID);
+
+        VisualsAuction.Auction memory auction;
+        auction = visualsAuction.getAuctionByID(auctionID);
+
+        console.log("We got a winner :::::: ");
+        for (uint256 i = 0; i < 8; i++) {
+            console.log("category ", i);
+            console.log(auction.winnerId[i]);
+            console.log(aminals.getVisuals(i, auction.winnerId[i]));
+        }
+
+        return auction.winnerId;
+    }
+
+    function spawnNewAminal(uint256 mom, uint256 dad, uint256[8] memory winnerIds) public {
+        aminals.spawnAminal(
+            mom,
+            dad,
+            winnerIds[0],
+            winnerIds[1],
+            winnerIds[2],
+            winnerIds[3],
+            winnerIds[4],
+            winnerIds[5],
+            winnerIds[6],
+            winnerIds[7]
+        );
+        console.log("spawned a new aminal with the new traits :)");
     }
 }
