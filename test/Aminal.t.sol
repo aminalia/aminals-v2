@@ -51,6 +51,8 @@ contract CounterTest is Test {
         aminals.addMouth("mouth2");
         aminals.addMisc("misc2");
 
+        // aminals.setBreeding(1, true);
+
     }
 
     function proposeTraits(uint auctionID) public {

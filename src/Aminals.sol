@@ -19,6 +19,12 @@ contract Aminals is IAminal,
     uint256 lastAminalId;
     VisualsAuction public visualsAuction;
 
+
+    modifier _onlyAuction() {
+        require(msg.sender == address(visualsAuction));
+        _;
+    }
+
     constructor() {
         visualsAuction = new VisualsAuction(address(this));
 
@@ -136,12 +142,12 @@ contract Aminals is IAminal,
         return delta;
     }
 
-    function setBreeding(uint256 aminalID, bool breeding) public  {
+    function setBreeding(uint256 aminalID, bool breeding) _onlyAuction() public  {
         Aminal storage aminal = aminals[aminalID];
         aminal.breeding = breeding;
     }
 
-    function disableBreedable(uint256 aminalIdOne, uint256 aminalIdTwo) public {
+    function disableBreedable(uint256 aminalIdOne, uint256 aminalIdTwo) _onlyAuction() public {
         Aminal storage aminalOne = aminals[aminalIdOne];
         Aminal storage aminalTwo = aminals[aminalIdTwo];
 

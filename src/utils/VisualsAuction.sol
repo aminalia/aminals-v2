@@ -53,8 +53,13 @@ contract VisualsAuction is IAminal {
     }
 
 
+    modifier _onlyAminals() {
+        require(msg.sender == address(aminals));
+        _;
+    }
 
-    modifier AuctionRunning (uint256 auctionID) {
+
+    modifier _auctionRunning (uint256 auctionID) {
        Auction storage auction = auctions[auctionID];
         require(auction.ended == false);
         _;
@@ -68,7 +73,7 @@ contract VisualsAuction is IAminal {
     }
 
     // TODO: Add return value of auction ID and also emit events
-    function startAuction(uint256 aminalIdOne, uint256 aminalIdTwo) public returns (uint256) {
+    function startAuction(uint256 aminalIdOne, uint256 aminalIdTwo) _onlyAminals() public returns (uint256) {
         // Set the breeding flag on each Aminal
         //aminals.addSkill();
 
@@ -133,7 +138,7 @@ contract VisualsAuction is IAminal {
         return auctionCnt;
     }
 
-    function proposeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId) AuctionRunning (auctionId) public payable {
+    function proposeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId) _auctionRunning (auctionId) public payable {
         // anyone can propose new visuals, but the cost depends on how much they love you in order to avoid ppl from spamming the available slots.abi
 
         uint category = uint256(catEnum);
@@ -159,7 +164,7 @@ contract VisualsAuction is IAminal {
         }
     }
 
-    function voteVisual(uint256 auctionId, VisualsCat catEnum, uint256 i) AuctionRunning (auctionId) public payable {
+    function voteVisual(uint256 auctionId, VisualsCat catEnum, uint256 i) _auctionRunning (auctionId) public payable {
         uint category = uint256(catEnum);
 
         Auction storage auction = auctions[auctionId];
@@ -179,13 +184,13 @@ contract VisualsAuction is IAminal {
 
     }
 
-    function removeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId) AuctionRunning (auctionId) public payable {
+    function removeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId) _auctionRunning (auctionId) public payable {
         uint category = uint256(catEnum);
 
         // the loved ones can vote to remove a trait from the auction
     }
 
-    function endAuction(uint256 auctionId) AuctionRunning (auctionId) public {
+    function endAuction(uint256 auctionId) _auctionRunning (auctionId) public {
         Auction storage auction = auctions[auctionId];
 
         // loop through all the Visuals and identify the winner;
@@ -226,7 +231,7 @@ contract VisualsAuction is IAminal {
 
     }
 
-    function random(uint i, uint maxNumber,uint minNumber) public view returns (uint amount) {
+    function random(uint i, uint maxNumber,uint minNumber) internal view returns (uint amount) {
      amount = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, i)));
     //  console.log("AMOUNT --- = ", amount);
      amount = amount % (maxNumber-minNumber);
