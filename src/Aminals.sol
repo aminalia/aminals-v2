@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.20;
 
+import "abdk-libraries-solidity/ABDKMathQuad.sol";
 import "forge-std/console.sol";
 import "forge-std/Test.sol";
 
 import "./IAminal.sol";
 import "./utils/FeedBondingCurve.sol";
 import "./utils/VisualsAuction.sol";
-import "./libs/ABDKMathQuad.sol";
 import "./nft/AminalsDescriptor.sol";
 import "./nft/ERC721S.sol";
 
