@@ -152,7 +152,7 @@ contract VisualsAuction is IAminal {
         console.log("required ether to submit new visual === ", price);
 
         require(msg.value >= price, "Not enough ether to propose a new Visual");
-        
+
         // This starts at 2 because the first two array values are used by the Aminal's traits
         for (uint256 i = 2; i <= 10; i++) {
             console.log("Iterating thourgh .... ", i, " . -- where auction.visualsIds cat = ", category);
@@ -227,19 +227,11 @@ contract VisualsAuction is IAminal {
     // TODO generate new aminal?
     function endAuction(uint256 auctionId) public _auctionRunning(auctionId) {
         Auction storage auction = auctions[auctionId];
-        
+
         // TODO better comment
         // loop through all the Visuals and identify the winner;
-        uint256[8] memory maxVotes = [
-            uint256(0),
-            uint256(0),
-            uint256(0),
-            uint256(0),
-            uint256(0),
-            uint256(0),
-            uint256(0),
-            uint256(0)
-        ];
+        uint256[8] memory maxVotes =
+            [uint256(0), uint256(0), uint256(0), uint256(0), uint256(0), uint256(0), uint256(0), uint256(0)];
 
         for (uint256 i = 0; i < 8; i++) {
             // iterate through each category
@@ -252,7 +244,13 @@ contract VisualsAuction is IAminal {
                 if (auction.visualIds[j][i] == 0) break;
                 console.log("maxVotes", maxVotes[i]);
                 console.log("visualIdVotes", auction.visualIdVotes[j][i]);
-                // TODO handle tie
+                // Handle tie
+                if (auction.visualIdVotes[j][i] != 0 && auction.visualIdVotes[j][i] == maxVotes[i]) {
+                    // Randomly select a winner between the tied proposals
+                    uint256 randomness = uint256(keccak256(abi.encodePacked(block.prevrandao, msg.sender, i)));
+                    console.log("TIE, randomly choose winner", randomness % 2);
+                    if (randomness % 2 == 0) auction.winnerId[i] = auction.visualIds[j][i];
+                }
                 if (auction.visualIdVotes[j][i] != 0 && auction.visualIdVotes[j][i] > maxVotes[i]) {
                     console.log("jjj = ", j, " for category ", i);
                     maxVotes[i] = auction.visualIdVotes[j][i];
@@ -260,10 +258,7 @@ contract VisualsAuction is IAminal {
                 }
             }
 
-            // TODO test
             if (maxVotes[i] == 0) {
-                // TODO break out into internal function to use again for tie
-                // no one has voted, so used randomness instead
                 uint256 randomness = _random(i, j, 1);
                 console.log("random = ", randomness);
                 console.log("for length = ", j, "category: ", i);

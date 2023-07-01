@@ -104,9 +104,15 @@ contract AminalTest is Test {
         vm.deal(owner2, 1 ether);
         aminals.feed{value: 0.03 ether}(1);
 
+        address owner3 = 0x45CbC00e0618880bfB2dBDdEAed1ef1411dd5eeE;
+        vm.prank(owner3);
+        vm.deal(owner3, 1 ether);
+        aminals.feed{value: 0.03 ether}(1);
+
         console.log("Checking amount of love for user");
         console.log(aminals.getAminalLoveByIdByUser(1, owner));
         console.log(aminals.getAminalLoveByIdByUser(1, owner2));
+        console.log(aminals.getAminalLoveByIdByUser(1, owner3));
     }
 
     function breed() public returns (uint256) {
@@ -161,6 +167,12 @@ contract AminalTest is Test {
         vm.prank(owner2);
         vm.expectRevert("Already consumed all of your love with votes");
         visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, 1);
+
+        // Owner 3 causes a tie
+        address owner3 = 0x45CbC00e0618880bfB2dBDdEAed1ef1411dd5eeE;
+        vm.prank(owner3);
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, 1);
+        vm.prank(owner3);
     }
 
     function listAuctionedVisuals(uint256 auctionID) public view {
