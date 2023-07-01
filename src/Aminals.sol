@@ -111,8 +111,8 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         // addition
         //  uint256 amount = (msg.value / 10**16);
 
-        // TODO: Change adjustLove bool to a constant
-        adjustLove(aminalId, amount, feeder, true);
+        // TODO: Change _adjustLove bool to a constant
+        _adjustLove(aminalId, amount, feeder, true);
         // TODO: Energy should be on a bonding curve that creates an asymptote
         // (possibly a polynomic function), not a direct addition. The bonding
         // curve should be configured so that energy should never reach 100 (the
@@ -211,7 +211,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         if (aminal.energy >= 1) aminal.energy--;
 
         // TODO: Migrate the bool to a constant for convenience
-        adjustLove(aminalId, 1, msg.sender, false);
+        _adjustLove(aminalId, 1, msg.sender, false);
     }
 
     function addSkill() public {}
@@ -226,7 +226,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
     }
 
     // TODO: Switch to passing the Aminal struct instead of the aminalId
-    function adjustLove(uint256 aminalId, uint256 love, address sender, bool increment) internal {
+    function _adjustLove(uint256 aminalId, uint256 love, address sender, bool increment) internal {
         Aminal storage aminal = aminals[aminalId];
         if (!increment) {
             aminal.lovePerUser[sender] -= love;
@@ -260,7 +260,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         return price;
     }
 
-    function log2(uint256 x) private pure returns (uint256 y) {
+    function _log2(uint256 x) private pure returns (uint256 y) {
         assembly {
             let arg := x
             x := sub(x, 1)

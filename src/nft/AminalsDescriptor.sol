@@ -39,7 +39,7 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
      * @notice Given a token ID and seed, construct a base64 encoded data URI for an NFT.
      */
     function dataURI(uint256 tokenId) public view returns (string memory) {
-        string memory name = string(abi.encodePacked("Aminal #", toString(tokenId)));
+        string memory name = string(abi.encodePacked("Aminal #", _toString(tokenId)));
 
         // Need to pull the image number for each token id, set to 0 for now, tokenId 1 for testing
         string memory image = string(
@@ -218,7 +218,7 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
      */
     function generateAttributesList(uint256 tokenId) public pure returns (string memory) {
         return
-            string(abi.encodePacked('{"trait_type":"Aminal ID","value":', toString(tokenId), "}"));
+            string(abi.encodePacked('{"trait_type":"Aminal ID","value":', _toString(tokenId), "}"));
     }
 
     /**
@@ -239,7 +239,7 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         return constructTokenURI(params);
     }
 
-    function toString(uint256 value) internal pure returns (string memory) {
+    function _toString(uint256 value) internal pure returns (string memory) {
         // Inspired by OraclizeAPI's implementation - MIT licence
         // https://github.com/oraclize/ethereum-api/blob/b42146b063c7d6ee1358846c198246239e9360e8/oraclizeAPI_0.4.25.sol
 
@@ -262,7 +262,7 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
     /**
      * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation with fixed length.
      */
-    function toHexString(uint256 value, uint256 length) internal pure returns (string memory) {
+    function _toHexString(uint256 value, uint256 length) internal pure returns (string memory) {
         bytes memory buffer = new bytes(2 * length + 2);
         buffer[0] = "0";
         buffer[1] = "x";
@@ -279,7 +279,7 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
      * `string`
      * hexadecimal representation.
      */
-    function toHexString(address addr) internal pure returns (string memory) {
-        return toHexString(uint256(uint160(addr)), _ADDRESS_LENGTH);
+    function _toHexString(address addr) internal pure returns (string memory) {
+        return _toHexString(uint256(uint160(addr)), _ADDRESS_LENGTH);
     }
 }

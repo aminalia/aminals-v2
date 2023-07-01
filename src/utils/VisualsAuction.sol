@@ -264,7 +264,7 @@ contract VisualsAuction is IAminal {
 
             if (maxVotes[i] < 0) {
                 // no one has voted, so used randomness instead
-                uint256 randomness = random(i, j, 1);
+                uint256 randomness = _random(i, j, 1);
                 console.log("random = ", randomness);
                 console.log("for length = ", j, "category: ", i);
                 auction.winnerId[i] = auction.visualIds[i][randomness];
@@ -273,7 +273,7 @@ contract VisualsAuction is IAminal {
             // if( auction.winnerId[i] == 0) { // this means that nobody has voted on the traits, we
             // use
             // random to assign
-            //     uint randomness = random(uint(auction.visualIds[i].length), 0);
+            //     uint randomness = _random(uint(auction.visualIds[i].length), 0);
             //      console.log("random == ", randomness);
             //      console.log("visualIds - ", i, "- length", auction.visualIds[i].length);
             //     // uint256 k = random % auction.visualIds[i].length;
@@ -288,7 +288,7 @@ contract VisualsAuction is IAminal {
         aminals.setBreeding(auction.aminalIdTwo, false);
     }
 
-    function random(uint256 i, uint256 maxNumber, uint256 minNumber)
+    function _random(uint256 i, uint256 maxNumber, uint256 minNumber)
         internal
         view
         returns (uint256 amount)
@@ -301,7 +301,7 @@ contract VisualsAuction is IAminal {
     }
 
     // Randomness provided by this is predicatable. Use with care!
-    function randomNumber(uint256) internal view returns (uint256) {
+    function _randomNumber(uint256) internal view returns (uint256) {
         return uint256(blockhash(block.number - 1));
     }
 }
