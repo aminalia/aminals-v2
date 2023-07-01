@@ -12,11 +12,7 @@ contract VisualsTest is Test {
         aminals = new Aminals();
     }
 
-    function testRun() public {
-        registerVisuals();
-    }
-
-    function registerVisuals() public {
+    function test_RegisterVisuals() public {
         // first aminal
         aminals.addBackground(
             '<g><rect fill="#4e2f91" x="0" y="0" width="1000px" height="1000px"/></g>'

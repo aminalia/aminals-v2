@@ -15,7 +15,7 @@ contract CounterTest is Test {
         visualsAuction = VisualsAuction(aminals.visualsAuction());
     }
 
-    function testRun() public {
+    function test_Run() public {
         registerVisuals();
         spawnAminals();
         squeak();
