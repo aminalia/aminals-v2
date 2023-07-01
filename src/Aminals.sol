@@ -1,24 +1,20 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.20;
 
+import "abdk-libraries-solidity/ABDKMathQuad.sol";
 import "forge-std/console.sol";
 import "forge-std/Test.sol";
 
 import "./IAminal.sol";
 import "./utils/FeedBondingCurve.sol";
 import "./utils/VisualsAuction.sol";
-import "./libs/ABDKMathQuad.sol";
 import "./nft/AminalsDescriptor.sol";
 import "./nft/ERC721S.sol";
 
-contract Aminals is IAminal,
-    ERC721S("Aminals", "AMINALS"), 
-    AminalsDescriptor
-{
+contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
     mapping(uint256 aminalId => Aminal aminal) public aminals;
     uint256 lastAminalId;
     VisualsAuction public visualsAuction;
-
 
     modifier _onlyAuction() {
         require(msg.sender == address(visualsAuction));
@@ -37,7 +33,7 @@ contract Aminals is IAminal,
         addBody(emptySVG);
         addFace(emptySVG);
         addMouth(emptySVG);
-        addMisc(emptySVG); 
+        addMisc(emptySVG);
     }
 
     function spawnAminal(
@@ -78,7 +74,7 @@ contract Aminals is IAminal,
     }
 
     function getAminalLoveTotal(uint256 aminalID) public view returns (uint256) {
-       Aminal storage aminal = aminals[aminalID];
+        Aminal storage aminal = aminals[aminalID];
         return aminal.totalLove;
     }
 
@@ -96,11 +92,11 @@ contract Aminals is IAminal,
         require(msg.value >= 0.01 ether, "Not enough ether");
         return _feed(aminalId, msg.sender, msg.value);
     }
-    
+
     function feedFrom(uint256 aminalId, address feeder) public payable returns (uint256) {
         require(msg.value >= 0.01 ether, "Not enough ether");
         return _feed(aminalId, feeder, msg.value);
-    } 
+    }
 
     function _feed(uint256 aminalId, address feeder, uint256 amount) internal returns (uint256) {
         Aminal storage aminal = aminals[aminalId];
@@ -111,8 +107,8 @@ contract Aminals is IAminal,
         // addition
         //  uint256 amount = (msg.value / 10**16);
 
-        // TODO: Change adjustLove bool to a constant
-        adjustLove(aminalId, amount, feeder, true);
+        // TODO: Change _adjustLove bool to a constant
+        _adjustLove(aminalId, amount, feeder, true);
         // TODO: Energy should be on a bonding curve that creates an asymptote
         // (possibly a polynomic function), not a direct addition. The bonding
         // curve should be configured so that energy should never reach 100 (the
@@ -124,8 +120,11 @@ contract Aminals is IAminal,
         // aminal.energy = aminal.energy + (amount * ((1 - aminal.energy/100) ** 2));
 
         // assuming a simple bonding curve, where d(e) = (100 - e)/100
-        // bytes16 delta = ABDKMathQuad.div( ABDKMathQuad.sub(ABDKMathQuad.fromInt(100), aminal.energy), ABDKMathQuad.fromInt(100) );
-        // aminal.energy = ABDKMathQuad.add(aminal.energy, ABDKMathQuad.mul(delta, ABDKMathQuad.fromUInt(amount)));
+        // bytes16 delta = ABDKMathQuad.div( ABDKMathQuad.sub(ABDKMathQuad.fromInt(100),
+        // aminal.energy),
+        // ABDKMathQuad.fromInt(100) );
+        // aminal.energy = ABDKMathQuad.add(aminal.energy, ABDKMathQuad.mul(delta,
+        // ABDKMathQuad.fromUInt(amount)));
 
         uint256 gap = 10 ** 18 - aminal.energy;
 
@@ -142,12 +141,12 @@ contract Aminals is IAminal,
         return delta;
     }
 
-    function setBreeding(uint256 aminalID, bool breeding) _onlyAuction() public  {
+    function setBreeding(uint256 aminalID, bool breeding) public _onlyAuction {
         Aminal storage aminal = aminals[aminalID];
         aminal.breeding = breeding;
     }
 
-    function disableBreedable(uint256 aminalIdOne, uint256 aminalIdTwo) _onlyAuction() public {
+    function disableBreedable(uint256 aminalIdOne, uint256 aminalIdTwo) public _onlyAuction {
         Aminal storage aminalOne = aminals[aminalIdOne];
         Aminal storage aminalTwo = aminals[aminalIdTwo];
 
@@ -174,13 +173,14 @@ contract Aminals is IAminal,
             console.log("IF");
             require(aminalOne.energy >= 10 && aminalTwo.energy >= 10, "Aminal does not have enough energy to breed");
 
-            return visualsAuction.startAuction(aminalIdOne, aminalIdTwo); // remember to undo the breedableWith then auction ends!
+            return visualsAuction.startAuction(aminalIdOne, aminalIdTwo); // remember to undo the
+                // breedableWith then auction ends!
 
             // TODO: Initiate voting for traits on the Visual registry. Voting is
             // denominated in the combined love of both Aminal One and Aminal Two
         } else {
             aminalOne.breedableWith[aminalIdTwo] = true;
-            console.log("aminal (" , aminalIdOne , ") is now breedable with " , aminalIdTwo);
+            console.log("aminal (", aminalIdOne, ") is now breedable with ", aminalIdTwo);
 
             return 0;
         }
@@ -200,19 +200,19 @@ contract Aminals is IAminal,
         if (aminal.energy >= 1) aminal.energy--;
 
         // TODO: Migrate the bool to a constant for convenience
-        adjustLove(aminalId, 1, msg.sender, false);
+        _adjustLove(aminalId, 1, msg.sender, false);
     }
 
     function addSkill() public {}
 
-    function callSkill(uint256 aminalId, bytes32 /* skillId */, bytes32 /* data */) public payable {
+    function callSkill(uint256 aminalId, bytes32, /* skillId */ bytes32 /* data */ ) public payable {
         squeak((aminalId));
         // TODO: Call skill based on data in the SkillsRegistry
         // We'll likely want to use DELEGATECALL here
     }
 
     // TODO: Switch to passing the Aminal struct instead of the aminalId
-    function adjustLove(uint256 aminalId, uint256 love, address sender, bool increment) internal {
+    function _adjustLove(uint256 aminalId, uint256 love, address sender, bool increment) internal {
         Aminal storage aminal = aminals[aminalId];
         if (!increment) {
             aminal.lovePerUser[sender] -= love;
@@ -246,7 +246,7 @@ contract Aminals is IAminal,
         return price;
     }
 
-    function log2(uint256 x) pure private returns  (uint256 y) {
+    function _log2(uint256 x) private pure returns (uint256 y) {
         assembly {
             let arg := x
             x := sub(x, 1)

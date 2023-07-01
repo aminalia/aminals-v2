@@ -9,6 +9,7 @@ import "../Aminals.sol";
 
 contract VisualsAuction is IAminal {
     Aminals public aminals;
+
     enum VisualsCat {
         BACK,
         ARM,
@@ -19,6 +20,7 @@ contract VisualsAuction is IAminal {
         MOUTH,
         MISC
     }
+
     constructor(address _aminals) {
         // TODO: Replace with Aminals contract address
         aminals = Aminals(_aminals);
@@ -30,11 +32,8 @@ contract VisualsAuction is IAminal {
     uint256 public auctionCnt = 2; // assuming there are only 2 initially deployed aminals
 
     // keep track of who has voted already in a particular auction and category
-    // mapping(address voter => uint256[99][8]) visualVoted; 
+    // mapping(address voter => uint256[99][8]) visualVoted;
     mapping(address => mapping(uint256 => uint256[8])) internal visualVoted;
-
-
-
 
     struct Auction {
         uint256 aminalIdOne;
@@ -53,20 +52,16 @@ contract VisualsAuction is IAminal {
         bool ended;
     }
 
-
     modifier _onlyAminals() {
         require(msg.sender == address(aminals));
         _;
     }
 
-
-    modifier _auctionRunning (uint256 auctionID) {
-       Auction storage auction = auctions[auctionID];
+    modifier _auctionRunning(uint256 auctionID) {
+        Auction storage auction = auctions[auctionID];
         require(auction.ended == false);
         _;
     }
-
-
 
     function getAuctionByID(uint256 auctionID) public view returns (Auction memory) {
         console.log("returning for auction ID = ", auctionID);
@@ -74,7 +69,7 @@ contract VisualsAuction is IAminal {
     }
 
     // TODO: Add return value of auction ID and also emit events
-    function startAuction(uint256 aminalIdOne, uint256 aminalIdTwo) _onlyAminals() public returns (uint256) {
+    function startAuction(uint256 aminalIdOne, uint256 aminalIdTwo) public _onlyAminals returns (uint256) {
         // Set the breeding flag on each Aminal
         //aminals.addSkill();
 
@@ -87,21 +82,20 @@ contract VisualsAuction is IAminal {
         (,,,,, visualsOne) = aminals.aminals(aminalIdOne);
         (,,,,, visualsTwo) = aminals.aminals(aminalIdTwo);
 
-
         // Reset breedable variable to zero for both aminals
         aminals.disableBreedable(aminalIdOne, aminalIdTwo);
 
         // Set breeding flag via a setter
         aminals.setBreeding(aminalIdOne, true);
         aminals.setBreeding(aminalIdTwo, true);
-        
+
         // initialize the new auction
         // Cannot realistically overflow
         unchecked {
             ++auctionCnt;
         }
 
-         Auction storage auction = auctions[auctionCnt];
+        Auction storage auction = auctions[auctionCnt];
         //Auction storage auction;
         auction.aminalIdOne = aminalIdOne;
         auction.aminalIdTwo = aminalIdTwo;
@@ -117,7 +111,6 @@ contract VisualsAuction is IAminal {
         // Loop through each current visual per Aminal and write it to the
         // struct. i.e. Index [N][0] is AminalIdOne's traits, Index [N][1] is
         // AminalIdTwo's traits.
-
 
         auction.visualIds[0][0] = visualsOne.backId;
         auction.visualIds[0][1] = visualsTwo.backId;
@@ -139,10 +132,16 @@ contract VisualsAuction is IAminal {
         return auctionCnt;
     }
 
-    function proposeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId) _auctionRunning (auctionId) public payable {
-        // anyone can propose new visuals, but the cost depends on how much they love you in order to avoid ppl from spamming the available slots.abi
+    function proposeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId)
+        public
+        payable
+        _auctionRunning(auctionId)
+    {
+        // anyone can propose new visuals, but the cost depends on how much they love you in order
+        // to
+        // avoid ppl from spamming the available slots.abi
 
-        uint category = uint256(catEnum);
+        uint256 category = uint256(catEnum);
 
         Auction storage auction = auctions[auctionId];
 
@@ -157,7 +156,8 @@ contract VisualsAuction is IAminal {
 
         // This starts at 2 because the first two array values are used by the Aminal's traits
         for (uint256 i = 2; i < 10; i++) {
-            // console.log("Iterating thourgh .... ", i, " . -- where auction.visualsIds cat = ", category);
+            // console.log("Iterating thourgh .... ", i, " . -- where auction.visualsIds cat = ",
+            // category);
             if (auction.visualIds[category][i] == 0) {
                 auction.visualIds[category][i] = visualId;
                 break;
@@ -165,114 +165,112 @@ contract VisualsAuction is IAminal {
         }
     }
 
-    function voteVisual(uint256 auctionId, VisualsCat catEnum, uint256 i) _auctionRunning (auctionId) public payable {
-        uint category = uint256(catEnum);
+    function voteVisual(uint256 auctionId, VisualsCat catEnum, uint256 i) public payable _auctionRunning(auctionId) {
+        uint256 category = uint256(catEnum);
 
         Auction storage auction = auctions[auctionId];
-
 
         uint256 totallove = aminals.getAminalLoveByIdByUser(auction.aminalIdOne, msg.sender)
             + aminals.getAminalLoveByIdByUser(auction.aminalIdTwo, msg.sender);
 
-         require( visualVoted[msg.sender][auctionId][category] < totallove , "Already consumed all of your love with votes");
-        
-        console.log("********** a vote has been casted on ", category, " / " , i);
-        console.log (" == with weight = ", totallove, " .  on auctionId = ", auctionId);
+        require(
+            visualVoted[msg.sender][auctionId][category] < totallove, "Already consumed all of your love with votes"
+        );
 
-        auction.visualIdVotes[category][i] += (totallove); /* - visualVoted[msg.sender][auctionId][category]); */
+        console.log("********** a vote has been casted on ", category, " / ", i);
+        console.log(" == with weight = ", totallove, " .  on auctionId = ", auctionId);
+
+        auction.visualIdVotes[category][i] += (totallove); /* -
+      visualVoted[msg.sender][auctionId][category]); */
 
         visualVoted[msg.sender][auctionId][category] = totallove;
-
     }
 
-    function removeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId) _auctionRunning (auctionId) public payable {
-        uint category = uint256(catEnum);
+    function removeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId)
+        public
+        payable
+        _auctionRunning(auctionId)
+    {
+        uint256 category = uint256(catEnum);
 
         Auction storage auction = auctions[auctionId];
 
         uint256 totallove = aminals.getAminalLoveByIdByUser(auction.aminalIdOne, msg.sender)
-            + aminals.getAminalLoveByIdByUser(auction.aminalIdTwo, msg.sender); 
+            + aminals.getAminalLoveByIdByUser(auction.aminalIdTwo, msg.sender);
 
-        require( totallove > 0, "You need love to remove a trait from the auction");
+        require(totallove > 0, "You need love to remove a trait from the auction");
 
         auction.visualNoVotes[category][visualId] += (totallove);
 
-        if(auction.visualNoVotes[category][visualId] > auction.totalLove / 3) { // a third of lovers has voted to remove the visual trait from the auction
+        if (auction.visualNoVotes[category][visualId] > auction.totalLove / 3) {
+            // a third of lovers has voted to remove the visual trait from the auction
+            int256 i;
+            // identify the location of the visualId
+            for (i = 2; i < 10; i++) {
+                // start with i=2 because we don't want people to remove the 2 parent's traits
+                if (auction.visualIds[category][uint256(i)] == visualId) break;
+                else i = 0; // nothing was found !
+            }
 
-                int i;
-                // identify the location of the visualId
-                for(i=2; i < 10; i++ ) { // start with i=2 because we don't want people to remove the 2 parent's traits
-                    if(auction.visualIds[category][uint256(i)] == visualId) {
-                        break;
-                    } else { i = 0; } // nothing was found !
+            if (i != 0) {
+                // reset all values, so that new visuals can be submitted
+                for (uint256 j = uint256(i); j < 10 && auction.visualIds[category][j] != 0; j++) {
+                    auction.visualIds[category][j] = auction.visualIds[category][j + 1];
+                    auction.visualIdVotes[category][j] = auction.visualIdVotes[category][j + 1];
+                    auction.visualNoVotes[category][j] = auction.visualNoVotes[category][j + 1];
                 }
-
-                if(i != 0) {
-                    // reset all values, so that new visuals can be submitted
-                    for(uint256 j = uint256(i); j < 10 && auction.visualIds[category][j] != 0; j++) {
-                        auction.visualIds[category][j] = auction.visualIds[category][j+1];
-                        auction.visualIdVotes[category][j] = auction.visualIdVotes[category][j+1];
-                        auction.visualNoVotes[category][j] = auction.visualNoVotes[category][j+1];
-                    }
-                }
-
+            }
         }
-
-
     }
 
-    function endAuction(uint256 auctionId) _auctionRunning (auctionId) public {
+    function endAuction(uint256 auctionId) public _auctionRunning(auctionId) {
         Auction storage auction = auctions[auctionId];
 
         // loop through all the Visuals and identify the winner;
-        int256[8] memory maxVotes = [int256(-1),int256(-1),int256(-1),int256(-1),int256(-1),int256(-1),int256(-1),int256(-1)];
+        int256[8] memory maxVotes =
+            [int256(-1), int256(-1), int256(-1), int256(-1), int256(-1), int256(-1), int256(-1), int256(-1)];
 
-        for (uint256 i = 0; i < 8; i++) { // iterate through each category
-
+        for (uint256 i = 0; i < 8; i++) {
+            // iterate through each category
             uint256 j;
             for (j = 0; j < 2 || auction.visualIds[i][j] > 0; j++) {
                 if (auction.visualIdVotes[i][j] != 0 && int256(auction.visualIdVotes[i][j]) > maxVotes[i]) {
                     maxVotes[i] = int256(auction.visualIdVotes[i][j]);
                     auction.winnerId[i] = auction.visualIds[i][j];
-                     console.log("jjj = ", j, " for category ", i);
+                    console.log("jjj = ", j, " for category ", i);
                 }
             }
 
-            if(maxVotes[i] < 0) { // no one has voted, so used randomness instead
-                uint randomness = random(i, j, 1);
+            if (maxVotes[i] < 0) {
+                // no one has voted, so used randomness instead
+                uint256 randomness = _random(i, j, 1);
                 console.log("random = ", randomness);
                 console.log("for length = ", j, "category: ", i);
                 auction.winnerId[i] = auction.visualIds[i][randomness];
             }
-            
-                // if( auction.winnerId[i] == 0) { // this means that nobody has voted on the traits, we use random to assign
-                //     uint randomness = random(uint(auction.visualIds[i].length), 0);
-                //      console.log("random == ", randomness);
-                //      console.log("visualIds - ", i, "- length", auction.visualIds[i].length);
-                //     // uint256 k = random % auction.visualIds[i].length;
-                    // console.log("kKKKK = ", k);
-                    //  auction.winnerId[i] = randomness;
-                // }
+
+            // if( auction.winnerId[i] == 0) { // this means that nobody has voted on the traits, we
+            // use
+            // random to assign
+            //     uint randomness = _random(uint(auction.visualIds[i].length), 0);
+            //      console.log("random == ", randomness);
+            //      console.log("visualIds - ", i, "- length", auction.visualIds[i].length);
+            //     // uint256 k = random % auction.visualIds[i].length;
+            // console.log("kKKKK = ", k);
+            //  auction.winnerId[i] = randomness;
+            // }
             auction.ended = true;
-            
         }
 
         // Zero breeding flag via a setter
         aminals.setBreeding(auction.aminalIdOne, false);
         aminals.setBreeding(auction.aminalIdTwo, false);
-
     }
 
-    function random(uint i, uint maxNumber,uint minNumber) internal view returns (uint amount) {
-     amount = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, i)));
-    //  console.log("AMOUNT --- = ", amount);
-     amount = amount % (maxNumber-minNumber);
-     amount = amount + minNumber;
-     return amount;
-} 
-
-    // Randomness provided by this is predicatable. Use with care!
-    function randomNumber(uint ) internal view returns (uint) {
-        return uint(blockhash(block.number - 1));
+    function _random(uint256 i, uint256 maxNumber, uint256 minNumber) internal view returns (uint256 amount) {
+        amount = uint256(keccak256(abi.encodePacked(block.prevrandao, msg.sender, i)));
+        amount = amount % (maxNumber - minNumber);
+        amount = amount + minNumber;
+        return amount;
     }
 }
