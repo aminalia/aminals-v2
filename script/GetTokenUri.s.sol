@@ -12,11 +12,19 @@ forge script script/GetTokenUri.s.sol:GetTokenUri   -vvvv
 
 contract GetTokenUri is Script {
     function run() external {
-        Aminals aminals = Aminals(address(0xA3698549308Def0a1255Ac7Abf609505B0627C2f));
 
-        string memory uri1 = aminals.tokenURI(1);
-        console.log(uri1);
-        string memory uri2 = aminals.tokenURI(2);
-        console.log(uri2);
-    }
+        uint256 deployerPrivateKey = vm.envUint("ETH_PRIVATE_KEY");
+        vm.startBroadcast(deployerPrivateKey);
+
+        Aminals aminals = Aminals(0xC5cA00b528daA14036F6edeFA0665D6a4201dDd0);
+
+        // string memory uri1 = aminals.tokenURI(1);
+        // console.log(uri1);
+        // string memory uri2 = aminals.tokenURI(2);
+        // console.log(uri2);
+
+        uint256 a3 = aminals.spawnAminal(1, 2, 1, 1, 1, 2, 2, 2, 2, 1);
+
+        vm.stopBroadcast();
+}
 }
