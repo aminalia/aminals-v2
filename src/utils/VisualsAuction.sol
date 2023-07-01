@@ -227,14 +227,16 @@ contract VisualsAuction is IAminal {
         Auction storage auction = auctions[auctionId];
 
         // loop through all the Visuals and identify the winner;
-        uint256[8] memory maxVotes = [ type(uint256).max
-                                        , type(uint256).max
-                                        , type(uint256).max
-                                        , type(uint256).max
-                                        , type(uint256).max
-                                        , type(uint256).max
-                                        , type(uint256).max
-                                        , type(uint256).max ];
+        uint256[8] memory maxVotes = [
+            type(uint256).max,
+            type(uint256).max,
+            type(uint256).max,
+            type(uint256).max,
+            type(uint256).max,
+            type(uint256).max,
+            type(uint256).max,
+            type(uint256).max
+        ];
 
         for (uint256 i = 0; i < 8; i++) {
             // iterate through each category

@@ -11,9 +11,7 @@ forge script script/GetTokenUri.s.sol:GetTokenUri   -vvvv
 */
 
 contract GetTokenUri is Script {
-
     function run() external {
-
         Aminals aminals = Aminals(address(0xA3698549308Def0a1255Ac7Abf609505B0627C2f));
 
         string memory uri1 = aminals.tokenURI(1);
@@ -21,5 +19,4 @@ contract GetTokenUri is Script {
         string memory uri2 = aminals.tokenURI(2);
         console.log(uri2);
     }
-
 }
