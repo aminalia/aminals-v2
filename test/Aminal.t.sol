@@ -123,10 +123,28 @@ contract AminalTest is Test {
     function proposeTraits(uint256 auctionID) public {
         uint256 id1 = aminals.addFace("face3");
         uint256 id2 = aminals.addBody("body3");
-        console.log("FACE 3 = ", id1);
+        uint256 id3 = aminals.addBody("body4");
+        uint256 id4 = aminals.addBody("body5");
+        uint256 id5 = aminals.addBody("body6");
+        uint256 id6 = aminals.addBody("body7");
+        uint256 id7 = aminals.addBody("body8");
+        uint256 id8 = aminals.addBody("body9");
+        uint256 id9 = aminals.addBody("body10");
+        uint256 id10 = aminals.addBody("body11");
 
         visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.FACE, id1);
         visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id2);
+        // Test making a bunch of proposals
+        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id3);
+        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id4);
+        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id5);
+        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id6);
+        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id7);
+        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id8);
+        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id9);
+        // 9th proposal fails as there is only 8 slots per category
+        vm.expectRevert("Max 8 proposals allowed per category");
+        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id10);
     }
 
     function voteTraits(uint256 auctionID) public {
@@ -149,18 +167,18 @@ contract AminalTest is Test {
         VisualsAuction.Auction memory auction;
         auction = visualsAuction.getAuctionByID(auctionID);
 
-        // console.log("CONTRACT ADDRESS: ", address(visualsAuction));
-        // console.log("Now.--.---.----------", auction.visualIds[2][0]);
-        // console.log("Now.--.---.----------", auction.aminalIdOne);
-        // console.log("displaying visuals for auction id = ", auctionID);
+        console.log("CONTRACT ADDRESS: ", address(visualsAuction));
+        console.log("Now.--.---.----------", auction.visualIds[2][0]);
+        console.log("Now.--.---.----------", auction.aminalIdOne);
+        console.log("displaying visuals for auction id = ", auctionID);
 
         for (uint256 i = 0; i < 8; i++) {
             console.log("iterating through category ", i);
 
-            for (uint256 j = 0; j < 2 || auction.visualIds[i][j] > 0; j++) {
-                console.log("---> index: ", j, " === value: ", auction.visualIds[i][j]);
-                console.log("---> VOTES: === ", auction.visualIdVotes[i][j]);
-                console.log(aminals.getVisuals(i, auction.visualIds[i][j]));
+            for (uint256 j = 2; j < 10; j++) {
+                console.log("---> index: ", j, " === value: ", auction.visualIds[j][i]);
+                console.log("---> VOTES: === ", auction.visualIdVotes[j][i]);
+                console.log(aminals.getVisuals(i, auction.visualIds[j][i]));
             }
         }
     }
