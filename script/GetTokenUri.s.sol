@@ -22,7 +22,7 @@ contract GetTokenUri is Script {
         // string memory uri2 = aminals.tokenURI(2);
         // console.log(uri2);
 
-        uint256 a3 = aminals.spawnAminal(1, 2, 1, 1, 1, 2, 2, 2, 2, 1);
+        uint256 a3 = aminals.spawnAminal(1, 2, 2, 2, 1, 1, 2, 1, 2, 2);
 
         vm.stopBroadcast();
     }

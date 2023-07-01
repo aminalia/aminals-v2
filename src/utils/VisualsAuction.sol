@@ -241,7 +241,7 @@ contract VisualsAuction is IAminal {
                 console.log("j", j);
                 console.log("visualIds", auction.visualIds[j][i]);
                 // Break for loop if no visual ids have been proposed
-                if (auction.visualIds[j][i] == 0) break;
+                if (j >= 2 && auction.visualIds[j][i] == 0) break; // break the loop if the visualId is 0, except if index 0 or 1 (inherited traits)
                 console.log("maxVotes", maxVotes[i]);
                 console.log("visualIdVotes", auction.visualIdVotes[j][i]);
                 // Handle tie
