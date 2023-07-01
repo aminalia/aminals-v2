@@ -143,18 +143,28 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
             if (backgrounds.length > id) {
                 return backgrounds[id];
             } else if (VisualsCat(category) == VisualsCat.ARM) {
-                if (arms.length > id) return arms[id];
-                else if (VisualsCat(category) == VisualsCat.TAIL) if (tails.length > id) return tails[id];
-                else if (VisualsCat(category) == VisualsCat.EARS) {
-                    if (ears.length > id) return ears[id];
-                } else if (VisualsCat(category) == VisualsCat.BODY) {
-                    if (bodies.length > id) return bodies[id];
-                } else if (VisualsCat(category) == VisualsCat.FACE) {
-                    if (faces.length > id) return faces[id];
-                } else if (VisualsCat(category) == VisualsCat.MOUTH) {
-                    if (mouths.length > id) return mouths[id];
-                } else if (VisualsCat(category) == VisualsCat.MISC) {
-                    if (backgrounds.length > id) return miscs[id];
+                if (arms.length > id) {
+                    return arms[id];
+                } else if (VisualsCat(category) == VisualsCat.TAIL) {
+                    if (tails.length > id) {
+                        return tails[id];
+                    } else if (VisualsCat(category) == VisualsCat.EARS) {
+                        if (ears.length > id) {
+                            return ears[id];
+                        } else if (VisualsCat(category) == VisualsCat.BODY) {
+                            if (bodies.length > id) {
+                                return bodies[id];
+                            } else if (VisualsCat(category) == VisualsCat.FACE) {
+                                if (faces.length > id) {
+                                    return faces[id];
+                                } else if (VisualsCat(category) == VisualsCat.MOUTH) {
+                                    if (mouths.length > id) return mouths[id];
+                                } else if (VisualsCat(category) == VisualsCat.MISC) {
+                                    if (backgrounds.length > id) return miscs[id];
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
