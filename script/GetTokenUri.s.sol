@@ -12,7 +12,6 @@ forge script script/GetTokenUri.s.sol:GetTokenUri   -vvvv
 
 contract GetTokenUri is Script {
     function run() external {
-
         uint256 deployerPrivateKey = vm.envUint("ETH_PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
@@ -26,5 +25,5 @@ contract GetTokenUri is Script {
         uint256 a3 = aminals.spawnAminal(1, 2, 1, 1, 1, 2, 2, 2, 2, 1);
 
         vm.stopBroadcast();
-}
+    }
 }

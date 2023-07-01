@@ -113,21 +113,21 @@ contract VisualsAuction is IAminal {
         // AminalIdTwo's traits.
 
         auction.visualIds[0][0] = visualsOne.backId;
-        auction.visualIds[0][1] = visualsTwo.backId;
-        auction.visualIds[1][0] = visualsOne.armId;
+        auction.visualIds[1][0] = visualsTwo.backId;
+        auction.visualIds[0][1] = visualsOne.armId;
         auction.visualIds[1][1] = visualsTwo.armId;
-        auction.visualIds[2][0] = visualsOne.tailId;
-        auction.visualIds[2][1] = visualsTwo.tailId;
-        auction.visualIds[3][0] = visualsOne.earsId;
-        auction.visualIds[3][1] = visualsTwo.earsId;
-        auction.visualIds[4][0] = visualsOne.bodyId;
-        auction.visualIds[4][1] = visualsTwo.bodyId;
-        auction.visualIds[5][0] = visualsOne.faceId;
-        auction.visualIds[5][1] = visualsTwo.faceId;
-        auction.visualIds[6][0] = visualsOne.mouthId;
-        auction.visualIds[6][1] = visualsTwo.mouthId;
-        auction.visualIds[7][0] = visualsOne.miscId;
-        auction.visualIds[7][1] = visualsTwo.miscId;
+        auction.visualIds[0][2] = visualsOne.tailId;
+        auction.visualIds[1][2] = visualsTwo.tailId;
+        auction.visualIds[0][3] = visualsOne.earsId;
+        auction.visualIds[1][3] = visualsTwo.earsId;
+        auction.visualIds[0][4] = visualsOne.bodyId;
+        auction.visualIds[1][4] = visualsTwo.bodyId;
+        auction.visualIds[0][5] = visualsOne.faceId;
+        auction.visualIds[1][5] = visualsTwo.faceId;
+        auction.visualIds[0][6] = visualsOne.mouthId;
+        auction.visualIds[1][6] = visualsTwo.mouthId;
+        auction.visualIds[0][7] = visualsOne.miscId;
+        auction.visualIds[1][7] = visualsTwo.miscId;
 
         return auctionCnt;
     }
@@ -154,11 +154,13 @@ contract VisualsAuction is IAminal {
         require(msg.value >= price, "Not enough ether to propose a new Visual");
 
         // This starts at 2 because the first two array values are used by the Aminal's traits
-        for (uint256 i = 2; i < 10; i++) {
-            // console.log("Iterating thourgh .... ", i, " . -- where auction.visualsIds cat = ",
-            // category);
-            if (auction.visualIds[category][i] == 0) {
-                auction.visualIds[category][i] = visualId;
+        for (uint256 i = 2; i <= 10; i++) {
+            console.log("Iterating thourgh .... ", i, " . -- where auction.visualsIds cat = ", category);
+            // Throw error if visual is not registered because slots are taken up
+            if (i == 10) revert("Max 8 proposals allowed per category");
+            // Assign visualId if empty slot
+            if (auction.visualIds[i][category] == 0) {
+                auction.visualIds[i][category] = visualId;
                 break;
             }
         }
@@ -179,7 +181,7 @@ contract VisualsAuction is IAminal {
         console.log("********** a vote has been casted on ", category, " / ", i);
         console.log(" == with weight = ", totallove, " .  on auctionId = ", auctionId);
 
-        auction.visualIdVotes[category][i] += (totallove);
+        auction.visualIdVotes[i][category] += (totallove);
 
         visualVoted[msg.sender][auctionId][category] = totallove;
     }
@@ -198,76 +200,71 @@ contract VisualsAuction is IAminal {
 
         require(totallove > 0, "You need love to remove a trait from the auction");
 
-        auction.visualNoVotes[category][visualId] += (totallove);
+        auction.visualNoVotes[visualId][category] += (totallove);
 
-        if (auction.visualNoVotes[category][visualId] > auction.totalLove / 3) {
+        if (auction.visualNoVotes[visualId][category] > auction.totalLove / 3) {
             // a third of lovers has voted to remove the visual trait from the auction
             uint256 i;
             // identify the location of the visualId
             for (i = 2; i < 10; i++) {
                 // start with i=2 because we don't want people to remove the 2 parent's traits
-                if (auction.visualIds[category][i] == visualId) break;
+                if (auction.visualIds[i][category] == visualId) break;
                 else i = 0; // nothing was found !
             }
 
             if (i != 0) {
                 // reset all values, so that new visuals can be submitted
-                for (uint256 j = i; j < 10 && auction.visualIds[category][j] != 0; j++) {
-                    auction.visualIds[category][j] = auction.visualIds[category][j + 1];
-                    auction.visualIdVotes[category][j] = auction.visualIdVotes[category][j + 1];
-                    auction.visualNoVotes[category][j] = auction.visualNoVotes[category][j + 1];
+                for (uint256 j = i; j < 10 && auction.visualIds[j][category] != 0; j++) {
+                    auction.visualIds[j][category] = auction.visualIds[category][j + 1];
+                    auction.visualIdVotes[j][category] = auction.visualIdVotes[category][j + 1];
+                    auction.visualNoVotes[j][category] = auction.visualNoVotes[category][j + 1];
                 }
             }
         }
     }
 
     // TODO limits on when this can be called?
-    // TODO generate new aminal
+    // TODO generate new aminal?
     function endAuction(uint256 auctionId) public _auctionRunning(auctionId) {
         Auction storage auction = auctions[auctionId];
 
         // TODO better comment
         // loop through all the Visuals and identify the winner;
-        uint256[8] memory maxVotes = [
-            type(uint256).max,
-            type(uint256).max,
-            type(uint256).max,
-            type(uint256).max,
-            type(uint256).max,
-            type(uint256).max,
-            type(uint256).max,
-            type(uint256).max
-        ];
+        uint256[8] memory maxVotes =
+            [uint256(0), uint256(0), uint256(0), uint256(0), uint256(0), uint256(0), uint256(0), uint256(0)];
 
         for (uint256 i = 0; i < 8; i++) {
             // iterate through each category
             uint256 j;
-            for (j = 0; j < 2 || auction.visualIds[i][j] > 0; j++) {
-                if (auction.visualIdVotes[i][j] != 0 && (auction.visualIdVotes[i][j]) > maxVotes[i]) {
-                    maxVotes[i] = auction.visualIdVotes[i][j];
-                    auction.winnerId[i] = auction.visualIds[i][j];
+            for (j = 0; j < 10; j++) {
+                console.log("i", i);
+                console.log("j", j);
+                console.log("visualIds", auction.visualIds[j][i]);
+                // Break for loop if no visual ids have been proposed
+                if (auction.visualIds[j][i] == 0) break;
+                console.log("maxVotes", maxVotes[i]);
+                console.log("visualIdVotes", auction.visualIdVotes[j][i]);
+                // Handle tie
+                if (auction.visualIdVotes[j][i] != 0 && auction.visualIdVotes[j][i] == maxVotes[i]) {
+                    // Randomly select a winner between the tied proposals
+                    uint256 randomness = uint256(keccak256(abi.encodePacked(block.prevrandao, msg.sender, i)));
+                    console.log("TIE, randomly choose winner", randomness % 2);
+                    if (randomness % 2 == 0) auction.winnerId[i] = auction.visualIds[j][i];
+                }
+                if (auction.visualIdVotes[j][i] != 0 && auction.visualIdVotes[j][i] > maxVotes[i]) {
                     console.log("jjj = ", j, " for category ", i);
+                    maxVotes[i] = auction.visualIdVotes[j][i];
+                    auction.winnerId[i] = auction.visualIds[j][i];
                 }
             }
 
-            if (maxVotes[i] < 0) {
-                // no one has voted, so used randomness instead
+            if (maxVotes[i] == 0) {
                 uint256 randomness = _random(i, j, 1);
                 console.log("random = ", randomness);
                 console.log("for length = ", j, "category: ", i);
                 auction.winnerId[i] = auction.visualIds[i][randomness];
             }
 
-            // if( auction.winnerId[i] == 0) { // this means that nobody has voted on the traits, we
-            // use
-            // random to assign
-            //     uint randomness = _random(uint(auction.visualIds[i].length), 0);
-            //      console.log("random == ", randomness);
-            //      console.log("visualIds - ", i, "- length", auction.visualIds[i].length);
-            //     // uint256 k = random % auction.visualIds[i].length;
-            // console.log("kKKKK = ", k);
-            //  auction.winnerId[i] = randomness;
-            // }
             auction.ended = true;
         }
 
