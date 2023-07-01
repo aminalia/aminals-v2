@@ -293,15 +293,9 @@ contract VisualsAuction is IAminal {
         view
         returns (uint256 amount)
     {
-        amount = uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender, i)));
-        //  console.log("AMOUNT --- = ", amount);
+        amount = uint256(keccak256(abi.encodePacked(block.prevrandao, msg.sender, i)));
         amount = amount % (maxNumber - minNumber);
         amount = amount + minNumber;
         return amount;
-    }
-
-    // Randomness provided by this is predicatable. Use with care!
-    function _randomNumber(uint256) internal view returns (uint256) {
-        return uint256(blockhash(block.number - 1));
     }
 }
