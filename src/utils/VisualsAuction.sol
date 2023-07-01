@@ -225,14 +225,21 @@ contract VisualsAuction is IAminal {
         Auction storage auction = auctions[auctionId];
 
         // loop through all the Visuals and identify the winner;
-        int256[8] memory maxVotes = [int256(-1),int256(-1),int256(-1),int256(-1),int256(-1),int256(-1),int256(-1),int256(-1)];
+        uint256[8] memory maxVotes = [ type(uint256).max
+                                        , type(uint256).max
+                                        , type(uint256).max
+                                        , type(uint256).max
+                                        , type(uint256).max
+                                        , type(uint256).max
+                                        , type(uint256).max
+                                        , type(uint256).max ];
 
         for (uint256 i = 0; i < 8; i++) { // iterate through each category
 
             uint256 j;
             for (j = 0; j < 2 || auction.visualIds[i][j] > 0; j++) {
-                if (auction.visualIdVotes[i][j] != 0 && int256(auction.visualIdVotes[i][j]) > maxVotes[i]) {
-                    maxVotes[i] = int256(auction.visualIdVotes[i][j]);
+                if (auction.visualIdVotes[i][j] != 0 && (auction.visualIdVotes[i][j]) > maxVotes[i]) {
+                    maxVotes[i] = auction.visualIdVotes[i][j];
                     auction.winnerId[i] = auction.visualIds[i][j];
                      console.log("jjj = ", j, " for category ", i);
                 }

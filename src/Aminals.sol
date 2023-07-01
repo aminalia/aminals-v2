@@ -16,7 +16,7 @@ contract Aminals is IAminal,
     AminalsDescriptor
 {
     mapping(uint256 aminalId => Aminal aminal) public aminals;
-    uint256 lastAminalId;
+    uint256 public lastAminalId;
     VisualsAuction public visualsAuction;
 
 
@@ -29,15 +29,15 @@ contract Aminals is IAminal,
         visualsAuction = new VisualsAuction(address(this));
 
         // initialize the AminalsDescriptor with empty SVG for index 0
-        string memory emptySVG = "<svg></svg>";
-        console.log("Adding bg empty = ", addBackground(emptySVG));
+        string memory emptySVG = "";
+        console.log("Adding empty bg = ", addBackground(emptySVG));
         addArm(emptySVG);
         addTail(emptySVG);
         addEar(emptySVG);
         addBody(emptySVG);
         addFace(emptySVG);
         addMouth(emptySVG);
-        addMisc(emptySVG); 
+        addMisc(emptySVG);
     }
 
     function spawnAminal(
@@ -52,7 +52,8 @@ contract Aminals is IAminal,
         uint256 mouthId,
         uint256 miscId
     ) public returns (uint256) {
-        Aminal storage aminal = aminals[++lastAminalId];
+        uint256 aminalId = ++lastAminalId;
+        Aminal storage aminal = aminals[aminalId];
         aminal.momId = aminalOne;
         aminal.dadId = aminalTwo;
         aminal.visuals.backId = backId;
@@ -63,10 +64,9 @@ contract Aminals is IAminal,
         aminal.visuals.faceId = faceId;
         aminal.visuals.mouthId = mouthId;
         aminal.visuals.miscId = miscId;
+        _mint(address(this), aminalId);
 
-        // here need to mint the nft based on the svg information.
-
-        return lastAminalId;
+        return aminalId;
     }
 
     function getAminalVisualsByID(uint256 aminalID) public view override returns (Visuals memory) {
