@@ -60,12 +60,8 @@ contract CounterTest is Test {
         uint256 id2 = aminals.addBody("body3");
         console.log("FACE 3 = ", id1);
 
-        visualsAuction.proposeVisual{value: 0.01 ether}(
-            auctionID, VisualsAuction.VisualsCat.FACE, id1
-        );
-        visualsAuction.proposeVisual{value: 0.01 ether}(
-            auctionID, VisualsAuction.VisualsCat.BODY, id2
-        );
+        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.FACE, id1);
+        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id2);
     }
 
     function removeTraits(uint256 auctionID) public {

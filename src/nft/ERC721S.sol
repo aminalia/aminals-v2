@@ -62,10 +62,7 @@ abstract contract ERC721S {
         transferFrom(from, to, id);
     }
 
-    function safeTransferFrom(address from, address to, uint256 id, bytes calldata data)
-        public
-        virtual
-    {
+    function safeTransferFrom(address from, address to, uint256 id, bytes calldata data) public virtual {
         transferFrom(from, to, id);
     }
 
@@ -140,11 +137,7 @@ abstract contract ERC721S {
 /// @notice A generic interface for a contract which properly accepts ERC721 tokens.
 /// @author Solmate (https://github.com/transmissions11/solmate/blob/main/src/tokens/ERC721.sol)
 abstract contract ERC721TokenReceiver {
-    function onERC721Received(address, address, uint256, bytes calldata)
-        external
-        virtual
-        returns (bytes4)
-    {
+    function onERC721Received(address, address, uint256, bytes calldata) external virtual returns (bytes4) {
         return ERC721TokenReceiver.onERC721Received.selector;
     }
 }

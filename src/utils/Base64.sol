@@ -4,8 +4,7 @@ pragma solidity ^0.8.20;
 /// @author Brecht Devos - <brecht@loopring.org>
 /// @notice Provides a function for encoding some bytes in base64
 library Base64 {
-    string internal constant TABLE =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    string internal constant TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
     function encode(bytes memory data) internal pure returns (string memory) {
         if (data.length == 0) return "";

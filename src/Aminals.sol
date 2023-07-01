@@ -78,11 +78,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         return aminal.totalLove;
     }
 
-    function getAminalLoveByIdByUser(uint256 aminalID, address user)
-        public
-        view
-        returns (uint256)
-    {
+    function getAminalLoveByIdByUser(uint256 aminalID, address user) public view returns (uint256) {
         Aminal storage aminal = aminals[aminalID];
         return aminal.lovePerUser[user];
     }
@@ -158,11 +154,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         aminalTwo.breedableWith[aminalIdOne] = false;
     }
 
-    function breedWith(uint256 aminalIdOne, uint256 aminalIdTwo)
-        public
-        payable
-        returns (uint256 ret)
-    {
+    function breedWith(uint256 aminalIdOne, uint256 aminalIdTwo) public payable returns (uint256 ret) {
         require(msg.value >= 0.01 ether, "Not enough ether");
 
         Aminal storage aminalOne = aminals[aminalIdOne];
@@ -179,10 +171,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         // a wrapper contract can always do this atomically in one transaction)
         if (aminalTwo.breedableWith[aminalIdOne]) {
             console.log("IF");
-            require(
-                aminalOne.energy >= 10 && aminalTwo.energy >= 10,
-                "Aminal does not have enough energy to breed"
-            );
+            require(aminalOne.energy >= 10 && aminalTwo.energy >= 10, "Aminal does not have enough energy to breed");
 
             return visualsAuction.startAuction(aminalIdOne, aminalIdTwo); // remember to undo the
                 // breedableWith then auction ends!
@@ -216,10 +205,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
 
     function addSkill() public {}
 
-    function callSkill(uint256 aminalId, bytes32, /* skillId */ bytes32 /* data */ )
-        public
-        payable
-    {
+    function callSkill(uint256 aminalId, bytes32, /* skillId */ bytes32 /* data */ ) public payable {
         squeak((aminalId));
         // TODO: Call skill based on data in the SkillsRegistry
         // We'll likely want to use DELEGATECALL here
@@ -287,13 +273,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
             let shift := 0x100000000000000000000000000000000000000000000000000000000000000
             let a := div(mul(x, magic), shift)
             y := div(mload(add(m, sub(255, a))), shift)
-            y :=
-                add(
-                    y,
-                    mul(
-                        256, gt(arg, 0x8000000000000000000000000000000000000000000000000000000000000000)
-                    )
-                )
+            y := add(y, mul(256, gt(arg, 0x8000000000000000000000000000000000000000000000000000000000000000)))
         }
     }
 }

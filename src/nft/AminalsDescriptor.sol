@@ -42,14 +42,10 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         string memory name = string(abi.encodePacked("Aminal #", _toString(tokenId)));
 
         // Need to pull the image number for each token id, set to 0 for now, tokenId 1 for testing
-        string memory image = string(
-            abi.encodePacked(
-                "data:image/svg+xml;base64,", Base64.encode(bytes(_aminalImage(tokenId)))
-            )
-        );
-        string memory description = string(
-            abi.encodePacked("This NFT represents a digital pet. This NFT cannot be transfered.")
-        );
+        string memory image =
+            string(abi.encodePacked("data:image/svg+xml;base64,", Base64.encode(bytes(_aminalImage(tokenId)))));
+        string memory description =
+            string(abi.encodePacked("This NFT represents a digital pet. This NFT cannot be transfered."));
         string memory attributes = generateAttributesList(tokenId);
 
         return genericDataURI(name, description, image, attributes);
@@ -62,13 +58,11 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         Visuals memory visuals = getAminalVisualsByID(_tokenId);
 
         // Aminal Base - for all Aminals
-        output =
-            '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1000 1000">';
+        output = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 1000 1000">';
         output = string(abi.encodePacked(output, backgrounds[visuals.backId]));
         output = string(
             abi.encodePacked(
-                output,
-                '<g id="shadow"><ellipse fill="#3c3d55" opacity="0.5"  cx="505" cy="971" rx="163" ry="12"/></g>'
+                output, '<g id="shadow"><ellipse fill="#3c3d55" opacity="0.5"  cx="505" cy="971" rx="163" ry="12"/></g>'
             )
         );
         output = string(abi.encodePacked(output, tails[visuals.tailId]));
@@ -189,9 +183,8 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
     }
 
     function getVisuals(uint256 category, uint256 id) public view returns (string memory) {
-        if (VisualsCat(category) == VisualsCat.BACK) {
-            if (backgrounds.length > id) return backgrounds[id];
-        } else if (VisualsCat(category) == VisualsCat.ARM) {
+        if (VisualsCat(category) == VisualsCat.BACK) if (backgrounds.length > id) return backgrounds[id];
+        else if (VisualsCat(category) == VisualsCat.ARM) {
             if (arms.length > id) return arms[id];
         } else if (VisualsCat(category) == VisualsCat.TAIL) {
             if (tails.length > id) return tails[id];
@@ -217,8 +210,7 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
      * @notice NFT Atrributes based on Token ID
      */
     function generateAttributesList(uint256 tokenId) public pure returns (string memory) {
-        return
-            string(abi.encodePacked('{"trait_type":"Aminal ID","value":', _toString(tokenId), "}"));
+        return string(abi.encodePacked('{"trait_type":"Aminal ID","value":', _toString(tokenId), "}"));
     }
 
     /**
@@ -230,12 +222,8 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         string memory _image,
         string memory _attributes
     ) public pure returns (string memory) {
-        TokenURIParams memory params = TokenURIParams({
-            name: _name,
-            description: _description,
-            image: _image,
-            attributes: _attributes
-        });
+        TokenURIParams memory params =
+            TokenURIParams({name: _name, description: _description, image: _image, attributes: _attributes});
         return constructTokenURI(params);
     }
 
