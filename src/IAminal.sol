@@ -13,6 +13,7 @@ interface IAminal {
         mapping(address user => uint256 love) lovePerUser;
         Visuals visuals;
         mapping(uint8 => Skills) skills;
+        // uint8 Nskills;
     }
 
     // TODO: Migrate to VisualsRegistry

@@ -189,21 +189,26 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
     // This function consumes energy and can be called by both skill contracts
     // and users
     // TODO: Allow users to specify the number of squeaks
-    function squeak(uint256 aminalId) public payable {
+    function squeak(uint256 aminalId, uint amount) public payable {
         require(msg.value >= 0.01 ether, "Not enough ether");
 
         Aminal storage aminal = aminals[aminalId];
 
-        require(aminal.lovePerUser[msg.sender] >= 1, "Not enough love");
+        require(aminal.lovePerUser[msg.sender] >= amount, "Not enough love");
 
         // ensure that aminal.energy never goes below 0
-        if (aminal.energy >= 1) aminal.energy--;
+        if (aminal.energy >= amount) aminal.energy = aminal.energy - amount;
 
         // TODO: Migrate the bool to a constant for convenience
-        _adjustLove(aminalId, 1, msg.sender, false);
+        _adjustLove(aminalId, amount, msg.sender, false);
     }
 
-    function addSkill() public {}
+    function addSkill(uint256 aminalId, string memory fname, address faddress) public view {
+
+       Aminal storage aminal = aminals[aminalId]; 
+       Skills memory skill = Skills(fname, faddress, "");
+    //    aminal.skills[aminal.Nskills++] = skill;
+    }
 
     function callSkill(uint256 aminalId, bytes32, /* skillId */ bytes32 /* data */ ) public payable {
         squeak((aminalId));

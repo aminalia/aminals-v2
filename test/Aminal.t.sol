@@ -6,6 +6,8 @@ import "../src/Aminals.sol";
 import "../src/IAminal.sol";
 import "../src/utils/VisualsAuction.sol";
 
+import "../src/skills/Move2D.sol";
+
 contract AminalTest is Test {
     Aminals public aminals;
     VisualsAuction public visualsAuction;
@@ -30,6 +32,10 @@ contract AminalTest is Test {
         listAuctionedVisuals(i);
         uint256[8] memory arr = endAuction(i);
         spawnNewAminal(1, 2, arr);
+        Move2D mover = new Move2D();
+        mover.move2D(3, 100, 200);
+        (uint256 x, uint256 y) = mover.getCoords(3);
+        console.log("x = ", x, " y = ", y);
     }
 
     function registerVisuals() public {
