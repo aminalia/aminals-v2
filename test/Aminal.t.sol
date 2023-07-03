@@ -34,7 +34,6 @@ contract AminalTest is Test {
         uint256[8] memory arr = endAuction(i);
         spawnNewAminal(1, 2, arr);
         addAndUseSkills();
-
     }
 
     function registerVisuals() public {
@@ -261,8 +260,7 @@ contract AminalTest is Test {
         bytes memory data1 = mover.getSkillData(888, 999);
         bytes memory data2 = mover.getSkillData(777, 666);
 
-
-        data = mover2.getSkillData(888,999,777,666);   
+        data = mover2.getSkillData(888, 999, 777, 666);
         aminals.callSkill{value: 0.01 ether}(1, address(mover), data);
         (x, y) = mover.getCoords(1);
         console.log("x = ", x, " y = ", y);

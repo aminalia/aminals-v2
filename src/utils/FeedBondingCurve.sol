@@ -8,21 +8,20 @@ import "../IAminal.sol";
 import "../Aminals.sol";
 
 contract FeedBondingCurve {
-
     address public aminals;
 
-      constructor (address _aminals ) {
+    constructor(address _aminals) {
         aminals = _aminals;
     }
 
-    function ratio_rule(uint256 amount) public returns (uint256)  { // ratio rule must equal 1 when amount = 0; and go to 0 when amount --> infinity
+    function ratio_rule(uint256 amount) public returns (uint256) { // ratio rule must equal 1 when amount = 0; and go to 0 when amount --> infinity
 
-        // int c = 1; 
-        // uint256 constant_v = (999 / 1000) ** (1/c); 
+        // int c = 1;
+        // uint256 constant_v = (999 / 1000) ** (1/c);
         // /// rule in order to ensure that when prior_energy = 0, it takes "c" amount to reach post_energy = 1;
         // /// given energy ranging from [ 0 - 1000];
 
-        // return constant_v ** amount; // need to divide by number > 1 rather than divide by number < 1 
+        // return constant_v ** amount; // need to divide by number > 1 rather than divide by number < 1
     }
 
     function feedBondingCurve(uint256 aminalID, uint256 amount) public {
@@ -33,9 +32,7 @@ contract FeedBondingCurve {
         // uint256 newgap = gap * ratio; /// need to make sure that ration is positive for solidity purposes
         // uint256 newEnergy = aminal.energyMax - newgap;
         // aminal.energyCurrent = newEnergy;
-
     }
-
 
     // feed function uses a negative exponential bonding curve, that starts at 0 and asymptotically
     // goes to 100
