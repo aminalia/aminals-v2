@@ -12,7 +12,6 @@ import "./nft/AminalsDescriptor.sol";
 import "./nft/ERC721S.sol";
 import "./skills/ISkills.sol";
 
-
 contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
     mapping(uint256 aminalId => Aminal aminal) public aminals;
     uint256 public lastAminalId;
@@ -192,7 +191,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
     // This function consumes energy and can be called by both skill contracts
     // and users
     // TODO: Allow users to specify the number of squeaks
-    function squeak(uint256 aminalId, uint amount) public payable {
+    function squeak(uint256 aminalId, uint256 amount) public payable {
         require(msg.value >= 0.01 ether, "Not enough ether");
 
         Aminal storage aminal = aminals[aminalId];
@@ -206,25 +205,28 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         _adjustLove(aminalId, amount, msg.sender, false);
     }
 
-    function addSkill(/* uint256 aminalId, */ address faddress) public  { // currently done such as to add the skills globally to all aminals
-      // Aminal storage aminal = aminals[aminalId]; 
-       skills[faddress] = true;
+    function addSkill( /* uint256 aminalId, */ address faddress) public {
+        // currently done such as to add the skills globally to all aminals
+        // Aminal storage aminal = aminals[aminalId];
+        skills[faddress] = true;
         // aminal.skills[aminal.Nskills++] = skill;
     }
 
-    function callSkill(uint256 aminalId, address skillAddress,  bytes calldata data ) public payable {
+    function callSkill(uint256 aminalId, address skillAddress, bytes calldata data) public payable {
         require(skills[skillAddress] == true);
         uint256 amount = ISkill(skillAddress).useSkill(msg.sender, aminalId, data);
         squeak(aminalId, amount);
     }
 
-    function callSkillInternal(address sender, uint256 aminalId, address skillAddress,  bytes calldata data ) public payable {
+    function callSkillInternal(address sender, uint256 aminalId, address skillAddress, bytes calldata data)
+        public
+        payable
+    {
         require(skills[msg.sender] == true);
         require(skills[skillAddress] == true);
         uint256 amount = ISkill(skillAddress).useSkill(sender, aminalId, data);
         squeak(aminalId, amount);
     }
-
 
     // TODO: Switch to passing the Aminal struct instead of the aminalId
     function _adjustLove(uint256 aminalId, uint256 love, address sender, bool increment) internal {

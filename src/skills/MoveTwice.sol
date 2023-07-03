@@ -10,16 +10,13 @@ import "../Aminals.sol";
 import "../skills/ISkills.sol";
 import "./Move2D.sol";
 
-
-
 contract MoveTwice is ISkill {
     address public aminals;
     address public mover;
 
-    constructor (address _aminals, address _mover ) {
+    constructor(address _aminals, address _mover) {
         aminals = _aminals;
         mover = _mover;
-
     }
 
     function useSkill(address sender, uint256 aminalId, bytes calldata data) public returns (uint256 squeak) {
@@ -28,18 +25,17 @@ contract MoveTwice is ISkill {
         return moveTwice(aminalId, sender, data1, data2);
     }
 
-
-
-
-    // DELETE - for testing only 
-    function moveTwice (uint256 aminalID, address sender, bytes memory data1, bytes memory data2 ) public returns (uint256) {
+    // DELETE - for testing only
+    function moveTwice(uint256 aminalID, address sender, bytes memory data1, bytes memory data2)
+        public
+        returns (uint256)
+    {
         IAminal(aminals).callSkillInternal(sender, aminalID, mover, data1);
         IAminal(aminals).callSkillInternal(sender, aminalID, mover, data2);
         return 0;
-    }   
+    }
 
-
-    // Getters 
+    // Getters
     function getSkillData(uint256 x1, uint256 y1, uint256 x2, uint256 y2) public returns (bytes memory data) {
         return abi.encode(abi.encode(x1, y1), abi.encode(x2, y2));
     }
@@ -47,11 +43,4 @@ contract MoveTwice is ISkill {
     // function getCoords (uint256 aminalID) public returns (uint256, uint256) {
     //     return (Coords2D[aminalID].x, Coords2D[aminalID].y);
     // }
-
-
-
-
-
 }
-
-
