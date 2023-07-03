@@ -1,40 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.20;
 
-interface IAminal {
-    struct Aminal {
-        uint256 momId;
-        uint256 dadId;
-        uint256 totalLove;
-        // TODO: Check whether gas usage is the same for a uint128
-        uint256 energy;
-        bool breeding;
-        mapping(uint256 aminalTwoId => bool readyToBreed) breedableWith;
-        mapping(address user => uint256 love) lovePerUser;
-        Visuals visuals;
-        mapping(uint8 => Skills) skills;
-        // uint8 Nskills;
-    }
+import "./IAminalStructs.sol";
 
-    // TODO: Migrate to VisualsRegistry
-    // Question: this should stay here, and reference the visuals in the VisualsRegistry, right ?
+interface IAminal is IAminalStructs {
 
-    struct Visuals {
-        uint256 backId;
-        uint256 armId;
-        uint256 tailId;
-        uint256 earsId;
-        uint256 bodyId;
-        uint256 faceId;
-        uint256 mouthId;
-        uint256 miscId;
-    }
-
-    // TODO: Migrate to SkillsRegistry
-    struct Skills {
-        string name;
-        address contractAddress;
-        // Human-readable ABI format
-        string functionSignature;
-    }
+    function callSkill(uint256 aminalId, address skillAddress,  bytes calldata data ) external payable;
+    function callSkillInternal(address sender, uint256 aminalId, address skillAddress,  bytes calldata data ) external payable ;
 }

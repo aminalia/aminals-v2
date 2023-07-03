@@ -10,11 +10,14 @@ import "./utils/FeedBondingCurve.sol";
 import "./utils/VisualsAuction.sol";
 import "./nft/AminalsDescriptor.sol";
 import "./nft/ERC721S.sol";
+import "./skills/ISkills.sol";
+
 
 contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
     mapping(uint256 aminalId => Aminal aminal) public aminals;
     uint256 public lastAminalId;
     VisualsAuction public visualsAuction;
+    mapping(address => bool) public skills;
 
     modifier _onlyAuction() {
         require(msg.sender == address(visualsAuction));
@@ -203,18 +206,25 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         _adjustLove(aminalId, amount, msg.sender, false);
     }
 
-    function addSkill(uint256 aminalId, string memory fname, address faddress) public view {
-
-       Aminal storage aminal = aminals[aminalId]; 
-       Skills memory skill = Skills(fname, faddress, "");
-    //    aminal.skills[aminal.Nskills++] = skill;
+    function addSkill(/* uint256 aminalId, */ address faddress) public  { // currently done such as to add the skills globally to all aminals
+      // Aminal storage aminal = aminals[aminalId]; 
+       skills[faddress] = true;
+        // aminal.skills[aminal.Nskills++] = skill;
     }
 
-    function callSkill(uint256 aminalId, bytes32, /* skillId */ bytes32 /* data */ ) public payable {
-        squeak((aminalId));
-        // TODO: Call skill based on data in the SkillsRegistry
-        // We'll likely want to use DELEGATECALL here
+    function callSkill(uint256 aminalId, address skillAddress,  bytes calldata data ) public payable {
+        require(skills[skillAddress] == true);
+        uint256 amount = ISkill(skillAddress).useSkill(msg.sender, aminalId, data);
+        squeak(aminalId, amount);
     }
+
+    function callSkillInternal(address sender, uint256 aminalId, address skillAddress,  bytes calldata data ) public payable {
+        require(skills[msg.sender] == true);
+        require(skills[skillAddress] == true);
+        uint256 amount = ISkill(skillAddress).useSkill(sender, aminalId, data);
+        squeak(aminalId, amount);
+    }
+
 
     // TODO: Switch to passing the Aminal struct instead of the aminalId
     function _adjustLove(uint256 aminalId, uint256 love, address sender, bool increment) internal {

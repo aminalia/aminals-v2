@@ -7,6 +7,7 @@ import "../src/IAminal.sol";
 import "../src/utils/VisualsAuction.sol";
 
 import "../src/skills/Move2D.sol";
+import "../src/skills/MoveTwice.sol";
 
 contract AminalTest is Test {
     Aminals public aminals;
@@ -32,10 +33,8 @@ contract AminalTest is Test {
         listAuctionedVisuals(i);
         uint256[8] memory arr = endAuction(i);
         spawnNewAminal(1, 2, arr);
-        Move2D mover = new Move2D();
-        mover.move2D(3, 100, 200);
-        (uint256 x, uint256 y) = mover.getCoords(3);
-        console.log("x = ", x, " y = ", y);
+        addAndUseSkills();
+
     }
 
     function registerVisuals() public {
@@ -82,10 +81,10 @@ contract AminalTest is Test {
     function squeak() public {
         vm.expectRevert("Not enough ether");
         console.log("Squeak without 0.01 ether");
-        aminals.squeak(1);
+        aminals.squeak(1, 1);
         console.log("Squeak with 0.01 ether");
         vm.expectRevert("Not enough love");
-        aminals.squeak{value: 0.01 ether}(1);
+        aminals.squeak{value: 0.01 ether}(1, 1);
         console.log("Squeak completed");
     }
 
@@ -240,5 +239,32 @@ contract AminalTest is Test {
             winnerIds[7]
         );
         console.log("spawned a new aminal with the new traits :)");
+    }
+
+    function addAndUseSkills() public {
+        // introduce skillsets
+        Move2D mover = new Move2D(address(aminals));
+        mover.move2D(3, 100, 200);
+        (uint256 x, uint256 y) = mover.getCoords(3);
+        console.log("x = ", x, " y = ", y);
+
+        // with proxy function call
+        aminals.addSkill(address(mover));
+        bytes memory data = mover.getSkillData(888, 999);
+        aminals.callSkill{value: 0.01 ether}(1, address(mover), data);
+        (x, y) = mover.getCoords(1);
+        console.log("x = ", x, " y = ", y);
+
+        // with proxy function call
+        MoveTwice mover2 = new MoveTwice(address(aminals), address(mover));
+        aminals.addSkill(address(mover2));
+        bytes memory data1 = mover.getSkillData(888, 999);
+        bytes memory data2 = mover.getSkillData(777, 666);
+
+
+        data = mover2.getSkillData(888,999,777,666);   
+        aminals.callSkill{value: 0.01 ether}(1, address(mover), data);
+        (x, y) = mover.getCoords(1);
+        console.log("x = ", x, " y = ", y);
     }
 }

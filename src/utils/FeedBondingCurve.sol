@@ -1,25 +1,38 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.20;
 
+import "forge-std/console.sol";
+import "forge-std/Test.sol";
+
+import "../IAminal.sol";
+import "../Aminals.sol";
+
 contract FeedBondingCurve {
 
-    function ratio_rule(uint256 amount) returns (uint256) public { // ratio rule must equal 1 when amount = 0; and go to 0 when amount --> infinity
-        
-        constant_v = (999 / 1000) ** (1/c); 
-        /// rule in order to ensure that when prior_energy = 0, it takes "c" amount to reach post_energy = 1;
-        /// given energy ranging from [ 0 - 1000];
+    address public aminals;
 
-        return constant_v ** amount;  
+      constructor (address _aminals ) {
+        aminals = _aminals;
     }
 
-    function feedBondingCurve(uint256 amount) public {
+    function ratio_rule(uint256 amount) public returns (uint256)  { // ratio rule must equal 1 when amount = 0; and go to 0 when amount --> infinity
 
-        amount = msg.value;
-        uint256 gap = aminal.energyMax - aminal.energyCurrent;
-        uint256 ratio = ration_rule(amount);
-        uint256 newgap = gap * ratio; /// need to make sure that ration is positive for solidity purposes
-        uint256 newEnergy = aminal.energyMax - newgap;
-        aminal.energyCurrent = newEnergy;
+        // int c = 1; 
+        // uint256 constant_v = (999 / 1000) ** (1/c); 
+        // /// rule in order to ensure that when prior_energy = 0, it takes "c" amount to reach post_energy = 1;
+        // /// given energy ranging from [ 0 - 1000];
+
+        // return constant_v ** amount; // need to divide by number > 1 rather than divide by number < 1 
+    }
+
+    function feedBondingCurve(uint256 aminalID, uint256 amount) public {
+        // Aminal storage aminal = aminals[aminalID];
+        // //amount = msg.value;
+        // uint256 gap = aminal.energyMax - aminal.energyCurrent;
+        // uint256 ratio = ration_rule(amount);
+        // uint256 newgap = gap * ratio; /// need to make sure that ration is positive for solidity purposes
+        // uint256 newEnergy = aminal.energyMax - newgap;
+        // aminal.energyCurrent = newEnergy;
 
     }
 

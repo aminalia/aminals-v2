@@ -4,10 +4,10 @@ pragma solidity ^0.8.20;
 import "forge-std/console.sol";
 import "forge-std/Test.sol";
 
-import "../IAminal.sol";
+import "../IAminalStructs.sol";
 import "../Aminals.sol";
 
-contract VisualsAuction is IAminal {
+contract VisualsAuction is IAminalStructs {
     Aminals public aminals;
 
     enum VisualsCat {
