@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 import "./IProposals.sol";
 
 contract AminalProposals is IProposals {
-    mapping(uint256 => mapping(address => uint256)) voted;
+    mapping(uint256 => mapping(uint256 => uint256)) voted;
 
     struct Proposal {
         ProposalType proposalType;
@@ -24,7 +24,7 @@ contract AminalProposals is IProposals {
     Proposal[] public proposals;
 
     event NewProposal(uint256 indexed proposalId, ProposalType indexed proposalType, address indexed proposer);
-    event Voted(uint256 indexed proposalId, address indexed voter, bool vote, uint256 votedYes, uint256 votedNo);
+    event Voted(uint256 indexed proposalId, uint256 indexed aminalID, bool vote, uint256 votedYes, uint256 votedNo);
     event VoteResult(
         uint256 indexed proposalId,
         bool pass,
@@ -40,7 +40,7 @@ contract AminalProposals is IProposals {
     }
 
     // TODO: Do they require a threashold of love to propose?
-    function proposeAddSkill(string calldata skillName, address skillAddress) public returns (uint256 proposalId) {
+    function proposeAddSkill(uint256 aminalID, string calldata skillName, address skillAddress) public returns (uint256 proposalId) {
         Proposal memory proposal = Proposal({
             proposalType: ProposalType.AddSkill,
             proposer: msg.sender,
@@ -60,7 +60,7 @@ contract AminalProposals is IProposals {
     }
 
     //  TODO: Do they require a threashold of love to propose?
-    function proposeRemoveSkill(string calldata description, address skillAddress)
+    function proposeRemoveSkill(uint256 aminalID, string calldata description, address skillAddress)
         public
         returns (uint256 proposalId)
     {
@@ -82,9 +82,9 @@ contract AminalProposals is IProposals {
         emit NewProposal(proposalId, proposal.proposalType, msg.sender);
     }
 
-    // TODO: consider adding love
+    // THIS IS A DEMOCRACY OF AMINALS: ONE AMINAL ONE VOTE :)
     // TODO: change voted from 1/2 to signed int128 to represent yes/no
-    function vote(uint256 proposalId, bool yesNo, uint256 membersLength, uint256 quorum, uint256 requiredMajority)
+    function vote(uint256 aminalID, uint256 proposalId, bool yesNo, uint256 membersLength, uint256 quorum, uint256 requiredMajority)
         external
     {
         require(msg.sender == aminals);
@@ -92,27 +92,27 @@ contract AminalProposals is IProposals {
         Proposal storage proposal = proposals[proposalId];
         require(proposal.closed == 0);
         // First vote
-        if (voted[proposalId][msg.sender] == 0) {
+        if (voted[proposalId][aminalID] == 0) {
             if (yesNo) {
                 proposal.votedYes++;
-                voted[proposalId][msg.sender] = 1;
+                voted[proposalId][aminalID] = 1;
             } else {
                 proposal.votedNo++;
-                voted[proposalId][msg.sender] = 2;
+                voted[proposalId][aminalID] = 2;
             }
-            emit Voted(proposalId, msg.sender, yesNo, proposal.votedYes, proposal.votedNo);
+            emit Voted(proposalId, aminalID, yesNo, proposal.votedYes, proposal.votedNo);
             // Changing Yes to No
-        } else if (voted[proposalId][msg.sender] == 1 && !yesNo && proposal.votedYes > 0) {
+        } else if (voted[proposalId][aminalID] == 1 && !yesNo && proposal.votedYes > 0) {
             proposal.votedYes--;
             proposal.votedNo++;
-            voted[proposalId][msg.sender] = 2;
-            emit Voted(proposalId, msg.sender, yesNo, proposal.votedYes, proposal.votedNo);
+            voted[proposalId][aminalID] = 2;
+            emit Voted(proposalId, aminalID, yesNo, proposal.votedYes, proposal.votedNo);
             // Changing No to Yes
-        } else if (voted[proposalId][msg.sender] == 2 && yesNo && proposal.votedNo > 0) {
+        } else if (voted[proposalId][aminalID] == 2 && yesNo && proposal.votedNo > 0) {
             proposal.votedYes++;
             proposal.votedNo--;
-            voted[proposalId][msg.sender] = 1;
-            emit Voted(proposalId, msg.sender, yesNo, proposal.votedYes, proposal.votedNo);
+            voted[proposalId][aminalID] = 1;
+            emit Voted(proposalId, aminalID, yesNo, proposal.votedYes, proposal.votedNo);
         }
 
         uint256 voteCount = proposal.votedYes + proposal.votedNo;
