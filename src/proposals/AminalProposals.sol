@@ -102,7 +102,7 @@ contract AminalProposals is IProposals {
             }
             emit Voted(proposalId, msg.sender, yesNo, proposal.votedYes, proposal.votedNo);
             // Changing Yes to No
-        } else if (voted[proposalId][msg.sender] == 1 && !yesNo && voted[proposalId][msg.sender] > 0) {
+        } else if (voted[proposalId][msg.sender] == 1 && !yesNo && proposal.votedYes > 0) {
             proposal.votedYes--;
             proposal.votedNo++;
             voted[proposalId][msg.sender] = 2;
