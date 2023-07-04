@@ -11,6 +11,8 @@ import "./utils/VisualsAuction.sol";
 import "./nft/AminalsDescriptor.sol";
 import "./nft/ERC721S.sol";
 import "./skills/ISkills.sol";
+import "./skills/VoteSkill.sol";
+
 import "./proposals/IProposals.sol";
 import "./proposals/AminalProposals.sol";
 
@@ -18,6 +20,8 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
     mapping(uint256 aminalId => Aminal aminal) public aminals;
     uint256 public lastAminalId;
     VisualsAuction public visualsAuction;
+    VoteSkill public voteSkill;
+
     mapping(address => bool) public skills;
 
     IProposals public proposals;
@@ -33,7 +37,8 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
 
     constructor() {
         visualsAuction = new VisualsAuction(address(this));
-
+        voteSkill = new VoteSkill(address(this));
+        skills[address(voteSkill)] = true;
         // decide if and how this proposal address could be modified/upgraded
         proposals = IProposals(address(new AminalProposals(address(this))));
 
@@ -224,13 +229,6 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         _adjustLove(aminalId, amount, msg.sender, false);
     }
 
-    function addSkill(address faddress) public {
-        // currently done such as to add the skills globally to all aminals
-        // Aminal storage aminal = aminals[aminalId];
-        skills[faddress] = true;
-        // aminal.skills[aminal.Nskills++] = skill;
-    }
-
     function callSkill(uint256 aminalId, address skillAddress, bytes calldata data) public payable {
         require(skills[skillAddress] == true);
         uint256 amount = ISkill(skillAddress).useSkill(msg.sender, aminalId, data);
@@ -283,8 +281,10 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
 
     function proposeAddSkill(uint256 aminalID, string calldata skillName, address skillAddress) public returns (uint256 proposalId) {
         // TODO: require minimum love amount?
+
         proposalId = proposals.proposeAddSkill(aminalID, skillName, skillAddress);
-        vote(aminalID, proposalId, true);
+        voteYes(aminalID, proposalId);
+
     }
 
     function proposeRemoveSkill(uint256 aminalID, string calldata description, address skillAddress)
@@ -293,7 +293,22 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
     {
         // TODO: require minimum love amount?
         proposalId = proposals.proposeRemoveSkill(aminalID, description, skillAddress);
-        vote(aminalID, proposalId, true);
+        voteYes(proposalId);
+    }
+
+    function addSkill(address faddress) public {
+        // currently done such as to add the skills globally to all aminals
+        // Aminal storage aminal = aminals[aminalId];
+        skills[faddress] = true;
+        // aminal.skills[aminal.Nskills++] = skill;
+    }
+
+    function removeSkill(address faddress) public {
+        // currently done such as to add the skills globally to all aminals
+        // Aminal storage aminal = aminals[aminalId];
+        skills[faddress] = false;
+        // aminal.skills[aminal.Nskills++] = skill;
+
     }
 
     function voteNo(uint256 aminalID, uint256 proposalId) public {
@@ -322,8 +337,8 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
             // address address2 = proposals.getAddress2(proposalId);
 
             uint256 amount = proposals.getAmount(proposalId);
-            if (proposalType == IProposals.ProposalType.AddSkill) skills[address1] = true;
-            else if (proposalType == IProposals.ProposalType.RemoveSkill) skills[address1] = false;
+            if (proposalType == IProposals.ProposalType.AddSkill) addSkill(address1);
+            else if (proposalType == IProposals.ProposalType.RemoveSkill) removeSkill(address1);
             proposals.close(proposalId);
         }
     }

@@ -33,8 +33,8 @@ contract ProposalsTest is Test {
         // check vote is closed
         // check execution successful
         // use new skill
-
     }
+
 
     function proposeAddSkill(uint256 aminalID, string memory _skillName, address _skillAddress) public returns (uint proposalId) {
          proposalId = proposals.proposeAddSkill(aminalID, _skillName, _skillAddress);
@@ -47,7 +47,9 @@ contract ProposalsTest is Test {
     function voteYes(uint256 aminalID, uint256 _proposalId) public {
         aminals.voteYes(aminalID, _proposalId);
     }
+
     function voteNo(uint256 aminalID, uint256 _proposalId) public {
         aminals.voteNo(aminalID, _proposalId);
+
     }
 }
