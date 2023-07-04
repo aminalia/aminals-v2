@@ -30,20 +30,23 @@ contract ProposalsTest is Test {
         // check vote is closed
         // check execution successful
         // use new skill
-
     }
 
-    function proposeAddSkill(string memory _skillName, address _skillAddress) public returns (uint proposalId) {
-         proposalId = proposals.proposeAddSkill(_skillName, _skillAddress);
+    function proposeAddSkill(string memory _skillName, address _skillAddress) public returns (uint256 proposalId) {
+        proposalId = proposals.proposeAddSkill(_skillName, _skillAddress);
     }
 
-    function proposeRemoveSkill(string memory _description, address _skillAddress) public  returns (uint proposalId) {
-         proposalId = proposals.proposeRemoveSkill(_description, _skillAddress);
+    function proposeRemoveSkill(string memory _description, address _skillAddress)
+        public
+        returns (uint256 proposalId)
+    {
+        proposalId = proposals.proposeRemoveSkill(_description, _skillAddress);
     }
 
     function voteYes(uint256 _proposalId) public {
         aminals.voteYes(_proposalId);
     }
+
     function voteNo(uint256 _proposalId) public {
         aminals.voteNo(_proposalId);
     }
