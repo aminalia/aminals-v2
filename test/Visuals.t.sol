@@ -3,8 +3,6 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
 import "../src/Aminals.sol";
-import "../src/proposals/AminalProposals.sol";
-import "../src/proposals/IProposals.sol";
 
 import "../src/IAminal.sol";
 
@@ -14,7 +12,6 @@ contract VisualsTest is Test {
 
     function setUp() public {
         aminals = new Aminals();
-        proposals = aminals.proposals();
     }
 
     function test_RegisterVisuals() public {

@@ -318,6 +318,8 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         if (proposals.toExecute(proposalId)) {
             string memory description = proposals.getDescription(proposalId);
             address address1 = proposals.getAddress1(proposalId);
+            // address address2 = proposals.getAddress2(proposalId);
+
             uint256 amount = proposals.getAmount(proposalId);
             if (proposalType == IProposals.ProposalType.AddSkill) skills[address1] = true;
             else if (proposalType == IProposals.ProposalType.RemoveSkill) skills[address1] = false;
