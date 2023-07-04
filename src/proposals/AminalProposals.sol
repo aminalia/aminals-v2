@@ -39,7 +39,7 @@ contract AminalProposals is IProposals {
         aminals = _aminals;
     }
 
-    // Do they require a threashold of love to propose?
+    // TODO: Do they require a threashold of love to propose?
     function proposeAddSkill(string calldata skillName, address skillAddress) public returns (uint256 proposalId) {
         Proposal memory proposal = Proposal({
             proposalType: ProposalType.AddSkill,
@@ -59,7 +59,7 @@ contract AminalProposals is IProposals {
         emit NewProposal(proposalId, proposal.proposalType, msg.sender);
     }
 
-    // Do they require a threashold of love to propose?
+    //  TODO: Do they require a threashold of love to propose?
     function proposeRemoveSkill(string calldata description, address skillAddress)
         public
         returns (uint256 proposalId)
@@ -82,6 +82,8 @@ contract AminalProposals is IProposals {
         emit NewProposal(proposalId, proposal.proposalType, msg.sender);
     }
 
+    // TODO: consider adding love
+    // TODO: change voted from 1/2 to signed int128 to represent yes/no
     function vote(uint256 proposalId, bool yesNo, uint256 membersLength, uint256 quorum, uint256 requiredMajority)
         external
     {
