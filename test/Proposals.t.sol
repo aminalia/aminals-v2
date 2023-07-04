@@ -21,10 +21,13 @@ contract ProposalsTest is Test {
     }
 
     function test_Run() public {
-        uint256 proposalId = proposeAddSkill("Move Skill", address(moveSkill));
-        voteYes(proposalId);
-        uint256 proposalId2 = proposeRemoveSkill("No longer needed", address(moveSkill));
-        voteYes(proposalId2);
+        uint256 a1 = aminals.spawnAminal(0, 0, 1, 1, 1, 1, 1, 1, 1, 1);
+        uint256 a2 = aminals.spawnAminal(0, 0, 2, 2, 2, 2, 2, 2, 2, 2);
+
+        uint256 proposalId = proposeAddSkill(a1, "Move Skill", address(moveSkill));
+        voteYes(a1, proposalId);
+        uint256 proposalId2 = proposeRemoveSkill(a1, "No longer needed", address(moveSkill));
+        voteYes(a1, proposalId2);
 
         // wait time
         // check vote is closed
@@ -33,18 +36,18 @@ contract ProposalsTest is Test {
 
     }
 
-    function proposeAddSkill(string memory _skillName, address _skillAddress) public returns (uint proposalId) {
-         proposalId = proposals.proposeAddSkill(_skillName, _skillAddress);
+    function proposeAddSkill(uint256 aminalID, string memory _skillName, address _skillAddress) public returns (uint proposalId) {
+         proposalId = proposals.proposeAddSkill(aminalID, _skillName, _skillAddress);
     }
 
-    function proposeRemoveSkill(string memory _description, address _skillAddress) public  returns (uint proposalId) {
-         proposalId = proposals.proposeRemoveSkill(_description, _skillAddress);
+    function proposeRemoveSkill(uint256 aminalID, string memory _description, address _skillAddress) public  returns (uint proposalId) {
+         proposalId = proposals.proposeRemoveSkill(aminalID, _description, _skillAddress);
     }
 
-    function voteYes(uint256 _proposalId) public {
-        aminals.voteYes(_proposalId);
+    function voteYes(uint256 aminalID, uint256 _proposalId) public {
+        aminals.voteYes(aminalID, _proposalId);
     }
-    function voteNo(uint256 _proposalId) public {
-        aminals.voteNo(_proposalId);
+    function voteNo(uint256 aminalID, uint256 _proposalId) public {
+        aminals.voteNo(aminalID, _proposalId);
     }
 }

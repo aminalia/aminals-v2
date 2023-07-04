@@ -7,12 +7,12 @@ interface IProposals {
         RemoveSkill //  1 Remove skill
     }
 
-    function proposeAddSkill(string calldata skillName, address skillAddress) external returns (uint256 proposalId);
-    function proposeRemoveSkill(string calldata description, address skillAddress)
+    function proposeAddSkill(uint256 aminalID, string calldata skillName, address skillAddress) external returns (uint256 proposalId);
+    function proposeRemoveSkill(uint256 aminalID, string calldata description, address skillAddress)
         external
         returns (uint256 proposalId);
 
-    function vote(uint256 proposalId, bool yesNo, uint256 membersLength, uint256 quorum, uint256 requiredMajority)
+    function vote(uint256 aminalID, uint256 proposalId, bool yesNo, uint256 membersLength, uint256 quorum, uint256 requiredMajority)
         external;
 
     function getInitiated(uint256 proposalId) external view returns (uint256);

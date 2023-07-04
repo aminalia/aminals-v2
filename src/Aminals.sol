@@ -281,33 +281,34 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         return price;
     }
 
-    function proposeAddSkill(string calldata skillName, address skillAddress) public returns (uint256 proposalId) {
+    function proposeAddSkill(uint256 aminalID, string calldata skillName, address skillAddress) public returns (uint256 proposalId) {
         // TODO: require minimum love amount?
-        proposalId = proposals.proposeAddSkill(skillName, skillAddress);
-        vote(proposalId, true);
+        proposalId = proposals.proposeAddSkill(aminalID, skillName, skillAddress);
+        vote(aminalID, proposalId, true);
     }
 
-    function proposeRemoveSkill(string calldata description, address skillAddress)
+    function proposeRemoveSkill(uint256 aminalID, string calldata description, address skillAddress)
         public
         returns (uint256 proposalId)
     {
         // TODO: require minimum love amount?
-        proposalId = proposals.proposeRemoveSkill(description, skillAddress);
-        vote(proposalId, true);
+        proposalId = proposals.proposeRemoveSkill(aminalID, description, skillAddress);
+        vote(aminalID, proposalId, true);
     }
 
-    function voteNo(uint256 proposalId) public {
+    function voteNo(uint256 aminalID, uint256 proposalId) public {
         // require love
-        vote(proposalId, false);
+        vote(aminalID, proposalId, false);
     }
 
-    function voteYes(uint256 proposalId) public {
+    function voteYes(uint256 aminalID, uint256 proposalId) public {
         // require love
-        vote(proposalId, true);
+        vote(aminalID, proposalId, true);
     }
 
-    function vote(uint256 proposalId, bool yesNo) internal {
+    function vote(uint256 aminalID, uint256 proposalId, bool yesNo) internal {
         proposals.vote(
+            aminalID,
             proposalId,
             yesNo,
             lastAminalId,
