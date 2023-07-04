@@ -23,15 +23,11 @@ contract ProposalsTest is Test {
         uint256 proposalId = proposeSkills(address(moveSkill));
         voteAddSkill(proposalId);
         voteRemoveSkill(proposalId);
-
     }
 
-    function proposeSkills (address moveSkill) {
-    }
+    function proposeSkills(address moveSkill) {}
 
-    function voteAddSkill (uint256) {
-    }
+    function voteAddSkill(uint256) {}
 
-    function voteRemoveSkill (uint256) {
-    }
+    function voteRemoveSkill(uint256) {}
 }
