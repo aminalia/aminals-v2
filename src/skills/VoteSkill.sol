@@ -12,13 +12,6 @@ import "../skills/ISkills.sol";
 contract VoteSkill is ISkill {
     address public aminals;
 
-    mapping(uint256 aminalId => Coordinates2D coords) public Coords2D;
-
-    struct Coordinates2D {
-        uint256 x;
-        uint256 y;
-    }
-
     constructor(address _aminals) {
         aminals = _aminals;
     }
@@ -27,11 +20,6 @@ contract VoteSkill is ISkill {
         require(msg.sender == aminals);
         (uint256 proposalId) = abi.decode(data, (uint256));
         return _vote(aminalId, proposalId, sender);
-    }
-
-    // DELETE - for testing only
-    function voteYes(uint256 aminalID, uint256 proposalId, address sender) public returns (uint256) {
-        return _vote(aminalID, proposalId, sender);
     }
 
     // Getters
