@@ -36,7 +36,7 @@ contract MoveTwice is ISkill {
     }
 
     // Getters
-    function getSkillData(uint256 x1, uint256 y1, uint256 x2, uint256 y2) public returns (bytes memory data) {
+    function getSkillData(uint256 x1, uint256 y1, uint256 x2, uint256 y2) public pure returns (bytes memory data) {
         return abi.encode(abi.encode(x1, y1), abi.encode(x2, y2));
     }
 

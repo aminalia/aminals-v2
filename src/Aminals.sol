@@ -33,7 +33,10 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
 
     constructor() {
         visualsAuction = new VisualsAuction(address(this));
+
+        // decide if and how this proposal address could be modified/upgraded
         proposals = IProposals(address(new AminalProposals(address(this))));
+
         // initialize the AminalsDescriptor with empty SVG for index 0
         string memory emptySVG = "";
         console.log("Adding empty bg = ", addBackground(emptySVG));
@@ -279,7 +282,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
     }
 
     function proposeAddSkill(string calldata skillName, address skillAddress) public returns (uint256 proposalId) {
-        // require love amount
+        // TODO: require minimum love amount?
         proposalId = proposals.proposeAddSkill(skillName, skillAddress);
         vote(proposalId, true);
     }
@@ -288,16 +291,10 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         public
         returns (uint256 proposalId)
     {
-        // require love amount
+        // TODO: require minimum love amount?
         proposalId = proposals.proposeRemoveSkill(description, skillAddress);
         vote(proposalId, true);
     }
-
-    // function proposeAddTrait(string calldata traitString) public returns (uint256 proposalId) {
-    //     // require love amount
-    //     proposalId = proposals.proposeAddTrait(traitString);
-    //     vote(proposalId, true);
-    // }
 
     function voteNo(uint256 proposalId) public {
         // require love

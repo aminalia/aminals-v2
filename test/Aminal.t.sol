@@ -261,8 +261,6 @@ contract AminalTest is Test {
         // with proxy function call
         MoveTwice mover2 = new MoveTwice(address(aminals), address(mover));
         aminals.addSkill(address(mover2));
-        bytes memory data1 = mover.getSkillData(888, 999);
-        bytes memory data2 = mover.getSkillData(777, 666);
 
         data = mover2.getSkillData(888, 999, 777, 666);
         aminals.callSkill{value: 0.01 ether}(1, address(mover), data);

@@ -23,7 +23,7 @@ contract Move2D is ISkill {
         aminals = _aminals;
     }
 
-    function useSkill(address sender, uint256 aminalId, bytes calldata data) public returns (uint256 squeak) {
+    function useSkill(address /* sender */, uint256 aminalId, bytes calldata data) public returns (uint256 squeak) {
         require(msg.sender == aminals);
         (uint256 x, uint256 y) = abi.decode(data, (uint256, uint256));
         return _move2D(aminalId, x, y);
@@ -35,11 +35,11 @@ contract Move2D is ISkill {
     }
 
     // Getters
-    function getSkillData(uint256 x, uint256 y) public returns (bytes memory data) {
+    function getSkillData(uint256 x, uint256 y) public pure returns (bytes memory data) {
         return abi.encode(x, y);
     }
 
-    function getCoords(uint256 aminalID) public returns (uint256, uint256) {
+    function getCoords(uint256 aminalID) public view returns (uint256, uint256) {
         return (Coords2D[aminalID].x, Coords2D[aminalID].y);
     }
 
