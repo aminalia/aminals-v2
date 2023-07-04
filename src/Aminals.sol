@@ -11,12 +11,20 @@ import "./utils/VisualsAuction.sol";
 import "./nft/AminalsDescriptor.sol";
 import "./nft/ERC721S.sol";
 import "./skills/ISkills.sol";
+import "./proposals/IProposals.sol";
+import "./proposals/AminalProposals.sol";
 
 contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
     mapping(uint256 aminalId => Aminal aminal) public aminals;
     uint256 public lastAminalId;
     VisualsAuction public visualsAuction;
     mapping(address => bool) public skills;
+
+    IProposals public proposals;
+
+    uint256 public quorum = 80;
+    uint256 public quorumDecayPerWeek = 10;
+    uint256 public requiredMajority = 70;
 
     modifier _onlyAuction() {
         require(msg.sender == address(visualsAuction));
@@ -25,6 +33,9 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
 
     constructor() {
         visualsAuction = new VisualsAuction(address(this));
+
+        // decide if and how this proposal address could be modified/upgraded
+        proposals = IProposals(address(new AminalProposals(address(this))));
 
         // initialize the AminalsDescriptor with empty SVG for index 0
         string memory emptySVG = "";
@@ -88,6 +99,14 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
     function getEnergy(uint256 aminalID) public view returns (uint256) {
         Aminal storage aminal = aminals[aminalID];
         return aminal.energy;
+    }
+
+    function getQuorum(uint256 proposalTime, uint256 currentTime) public view returns (uint256) {
+        if (quorum > (currentTime - proposalTime) * quorumDecayPerWeek / (1 weeks)) {
+            return (quorum - currentTime - proposalTime) * quorumDecayPerWeek / (1 weeks);
+        } else {
+            return 0;
+        }
     }
 
     function feed(uint256 aminalId) public payable returns (uint256) {
@@ -205,7 +224,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         _adjustLove(aminalId, amount, msg.sender, false);
     }
 
-    function addSkill( /* uint256 aminalId, */ address faddress) public {
+    function addSkill(address faddress) public {
         // currently done such as to add the skills globally to all aminals
         // Aminal storage aminal = aminals[aminalId];
         skills[faddress] = true;
@@ -260,6 +279,52 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         if (price < 1) price++;
 
         return price;
+    }
+
+    function proposeAddSkill(string calldata skillName, address skillAddress) public returns (uint256 proposalId) {
+        // TODO: require minimum love amount?
+        proposalId = proposals.proposeAddSkill(skillName, skillAddress);
+        vote(proposalId, true);
+    }
+
+    function proposeRemoveSkill(string calldata description, address skillAddress)
+        public
+        returns (uint256 proposalId)
+    {
+        // TODO: require minimum love amount?
+        proposalId = proposals.proposeRemoveSkill(description, skillAddress);
+        vote(proposalId, true);
+    }
+
+    function voteNo(uint256 proposalId) public {
+        // require love
+        vote(proposalId, false);
+    }
+
+    function voteYes(uint256 proposalId) public {
+        // require love
+        vote(proposalId, true);
+    }
+
+    function vote(uint256 proposalId, bool yesNo) internal {
+        proposals.vote(
+            proposalId,
+            yesNo,
+            lastAminalId,
+            getQuorum(proposals.getInitiated(proposalId), block.timestamp),
+            requiredMajority
+        );
+        IProposals.ProposalType proposalType = proposals.getProposalType(proposalId);
+        if (proposals.toExecute(proposalId)) {
+            string memory description = proposals.getDescription(proposalId);
+            address address1 = proposals.getAddress1(proposalId);
+            // address address2 = proposals.getAddress2(proposalId);
+
+            uint256 amount = proposals.getAmount(proposalId);
+            if (proposalType == IProposals.ProposalType.AddSkill) skills[address1] = true;
+            else if (proposalType == IProposals.ProposalType.RemoveSkill) skills[address1] = false;
+            proposals.close(proposalId);
+        }
     }
 
     function _log2(uint256 x) private pure returns (uint256 y) {

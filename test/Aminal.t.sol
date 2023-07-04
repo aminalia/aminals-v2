@@ -5,6 +5,7 @@ import "forge-std/Test.sol";
 import "../src/Aminals.sol";
 import "../src/IAminal.sol";
 import "../src/utils/VisualsAuction.sol";
+import "../src/proposals/AminalProposals.sol";
 
 import "../src/skills/Move2D.sol";
 import "../src/skills/MoveTwice.sol";
@@ -12,9 +13,12 @@ import "../src/skills/MoveTwice.sol";
 contract AminalTest is Test {
     Aminals public aminals;
     VisualsAuction public visualsAuction;
+    IProposals public proposals;
 
     function setUp() public {
         aminals = new Aminals();
+        proposals = aminals.proposals();
+
         visualsAuction = VisualsAuction(aminals.visualsAuction());
     }
 
@@ -257,8 +261,6 @@ contract AminalTest is Test {
         // with proxy function call
         MoveTwice mover2 = new MoveTwice(address(aminals), address(mover));
         aminals.addSkill(address(mover2));
-        bytes memory data1 = mover.getSkillData(888, 999);
-        bytes memory data2 = mover.getSkillData(777, 666);
 
         data = mover2.getSkillData(888, 999, 777, 666);
         aminals.callSkill{value: 0.01 ether}(1, address(mover), data);
