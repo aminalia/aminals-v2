@@ -164,8 +164,8 @@ contract AminalTest is Test {
         vm.prank(owner);
         visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.EARS, 0);
 
-        VisualsAuction.Auction memory auction;
-        auction = visualsAuction.getAuctionByID(auctionID);
+        // VisualsAuction.Auction memory auction;
+        // auction = visualsAuction.getAuctionByID(auctionID);
 
         address owner2 = 0x2D3C242d2C074D523112093C67d1c01Bb27ca40D;
         vm.prank(owner2);
@@ -185,18 +185,17 @@ contract AminalTest is Test {
         VisualsAuction.Auction memory auction;
         auction = visualsAuction.getAuctionByID(auctionID);
 
-        console.log("CONTRACT ADDRESS: ", address(visualsAuction));
-        console.log("Now.--.---.----------", auction.visualIds[2][0]);
-        console.log("Now.--.---.----------", auction.aminalIdOne);
         console.log("displaying visuals for auction id = ", auctionID);
 
         for (uint256 i = 0; i < 8; i++) {
             console.log("iterating through category ", i);
 
-            for (uint256 j = 2; j < 10; j++) {
-                console.log("---> index: ", j, " === value: ", auction.visualIds[j][i]);
-                console.log("---> VOTES: === ", auction.visualIdVotes[j][i]);
-                console.log(aminals.getVisuals(i, auction.visualIds[j][i]));
+            for (uint256 j = 0; j < 10; j++) {
+                if(auction.visualIds[j][i] != 0 && auction.visualIdVotes[j][i] != 0) {
+                    console.log("---> category: ", i, " - index: ", j);
+                    console.log("=== value: ", auction.visualIds[j][i], "---> VOTES: === ", auction.visualIdVotes[j][i]);
+                    console.log(aminals.getVisuals(i, auction.visualIds[j][i]));
+                }
             }
         }
     }

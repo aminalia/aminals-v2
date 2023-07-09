@@ -140,34 +140,23 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
 
     function getVisuals(uint256 category, uint256 id) public view returns (string memory) {
         if (VisualsCat(category) == VisualsCat.BACK) {
-            if (backgrounds.length > id) {
-                return backgrounds[id];
-            } else if (VisualsCat(category) == VisualsCat.ARM) {
-                if (arms.length > id) {
-                    return arms[id];
-                } else if (VisualsCat(category) == VisualsCat.TAIL) {
-                    if (tails.length > id) {
-                        return tails[id];
-                    } else if (VisualsCat(category) == VisualsCat.EARS) {
-                        if (ears.length > id) {
-                            return ears[id];
-                        } else if (VisualsCat(category) == VisualsCat.BODY) {
-                            if (bodies.length > id) {
-                                return bodies[id];
-                            } else if (VisualsCat(category) == VisualsCat.FACE) {
-                                if (faces.length > id) {
-                                    return faces[id];
-                                } else if (VisualsCat(category) == VisualsCat.MOUTH) {
-                                    if (mouths.length > id) return mouths[id];
-                                } else if (VisualsCat(category) == VisualsCat.MISC) {
-                                    if (backgrounds.length > id) return miscs[id];
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            if (backgrounds.length > id) { return backgrounds[id]; }
+        } else if (VisualsCat(category) == VisualsCat.ARM) {
+            if (arms.length > id) { return arms[id]; } 
+        } else if (VisualsCat(category) == VisualsCat.TAIL) {
+             if (tails.length > id) { return tails[id]; } 
+        } else if (VisualsCat(category) == VisualsCat.EARS) {
+            if (ears.length > id) { return ears[id]; }
+        } else if (VisualsCat(category) == VisualsCat.BODY) {
+            if (bodies.length > id) { return bodies[id]; }
+        } else if (VisualsCat(category) == VisualsCat.FACE) {
+            if (faces.length > id) { return faces[id]; }
+        } else if (VisualsCat(category) == VisualsCat.MOUTH) {
+            if (mouths.length > id) { return mouths[id]; }
+        } else if (VisualsCat(category) == VisualsCat.MISC) {
+            if (backgrounds.length > id) { return miscs[id]; }
         }
+        
         return "";
     }
 

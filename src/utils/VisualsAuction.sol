@@ -64,7 +64,6 @@ contract VisualsAuction is IAminalStructs {
     }
 
     function getAuctionByID(uint256 auctionID) public view returns (Auction memory) {
-        console.log("returning for auction ID = ", auctionID);
         return auctions[auctionID];
     }
 
@@ -149,16 +148,18 @@ contract VisualsAuction is IAminalStructs {
 
         uint256 price = priceOne + priceTwo;
 
-        console.log("required ether to submit new visual === ", price);
-        console.log("received the following amount === ", msg.value);
+        // console.log("required ether to submit new visual === ", price);
+        // console.log("received the following amount === ", msg.value);
 
         require(msg.value >= price, "Not enough ether to propose a new Visual");
 
         // This starts at 2 because the first two array values are used by the Aminal's traits
         for (uint256 i = 2; i <= 10; i++) {
-            console.log("Iterating thourgh .... ", i, " . -- where auction.visualsIds cat = ", category);
+            // console.log("Iterating thourgh .... ", i, " . -- where auction.visualsIds cat = ", category);
+
             // Throw error if visual is not registered because slots are taken up
             if (i == 10) revert("Max 8 proposals allowed per category");
+
             // Assign visualId if empty slot
             if (auction.visualIds[i][category] == 0) {
                 auction.visualIds[i][category] = visualId;
@@ -179,8 +180,8 @@ contract VisualsAuction is IAminalStructs {
             visualVoted[msg.sender][auctionId][category] < totallove, "Already consumed all of your love with votes"
         );
 
-        console.log("********** a vote has been casted on ", category, " / ", i);
-        console.log(" == with weight = ", totallove, " .  on auctionId = ", auctionId);
+         console.log("********** a vote has been casted on category: ", category, " /  index: ", i);
+        // console.log(" == with weight = ", totallove, " .  on auctionId = ", auctionId);
 
         auction.visualIdVotes[i][category] += (totallove);
 
