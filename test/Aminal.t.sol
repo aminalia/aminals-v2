@@ -42,7 +42,7 @@ contract AminalTest is Test {
 
     function registerVisuals() public {
         // first aminal
-        console.log("aminal bg1 = ", aminals.addBackground("bg1"));
+        aminals.addBackground("bg1");
         aminals.addArm("arm");
         aminals.addTail("tail");
         aminals.addEar("ear");
@@ -83,12 +83,9 @@ contract AminalTest is Test {
 
     function squeak() public {
         vm.expectRevert("Not enough ether");
-        console.log("Squeak without 0.01 ether");
         aminals.squeak(1, 1);
-        console.log("Squeak with 0.01 ether");
         vm.expectRevert("Not enough love");
         aminals.squeak{value: 0.01 ether}(1, 1);
-        console.log("Squeak completed");
     }
 
     function feed() public {
@@ -146,19 +143,20 @@ contract AminalTest is Test {
         uint256 id9 = aminals.addBody("body10");
         uint256 id10 = aminals.addBody("body11");
 
+        vm.expectRevert("Not enough ether to propose a new Visual");
         visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.FACE, id1);
-        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id2);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id2);
         // Test making a bunch of proposals
-        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id3);
-        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id4);
-        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id5);
-        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id6);
-        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id7);
-        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id8);
-        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id9);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id3);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id4);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id5);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id6);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id7);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id8);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id9);
         // 9th proposal fails as there is only 8 slots per category
         vm.expectRevert("Max 8 proposals allowed per category");
-        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id10);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id10);
     }
 
     function voteTraits(uint256 auctionID) public {

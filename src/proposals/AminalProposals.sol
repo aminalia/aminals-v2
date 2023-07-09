@@ -4,6 +4,7 @@ import "./IProposals.sol";
 
 contract AminalProposals is IProposals {
     mapping(uint256 => mapping(uint256 => uint256)) voted;
+    mapping(uint256 => mapping(address => uint256)) loveVotes;
 
     struct Proposal {
         ProposalType proposalType;
@@ -19,9 +20,24 @@ contract AminalProposals is IProposals {
         bool pass;
     }
 
+    struct LoveProposal {
+        ProposalType proposalType;
+        address proposer;
+        string description;
+        address address1;
+        address address2;
+        uint256 amount;
+        uint256 votedNo;
+        uint256 votedYes;
+        uint256 initiated;
+        uint256 closed;
+        bool pass; 
+    }
+
     address public aminals;
     bool public initialised;
     Proposal[] public proposals;
+    LoveProposal[] public loveProposals;
 
     event NewProposal(uint256 indexed proposalId, ProposalType indexed proposalType, address indexed proposer);
     event Voted(uint256 indexed proposalId, uint256 indexed aminalID, bool vote, uint256 votedYes, uint256 votedNo);
@@ -35,7 +51,7 @@ contract AminalProposals is IProposals {
         uint256 requiredMajority
     );
 
-    constructor(address _aminals) {
+    constructor(address _aminals)  {
         aminals = _aminals;
     }
 

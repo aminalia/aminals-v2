@@ -9,30 +9,97 @@ import "../Aminals.sol";
 
 import "../skills/ISkills.sol";
 
-contract VoteSkill is ISkill {
-    address public aminals;
+import "../proposals/IProposals.sol";
+import "../proposals/AminalProposals.sol";
 
-    constructor(address _aminals) {
+contract VoteSkill is ISkill, AminalProposals {
+
+    uint256 public LoveQuorum = 80;
+    uint256 public LoveQuorumDecayPerWeek = 10;
+    uint256 public LoveRequiredMajority = 50;
+
+
+
+    constructor(address _aminals) AminalProposals(_aminals){
         aminals = _aminals;
     }
 
     function useSkill(address sender, uint256 aminalId, bytes calldata data) public returns (uint256 squeak) {
         require(msg.sender == aminals);
-        (uint256 proposalId) = abi.decode(data, (uint256));
-        return _vote(aminalId, proposalId, sender);
+
+        // Aminal amin = Aminals(aminals).getAminalById(aminalId);
+        // console.log(amin.tokenURI(1));
+
+        (uint256 proposalId, bool vote) = abi.decode(data, (uint256, bool));
+
+        return _vote(aminalId, sender, proposalId, vote, Aminals(aminals).getAminalLoveTotal(aminalId), LoveQuorum, LoveRequiredMajority);
     }
+
+        // function _vote(uint256 aminalID, address sender, uint256 proposalId, bool yesNo, uint256 membersLength, uint256 quorum, uint256 requiredMajority) internal returns (uint256 squeak) {
 
     // Getters
-    function getSkillData(uint256 proposalId) public pure returns (bytes memory data) {
-        return abi.encode(proposalId);
+    function getSkillData(uint256 proposalId, bool vote) public pure returns (bytes memory data) {
+        return abi.encode(proposalId, vote);
     }
 
+    event LoveVoted(uint256 indexed proposalId, uint256 indexed aminalID, bool vote, uint256 votedYes, uint256 votedNo);
+    event LoveVoteResult(
+        uint256 indexed proposalId,
+        bool pass,
+        uint256 votes,
+        uint256 quorumPercent,
+        uint256 membersLength,
+        uint256 yesPercent,
+        uint256 requiredMajority
+    );
+
+
     // Internal functions
-    function _vote(uint256 aminalID, uint256 proposalId, address sender) internal returns (uint256 squeak) {
+
+    // THIS IS A MERITOCRACY BASED ON LOVE THAT AMINAL HAS FOR MSG.SENDER
+
+    function _vote(uint256 aminalID, address sender, uint256 proposalId, bool yesNo, uint256 membersLength, uint256 quorum, uint256 requiredMajority) internal returns (uint256 squeak) {
         // replace with squeak calc based on proposal
         squeak = 2;
 
         // TODO: vote calc and execute when successful
+        LoveProposal storage proposal = loveProposals[proposalId]; 
+        require(proposal.closed == 0);
+
+        // uint love = aminals[aminalID].lovePerUser[msg.sender];
+        uint love = Aminals(aminals).getAminalLoveByIdByUser(aminalID, msg.sender);
+
+        // first vote
+        if (loveVotes[proposalId][msg.sender] == 0) {
+            if (yesNo) {
+                proposal.votedYes += love;
+                loveVotes[proposalId][msg.sender] = 1;
+            } else {
+                proposal.votedNo += love;
+                loveVotes[proposalId][msg.sender] = 2;
+            }
+            emit LoveVoted(proposalId, aminalID, yesNo, proposal.votedYes, proposal.votedNo);
+
+        // Changing Yes to No
+        } else if (loveVotes[proposalId][msg.sender] == 1 && !yesNo && proposal.votedYes > 0) {
+            proposal.votedYes--;
+            proposal.votedNo++;
+            loveVotes[proposalId][msg.sender] = 2;
+            emit LoveVoted(proposalId, aminalID, yesNo, proposal.votedYes, proposal.votedNo);
+            // Changing No to Yes
+        } else if (loveVotes[proposalId][msg.sender] == 2 && yesNo && proposal.votedNo > 0) {
+            proposal.votedYes++;
+            proposal.votedNo--;
+            loveVotes[proposalId][msg.sender] = 1;
+            emit LoveVoted(proposalId, aminalID, yesNo, proposal.votedYes, proposal.votedNo);
+        }
+
+       uint256 voteCount = proposal.votedYes + proposal.votedNo;
+        if (voteCount * 100 >= quorum * membersLength) {
+            uint256 yesPercent = proposal.votedYes * 100 / voteCount;
+            proposal.pass = yesPercent >= requiredMajority;
+            emit LoveVoteResult(proposalId, proposal.pass, voteCount, quorum, membersLength, yesPercent, requiredMajority);
+        } 
 
         return squeak;
     }

@@ -101,8 +101,8 @@ contract VisualsAuction is IAminalStructs {
         auction.aminalIdTwo = aminalIdTwo;
         auction.totalLove = aminals.getAminalLoveTotal(aminalIdOne) + aminals.getAminalLoveTotal(aminalIdTwo);
 
-        console.log("recording auctions at count ", auctionCnt, "with aminalIdOne = ", aminalIdOne);
-        console.log("resulting in ", auctions[auctionCnt].aminalIdOne);
+        // console.log("recording auctions at count ", auctionCnt, "with aminalIdOne = ", aminalIdOne);
+        // console.log("resulting in ", auctions[auctionCnt].aminalIdOne);
 
         // register the new auction into the global auction registry
         auction.childAminalId = auctionCnt;
@@ -150,6 +150,7 @@ contract VisualsAuction is IAminalStructs {
         uint256 price = priceOne + priceTwo;
 
         console.log("required ether to submit new visual === ", price);
+        console.log("received the following amount === ", msg.value);
 
         require(msg.value >= price, "Not enough ether to propose a new Visual");
 

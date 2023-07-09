@@ -25,6 +25,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
     mapping(address => bool) public skills;
 
     IProposals public proposals;
+    IProposals public loveProposals;
 
     uint256 public quorum = 80;
     uint256 public quorumDecayPerWeek = 10;
@@ -44,7 +45,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
 
         // initialize the AminalsDescriptor with empty SVG for index 0
         string memory emptySVG = "";
-        console.log("Adding empty bg = ", addBackground(emptySVG));
+        addBackground(emptySVG);
         addArm(emptySVG);
         addTail(emptySVG);
         addEar(emptySVG);
@@ -82,6 +83,10 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
 
         return aminalId;
     }
+
+    // function getAminalById(uint256 aminalID) public view returns (Aminal memory) {
+    //     return aminals[aminalID];
+    // }
 
     function getAminalVisualsByID(uint256 aminalID) public view override returns (Visuals memory) {
         return aminals[aminalID].visuals;
@@ -196,7 +201,6 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         // the user has high enough love on Aminal Two to maintain simplicity --
         // a wrapper contract can always do this atomically in one transaction)
         if (aminalTwo.breedableWith[aminalIdOne]) {
-            console.log("IF");
             require(aminalOne.energy >= 10 && aminalTwo.energy >= 10, "Aminal does not have enough energy to breed");
 
             return visualsAuction.startAuction(aminalIdOne, aminalIdTwo); // remember to undo the
@@ -276,7 +280,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         price = price / 10;
         if (price < 1) price++;
 
-        return price;
+        return price * 10**15;
     }
 
     function proposeAddSkill(uint256 aminalID, string calldata skillName, address skillAddress) public returns (uint256 proposalId) {
@@ -293,7 +297,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
     {
         // TODO: require minimum love amount?
         proposalId = proposals.proposeRemoveSkill(aminalID, description, skillAddress);
-        voteYes(proposalId);
+        voteYes(aminalID, proposalId);
     }
 
     function addSkill(address faddress) public {
