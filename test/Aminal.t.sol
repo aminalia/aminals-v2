@@ -162,7 +162,7 @@ contract AminalTest is Test {
     function voteTraits(uint256 auctionID) public {
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.EARS, 0);
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.EARS, 1);
 
         // VisualsAuction.Auction memory auction;
         // auction = visualsAuction.getAuctionByID(auctionID);

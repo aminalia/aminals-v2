@@ -168,7 +168,8 @@ contract VisualsAuction is IAminalStructs {
         }
     }
 
-    function voteVisual(uint256 auctionId, VisualsCat catEnum, uint256 i) public payable _auctionRunning(auctionId) {
+    function voteVisual(uint256 auctionId, VisualsCat catEnum, uint256 id) public payable _auctionRunning(auctionId) {
+        
         uint256 category = uint256(catEnum);
 
         Auction storage auction = auctions[auctionId];
@@ -180,13 +181,24 @@ contract VisualsAuction is IAminalStructs {
             visualVoted[msg.sender][auctionId][category] < totallove, "Already consumed all of your love with votes"
         );
 
-         console.log("********** a vote has been casted on category: ", category, " /  index: ", i);
+         console.log("********** a vote has been casted on category: ", category, " /  iD: ", id);
         // console.log(" == with weight = ", totallove, " .  on auctionId = ", auctionId);
 
-        auction.visualIdVotes[i][category] += (totallove);
+        // find the index for the submitted Visual ID
+         uint k = 0;
+             for (uint i = 0; i < 10; i++) {
+                 if(auction.visualIds[i][category] == id) {
+                    console.log("EQUALITY");
+                    k = i;
+                    break;
+                }
+            } 
 
+        auction.visualIdVotes[k][category] += (totallove);
         visualVoted[msg.sender][auctionId][category] = totallove;
     }
+
+
 
     function removeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId)
         public
