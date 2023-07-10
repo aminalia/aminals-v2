@@ -220,7 +220,10 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
     // and users
     // TODO: Allow users to specify the number of squeaks
     function squeak(uint256 aminalId, uint256 amount) public payable {
+        
+        console.log("here... with msg.value == ", msg.value);
         require(msg.value >= 0.01 ether, "Not enough ether");
+        console.log("there...");
 
         Aminal storage aminal = aminals[aminalId];
 
@@ -236,6 +239,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
     function callSkill(uint256 aminalId, address skillAddress, bytes calldata data) public payable {
         require(skills[skillAddress] == true);
         uint256 amount = ISkill(skillAddress).useSkill(msg.sender, aminalId, data);
+        console.log("Call Skill pubilc function (ABOUT TO SQUEEK) for ", amount);
         squeak(aminalId, amount);
     }
 
@@ -246,6 +250,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         require(skills[msg.sender] == true);
         require(skills[skillAddress] == true);
         uint256 amount = ISkill(skillAddress).useSkill(sender, aminalId, data);
+        console.log("Call Skill Internal (about to squeak) amount === ", amount);
         squeak(aminalId, amount);
     }
 

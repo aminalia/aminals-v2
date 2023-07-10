@@ -26,6 +26,7 @@ contract Move2D is ISkill {
     function useSkill(address, /* sender */ uint256 aminalId, bytes calldata data) public returns (uint256 squeak) {
         require(msg.sender == aminals);
         (uint256 x, uint256 y) = abi.decode(data, (uint256, uint256));
+        console.log("request to move to x = ", x, " & y = ", y);
         return _move2D(aminalId, x, y);
     }
 
@@ -50,6 +51,7 @@ contract Move2D is ISkill {
 
         Coords2D[aminalID].x = x;
         Coords2D[aminalID].y = y;
+        console.log("still alive!");
         return squeak;
     }
 }

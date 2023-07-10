@@ -22,6 +22,7 @@ contract MoveTwice is ISkill {
     function useSkill(address sender, uint256 aminalId, bytes calldata data) public returns (uint256 squeak) {
         require(msg.sender == aminals);
         (bytes memory data1, bytes memory data2) = abi.decode(data, (bytes, bytes));
+        console.log("About to call the moveTwice function");
         return moveTwice(aminalId, sender, data1, data2);
     }
 
@@ -30,7 +31,10 @@ contract MoveTwice is ISkill {
         public
         returns (uint256)
     {
+        console.log("first movement ----");
         IAminal(aminals).callSkillInternal(sender, aminalID, mover, data1);
+
+        console.log("second movement ----");
         IAminal(aminals).callSkillInternal(sender, aminalID, mover, data2);
         return 0;
     }
