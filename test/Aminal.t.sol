@@ -278,7 +278,7 @@ contract AminalTest is Test {
         data = mover2.getSkillData(222, 333, 777, 666);
         console.log("calling mover 2");
         aminals.callSkill{value: 0.5 ether}(1, address(mover2), data);
-        (x, y) = mover.getCoords(1);
-        console.log("x = ", x, " y = ", y);
+        // (x, y) = mover.getCoords(1);
+        // console.log("x = ", x, " y = ", y);
     }
 }

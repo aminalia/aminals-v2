@@ -231,11 +231,12 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         require(skills[msg.sender] == true || aminal.lovePerUser[msg.sender] >= amount, "Not enough love");
 
 
+        if(skills[msg.sender] == true) { return; } // don't adjust love or energy for smart contract calls
+        
         // ensure that aminal.energy never goes below 0
         if (aminal.energy >= amount) aminal.energy = aminal.energy - amount;
 
         // TODO: Migrate the bool to a constant for convenience
-        if(skills[msg.sender] == true) { return; } // don't adjust love for smart contract calls
         _adjustLove(aminalId, amount, msg.sender, false);
     }
 
