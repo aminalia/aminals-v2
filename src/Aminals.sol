@@ -223,22 +223,25 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         
         console.log("here... with msg.value == ", msg.value);
         require(msg.value >= 0.01 ether, "Not enough ether");
-        console.log("there...");
 
         Aminal storage aminal = aminals[aminalId];
 
-        require(aminal.lovePerUser[msg.sender] >= amount, "Not enough love");
+        console.log("there... with love == ", aminal.lovePerUser[msg.sender]);
+        console.log("coming from the address == ", msg.sender, " with skills: ", skills[msg.sender]);
+        require(skills[msg.sender] == true || aminal.lovePerUser[msg.sender] >= amount, "Not enough love");
+
 
         // ensure that aminal.energy never goes below 0
         if (aminal.energy >= amount) aminal.energy = aminal.energy - amount;
 
         // TODO: Migrate the bool to a constant for convenience
+        if(skills[msg.sender] == true) { return; } // don't adjust love for smart contract calls
         _adjustLove(aminalId, amount, msg.sender, false);
     }
 
     function callSkill(uint256 aminalId, address skillAddress, bytes calldata data) public payable {
         require(skills[skillAddress] == true);
-        uint256 amount = ISkill(skillAddress).useSkill(msg.sender, aminalId, data);
+        uint256 amount = ISkill(skillAddress).useSkill{value: msg.value}(msg.sender, aminalId, data);
         console.log("Call Skill pubilc function (ABOUT TO SQUEEK) for ", amount);
         squeak(aminalId, amount);
     }
@@ -249,7 +252,8 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
     {
         require(skills[msg.sender] == true);
         require(skills[skillAddress] == true);
-        uint256 amount = ISkill(skillAddress).useSkill(sender, aminalId, data);
+        console.log("calling UseSkill externally with msg.value == ", msg.value);
+        uint256 amount = ISkill(skillAddress).useSkill{value: msg.value}(sender, aminalId, data);
         console.log("Call Skill Internal (about to squeak) amount === ", amount);
         squeak(aminalId, amount);
     }
