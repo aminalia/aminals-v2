@@ -236,13 +236,14 @@ contract VisualsAuction is IAminalStructs {
                     auction.visualIds[j][category] = auction.visualIds[j+1][category];
                     auction.visualIdVotes[j][category] = auction.visualIdVotes[j+1][category];
                     auction.visualNoVotes[j][category] = auction.visualNoVotes[j+1][category];
+                    console.log("current j == " , j);
                 } 
 
                 console.log("stop removal at ... ", j);
 
-                 auction.visualIds[j+1][category] = 0;
-                 auction.visualIdVotes[j+1][category] = 0;
-                 auction.visualNoVotes[j+1][category] = 0;
+                auction.visualIds[j][category] = 0;
+                auction.visualIdVotes[j][category] = 0;
+                auction.visualNoVotes[j][category] = 0;
             
          }
     }
