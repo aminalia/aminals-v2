@@ -229,20 +229,10 @@ contract VisualsAuction is IAminalStructs {
 
             require(k != 0, "The trait to be removed does not exist in the auction list");
 
-            uint256 j;
-            // reset all values, so that new visuals can be submitted
-            for (j = k; j < 9 && auction.visualIds[j][category] != 0; j++) {
-                // stop at 9 because of the j+1 below
-                auction.visualIds[j][category] = auction.visualIds[j + 1][category];
-                auction.visualIdVotes[j][category] = auction.visualIdVotes[j + 1][category];
-                auction.visualNoVotes[j][category] = auction.visualNoVotes[j + 1][category];
-            }
-
-            console.log("stop removal at ... ", j);
-
-            auction.visualIds[j + 1][category] = 0;
-            auction.visualIdVotes[j + 1][category] = 0;
-            auction.visualNoVotes[j + 1][category] = 0;
+            // Remove the visualId from the auction list
+            auction.visualIds[k][category] = 0;
+            auction.visualIdVotes[k][category] = 0;
+            auction.visualNoVotes[k][category] = 0;
         }
     }
 
