@@ -291,7 +291,7 @@ contract VisualsAuction is IAminalStructs {
                 uint256 randomness = _random(i, j, 1);
                 // console.log("random = ", randomness);
                 // console.log("for length = ", j, "category: ", i);
-                auction.winnerId[i] = auction.visualIds[i][randomness];
+                auction.winnerId[i] = auction.visualIds[randomness][i];
             }
 
             auction.ended = true;
