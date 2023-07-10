@@ -32,10 +32,10 @@ contract MoveTwice is ISkill {
         returns (uint256)
     {
         console.log("first movement ----");
-        IAminal(aminals).callSkillInternal{value: msg.value}(sender, aminalID, mover, data1);
+        IAminal(aminals).callSkillInternal{value: msg.value / 2}(sender, aminalID, mover, data1);
 
         console.log("second movement ----");
-        IAminal(aminals).callSkillInternal{value: msg.value}(sender, aminalID, mover, data2);
+        IAminal(aminals).callSkillInternal{value: msg.value / 2}(sender, aminalID, mover, data2);
         return 0;
     }
 
