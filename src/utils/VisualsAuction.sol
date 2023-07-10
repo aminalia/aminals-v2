@@ -210,6 +210,7 @@ contract VisualsAuction is IAminalStructs {
          if (auction.visualNoVotes[visualId][category] > auction.totalLove / 3) {
              // a third of lovers has voted to remove the visual trait from the auction
              uint k = 0;
+
             // identify the location of the visualId
              for (uint i = 2; i < 10; i++) {
                  // start with i=2 because we don't want people to remove the 2 parent's traits
@@ -224,24 +225,24 @@ contract VisualsAuction is IAminalStructs {
 
             require(k != 0, "The trait to be removed does not exist in the auction list");
 
-            auction.visualIds[k][category] = 0;
-            auction.visualIdVotes[k][category] = 0;
-            auction.visualNoVotes[k][category] = 0;
+            // auction.visualIds[k][category] = 0;
+            // auction.visualIdVotes[k][category] = 0;
+            // auction.visualNoVotes[k][category] = 0;
             
 
-                // uint j; 
-                // // reset all values, so that new visuals can be submitted
-                // for (j = k; j < 9 && auction.visualIds[j][category] != 0; j++) {  // stop at 9 because of the j+1 below
-                //     auction.visualIds[j][category] = auction.visualIds[j+1][category];
-                //     auction.visualIdVotes[j][category] = auction.visualIdVotes[j+1][category];
-                //     auction.visualNoVotes[j][category] = auction.visualNoVotes[j+1][category];
-                // } 
+                uint j; 
+                // reset all values, so that new visuals can be submitted
+                for (j = k; j < 9 && auction.visualIds[j][category] != 0; j++) {  // stop at 9 because of the j+1 below
+                    auction.visualIds[j][category] = auction.visualIds[j+1][category];
+                    auction.visualIdVotes[j][category] = auction.visualIdVotes[j+1][category];
+                    auction.visualNoVotes[j][category] = auction.visualNoVotes[j+1][category];
+                } 
 
-                // console.log("stop removal at ... ", j);
+                console.log("stop removal at ... ", j);
 
-                //  auction.visualIds[j+1][category] = 0;
-                //  auction.visualIdVotes[j+1][category] = 0;
-                //  auction.visualNoVotes[j+1][category] = 0;
+                 auction.visualIds[j+1][category] = 0;
+                 auction.visualIdVotes[j+1][category] = 0;
+                 auction.visualNoVotes[j+1][category] = 0;
             
          }
     }
@@ -256,6 +257,8 @@ contract VisualsAuction is IAminalStructs {
         uint256[8] memory maxVotes =
             [uint256(0), uint256(0), uint256(0), uint256(0), uint256(0), uint256(0), uint256(0), uint256(0)];
 
+        console.log("ENDING AUCTION");
+
         for (uint256 i = 0; i < 8; i++) {
             // iterate through each category
             uint256 j;
@@ -264,8 +267,8 @@ contract VisualsAuction is IAminalStructs {
                 // console.log("j", j);
                 // console.log("visualIds", auction.visualIds[j][i]);
 
-                // Continue for loop if there is an empty slot with no visuals
-                if (j >= 2 && auction.visualIds[j][i] == 0) continue; // continue the loop if the visualId is 0, except if index 0 or 1 (inherited traits)
+                // Break for loop if there is an empty slot with no visuals
+                if (j >= 2 && auction.visualIds[j][i] == 0) break; // break the loop if the visualId is 0, except if index 0 or 1 (inherited traits)
                 // console.log("maxVotes", maxVotes[i]);
                 // console.log("visualIdVotes", auction.visualIdVotes[j][i]);
 
@@ -302,6 +305,7 @@ contract VisualsAuction is IAminalStructs {
         amount = uint256(keccak256(abi.encodePacked(block.prevrandao, msg.sender, i)));
         amount = amount % (maxNumber - minNumber);
         amount = amount + minNumber;
+        console.log("random for ", i, " == ", amount);
         return amount;
     }
 }
