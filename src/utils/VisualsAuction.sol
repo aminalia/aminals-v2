@@ -204,25 +204,41 @@ contract VisualsAuction is IAminalStructs {
 
         auction.visualNoVotes[visualId][category] += (totallove);
 
-        if (auction.visualNoVotes[visualId][category] > auction.totalLove / 3) {
-            // a third of lovers has voted to remove the visual trait from the auction
-            uint256 i;
-            // identify the location of the visualId
-            for (i = 2; i < 10; i++) {
-                // start with i=2 because we don't want people to remove the 2 parent's traits
-                if (auction.visualIds[i][category] == visualId) break;
-                else i = 0; // nothing was found !
-            }
+        console.log("totallove per user = ", totallove, " from msg.sender = ", msg.sender);
+        console.log("trying to remove the visual with love: ", auction.visualNoVotes[visualId][category], " and totallove = ", auction.totalLove / 3);
 
-            if (i != 0) {
-                // reset all values, so that new visuals can be submitted
-                for (uint256 j = i; j < 10 && auction.visualIds[j][category] != 0; j++) {
-                    auction.visualIds[j][category] = auction.visualIds[category][j + 1];
-                    auction.visualIdVotes[j][category] = auction.visualIdVotes[category][j + 1];
-                    auction.visualNoVotes[j][category] = auction.visualNoVotes[category][j + 1];
+         if (auction.visualNoVotes[visualId][category] > auction.totalLove / 3) {
+             // a third of lovers has voted to remove the visual trait from the auction
+             uint k = 0;
+            // identify the location of the visualId
+             for (uint i = 2; i < 10; i++) {
+                 // start with i=2 because we don't want people to remove the 2 parent's traits
+                 if(auction.visualIds[i][category] == visualId) {
+                    console.log("EQUALITY");
+                    k = i;
+                    break;
                 }
             }
-        }
+
+             console.log("REMOVAL......... ", k);
+
+            require(k != 0, "The trait to be removed does not exist in the auction list");
+
+                uint j; 
+                // reset all values, so that new visuals can be submitted
+                for (j = k; j < 9 && auction.visualIds[j][category] != 0; j++) {  // stop at 9 because of the j+1 below
+                    auction.visualIds[j][category] = auction.visualIds[j+1][category];
+                    auction.visualIdVotes[j][category] = auction.visualIdVotes[j+1][category];
+                    auction.visualNoVotes[j][category] = auction.visualNoVotes[j+1][category];
+                } 
+
+                console.log("stop removal at ... ", j);
+
+                 auction.visualIds[j+1][category] = 0;
+                 auction.visualIdVotes[j+1][category] = 0;
+                 auction.visualNoVotes[j+1][category] = 0;
+            
+         }
     }
 
     // TODO limits on when this can be called?
