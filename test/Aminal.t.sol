@@ -191,7 +191,7 @@ contract AminalTest is Test {
             console.log("iterating through category ", i);
 
             for (uint256 j = 0; j < 10; j++) {
-                if(auction.visualIds[j][i] != 0 ) {
+                if (auction.visualIds[j][i] != 0) {
                     console.log("---> category: ", i, " - index: ", j);
                     console.log("=== value: ", auction.visualIds[j][i], "---> VOTES: === ", auction.visualIdVotes[j][i]);
                     console.log(aminals.getVisuals(i, auction.visualIds[j][i]));
@@ -206,15 +206,13 @@ contract AminalTest is Test {
         address owner3 = 0x45CbC00e0618880bfB2dBDdEAed1ef1411dd5eeE;
         vm.prank(owner3);
         visualsAuction.removeVisual(auctionID, VisualsAuction.VisualsCat.FACE, id1);
-      
+
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
-        vm.expectRevert("The trait to be removed does not exist in the auction list"); 
+        vm.expectRevert("The trait to be removed does not exist in the auction list");
         visualsAuction.removeVisual(auctionID, VisualsAuction.VisualsCat.FACE, id1);
 
         visualsAuction.removeVisual(auctionID, VisualsAuction.VisualsCat.BODY, 5);
- 
-
     }
 
     function endAuction(uint256 auctionID) public returns (uint256[8] memory) {

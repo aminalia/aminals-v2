@@ -35,13 +35,18 @@ contract ProposalsTest is Test {
         // use new skill
     }
 
-
-    function proposeAddSkill(uint256 aminalID, string memory _skillName, address _skillAddress) public returns (uint proposalId) {
-         proposalId = proposals.proposeAddSkill(aminalID, _skillName, _skillAddress);
+    function proposeAddSkill(uint256 aminalID, string memory _skillName, address _skillAddress)
+        public
+        returns (uint256 proposalId)
+    {
+        proposalId = proposals.proposeAddSkill(aminalID, _skillName, _skillAddress);
     }
 
-    function proposeRemoveSkill(uint256 aminalID, string memory _description, address _skillAddress) public  returns (uint proposalId) {
-         proposalId = proposals.proposeRemoveSkill(aminalID, _description, _skillAddress);
+    function proposeRemoveSkill(uint256 aminalID, string memory _description, address _skillAddress)
+        public
+        returns (uint256 proposalId)
+    {
+        proposalId = proposals.proposeRemoveSkill(aminalID, _description, _skillAddress);
     }
 
     function voteYes(uint256 aminalID, uint256 _proposalId) public {
@@ -50,6 +55,5 @@ contract ProposalsTest is Test {
 
     function voteNo(uint256 aminalID, uint256 _proposalId) public {
         aminals.voteNo(aminalID, _proposalId);
-
     }
 }

@@ -280,15 +280,17 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         price = price / 10;
         if (price < 1) price++;
 
-        return price * 10**15;
+        return price * 10 ** 15;
     }
 
-    function proposeAddSkill(uint256 aminalID, string calldata skillName, address skillAddress) public returns (uint256 proposalId) {
+    function proposeAddSkill(uint256 aminalID, string calldata skillName, address skillAddress)
+        public
+        returns (uint256 proposalId)
+    {
         // TODO: require minimum love amount?
 
         proposalId = proposals.proposeAddSkill(aminalID, skillName, skillAddress);
         voteYes(aminalID, proposalId);
-
     }
 
     function proposeRemoveSkill(uint256 aminalID, string calldata description, address skillAddress)
@@ -312,7 +314,6 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         // Aminal storage aminal = aminals[aminalId];
         skills[faddress] = false;
         // aminal.skills[aminal.Nskills++] = skill;
-
     }
 
     function voteNo(uint256 aminalID, uint256 proposalId) public {
