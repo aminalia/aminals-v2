@@ -214,7 +214,9 @@ contract AminalTest is Test {
 
         visualsAuction.removeVisual(auctionID, VisualsAuction.VisualsCat.BODY, 5);
  
-
+        // New visual is added to the auction as there is now a free slot
+        uint256 id10 = aminals.addBody("body11");
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id10);
     }
 
     function endAuction(uint256 auctionID) public returns (uint256[8] memory) {

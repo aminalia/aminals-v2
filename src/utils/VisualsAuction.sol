@@ -224,19 +224,24 @@ contract VisualsAuction is IAminalStructs {
 
             require(k != 0, "The trait to be removed does not exist in the auction list");
 
-                uint j; 
-                // reset all values, so that new visuals can be submitted
-                for (j = k; j < 9 && auction.visualIds[j][category] != 0; j++) {  // stop at 9 because of the j+1 below
-                    auction.visualIds[j][category] = auction.visualIds[j+1][category];
-                    auction.visualIdVotes[j][category] = auction.visualIdVotes[j+1][category];
-                    auction.visualNoVotes[j][category] = auction.visualNoVotes[j+1][category];
-                } 
+            auction.visualIds[k][category] = 0;
+            auction.visualIdVotes[k][category] = 0;
+            auction.visualNoVotes[k][category] = 0;
+            
 
-                console.log("stop removal at ... ", j);
+                // uint j; 
+                // // reset all values, so that new visuals can be submitted
+                // for (j = k; j < 9 && auction.visualIds[j][category] != 0; j++) {  // stop at 9 because of the j+1 below
+                //     auction.visualIds[j][category] = auction.visualIds[j+1][category];
+                //     auction.visualIdVotes[j][category] = auction.visualIdVotes[j+1][category];
+                //     auction.visualNoVotes[j][category] = auction.visualNoVotes[j+1][category];
+                // } 
 
-                 auction.visualIds[j+1][category] = 0;
-                 auction.visualIdVotes[j+1][category] = 0;
-                 auction.visualNoVotes[j+1][category] = 0;
+                // console.log("stop removal at ... ", j);
+
+                //  auction.visualIds[j+1][category] = 0;
+                //  auction.visualIdVotes[j+1][category] = 0;
+                //  auction.visualNoVotes[j+1][category] = 0;
             
          }
     }
@@ -255,13 +260,15 @@ contract VisualsAuction is IAminalStructs {
             // iterate through each category
             uint256 j;
             for (j = 0; j < 10; j++) {
-                console.log("i", i);
-                console.log("j", j);
-                console.log("visualIds", auction.visualIds[j][i]);
-                // Break for loop if no visual ids have been proposed
-                if (j >= 2 && auction.visualIds[j][i] == 0) break; // break the loop if the visualId is 0, except if index 0 or 1 (inherited traits)
-                console.log("maxVotes", maxVotes[i]);
-                console.log("visualIdVotes", auction.visualIdVotes[j][i]);
+                // console.log("i", i);
+                // console.log("j", j);
+                // console.log("visualIds", auction.visualIds[j][i]);
+
+                // Continue for loop if there is an empty slot with no visuals
+                if (j >= 2 && auction.visualIds[j][i] == 0) continue; // continue the loop if the visualId is 0, except if index 0 or 1 (inherited traits)
+                // console.log("maxVotes", maxVotes[i]);
+                // console.log("visualIdVotes", auction.visualIdVotes[j][i]);
+
                 // Handle tie
                 if (auction.visualIdVotes[j][i] != 0 && auction.visualIdVotes[j][i] == maxVotes[i]) {
                     // Randomly select a winner between the tied proposals
@@ -270,7 +277,7 @@ contract VisualsAuction is IAminalStructs {
                     if (randomness % 2 == 0) auction.winnerId[i] = auction.visualIds[j][i];
                 }
                 if (auction.visualIdVotes[j][i] != 0 && auction.visualIdVotes[j][i] > maxVotes[i]) {
-                    console.log("jjj = ", j, " for category ", i);
+                    // console.log("jjj = ", j, " for category ", i);
                     maxVotes[i] = auction.visualIdVotes[j][i];
                     auction.winnerId[i] = auction.visualIds[j][i];
                 }
@@ -278,8 +285,8 @@ contract VisualsAuction is IAminalStructs {
 
             if (maxVotes[i] == 0) {
                 uint256 randomness = _random(i, j, 1);
-                console.log("random = ", randomness);
-                console.log("for length = ", j, "category: ", i);
+                // console.log("random = ", randomness);
+                // console.log("for length = ", j, "category: ", i);
                 auction.winnerId[i] = auction.visualIds[i][randomness];
             }
 
