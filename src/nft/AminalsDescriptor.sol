@@ -40,22 +40,13 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
      * @notice Given a token ID and seed, construct a base64 encoded data URI for an NFT.
      */
     function dataURI(uint256 tokenId) public view returns (string memory) {
-        string memory name = string(
-            abi.encodePacked("Aminal #", _toString(tokenId))
-        );
+        string memory name = string(abi.encodePacked("Aminal #", _toString(tokenId)));
 
         // Need to pull the image number for each token id, set to 0 for now, tokenId 1 for testing
-        string memory image = string(
-            abi.encodePacked(
-                "data:image/svg+xml;base64,",
-                Base64.encode(bytes(_aminalImage(tokenId)))
-            )
-        );
-        string memory description = string(
-            abi.encodePacked(
-                "This NFT represents a digital pet. This NFT cannot be transfered."
-            )
-        );
+        string memory image =
+            string(abi.encodePacked("data:image/svg+xml;base64,", Base64.encode(bytes(_aminalImage(tokenId)))));
+        string memory description =
+            string(abi.encodePacked("This NFT represents a digital pet. This NFT cannot be transfered."));
         string memory attributes = generateAttributesList(tokenId);
 
         return genericDataURI(name, description, image, attributes);
@@ -64,9 +55,7 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
     /**
      * @notice Given a token ID, construct a base64 encoded SVG.
      */
-    function _aminalImage(
-        uint256 _tokenId
-    ) internal view returns (string memory output) {
+    function _aminalImage(uint256 _tokenId) internal view returns (string memory output) {
         Visuals memory visuals = getAminalVisualsByID(_tokenId);
 
         // Aminal Base - for all Aminals
@@ -74,8 +63,7 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         output = string(abi.encodePacked(output, backgrounds[visuals.backId]));
         output = string(
             abi.encodePacked(
-                output,
-                '<g id="shadow"><ellipse fill="#3c3d55" opacity="0.5"  cx="505" cy="971" rx="163" ry="12"/></g>'
+                output, '<g id="shadow"><ellipse fill="#3c3d55" opacity="0.5"  cx="505" cy="971" rx="163" ry="12"/></g>'
             )
         );
 
@@ -92,18 +80,14 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         output = string(abi.encodePacked(output, "</svg>"));
     }
 
-    function getAminalVisualsByID(
-        uint256 aminalID
-    ) public view virtual returns (Visuals memory);
+    function getAminalVisualsByID(uint256 aminalID) public view virtual returns (Visuals memory);
 
     // ------------------------------------------------------------------------
     // SVG Parts - Need to add owner permissions
     // ------------------------------------------------------------------------
 
     // eg. 00a79d
-    function addBackground(
-        string memory background
-    ) public returns (uint256 id) {
+    function addBackground(string memory background) public returns (uint256 id) {
         backgrounds.push(background);
         return backgrounds.length - 1;
     }
@@ -159,15 +143,11 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         return miscs.length - 1;
     }
 
-    function getVisuals(
-        uint256 category,
-        uint256 id
-    ) public view returns (string memory) {
-        if (VisualsCat(category) == VisualsCat.BACK)
+    function getVisuals(uint256 category, uint256 id) public view returns (string memory) {
+        if (VisualsCat(category) == VisualsCat.BACK) {
             if (backgrounds.length > id) return backgrounds[id];
-            else if (VisualsCat(category) == VisualsCat.ARM) {
-                if (arms.length > id) return arms[id];
-            } else if (VisualsCat(category) == VisualsCat.TAIL) {
+            else if (VisualsCat(category) == VisualsCat.ARM) if (arms.length > id) return arms[id];
+            else if (VisualsCat(category) == VisualsCat.TAIL) {
                 if (tails.length > id) return tails[id];
             } else if (VisualsCat(category) == VisualsCat.EARS) {
                 if (ears.length > id) return ears[id];
@@ -180,6 +160,7 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
             } else if (VisualsCat(category) == VisualsCat.MISC) {
                 if (backgrounds.length > id) return miscs[id];
             }
+        }
 
         return "";
     }
@@ -191,17 +172,8 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
     /**
      * @notice NFT Atrributes based on Token ID
      */
-    function generateAttributesList(
-        uint256 tokenId
-    ) public pure returns (string memory) {
-        return
-            string(
-                abi.encodePacked(
-                    '{"trait_type":"Aminal ID","value":',
-                    _toString(tokenId),
-                    "}"
-                )
-            );
+    function generateAttributesList(uint256 tokenId) public pure returns (string memory) {
+        return string(abi.encodePacked('{"trait_type":"Aminal ID","value":', _toString(tokenId), "}"));
     }
 
     /**
@@ -213,12 +185,8 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         string memory _image,
         string memory _attributes
     ) public pure returns (string memory) {
-        TokenURIParams memory params = TokenURIParams({
-            name: _name,
-            description: _description,
-            image: _image,
-            attributes: _attributes
-        });
+        TokenURIParams memory params =
+            TokenURIParams({name: _name, description: _description, image: _image, attributes: _attributes});
         return constructTokenURI(params);
     }
 
@@ -245,10 +213,7 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
     /**
      * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation with fixed length.
      */
-    function _toHexString(
-        uint256 value,
-        uint256 length
-    ) internal pure returns (string memory) {
+    function _toHexString(uint256 value, uint256 length) internal pure returns (string memory) {
         bytes memory buffer = new bytes(2 * length + 2);
         buffer[0] = "0";
         buffer[1] = "x";

@@ -26,11 +26,7 @@ contract VoteSkill is ISkill, AminalProposals {
         aminals = _aminals;
     }
 
-    function useSkill(
-        address sender,
-        uint256 aminalId,
-        bytes calldata data
-    ) public payable returns (uint256 squeak) {
+    function useSkill(address sender, uint256 aminalId, bytes calldata data) public payable returns (uint256 squeak) {
         require(msg.sender == aminals);
 
         // Aminal amin = Aminals(aminals).getAminalById(aminalId);
@@ -38,35 +34,25 @@ contract VoteSkill is ISkill, AminalProposals {
 
         (uint256 proposalId, bool vote) = abi.decode(data, (uint256, bool));
 
-        return
-            _vote(
-                aminalId,
-                sender,
-                proposalId,
-                vote,
-                Aminals(aminals).getAminalLoveTotal(aminalId),
-                LoveQuorum,
-                LoveRequiredMajority
-            );
+        return _vote(
+            aminalId,
+            sender,
+            proposalId,
+            vote,
+            Aminals(aminals).getAminalLoveTotal(aminalId),
+            LoveQuorum,
+            LoveRequiredMajority
+        );
     }
 
     // function _vote(uint256 aminalID, address sender, uint256 proposalId, bool yesNo, uint256 membersLength, uint256 quorum, uint256 requiredMajority) internal returns (uint256 squeak) {
 
     // Getters
-    function getSkillData(
-        uint256 proposalId,
-        bool vote
-    ) public pure returns (bytes memory data) {
+    function getSkillData(uint256 proposalId, bool vote) public pure returns (bytes memory data) {
         return abi.encode(proposalId, vote);
     }
 
-    event LoveVoted(
-        uint256 indexed proposalId,
-        uint256 indexed aminalID,
-        bool vote,
-        uint256 votedYes,
-        uint256 votedNo
-    );
+    event LoveVoted(uint256 indexed proposalId, uint256 indexed aminalID, bool vote, uint256 votedYes, uint256 votedNo);
     event LoveVoteResult(
         uint256 indexed proposalId,
         bool pass,
@@ -98,10 +84,7 @@ contract VoteSkill is ISkill, AminalProposals {
         require(proposal.closed == 0);
 
         // uint love = aminals[aminalID].lovePerUser[msg.sender];
-        uint256 love = Aminals(aminals).getAminalLoveByIdByUser(
-            aminalID,
-            msg.sender
-        );
+        uint256 love = Aminals(aminals).getAminalLoveByIdByUser(aminalID, msg.sender);
 
         // first vote
         if (loveVotes[proposalId][msg.sender] == 0) {
@@ -112,46 +95,20 @@ contract VoteSkill is ISkill, AminalProposals {
                 proposal.votedNo += love;
                 loveVotes[proposalId][msg.sender] = 2;
             }
-            emit LoveVoted(
-                proposalId,
-                aminalID,
-                yesNo,
-                proposal.votedYes,
-                proposal.votedNo
-            );
+            emit LoveVoted(proposalId, aminalID, yesNo, proposal.votedYes, proposal.votedNo);
 
             // Changing Yes to No
-        } else if (
-            loveVotes[proposalId][msg.sender] == 1 &&
-            !yesNo &&
-            proposal.votedYes > 0
-        ) {
+        } else if (loveVotes[proposalId][msg.sender] == 1 && !yesNo && proposal.votedYes > 0) {
             proposal.votedYes--;
             proposal.votedNo++;
             loveVotes[proposalId][msg.sender] = 2;
-            emit LoveVoted(
-                proposalId,
-                aminalID,
-                yesNo,
-                proposal.votedYes,
-                proposal.votedNo
-            );
+            emit LoveVoted(proposalId, aminalID, yesNo, proposal.votedYes, proposal.votedNo);
             // Changing No to Yes
-        } else if (
-            loveVotes[proposalId][msg.sender] == 2 &&
-            yesNo &&
-            proposal.votedNo > 0
-        ) {
+        } else if (loveVotes[proposalId][msg.sender] == 2 && yesNo && proposal.votedNo > 0) {
             proposal.votedYes++;
             proposal.votedNo--;
             loveVotes[proposalId][msg.sender] = 1;
-            emit LoveVoted(
-                proposalId,
-                aminalID,
-                yesNo,
-                proposal.votedYes,
-                proposal.votedNo
-            );
+            emit LoveVoted(proposalId, aminalID, yesNo, proposal.votedYes, proposal.votedNo);
         }
 
         uint256 voteCount = proposal.votedYes + proposal.votedNo;
@@ -159,13 +116,7 @@ contract VoteSkill is ISkill, AminalProposals {
             uint256 yesPercent = (proposal.votedYes * 100) / voteCount;
             proposal.pass = yesPercent >= requiredMajority;
             emit LoveVoteResult(
-                proposalId,
-                proposal.pass,
-                voteCount,
-                quorum,
-                membersLength,
-                yesPercent,
-                requiredMajority
+                proposalId, proposal.pass, voteCount, quorum, membersLength, yesPercent, requiredMajority
             );
         }
 

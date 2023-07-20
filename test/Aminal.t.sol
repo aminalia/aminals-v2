@@ -79,8 +79,8 @@ contract AminalTest is BaseTest {
         // Get only the Visuals struct from the mapping
         Aminals.Visuals memory visualsOne;
         Aminals.Visuals memory visualsTwo;
-        (, , , , , visualsOne) = aminals.aminals(1);
-        (, , , , , visualsTwo) = aminals.aminals(2);
+        (,,,,, visualsOne) = aminals.aminals(1);
+        (,,,,, visualsTwo) = aminals.aminals(2);
 
         // Aminals.Visuals storage visuals = aminals.getAminalVisualsById(1);
         // uint256 love = aminals.getAminalLoveTotal(1);
@@ -151,59 +151,19 @@ contract AminalTest is BaseTest {
         uint256 id10 = aminals.addBody("body11");
 
         vm.expectRevert("Not enough ether to propose a new Visual");
-        visualsAuction.proposeVisual{value: 0.01 ether}(
-            auctionID,
-            VisualsAuction.VisualsCat.FACE,
-            id1
-        );
-        visualsAuction.proposeVisual{value: 0.02 ether}(
-            auctionID,
-            VisualsAuction.VisualsCat.BODY,
-            id2
-        );
+        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.FACE, id1);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id2);
         // Test making a bunch of proposals
-        visualsAuction.proposeVisual{value: 0.02 ether}(
-            auctionID,
-            VisualsAuction.VisualsCat.BODY,
-            id3
-        );
-        visualsAuction.proposeVisual{value: 0.02 ether}(
-            auctionID,
-            VisualsAuction.VisualsCat.BODY,
-            id4
-        );
-        visualsAuction.proposeVisual{value: 0.02 ether}(
-            auctionID,
-            VisualsAuction.VisualsCat.BODY,
-            id5
-        );
-        visualsAuction.proposeVisual{value: 0.02 ether}(
-            auctionID,
-            VisualsAuction.VisualsCat.BODY,
-            id6
-        );
-        visualsAuction.proposeVisual{value: 0.02 ether}(
-            auctionID,
-            VisualsAuction.VisualsCat.BODY,
-            id7
-        );
-        visualsAuction.proposeVisual{value: 0.02 ether}(
-            auctionID,
-            VisualsAuction.VisualsCat.BODY,
-            id8
-        );
-        visualsAuction.proposeVisual{value: 0.02 ether}(
-            auctionID,
-            VisualsAuction.VisualsCat.BODY,
-            id9
-        );
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id3);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id4);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id5);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id6);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id7);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id8);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id9);
         // 9th proposal fails as there is only 8 slots per category
         vm.expectRevert("Max 8 proposals allowed per category");
-        visualsAuction.proposeVisual{value: 0.02 ether}(
-            auctionID,
-            VisualsAuction.VisualsCat.BODY,
-            id10
-        );
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id10);
     }
 
     function voteTraits(uint256 auctionID) public {
@@ -240,12 +200,7 @@ contract AminalTest is BaseTest {
             for (uint256 j = 0; j < 10; j++) {
                 if (auction.visualIds[j][i] != 0) {
                     console.log("---> category: ", i, " - index: ", j);
-                    console.log(
-                        "=== value: ",
-                        auction.visualIds[j][i],
-                        "---> VOTES: === ",
-                        auction.visualIdVotes[j][i]
-                    );
+                    console.log("=== value: ", auction.visualIds[j][i], "---> VOTES: === ", auction.visualIdVotes[j][i]);
                     console.log(aminals.getVisuals(i, auction.visualIds[j][i]));
                 }
             }
@@ -257,36 +212,18 @@ contract AminalTest is BaseTest {
 
         address owner3 = 0x45CbC00e0618880bfB2dBDdEAed1ef1411dd5eeE;
         vm.prank(owner3);
-        visualsAuction.removeVisual(
-            auctionID,
-            VisualsAuction.VisualsCat.FACE,
-            id1
-        );
+        visualsAuction.removeVisual(auctionID, VisualsAuction.VisualsCat.FACE, id1);
 
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
-        vm.expectRevert(
-            "The trait to be removed does not exist in the auction list"
-        );
-        visualsAuction.removeVisual(
-            auctionID,
-            VisualsAuction.VisualsCat.FACE,
-            id1
-        );
+        vm.expectRevert("The trait to be removed does not exist in the auction list");
+        visualsAuction.removeVisual(auctionID, VisualsAuction.VisualsCat.FACE, id1);
 
-        visualsAuction.removeVisual(
-            auctionID,
-            VisualsAuction.VisualsCat.BODY,
-            5
-        );
+        visualsAuction.removeVisual(auctionID, VisualsAuction.VisualsCat.BODY, 5);
 
         // New visual is added to the auction as there is now a free slot
         uint256 id10 = aminals.addBody("body11");
-        visualsAuction.proposeVisual{value: 0.02 ether}(
-            auctionID,
-            VisualsAuction.VisualsCat.BODY,
-            id10
-        );
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id10);
     }
 
     function endAuction(uint256 auctionID) public returns (uint256[8] memory) {
@@ -305,11 +242,7 @@ contract AminalTest is BaseTest {
         return auction.winnerId;
     }
 
-    function spawnNewAminal(
-        uint256 mom,
-        uint256 dad,
-        uint256[8] memory winnerIds
-    ) public {
+    function spawnNewAminal(uint256 mom, uint256 dad, uint256[8] memory winnerIds) public {
         aminals.spawnAminal(
             mom,
             dad,
@@ -334,9 +267,7 @@ contract AminalTest is BaseTest {
         (uint256 x, uint256 y) = mover.getCoords(3);
         console.log("x = ", x, " y = ", y);
 
-        console.log(
-            "\n proxy call for mover 1 == public UseSkill function called"
-        );
+        console.log("\n proxy call for mover 1 == public UseSkill function called");
         // with proxy function call
         aminals.addSkill(address(mover));
         bytes memory data = mover.getSkillData(888, 999);
@@ -345,9 +276,7 @@ contract AminalTest is BaseTest {
         (x, y) = mover.getCoords(1);
         console.log("x = ", x, " y = ", y);
 
-        console.log(
-            "\n internal UseSkill function call - this is where things break"
-        );
+        console.log("\n internal UseSkill function call - this is where things break");
         // with proxy function call
         MoveTwice mover2 = new MoveTwice(address(aminals), address(mover));
         aminals.addSkill(address(mover2));

@@ -18,56 +18,30 @@ contract MoveTwice is ISkill {
         mover = _mover;
     }
 
-    function useSkill(
-        address sender,
-        uint256 aminalId,
-        bytes calldata data
-    ) public payable returns (uint256 squeak) {
+    function useSkill(address sender, uint256 aminalId, bytes calldata data) public payable returns (uint256 squeak) {
         require(msg.sender == aminals);
-        (bytes memory data1, bytes memory data2) = abi.decode(
-            data,
-            (bytes, bytes)
-        );
-        console.log(
-            "About to call the moveTwice function -- with msg.value = ",
-            msg.value
-        );
+        (bytes memory data1, bytes memory data2) = abi.decode(data, (bytes, bytes));
+        console.log("About to call the moveTwice function -- with msg.value = ", msg.value);
         return moveTwice(aminalId, sender, data1, data2);
     }
 
     // DELETE - for testing only
     // TODO harnesses
-    function moveTwice(
-        uint256 aminalID,
-        address sender,
-        bytes memory data1,
-        bytes memory data2
-    ) public payable returns (uint256) {
+    function moveTwice(uint256 aminalID, address sender, bytes memory data1, bytes memory data2)
+        public
+        payable
+        returns (uint256)
+    {
         console.log("first movement ----");
-        IAminal(aminals).callSkillInternal{value: msg.value / 2}(
-            sender,
-            aminalID,
-            mover,
-            data1
-        );
+        IAminal(aminals).callSkillInternal{value: msg.value / 2}(sender, aminalID, mover, data1);
 
         console.log("second movement ----");
-        IAminal(aminals).callSkillInternal{value: msg.value / 2}(
-            sender,
-            aminalID,
-            mover,
-            data2
-        );
+        IAminal(aminals).callSkillInternal{value: msg.value / 2}(sender, aminalID, mover, data2);
         return 0;
     }
 
     // Getters
-    function getSkillData(
-        uint256 x1,
-        uint256 y1,
-        uint256 x2,
-        uint256 y2
-    ) public pure returns (bytes memory data) {
+    function getSkillData(uint256 x1, uint256 y1, uint256 x2, uint256 y2) public pure returns (bytes memory data) {
         return abi.encode(abi.encode(x1, y1), abi.encode(x2, y2));
     }
 
