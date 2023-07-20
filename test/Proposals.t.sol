@@ -2,9 +2,10 @@
 pragma solidity ^0.8.13;
 
 import {BaseTest} from "./BaseTest.sol";
+
+import {AminalProposals} from "src/proposals/AminalProposals.sol";
 import {Aminals} from "src/Aminals.sol";
 import {IAminal} from "src/IAminal.sol";
-import {AminalProposals} from "src/proposals/AminalProposals.sol";
 import {IProposals} from "src/proposals/IProposals.sol";
 import {Move2D} from "src/skills/Move2D.sol";
 import {VoteSkill} from "src/skills/VoteSkill.sol";

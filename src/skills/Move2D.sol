@@ -3,9 +3,8 @@ pragma solidity ^0.8.20;
 
 import "forge-std/console.sol";
 
-import {IAminal} from "src/IAminal.sol";
 import {Aminals} from "src/Aminals.sol";
-
+import {IAminal} from "src/IAminal.sol";
 import {ISkill} from "src/skills/ISkills.sol";
 
 contract Move2D is ISkill {

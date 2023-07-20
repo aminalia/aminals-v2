@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {BaseTest} from "./BaseTest.sol";
 import {Aminals} from "src/Aminals.sol";
+import {BaseTest} from "./BaseTest.sol";
 import {IAminal} from "src/IAminal.sol";
 import {IProposals} from "src/proposals/IProposals.sol";
 

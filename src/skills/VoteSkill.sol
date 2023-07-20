@@ -7,12 +7,10 @@ import "forge-std/Test.sol";
 import {Initializable} from "oz/proxy/utils/Initializable.sol";
 import {Ownable} from "oz/access/Ownable.sol";
 
-import {IAminal} from "src/IAminal.sol";
-import {Aminals} from "src/Aminals.sol";
-
-import {ISkill} from "src/skills/ISkills.sol";
-
 import {AminalProposals} from "src/proposals/AminalProposals.sol";
+import {Aminals} from "src/Aminals.sol";
+import {IAminal} from "src/IAminal.sol";
+import {ISkill} from "src/skills/ISkills.sol";
 
 contract VoteSkill is ISkill, AminalProposals {
     uint256 public LoveQuorum = 80;

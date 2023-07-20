@@ -7,16 +7,15 @@ import "forge-std/console.sol";
 import {Initializable} from "oz/proxy/utils/Initializable.sol";
 import {Ownable} from "oz/access/Ownable.sol";
 
-import {IAminal} from "src/IAminal.sol";
-import {FeedBondingCurve} from "./utils/FeedBondingCurve.sol";
-import {VisualsAuction} from "./utils/VisualsAuction.sol";
-import {AminalsDescriptor} from "./nft/AminalsDescriptor.sol";
-import {ERC721S} from "./nft/ERC721S.sol";
-import {ISkill} from "./skills/ISkills.sol";
-import {VoteSkill} from "./skills/VoteSkill.sol";
-
-import {IProposals} from "src/proposals/IProposals.sol";
 import {AminalProposals} from "src/proposals/AminalProposals.sol";
+import {AminalsDescriptor} from "src/nft/AminalsDescriptor.sol";
+import {ERC721S} from "src/nft/ERC721S.sol";
+import {FeedBondingCurve} from "src/utils/FeedBondingCurve.sol";
+import {IAminal} from "src/IAminal.sol";
+import {IProposals} from "src/proposals/IProposals.sol";
+import {ISkill} from "src/skills/ISkills.sol";
+import {VisualsAuction} from "src/utils/VisualsAuction.sol";
+import {VoteSkill} from "src/skills/VoteSkill.sol";
 
 contract Aminals is
     IAminal,
@@ -72,7 +71,7 @@ contract Aminals is
         Visuals[] calldata _visuals
     ) external initializer onlyOwner {
         for (uint256 _i = 0; _i < _visuals.length; _i++) {
-            spawnAminal(
+            _spawnAminalInternal(
                 0,
                 0,
                 _visuals[_i].backId,
@@ -105,6 +104,48 @@ contract Aminals is
         uint256 mouthId,
         uint256 miscId
     ) public returns (uint256) {
+        if (
+            !visualsAuction.canSpawn(
+                aminalOne,
+                aminalTwo,
+                backId,
+                armId,
+                tailId,
+                earsId,
+                bodyId,
+                faceId,
+                mouthId,
+                miscId
+            )
+        ) revert NotSpawnable();
+
+        return
+            _spawnAminalInternal(
+                aminalOne,
+                aminalTwo,
+                backId,
+                armId,
+                tailId,
+                earsId,
+                bodyId,
+                faceId,
+                mouthId,
+                miscId
+            );
+    }
+
+    function _spawnAminalInternal(
+        uint256 aminalOne,
+        uint256 aminalTwo,
+        uint256 backId,
+        uint256 armId,
+        uint256 tailId,
+        uint256 earsId,
+        uint256 bodyId,
+        uint256 faceId,
+        uint256 mouthId,
+        uint256 miscId
+    ) internal returns (uint256) {
         uint256 aminalId = ++lastAminalId;
         Aminal storage aminal = aminals[aminalId];
         aminal.momId = aminalOne;

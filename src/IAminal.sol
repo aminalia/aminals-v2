@@ -10,4 +10,5 @@ interface IAminal is IAminalStructs {
         payable;
 
     error NotEnoughEther();
+    error NotSpawnable();
 }

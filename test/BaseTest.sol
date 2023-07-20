@@ -2,11 +2,11 @@
 pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
+import {AminalProposals} from "src/proposals/AminalProposals.sol";
 import {Aminals} from "src/Aminals.sol";
 import {IAminal} from "src/IAminal.sol";
-import {AminalProposals} from "src/proposals/AminalProposals.sol";
-import {VisualsAuction} from "src/utils/VisualsAuction.sol";
 import {IAminalStructs} from "src/IAminalStructs.sol";
+import {VisualsAuction} from "src/utils/VisualsAuction.sol";
 import {VoteSkill} from "src/skills/VoteSkill.sol";
 
 contract BaseTest is Test {
