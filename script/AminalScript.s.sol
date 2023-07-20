@@ -1,9 +1,11 @@
 pragma solidity ^0.8.20;
 
 import "forge-std/Script.sol";
-import "../src/Aminals.sol";
-import "../src/IAminal.sol";
-import "../src/utils/VisualsAuction.sol";
+import "src/Aminals.sol";
+import "src/IAminal.sol";
+import "src/utils/VisualsAuction.sol";
+import "src/skills/VoteSkill.sol";
+import "src/proposals/AminalProposals.sol";
 
 /*
 forge script script/AminalScript.s.sol:AminalScript --broadcast --verify -vvvv
@@ -13,15 +15,35 @@ forge script script/AminalScript.s.sol:AminalScript --chain-id 5  --rpc-url "htt
 */
 
 contract AminalScript is Script {
-    // Aminals public aminals;
+    Aminals aminals;
+
+    function deployAminals() internal returns (address) {
+        VisualsAuction _visualsAuction = new VisualsAuction();
+        VoteSkill _voteSkill = new VoteSkill();
+        AminalProposals _proposals = new AminalProposals();
+
+        Aminals _aminals = new Aminals(
+            address(_visualsAuction),
+            address(_voteSkill),
+            address(_proposals)
+        );
+
+        _visualsAuction.setup(address(aminals));
+        _voteSkill.setup(address(aminals));
+        _proposals.setup(address(aminals));
+
+        return address(_aminals);
+    }
 
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("ETH_PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
-        Aminals aminals = new Aminals();
+        aminals = Aminals(deployAminals());
 
         // first aminal
-        aminals.addBackground('<g><rect fill="#4e2f91" x="0" y="0" width="1000px" height="1000px"/></g>');
+        aminals.addBackground(
+            '<g><rect fill="#4e2f91" x="0" y="0" width="1000px" height="1000px"/></g>'
+        );
         aminals.addTail(
             '<path fill="#77a9da" d="m460 695-2-13c-14-2-29-5-42-9l1 29c14 4 29 5 44 6l-2-13Z"/><path fill="#77a9da" d="m465 735-4-27c-15-1-30-2-44-6v13l2 20h45Z"/><path fill="#82abdb" d="m419 735 3 15c3 7 7 13 13 17 7 4 16 4 22 0 5-3 8-9 9-15l-2-17h-45Z"/><path fill="#71a0ce" d="m414 628 2 45 42 9c-2-25-5-43-10-56l-34 2Z"/><path fill="#77a9da" d="m542 692 1-13 42-12v29c-14 5-29 7-44 10l1-14Z"/><path fill="#77a9da" d="m540 733 1-27c15-3 30-5 44-10l1 13v21l-46 3Z"/><path fill="#82abdb" d="m586 730-3 15c-2 7-6 13-12 18-6 4-15 5-22 1-5-3-9-9-10-15l1-16 46-3Z"/><path fill="#71a0ce" d="m583 622 2 45-42 12c0-24 2-43 6-56l34-1Z"/>'
         );
@@ -44,7 +66,9 @@ contract AminalScript is Script {
         uint256 a1 = aminals.spawnAminal(0, 0, 1, 1, 1, 1, 1, 1, 1, 1);
 
         // first aminal
-        aminals.addBackground('<g><rect fill="#00a79d" x="0" y="0" width="1000px" height="1000px"/></g>');
+        aminals.addBackground(
+            '<g><rect fill="#00a79d" x="0" y="0" width="1000px" height="1000px"/></g>'
+        );
         aminals.addTail(
             '<path fill="#f15a29" d="M514 544c22 50 22 108 1 159-14 38-38 85-10 121 5 7 13 11 23 13 10 1 21-1 28-8 5-5 8-15 3-22-2-3-7-4-11-3-8 3-4 14 1 19 6 4 13 4 21 2 17-5 28-20 43-30 10-6 24-9 35-2-5-2-11-2-17-1-5 1-11 3-15 7-14 10-25 27-42 35-9 4-21 5-30-1-11-7-16-26-5-37 8-7 21-7 30-1 14 9 15 30 7 44-13 24-47 30-71 18-33-16-46-56-42-91 1-25 10-50 17-74 6-21 9-42 6-63-2-20-8-41-18-59l47-23Z"/>'
         );
@@ -71,3 +95,5 @@ contract AminalScript is Script {
         vm.stopBroadcast();
     }
 }
+
+// TODO what if invalid visuals get included - how to validate and ignore

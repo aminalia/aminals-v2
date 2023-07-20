@@ -27,8 +27,10 @@ contract MoveTwice is ISkill {
     }
 
     // DELETE - for testing only
+    // TODO harnesses
     function moveTwice(uint256 aminalID, address sender, bytes memory data1, bytes memory data2)
-        public payable
+        public
+        payable
         returns (uint256)
     {
         console.log("first movement ----");

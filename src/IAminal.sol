@@ -8,4 +8,6 @@ interface IAminal is IAminalStructs {
     function callSkillInternal(address sender, uint256 aminalId, address skillAddress, bytes calldata data)
         external
         payable;
+
+    error NotEnoughEther();
 }

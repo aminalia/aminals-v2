@@ -65,6 +65,8 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
                 output, '<g id="shadow"><ellipse fill="#3c3d55" opacity="0.5"  cx="505" cy="971" rx="163" ry="12"/></g>'
             )
         );
+
+        // TODO flag invalid SVG IDs and skip rendering them? Default to empty
         output = string(abi.encodePacked(output, tails[visuals.tailId]));
         output = string(abi.encodePacked(output, arms[visuals.armId]));
         output = string(abi.encodePacked(output, ears[visuals.earsId]));
@@ -139,24 +141,23 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
     }
 
     function getVisuals(uint256 category, uint256 id) public view returns (string memory) {
-        if (VisualsCat(category) == VisualsCat.BACK) {
-            if (backgrounds.length > id) { return backgrounds[id]; }
-        } else if (VisualsCat(category) == VisualsCat.ARM) {
-            if (arms.length > id) { return arms[id]; } 
+        if (VisualsCat(category) == VisualsCat.BACK) if (backgrounds.length > id) return backgrounds[id];
+        else if (VisualsCat(category) == VisualsCat.ARM) {
+            if (arms.length > id) return arms[id];
         } else if (VisualsCat(category) == VisualsCat.TAIL) {
-             if (tails.length > id) { return tails[id]; } 
+            if (tails.length > id) return tails[id];
         } else if (VisualsCat(category) == VisualsCat.EARS) {
-            if (ears.length > id) { return ears[id]; }
+            if (ears.length > id) return ears[id];
         } else if (VisualsCat(category) == VisualsCat.BODY) {
-            if (bodies.length > id) { return bodies[id]; }
+            if (bodies.length > id) return bodies[id];
         } else if (VisualsCat(category) == VisualsCat.FACE) {
-            if (faces.length > id) { return faces[id]; }
+            if (faces.length > id) return faces[id];
         } else if (VisualsCat(category) == VisualsCat.MOUTH) {
-            if (mouths.length > id) { return mouths[id]; }
+            if (mouths.length > id) return mouths[id];
         } else if (VisualsCat(category) == VisualsCat.MISC) {
-            if (backgrounds.length > id) { return miscs[id]; }
+            if (backgrounds.length > id) return miscs[id];
         }
-        
+
         return "";
     }
 

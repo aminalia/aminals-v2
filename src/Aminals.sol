@@ -36,12 +36,15 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         _;
     }
 
-    constructor() {
-        visualsAuction = new VisualsAuction(address(this));
-        voteSkill = new VoteSkill(address(this));
-        skills[address(voteSkill)] = true;
-        // decide if and how this proposal address could be modified/upgraded
-        proposals = IProposals(address(new AminalProposals(address(this))));
+    // TODO pass in addresses rather than deploy within constructor
+    // Create a auctions interface that the harness contract can satisfy
+    constructor(address _visualsAuction, address _voteSkill, address _aminalProposals) {
+        visualsAuction = VisualsAuction(_visualsAuction);
+        voteSkill = VoteSkill(_voteSkill);
+        skills[address(voteSkill)] = true; // Enable vote skill
+        
+        // TODO decide if and how this proposal address could be modified/upgraded
+        proposals = IProposals(_aminalProposals);
 
         // initialize the AminalsDescriptor with empty SVG for index 0
         string memory emptySVG = "";
@@ -55,6 +58,12 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         addMisc(emptySVG);
     }
 
+    // TODO make it so you can only spawn the initial ones
+    // Then restrict all future ones to only come from breeding?
+    // Possibly:
+    //  Initialization period where inititializer can spawn the initial set
+    //  Then there is the breeding period where they can only be spawned during gestation
+    //
     function spawnAminal(
         uint256 aminalOne,
         uint256 aminalTwo,
@@ -71,7 +80,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         Aminal storage aminal = aminals[aminalId];
         aminal.momId = aminalOne;
         aminal.dadId = aminalTwo;
-        aminal.visuals.backId = backId;
+        aminal.visuals.backId = backId; // Probably something checking that these IDs are in the range of valid traits
         aminal.visuals.armId = armId;
         aminal.visuals.tailId = tailId;
         aminal.visuals.earsId = earsId;
@@ -88,6 +97,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
     //     return aminals[aminalID];
     // }
 
+    // TODO do we need all the views?
     function getAminalVisualsByID(uint256 aminalID) public view override returns (Visuals memory) {
         return aminals[aminalID].visuals;
     }
@@ -111,19 +121,23 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         return aminal.energy;
     }
 
+    // Check for underflows
+    // Needs to be easier to read and easier to test invariants
     function getQuorum(uint256 proposalTime, uint256 currentTime) public view returns (uint256) {
-        if (quorum > (currentTime - proposalTime) * quorumDecayPerWeek / (1 weeks)) {
-            return (quorum - currentTime - proposalTime) * quorumDecayPerWeek / (1 weeks);
+        if (quorum > ((currentTime - proposalTime) * quorumDecayPerWeek) / (1 weeks)) {
+            return ((quorum - currentTime - proposalTime) * quorumDecayPerWeek) / (1 weeks);
         } else {
             return 0;
         }
     }
 
     function feed(uint256 aminalId) public payable returns (uint256) {
-        require(msg.value >= 0.01 ether, "Not enough ether");
+        // require(msg.value >= 0.01 ether, "Not enough ether");
+        if (msg.value < 0.01 ether) revert NotEnoughEther();
         return _feed(aminalId, msg.sender, msg.value);
     }
 
+    // Maybe feedFor
     function feedFrom(uint256 aminalId, address feeder) public payable returns (uint256) {
         require(msg.value >= 0.01 ether, "Not enough ether");
         return _feed(aminalId, feeder, msg.value);
@@ -220,9 +234,9 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
     // and users
     // TODO: Allow users to specify the number of squeaks
     function squeak(uint256 aminalId, uint256 amount) public payable {
-        
         console.log("here... with msg.value == ", msg.value);
-        require(msg.value >= 0.01 ether, "Not enough ether");
+        // require(msg.value ;= 0.01 ether, "Not enough ether");
+        if (msg.value < 0.01 ether) revert NotEnoughEther();
 
         Aminal storage aminal = aminals[aminalId];
 
@@ -230,9 +244,8 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         console.log("coming from the address == ", msg.sender, " with skills: ", skills[msg.sender]);
         require(skills[msg.sender] == true || aminal.lovePerUser[msg.sender] >= amount, "Not enough love");
 
+        if (skills[msg.sender] == true) return; // don't adjust love or energy for smart contract calls
 
-        if(skills[msg.sender] == true) { return; } // don't adjust love or energy for smart contract calls
-        
         // ensure that aminal.energy never goes below 0
         if (aminal.energy >= amount) aminal.energy = aminal.energy - amount;
 
@@ -247,6 +260,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         squeak(aminalId, amount);
     }
 
+    // TODO to be internal/ harness
     function callSkillInternal(address sender, uint256 aminalId, address skillAddress, bytes calldata data)
         public
         payable
@@ -290,15 +304,17 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         price = price / 10;
         if (price < 1) price++;
 
-        return price * 10**15;
+        return price * 10 ** 15;
     }
 
-    function proposeAddSkill(uint256 aminalID, string calldata skillName, address skillAddress) public returns (uint256 proposalId) {
+    function proposeAddSkill(uint256 aminalID, string calldata skillName, address skillAddress)
+        public
+        returns (uint256 proposalId)
+    {
         // TODO: require minimum love amount?
 
         proposalId = proposals.proposeAddSkill(aminalID, skillName, skillAddress);
         voteYes(aminalID, proposalId);
-
     }
 
     function proposeRemoveSkill(uint256 aminalID, string calldata description, address skillAddress)
@@ -310,6 +326,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         voteYes(aminalID, proposalId);
     }
 
+    // Should not be public`
     function addSkill(address faddress) public {
         // currently done such as to add the skills globally to all aminals
         // Aminal storage aminal = aminals[aminalId];
@@ -322,7 +339,6 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor {
         // Aminal storage aminal = aminals[aminalId];
         skills[faddress] = false;
         // aminal.skills[aminal.Nskills++] = skill;
-
     }
 
     function voteNo(uint256 aminalID, uint256 proposalId) public {
