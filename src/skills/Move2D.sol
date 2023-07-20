@@ -2,12 +2,11 @@
 pragma solidity ^0.8.20;
 
 import "forge-std/console.sol";
-import "forge-std/Test.sol";
 
-import "../IAminal.sol";
-import "../Aminals.sol";
+import {IAminal} from "src/IAminal.sol";
+import {Aminals} from "src/Aminals.sol";
 
-import "../skills/ISkills.sol";
+import {ISkill} from "src/skills/ISkills.sol";
 
 contract Move2D is ISkill {
     address public aminals;
@@ -23,11 +22,11 @@ contract Move2D is ISkill {
         aminals = _aminals;
     }
 
-    function useSkill(address, /* sender */ uint256 aminalId, bytes calldata data)
-        public
-        payable
-        returns (uint256 squeak)
-    {
+    function useSkill(
+        address,
+        /* sender */ uint256 aminalId,
+        bytes calldata data
+    ) public payable returns (uint256 squeak) {
         require(msg.sender == aminals);
         (uint256 x, uint256 y) = abi.decode(data, (uint256, uint256));
         console.log("request to move to x = ", x, " & y = ", y);
@@ -35,21 +34,34 @@ contract Move2D is ISkill {
     }
 
     // DELETE - for testing only
-    function move2D(uint256 aminalID, uint256 x, uint256 y) public returns (uint256) {
+    function move2D(
+        uint256 aminalID,
+        uint256 x,
+        uint256 y
+    ) public returns (uint256) {
         return _move2D(aminalID, x, y);
     }
 
     // Getters
-    function getSkillData(uint256 x, uint256 y) public pure returns (bytes memory data) {
+    function getSkillData(
+        uint256 x,
+        uint256 y
+    ) public pure returns (bytes memory data) {
         return abi.encode(x, y);
     }
 
-    function getCoords(uint256 aminalID) public view returns (uint256, uint256) {
+    function getCoords(
+        uint256 aminalID
+    ) public view returns (uint256, uint256) {
         return (Coords2D[aminalID].x, Coords2D[aminalID].y);
     }
 
     // Internal functions
-    function _move2D(uint256 aminalID, uint256 x, uint256 y) internal returns (uint256 squeak) {
+    function _move2D(
+        uint256 aminalID,
+        uint256 x,
+        uint256 y
+    ) internal returns (uint256 squeak) {
         // replace with squeak calc based on distance
         squeak = 2;
 

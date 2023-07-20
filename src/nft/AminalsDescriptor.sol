@@ -3,8 +3,9 @@
 
 pragma solidity ^0.8.20;
 
-import "./NFTDescriptor.sol";
-import "../IAminal.sol";
+import {NFTDescriptor} from "src/nft/NFTDescriptor.sol";
+import {Base64} from "src/utils/Base64.sol";
+import {IAminal} from "src/IAminal.sol";
 
 abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
     uint8 private constant _ADDRESS_LENGTH = 20;
@@ -39,13 +40,22 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
      * @notice Given a token ID and seed, construct a base64 encoded data URI for an NFT.
      */
     function dataURI(uint256 tokenId) public view returns (string memory) {
-        string memory name = string(abi.encodePacked("Aminal #", _toString(tokenId)));
+        string memory name = string(
+            abi.encodePacked("Aminal #", _toString(tokenId))
+        );
 
         // Need to pull the image number for each token id, set to 0 for now, tokenId 1 for testing
-        string memory image =
-            string(abi.encodePacked("data:image/svg+xml;base64,", Base64.encode(bytes(_aminalImage(tokenId)))));
-        string memory description =
-            string(abi.encodePacked("This NFT represents a digital pet. This NFT cannot be transfered."));
+        string memory image = string(
+            abi.encodePacked(
+                "data:image/svg+xml;base64,",
+                Base64.encode(bytes(_aminalImage(tokenId)))
+            )
+        );
+        string memory description = string(
+            abi.encodePacked(
+                "This NFT represents a digital pet. This NFT cannot be transfered."
+            )
+        );
         string memory attributes = generateAttributesList(tokenId);
 
         return genericDataURI(name, description, image, attributes);
@@ -54,7 +64,9 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
     /**
      * @notice Given a token ID, construct a base64 encoded SVG.
      */
-    function _aminalImage(uint256 _tokenId) internal view returns (string memory output) {
+    function _aminalImage(
+        uint256 _tokenId
+    ) internal view returns (string memory output) {
         Visuals memory visuals = getAminalVisualsByID(_tokenId);
 
         // Aminal Base - for all Aminals
@@ -62,7 +74,8 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         output = string(abi.encodePacked(output, backgrounds[visuals.backId]));
         output = string(
             abi.encodePacked(
-                output, '<g id="shadow"><ellipse fill="#3c3d55" opacity="0.5"  cx="505" cy="971" rx="163" ry="12"/></g>'
+                output,
+                '<g id="shadow"><ellipse fill="#3c3d55" opacity="0.5"  cx="505" cy="971" rx="163" ry="12"/></g>'
             )
         );
 
@@ -79,14 +92,18 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         output = string(abi.encodePacked(output, "</svg>"));
     }
 
-    function getAminalVisualsByID(uint256 aminalID) public view virtual returns (Visuals memory);
+    function getAminalVisualsByID(
+        uint256 aminalID
+    ) public view virtual returns (Visuals memory);
 
     // ------------------------------------------------------------------------
     // SVG Parts - Need to add owner permissions
     // ------------------------------------------------------------------------
 
     // eg. 00a79d
-    function addBackground(string memory background) public returns (uint256 id) {
+    function addBackground(
+        string memory background
+    ) public returns (uint256 id) {
         backgrounds.push(background);
         return backgrounds.length - 1;
     }
@@ -118,6 +135,7 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         bodies.push(body);
         return bodies.length - 1;
     }
+
     // Aminal #0 - Face
     // '<g id="Face_Mask"><rect class="cls-6" x="338" y="289" width="323" height="126" rx="63" ry="63"/> </g> <g id="Eyes"><g><circle class="cls-17" cx="388" cy="352" r="41"/><g><circle class="cls-12" cx="388" cy="352" r="38"/><circle class="cls-2" cx="367" cy="331" r="3"/><circle class="cls-2" cx="374" cy="325" r="1"/><ellipse class="cls-1" cx="387" cy="336" rx="28" ry="19"/></g><circle class="cls-19" cx="612" cy="352" r="41"/><g><circle class="cls-12" cx="612" cy="352" r="38"/><circle class="cls-2" cx="590" cy="331" r="3"/><circle class="cls-2" cx="597" cy="325" r="1"/><ellipse class="cls-1" cx="611" cy="336" rx="28" ry="19"/> </g></g> </g> <g id="nose"><g><circle class="cls-9" cx="495" cy="307" r="3"/><circle class="cls-9" cx="505" cy="307" r="3"/></g> </g>'
 
@@ -132,6 +150,7 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         mouths.push(mouth);
         return mouths.length - 1;
     }
+
     // Aminal #0 - Mouth
     // '<g id="Mouth"><g><rect class="cls-12" x="461" y="335" width="77" height="45" rx="22" ry="22"/><path class="cls-7" d="m492,336c0,2-2,5-5,5s-5-2-5-5"/><path class="cls-7" d="m518,336c0,2-2,5-5,5s-5-2-5-5"/><circle class="cls-5" cx="499" cy="364" r="13"/><path class="cls-14" d="m485,380c0-8,7-12,14-12s14,4,14,12"/><path class="cls-13" d="m474,350c-2,2-3,5-4,8,0,3,0,6,1,9"/><path class="cls-13" d="m481,351c-2,2-3,5-4,8,0,3,0,6,2,8"/><path class="cls-13" d="m523,350c2,2,3,5,4,8,0,3,0,6-1,9"/><path class="cls-13" d="m516,351c2,2,3,5,4,8,0,3,0,6-2,8"/></g> </g> <g id="Element_1_OL"><path class="cls-6" d="m530,17l-51,83-8-20c16,1,65,7,81,9-10,11-55,65-67,78,0,0-9-20-9-20l66,5,17,1c-7,6-67,52-77,60,0,0,54-59,54-59l4,11c-20,1-76,6-96,8,13-15,57-67,71-83,0,0,8,20,8,20-18-2-67-7-84-9,12-11,76-72,89-84h0Z"/> </g>'
 
@@ -140,23 +159,27 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         return miscs.length - 1;
     }
 
-    function getVisuals(uint256 category, uint256 id) public view returns (string memory) {
-        if (VisualsCat(category) == VisualsCat.BACK) if (backgrounds.length > id) return backgrounds[id];
-        else if (VisualsCat(category) == VisualsCat.ARM) {
-            if (arms.length > id) return arms[id];
-        } else if (VisualsCat(category) == VisualsCat.TAIL) {
-            if (tails.length > id) return tails[id];
-        } else if (VisualsCat(category) == VisualsCat.EARS) {
-            if (ears.length > id) return ears[id];
-        } else if (VisualsCat(category) == VisualsCat.BODY) {
-            if (bodies.length > id) return bodies[id];
-        } else if (VisualsCat(category) == VisualsCat.FACE) {
-            if (faces.length > id) return faces[id];
-        } else if (VisualsCat(category) == VisualsCat.MOUTH) {
-            if (mouths.length > id) return mouths[id];
-        } else if (VisualsCat(category) == VisualsCat.MISC) {
-            if (backgrounds.length > id) return miscs[id];
-        }
+    function getVisuals(
+        uint256 category,
+        uint256 id
+    ) public view returns (string memory) {
+        if (VisualsCat(category) == VisualsCat.BACK)
+            if (backgrounds.length > id) return backgrounds[id];
+            else if (VisualsCat(category) == VisualsCat.ARM) {
+                if (arms.length > id) return arms[id];
+            } else if (VisualsCat(category) == VisualsCat.TAIL) {
+                if (tails.length > id) return tails[id];
+            } else if (VisualsCat(category) == VisualsCat.EARS) {
+                if (ears.length > id) return ears[id];
+            } else if (VisualsCat(category) == VisualsCat.BODY) {
+                if (bodies.length > id) return bodies[id];
+            } else if (VisualsCat(category) == VisualsCat.FACE) {
+                if (faces.length > id) return faces[id];
+            } else if (VisualsCat(category) == VisualsCat.MOUTH) {
+                if (mouths.length > id) return mouths[id];
+            } else if (VisualsCat(category) == VisualsCat.MISC) {
+                if (backgrounds.length > id) return miscs[id];
+            }
 
         return "";
     }
@@ -168,8 +191,17 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
     /**
      * @notice NFT Atrributes based on Token ID
      */
-    function generateAttributesList(uint256 tokenId) public pure returns (string memory) {
-        return string(abi.encodePacked('{"trait_type":"Aminal ID","value":', _toString(tokenId), "}"));
+    function generateAttributesList(
+        uint256 tokenId
+    ) public pure returns (string memory) {
+        return
+            string(
+                abi.encodePacked(
+                    '{"trait_type":"Aminal ID","value":',
+                    _toString(tokenId),
+                    "}"
+                )
+            );
     }
 
     /**
@@ -181,8 +213,12 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         string memory _image,
         string memory _attributes
     ) public pure returns (string memory) {
-        TokenURIParams memory params =
-            TokenURIParams({name: _name, description: _description, image: _image, attributes: _attributes});
+        TokenURIParams memory params = TokenURIParams({
+            name: _name,
+            description: _description,
+            image: _image,
+            attributes: _attributes
+        });
         return constructTokenURI(params);
     }
 
@@ -209,7 +245,10 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
     /**
      * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation with fixed length.
      */
-    function _toHexString(uint256 value, uint256 length) internal pure returns (string memory) {
+    function _toHexString(
+        uint256 value,
+        uint256 length
+    ) internal pure returns (string memory) {
         bytes memory buffer = new bytes(2 * length + 2);
         buffer[0] = "0";
         buffer[1] = "x";

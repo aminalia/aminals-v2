@@ -1,11 +1,11 @@
 pragma solidity ^0.8.20;
 
 import "forge-std/Script.sol";
-import "src/Aminals.sol";
-import "src/IAminal.sol";
-import "src/utils/VisualsAuction.sol";
-import "src/skills/VoteSkill.sol";
-import "src/proposals/AminalProposals.sol";
+import {Aminals} from "src/Aminals.sol";
+import {IAminal} from "src/IAminal.sol";
+import {VisualsAuction} from "src/utils/VisualsAuction.sol";
+import {VoteSkill} from "src/skills/VoteSkill.sol";
+import {AminalProposals} from "src/proposals/AminalProposals.sol";
 
 /*
 forge script script/AminalScript.s.sol:AminalScript --broadcast --verify -vvvv

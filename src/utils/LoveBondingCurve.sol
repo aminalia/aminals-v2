@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.20;
 
-import "../Aminals.sol";
+import {Aminals} from "src/Aminals.sol";
 
 contract LoveBondingCurve {
     Aminals public aminals;

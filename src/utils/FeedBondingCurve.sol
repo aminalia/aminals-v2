@@ -4,8 +4,8 @@ pragma solidity ^0.8.20;
 import "forge-std/console.sol";
 import "forge-std/Test.sol";
 
-import "../IAminal.sol";
-import "../Aminals.sol";
+import {IAminal} from "src/IAminal.sol";
+import {Aminals} from "src/Aminals.sol";
 
 contract FeedBondingCurve {
     address public aminals;

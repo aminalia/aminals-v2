@@ -5,8 +5,8 @@ import "forge-std/console.sol";
 import {Initializable} from "oz/proxy/utils/Initializable.sol";
 import {Ownable} from "oz/access/Ownable.sol";
 
-import "src/IAminalStructs.sol";
-import "src/Aminals.sol";
+import {IAminalStructs} from "src/IAminalStructs.sol";
+import {Aminals} from "src/Aminals.sol";
 
 contract VisualsAuction is IAminalStructs, Initializable, Ownable {
     Aminals public aminals;

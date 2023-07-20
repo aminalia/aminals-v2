@@ -12,8 +12,7 @@ import {Aminals} from "src/Aminals.sol";
 
 import {ISkill} from "src/skills/ISkills.sol";
 
-import "../proposals/IProposals.sol";
-import {AminalProposals} from "../proposals/AminalProposals.sol";
+import {AminalProposals} from "src/proposals/AminalProposals.sol";
 
 contract VoteSkill is ISkill, AminalProposals {
     uint256 public LoveQuorum = 80;

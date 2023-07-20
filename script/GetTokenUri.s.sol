@@ -1,9 +1,9 @@
 pragma solidity ^0.8.20;
 
 import "forge-std/Script.sol";
-import "../src/Aminals.sol";
-import "../src/IAminal.sol";
-import "../src/utils/VisualsAuction.sol";
+import {Aminals} from "src/Aminals.sol";
+import {IAminal} from "src/IAminal.sol";
+import {VisualsAuction} from "src/utils/VisualsAuction.sol";
 
 /*
 forge script script/GetTokenUri.s.sol:GetTokenUri   -vvvv
