@@ -71,9 +71,6 @@ contract AminalTest is BaseTest {
         console.log("SPawning aminals...........");
 
         spawnInitialAminals(aminals);
-        // uint256 a1 = aminals.spawnAminal(0, 0, 1, 1, 1, 1, 1, 1, 1, 1);
-        // uint256 a2 = aminals.spawnAminal(0, 0, 2, 2, 2, 2, 2, 2, 2, 2);
-        // console.log("spawned.... ", a1, " & ", a2);
         console.log("spawned.... ");
 
         // Get only the Visuals struct from the mapping

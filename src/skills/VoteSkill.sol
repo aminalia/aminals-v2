@@ -17,9 +17,6 @@ contract VoteSkill is ISkill, AminalProposals {
     uint256 public LoveQuorumDecayPerWeek = 10;
     uint256 public LoveRequiredMajority = 50;
 
-    // constructor(address _aminals) AminalProposals(_aminals) {
-    //     aminals = _aminals;
-    // }
     constructor() {}
 
     function setup(address _aminals) external override initializer onlyOwner {
@@ -44,8 +41,6 @@ contract VoteSkill is ISkill, AminalProposals {
             LoveRequiredMajority
         );
     }
-
-    // function _vote(uint256 aminalID, address sender, uint256 proposalId, bool yesNo, uint256 membersLength, uint256 quorum, uint256 requiredMajority) internal returns (uint256 squeak) {
 
     // Getters
     function getSkillData(uint256 proposalId, bool vote) public pure returns (bytes memory data) {
@@ -83,7 +78,6 @@ contract VoteSkill is ISkill, AminalProposals {
         LoveProposal storage proposal = loveProposals[proposalId];
         require(proposal.closed == 0);
 
-        // uint love = aminals[aminalID].lovePerUser[msg.sender];
         uint256 love = Aminals(aminals).getAminalLoveByIdByUser(aminalID, msg.sender);
 
         // first vote

@@ -127,10 +127,6 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         return aminalId;
     }
 
-    // function getAminalById(uint256 aminalID) public view returns (Aminal memory) {
-    //     return aminals[aminalID];
-    // }
-
     // TODO do we need all the views?
     function getAminalVisualsByID(uint256 aminalID) public view override returns (Visuals memory) {
         return aminals[aminalID].visuals;
@@ -166,15 +162,8 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
     }
 
     function feed(uint256 aminalId) public payable returns (uint256) {
-        // require(msg.value >= 0.01 ether, "Not enough ether");
         if (msg.value < 0.01 ether) revert NotEnoughEther();
         return _feed(aminalId, msg.sender, msg.value);
-    }
-
-    // Maybe feedFor
-    function feedFrom(uint256 aminalId, address feeder) public payable returns (uint256) {
-        require(msg.value >= 0.01 ether, "Not enough ether");
-        return _feed(aminalId, feeder, msg.value);
     }
 
     function _feed(uint256 aminalId, address feeder, uint256 amount) internal returns (uint256) {
@@ -269,7 +258,6 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
     // TODO: Allow users to specify the number of squeaks
     function squeak(uint256 aminalId, uint256 amount) public payable {
         console.log("here... with msg.value == ", msg.value);
-        // require(msg.value ;= 0.01 ether, "Not enough ether");
         if (msg.value < 0.01 ether) revert NotEnoughEther();
 
         Aminal storage aminal = aminals[aminalId];
