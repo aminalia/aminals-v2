@@ -7,9 +7,8 @@ import {Ownable} from "oz/access/Ownable.sol";
 
 import {Aminals} from "src/Aminals.sol";
 import {IAminalStructs} from "src/IAminalStructs.sol";
-import {IVisualAuction} from "src/interfaces/IVisualAuction.sol";
 
-contract VisualsAuction is IAminalStructs, Initializable, Ownable, IVisualAuction {
+contract VisualsAuction is IAminalStructs, Initializable, Ownable {
     Aminals public aminals;
 
     enum VisualsCat {
@@ -323,20 +322,5 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable, IVisualAuctio
         amount = amount + minNumber;
         console.log("random for ", i, " == ", amount);
         return amount;
-    }
-
-    function canSpawn(
-        uint256 aminalOne,
-        uint256 aminalTwo,
-        uint256 backId,
-        uint256 armId,
-        uint256 tailId,
-        uint256 earsId,
-        uint256 bodyId,
-        uint256 faceId,
-        uint256 mouthId,
-        uint256 miscId
-    ) external view returns (bool) {
-        return true;
     }
 }

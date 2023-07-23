@@ -243,6 +243,7 @@ contract AminalTest is BaseTest {
     }
 
     function spawnNewAminal(uint256 mom, uint256 dad, uint256[8] memory winnerIds) public {
+        vm.prank(address(visualsAuction));
         aminals.spawnAminal(
             mom,
             dad,

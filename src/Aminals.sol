@@ -92,11 +92,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         uint256 mouthId,
         uint256 miscId
     ) public returns (uint256) {
-        if (
-            !visualsAuction.canSpawn(
-                aminalOne, aminalTwo, backId, armId, tailId, earsId, bodyId, faceId, mouthId, miscId
-            )
-        ) revert NotSpawnable();
+        if (msg.sender != address(visualsAuction)) revert NotSpawnable();
 
         return
             _spawnAminalInternal(aminalOne, aminalTwo, backId, armId, tailId, earsId, bodyId, faceId, mouthId, miscId);
