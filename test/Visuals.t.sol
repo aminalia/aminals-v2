@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "forge-std/Test.sol";
-import "../src/Aminals.sol";
+import {Aminals} from "src/Aminals.sol";
+import {BaseTest} from "./BaseTest.sol";
+import {IAminal} from "src/IAminal.sol";
+import {IProposals} from "src/proposals/IProposals.sol";
 
-import "../src/IAminal.sol";
-
-contract VisualsTest is Test {
+contract VisualsTest is BaseTest {
     IProposals public proposals;
     Aminals public aminals;
 
     function setUp() public {
-        aminals = new Aminals();
+        aminals = Aminals(deployAminals());
     }
 
     function test_RegisterVisuals() public {

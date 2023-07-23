@@ -1,9 +1,11 @@
 pragma solidity ^0.8.20;
 
 import "forge-std/Script.sol";
-import "../src/Aminals.sol";
-import "../src/IAminal.sol";
-import "../src/utils/VisualsAuction.sol";
+import {Aminals} from "src/Aminals.sol";
+import {IAminal} from "src/IAminal.sol";
+import {VisualsAuction} from "src/utils/VisualsAuction.sol";
+import {VoteSkill} from "src/skills/VoteSkill.sol";
+import {AminalProposals} from "src/proposals/AminalProposals.sol";
 
 /*
 forge script script/AminalScript.s.sol:AminalScript --broadcast --verify -vvvv
@@ -13,12 +15,30 @@ forge script script/AminalScript.s.sol:AminalScript --chain-id 5  --rpc-url "htt
 */
 
 contract AminalScript is Script {
-    // Aminals public aminals;
+    Aminals aminals;
+
+    function deployAminals() internal returns (address) {
+        VisualsAuction _visualsAuction = new VisualsAuction();
+        VoteSkill _voteSkill = new VoteSkill();
+        AminalProposals _proposals = new AminalProposals();
+
+        Aminals _aminals = new Aminals(
+            address(_visualsAuction),
+            address(_voteSkill),
+            address(_proposals)
+        );
+
+        _visualsAuction.setup(address(aminals));
+        _voteSkill.setup(address(aminals));
+        _proposals.setup(address(aminals));
+
+        return address(_aminals);
+    }
 
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("ETH_PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
-        Aminals aminals = new Aminals();
+        aminals = Aminals(deployAminals());
 
         // first aminal
         aminals.addBackground('<g><rect fill="#4e2f91" x="0" y="0" width="1000px" height="1000px"/></g>');
@@ -71,3 +91,5 @@ contract AminalScript is Script {
         vm.stopBroadcast();
     }
 }
+
+// TODO what if invalid visuals get included - how to validate and ignore

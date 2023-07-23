@@ -1,22 +1,26 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "forge-std/Test.sol";
-import "../src/Aminals.sol";
-import "../src/IAminal.sol";
-import "../src/utils/VisualsAuction.sol";
-import "../src/proposals/AminalProposals.sol";
+import "forge-std/console.sol";
+import {BaseTest} from "./BaseTest.sol";
+import {AminalProposals} from "src/proposals/AminalProposals.sol";
+import {Aminals} from "src/Aminals.sol";
+import {IAminal} from "src/IAminal.sol";
+import {IAminalStructs} from "src/IAminalStructs.sol";
+import {IAminalStructs} from "src/IAminalStructs.sol";
+import {IProposals} from "src/proposals/IProposals.sol";
+import {Move2D} from "src/skills/Move2D.sol";
+import {MoveTwice} from "src/skills/MoveTwice.sol";
+import {VisualsAuction} from "src/utils/VisualsAuction.sol";
+import {VoteSkill} from "src/skills/VoteSkill.sol";
 
-import "../src/skills/Move2D.sol";
-import "../src/skills/MoveTwice.sol";
-
-contract AminalTest is Test {
+contract AminalTest is BaseTest {
     Aminals public aminals;
     VisualsAuction public visualsAuction;
     IProposals public proposals;
 
     function setUp() public {
-        aminals = new Aminals();
+        aminals = Aminals(deployAminals());
         proposals = aminals.proposals();
 
         visualsAuction = VisualsAuction(aminals.visualsAuction());
@@ -65,9 +69,9 @@ contract AminalTest is Test {
 
     function spawnAminals() public {
         console.log("SPawning aminals...........");
-        uint256 a1 = aminals.spawnAminal(0, 0, 1, 1, 1, 1, 1, 1, 1, 1);
-        uint256 a2 = aminals.spawnAminal(0, 0, 2, 2, 2, 2, 2, 2, 2, 2);
-        console.log("spawned.... ", a1, " & ", a2);
+
+        spawnInitialAminals(aminals);
+        console.log("spawned.... ");
 
         // Get only the Visuals struct from the mapping
         Aminals.Visuals memory visualsOne;
@@ -82,7 +86,7 @@ contract AminalTest is Test {
     }
 
     function squeak() public {
-        vm.expectRevert("Not enough ether");
+        vm.expectRevert(IAminal.NotEnoughEther.selector);
         aminals.squeak(1, 1);
         vm.expectRevert("Not enough love");
         aminals.squeak{value: 0.01 ether}(1, 1);
@@ -92,7 +96,7 @@ contract AminalTest is Test {
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
         console.log("Feeding the aminal");
-        vm.expectRevert("Not enough ether");
+        vm.expectRevert(IAminal.NotEnoughEther.selector);
         console.log(uint256(aminals.feed(1)));
         console.log(aminals.feed{value: 0.01 ether}(1));
         console.log(aminals.feed{value: 0.01 ether}(1));
@@ -191,7 +195,7 @@ contract AminalTest is Test {
             console.log("iterating through category ", i);
 
             for (uint256 j = 0; j < 10; j++) {
-                if(auction.visualIds[j][i] != 0 ) {
+                if (auction.visualIds[j][i] != 0) {
                     console.log("---> category: ", i, " - index: ", j);
                     console.log("=== value: ", auction.visualIds[j][i], "---> VOTES: === ", auction.visualIdVotes[j][i]);
                     console.log(aminals.getVisuals(i, auction.visualIds[j][i]));
@@ -206,14 +210,14 @@ contract AminalTest is Test {
         address owner3 = 0x45CbC00e0618880bfB2dBDdEAed1ef1411dd5eeE;
         vm.prank(owner3);
         visualsAuction.removeVisual(auctionID, VisualsAuction.VisualsCat.FACE, id1);
-      
+
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
-        vm.expectRevert("The trait to be removed does not exist in the auction list"); 
+        vm.expectRevert("The trait to be removed does not exist in the auction list");
         visualsAuction.removeVisual(auctionID, VisualsAuction.VisualsCat.FACE, id1);
 
         visualsAuction.removeVisual(auctionID, VisualsAuction.VisualsCat.BODY, 5);
- 
+
         // New visual is added to the auction as there is now a free slot
         uint256 id10 = aminals.addBody("body11");
         visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id10);
@@ -236,6 +240,7 @@ contract AminalTest is Test {
     }
 
     function spawnNewAminal(uint256 mom, uint256 dad, uint256[8] memory winnerIds) public {
+        vm.prank(address(visualsAuction));
         aminals.spawnAminal(
             mom,
             dad,
@@ -253,13 +258,12 @@ contract AminalTest is Test {
 
     function addAndUseSkills() public {
         console.log("\n now playing with the skillests...");
-        
+
         // introduce skillsets
         Move2D mover = new Move2D(address(aminals));
         mover.move2D(3, 100, 200);
         (uint256 x, uint256 y) = mover.getCoords(3);
         console.log("x = ", x, " y = ", y);
-
 
         console.log("\n proxy call for mover 1 == public UseSkill function called");
         // with proxy function call

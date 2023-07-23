@@ -2,12 +2,10 @@
 pragma solidity ^0.8.20;
 
 import "forge-std/console.sol";
-import "forge-std/Test.sol";
 
-import "../IAminal.sol";
-import "../Aminals.sol";
-
-import "../skills/ISkills.sol";
+import {Aminals} from "src/Aminals.sol";
+import {IAminal} from "src/IAminal.sol";
+import {ISkill} from "src/skills/ISkills.sol";
 
 contract Move2D is ISkill {
     address public aminals;
@@ -23,7 +21,12 @@ contract Move2D is ISkill {
         aminals = _aminals;
     }
 
-    function useSkill(address, /* sender */ uint256 aminalId, bytes calldata data) public payable returns (uint256 squeak) {
+    function useSkill(
+        address,
+        /* sender */
+        uint256 aminalId,
+        bytes calldata data
+    ) public payable returns (uint256 squeak) {
         require(msg.sender == aminals);
         (uint256 x, uint256 y) = abi.decode(data, (uint256, uint256));
         console.log("request to move to x = ", x, " & y = ", y);

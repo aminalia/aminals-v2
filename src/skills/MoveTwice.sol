@@ -4,11 +4,10 @@ pragma solidity ^0.8.20;
 import "forge-std/console.sol";
 import "forge-std/Test.sol";
 
-import "../IAminal.sol";
-import "../Aminals.sol";
-
-import "../skills/ISkills.sol";
-import "./Move2D.sol";
+import {Aminals} from "src/Aminals.sol";
+import {IAminal} from "src/IAminal.sol";
+import {ISkill} from "src/skills/ISkills.sol";
+import {Move2D} from "src/skills/Move2D.sol";
 
 contract MoveTwice is ISkill {
     address public aminals;
@@ -27,8 +26,10 @@ contract MoveTwice is ISkill {
     }
 
     // DELETE - for testing only
+    // TODO harnesses
     function moveTwice(uint256 aminalID, address sender, bytes memory data1, bytes memory data2)
-        public payable
+        public
+        payable
         returns (uint256)
     {
         console.log("first movement ----");

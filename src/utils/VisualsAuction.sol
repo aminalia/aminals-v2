@@ -2,12 +2,13 @@
 pragma solidity ^0.8.20;
 
 import "forge-std/console.sol";
-import "forge-std/Test.sol";
+import {Initializable} from "oz/proxy/utils/Initializable.sol";
+import {Ownable} from "oz/access/Ownable.sol";
 
-import "../IAminalStructs.sol";
-import "../Aminals.sol";
+import {Aminals} from "src/Aminals.sol";
+import {IAminalStructs} from "src/IAminalStructs.sol";
 
-contract VisualsAuction is IAminalStructs {
+contract VisualsAuction is IAminalStructs, Initializable, Ownable {
     Aminals public aminals;
 
     enum VisualsCat {
@@ -21,10 +22,10 @@ contract VisualsAuction is IAminalStructs {
         MISC
     }
 
-    constructor(address _aminals) {
-        // TODO: Replace with Aminals contract address
+    constructor() {}
+
+    function setup(address _aminals) external initializer onlyOwner {
         aminals = Aminals(_aminals);
-        console.log(address(this));
     }
 
     // TODO: Maintain an index of pending Aminals based on breeding in progress
@@ -169,7 +170,6 @@ contract VisualsAuction is IAminalStructs {
     }
 
     function voteVisual(uint256 auctionId, VisualsCat catEnum, uint256 id) public payable _auctionRunning(auctionId) {
-        
         uint256 category = uint256(catEnum);
 
         Auction storage auction = auctions[auctionId];
@@ -181,24 +181,22 @@ contract VisualsAuction is IAminalStructs {
             visualVoted[msg.sender][auctionId][category] < totallove, "Already consumed all of your love with votes"
         );
 
-         console.log("********** a vote has been casted on category: ", category, " /  iD: ", id);
+        console.log("********** a vote has been casted on category: ", category, " /  iD: ", id);
         // console.log(" == with weight = ", totallove, " .  on auctionId = ", auctionId);
 
         // find the index for the submitted Visual ID
-         uint k = 0;
-             for (uint i = 0; i < 10; i++) {
-                 if(auction.visualIds[i][category] == id) {
-                    console.log("EQUALITY");
-                    k = i;
-                    break;
-                }
-            } 
+        uint256 k = 0;
+        for (uint256 i = 0; i < 10; i++) {
+            if (auction.visualIds[i][category] == id) {
+                console.log("EQUALITY");
+                k = i;
+                break;
+            }
+        }
 
         auction.visualIdVotes[k][category] += (totallove);
         visualVoted[msg.sender][auctionId][category] = totallove;
     }
-
-
 
     function removeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId)
         public
@@ -217,47 +215,51 @@ contract VisualsAuction is IAminalStructs {
         auction.visualNoVotes[visualId][category] += (totallove);
 
         console.log("totallove per user = ", totallove, " from msg.sender = ", msg.sender);
-        console.log("trying to remove the visual with love: ", auction.visualNoVotes[visualId][category], " and totallove = ", auction.totalLove / 3);
+        console.log(
+            "trying to remove the visual with love: ",
+            auction.visualNoVotes[visualId][category],
+            " and totallove = ",
+            auction.totalLove / 3
+        );
 
-         if (auction.visualNoVotes[visualId][category] > auction.totalLove / 3) {
-             // a third of lovers has voted to remove the visual trait from the auction
-             uint k = 0;
+        if (auction.visualNoVotes[visualId][category] > auction.totalLove / 3) {
+            // a third of lovers has voted to remove the visual trait from the auction
+            uint256 k = 0;
 
             // identify the location of the visualId
-             for (uint i = 2; i < 10; i++) {
-                 // start with i=2 because we don't want people to remove the 2 parent's traits
-                 if(auction.visualIds[i][category] == visualId) {
+            for (uint256 i = 2; i < 10; i++) {
+                // start with i=2 because we don't want people to remove the 2 parent's traits
+                if (auction.visualIds[i][category] == visualId) {
                     console.log("EQUALITY");
                     k = i;
                     break;
                 }
             }
 
-             console.log("REMOVAL......... ", k);
+            console.log("REMOVAL......... ", k);
 
             require(k != 0, "The trait to be removed does not exist in the auction list");
 
             // auction.visualIds[k][category] = 0;
             // auction.visualIdVotes[k][category] = 0;
             // auction.visualNoVotes[k][category] = 0;
-            
 
-                uint j; 
-                // reset all values, so that new visuals can be submitted
-                for (j = k; j < 9 && auction.visualIds[j][category] != 0; j++) {  // stop at 9 because of the j+1 below
-                    auction.visualIds[j][category] = auction.visualIds[j+1][category];
-                    auction.visualIdVotes[j][category] = auction.visualIdVotes[j+1][category];
-                    auction.visualNoVotes[j][category] = auction.visualNoVotes[j+1][category];
-                    console.log("current j == " , j);
-                } 
+            uint256 j;
+            // reset all values, so that new visuals can be submitted
+            for (j = k; j < 9 && auction.visualIds[j][category] != 0; j++) {
+                // stop at 9 because of the j+1 below
+                auction.visualIds[j][category] = auction.visualIds[j + 1][category];
+                auction.visualIdVotes[j][category] = auction.visualIdVotes[j + 1][category];
+                auction.visualNoVotes[j][category] = auction.visualNoVotes[j + 1][category];
+                console.log("current j == ", j);
+            }
 
-                console.log("stop removal at ... ", j);
+            console.log("stop removal at ... ", j);
 
-                auction.visualIds[j][category] = 0;
-                auction.visualIdVotes[j][category] = 0;
-                auction.visualNoVotes[j][category] = 0;
-            
-         }
+            auction.visualIds[j][category] = 0;
+            auction.visualIdVotes[j][category] = 0;
+            auction.visualNoVotes[j][category] = 0;
+        }
     }
 
     // TODO limits on when this can be called?

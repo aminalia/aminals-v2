@@ -1,8 +1,10 @@
 pragma solidity ^0.8.20;
 
-import "./IProposals.sol";
+import {IProposals} from "src/proposals/IProposals.sol";
+import {Initializable} from "oz/proxy/utils/Initializable.sol";
+import {Ownable} from "oz/access/Ownable.sol";
 
-contract AminalProposals is IProposals {
+contract AminalProposals is IProposals, Initializable, Ownable {
     mapping(uint256 => mapping(uint256 => uint256)) voted;
     mapping(uint256 => mapping(address => uint256)) loveVotes;
 
@@ -31,7 +33,7 @@ contract AminalProposals is IProposals {
         uint256 votedYes;
         uint256 initiated;
         uint256 closed;
-        bool pass; 
+        bool pass;
     }
 
     address public aminals;
@@ -51,12 +53,17 @@ contract AminalProposals is IProposals {
         uint256 requiredMajority
     );
 
-    constructor(address _aminals)  {
+    constructor() {}
+
+    function setup(address _aminals) external virtual initializer onlyOwner {
         aminals = _aminals;
     }
 
     // TODO: Do they require a threashold of love to propose?
-    function proposeAddSkill(uint256 aminalID, string calldata skillName, address skillAddress) public returns (uint256 proposalId) {
+    function proposeAddSkill(uint256 aminalID, string calldata skillName, address skillAddress)
+        public
+        returns (uint256 proposalId)
+    {
         Proposal memory proposal = Proposal({
             proposalType: ProposalType.AddSkill,
             proposer: msg.sender,
@@ -100,9 +107,14 @@ contract AminalProposals is IProposals {
 
     // THIS IS A DEMOCRACY OF AMINALS: ONE AMINAL ONE VOTE :)
     // TODO: change voted from 1/2 to signed int128 to represent yes/no
-    function vote(uint256 aminalID, uint256 proposalId, bool yesNo, uint256 membersLength, uint256 quorum, uint256 requiredMajority)
-        external
-    {
+    function vote(
+        uint256 aminalID,
+        uint256 proposalId,
+        bool yesNo,
+        uint256 membersLength,
+        uint256 quorum,
+        uint256 requiredMajority
+    ) external {
         require(msg.sender == aminals);
 
         Proposal storage proposal = proposals[proposalId];
