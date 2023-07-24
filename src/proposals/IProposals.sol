@@ -7,14 +7,6 @@ interface IProposals {
         RemoveSkill //  1 Remove skill
     }
 
-    // uint256 public quorum;
-    // uint256 public quorumDecayPerWeek;
-    // uint256 public requiredMajority;
-
-    // uint256 public LoveQuorum;
-    // uint256 public LoveQuorumDecayPerWeek;
-    // uint256 public LoveRequiredMajority;
-
     function proposeAddSkill(uint256 aminalID, string calldata skillName, address skillAddress)
         external
         returns (uint256 proposalId);

@@ -15,22 +15,15 @@ import {IAminal} from "src/IAminal.sol";
 import {IProposals} from "src/proposals/IProposals.sol";
 import {ISkill} from "src/skills/ISkills.sol";
 import {VisualsAuction} from "src/utils/VisualsAuction.sol";
-// import {VoteSkill} from "src/skills/VoteSkill.sol";
 
 contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, Initializable, Ownable {
     mapping(uint256 aminalId => Aminal aminal) public aminals;
     uint256 public lastAminalId;
     VisualsAuction public visualsAuction;
-    // VoteSkill public voteSkill;
 
     mapping(address => bool) public skills;
 
     AminalProposals public proposals;
-    // IProposals public loveProposals;
-
-    // uint256 public quorum = 80;
-    // uint256 public quorumDecayPerWeek = 10;
-    // uint256 public requiredMajority = 70;
 
     modifier _onlyAuction() {
         require(msg.sender == address(visualsAuction));
@@ -42,10 +35,8 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         _;
     }
 
-    constructor(address _visualsAuction, /*address _voteSkill,*/ address _aminalProposals) {
+    constructor(address _visualsAuction, address _aminalProposals) {
         visualsAuction = VisualsAuction(_visualsAuction);
-        // voteSkill = VoteSkill(_voteSkill);
-        // skills[address(voteSkill)] = true; // Enable vote skill
 
         // TODO decide if and how this proposal address could be modified/upgraded
         proposals = AminalProposals(_aminalProposals);
@@ -97,8 +88,6 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         uint256 mouthId,
         uint256 miscId
     ) public _onlyAuction returns (uint256) {
-        // if (msg.sender != address(visualsAuction)) revert NotSpawnable();
-
         return
             _spawnAminalInternal(aminalOne, aminalTwo, backId, armId, tailId, earsId, bodyId, faceId, mouthId, miscId);
     }
@@ -155,16 +144,6 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         Aminal storage aminal = aminals[aminalID];
         return aminal.energy;
     }
-
-    // // Check for underflows
-    // // Needs to be easier to read and easier to test invariants
-    // function getQuorum(uint256 proposalTime, uint256 currentTime) public view returns (uint256) {
-    //     if (quorum > ((currentTime - proposalTime) * quorumDecayPerWeek) / (1 weeks)) {
-    //         return ((quorum - currentTime - proposalTime) * quorumDecayPerWeek) / (1 weeks);
-    //     } else {
-    //         return 0;
-    //     }
-    // }
 
     function feed(uint256 aminalId) public payable returns (uint256) {
         if (msg.value < 0.01 ether) revert NotEnoughEther();
@@ -349,8 +328,6 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
             proposals.LoveQuorum(),
             proposals.LoveRequiredMajority()
         );
-
-        // voteYes(aminalID, proposalId); // SHOULD REPLACE WITH A LOVE_VOTE
     }
 
     function proposeRemoveSkill(uint256 aminalID, string calldata description, address skillAddress)
@@ -369,8 +346,6 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
             proposals.LoveQuorum(),
             proposals.LoveRequiredMajority()
         );
-
-        // voteYes(aminalID, proposalId); // SHOULD REPLACE WITH A LOVE_VOTE
     }
 
     function _addSkill(address faddress) internal {
@@ -386,14 +361,6 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         skills[faddress] = false;
         // aminal.skills[aminal.Nskills++] = skill;
     }
-
-    // function voteNo(uint256 aminalID, uint256 proposalId) public {
-    //     _vote(aminalID, proposalId, false);
-    // }
-
-    // function voteYes(uint256 aminalID, uint256 proposalId) public {
-    //     _vote(aminalID, proposalId, true);
-    // }
 
     function voteSkill(uint256 aminalID, uint256 proposalID, bool yesNo) public {
         proposals.LoveVote(

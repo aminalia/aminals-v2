@@ -4,7 +4,6 @@ import "forge-std/Script.sol";
 import {Aminals} from "src/Aminals.sol";
 import {IAminal} from "src/IAminal.sol";
 import {VisualsAuction} from "src/utils/VisualsAuction.sol";
-// import {VoteSkill} from "src/skills/VoteSkill.sol";
 import {AminalProposals} from "src/proposals/AminalProposals.sol";
 
 /*
@@ -19,17 +18,14 @@ contract AminalScript is Script {
 
     function deployAminals() internal returns (address) {
         VisualsAuction _visualsAuction = new VisualsAuction();
-        // VoteSkill _voteSkill = new VoteSkill();
         AminalProposals _proposals = new AminalProposals();
 
         Aminals _aminals = new Aminals(
             address(_visualsAuction),
-            // address(_voteSkill),
             address(_proposals)
         );
 
         _visualsAuction.setup(address(aminals));
-        // _voteSkill.setup(address(aminals));
         _proposals.setup(address(aminals));
 
         return address(_aminals);
