@@ -42,6 +42,7 @@ contract AminalProposals is IProposals, Initializable, Ownable {
     LoveProposal[] public loveProposals;
 
     event NewProposal(uint256 indexed proposalId, ProposalType indexed proposalType, address indexed proposer);
+    event RemoveProposal(uint256 indexed proposalId, ProposalType indexed proposalType, address indexed proposer);
     event Voted(uint256 indexed proposalId, uint256 indexed aminalID, bool vote, uint256 votedYes, uint256 votedNo);
     event VoteResult(
         uint256 indexed proposalId,
@@ -102,7 +103,7 @@ contract AminalProposals is IProposals, Initializable, Ownable {
         });
         proposals.push(proposal);
         proposalId = proposals.length - 1;
-        emit NewProposal(proposalId, proposal.proposalType, msg.sender);
+        emit RemoveProposal(proposalId, proposal.proposalType, msg.sender);
     }
 
     // THIS IS A DEMOCRACY OF AMINALS: ONE AMINAL ONE VOTE :)
@@ -154,7 +155,6 @@ contract AminalProposals is IProposals, Initializable, Ownable {
     // 1. quorumReached is not accurate after the vote passes and accepts a new member
     //    Unless storing it as a storage variable, we can't accurately track the status before the proposal is executed
     // 2. To calculate required additional votes we need to apply a ceiling function which consumes gas
-
     function getVotingStatus(uint256 proposalId, uint256 membersLength, uint256 quorum, uint256 requiredMajority)
         public
         view

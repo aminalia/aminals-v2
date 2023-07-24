@@ -23,7 +23,6 @@ contract Move2D is ISkill {
 
     function useSkill(
         address,
-        /* sender */
         uint256 aminalId,
         bytes calldata data
     ) public payable returns (uint256 squeak) {
@@ -31,11 +30,6 @@ contract Move2D is ISkill {
         (uint256 x, uint256 y) = abi.decode(data, (uint256, uint256));
         console.log("request to move to x = ", x, " & y = ", y);
         return _move2D(aminalId, x, y);
-    }
-
-    // DELETE - for testing only
-    function move2D(uint256 aminalID, uint256 x, uint256 y) public returns (uint256) {
-        return _move2D(aminalID, x, y);
     }
 
     // Getters

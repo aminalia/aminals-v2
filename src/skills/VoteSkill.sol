@@ -26,9 +26,6 @@ contract VoteSkill is ISkill, AminalProposals {
     function useSkill(address sender, uint256 aminalId, bytes calldata data) public payable returns (uint256 squeak) {
         require(msg.sender == aminals);
 
-        // Aminal amin = Aminals(aminals).getAminalById(aminalId);
-        // console.log(amin.tokenURI(1));
-
         (uint256 proposalId, bool vote) = abi.decode(data, (uint256, bool));
 
         return _vote(

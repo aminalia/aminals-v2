@@ -261,13 +261,14 @@ contract AminalTest is BaseTest {
 
         // introduce skillsets
         Move2D mover = new Move2D(address(aminals));
-        mover.move2D(3, 100, 200);
         (uint256 x, uint256 y) = mover.getCoords(3);
         console.log("x = ", x, " y = ", y);
 
         console.log("\n proxy call for mover 1 == public UseSkill function called");
+
+        uint256 proposalId = aminals.proposeAddSkill(1, "Move Skill", address(mover));
+
         // with proxy function call
-        aminals.addSkill(address(mover));
         bytes memory data = mover.getSkillData(888, 999);
         console.log("calling mover 1");
         aminals.callSkill{value: 0.01 ether}(1, address(mover), data);
@@ -277,7 +278,7 @@ contract AminalTest is BaseTest {
         console.log("\n internal UseSkill function call - this is where things break");
         // with proxy function call
         MoveTwice mover2 = new MoveTwice(address(aminals), address(mover));
-        aminals.addSkill(address(mover2));
+        uint256 proposalId2 = aminals.proposeAddSkill(1, "Move Skill 2", address(mover2));
 
         data = mover2.getSkillData(222, 333, 777, 666);
         console.log("calling mover 2");

@@ -334,7 +334,6 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         returns (uint256 proposalId)
     {
         // TODO: require minimum love amount?
-
         proposalId = proposals.proposeAddSkill(aminalID, skillName, skillAddress);
         voteYes(aminalID, proposalId);
     }
@@ -348,8 +347,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         voteYes(aminalID, proposalId);
     }
 
-    // Should not be public`
-    function addSkill(address faddress) public {
+    function addSkill(address faddress) internal {
         // currently done such as to add the skills globally to all aminals
         // Aminal storage aminal = aminals[aminalId];
         skills[faddress] = true;
@@ -364,12 +362,12 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
     }
 
     function voteNo(uint256 aminalID, uint256 proposalId) public {
-        // require love
+        // TODO require love
         _vote(aminalID, proposalId, false);
     }
 
     function voteYes(uint256 aminalID, uint256 proposalId) public {
-        // require love
+        // TODO require love
         _vote(aminalID, proposalId, true);
     }
 
