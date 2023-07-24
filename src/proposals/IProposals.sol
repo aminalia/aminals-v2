@@ -14,7 +14,7 @@ interface IProposals {
         external
         returns (uint256 proposalId);
 
-    function vote(
+    function AminalVote(
         uint256 aminalID,
         uint256 proposalId,
         bool yesNo,
@@ -22,6 +22,18 @@ interface IProposals {
         uint256 quorum,
         uint256 requiredMajority
     ) external;
+
+    function LoveVote(
+        uint256 aminalID,
+        address sender,
+        uint256 proposalId,
+        bool yesNo,
+        uint256 membersLength,
+        uint256 quorum,
+        uint256 requiredMajority
+    ) external returns (uint256 squeak);
+
+    function getQuorum(uint256 proposalTime, uint256 currentTime) external view returns (uint256);
 
     function getInitiated(uint256 proposalId) external view returns (uint256);
 

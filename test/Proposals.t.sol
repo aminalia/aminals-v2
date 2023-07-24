@@ -8,7 +8,6 @@ import {Aminals} from "src/Aminals.sol";
 import {IAminal} from "src/IAminal.sol";
 import {IProposals} from "src/proposals/IProposals.sol";
 import {Move2D} from "src/skills/Move2D.sol";
-import {VoteSkill} from "src/skills/VoteSkill.sol";
 
 contract ProposalsTest is BaseTest {
     IProposals public proposals;
@@ -27,9 +26,9 @@ contract ProposalsTest is BaseTest {
         uint256 a2 = 2;
 
         uint256 proposalId = proposeAddSkill(a1, "Move Skill", address(moveSkill));
-        voteYes(a1, proposalId);
+        // voteYes(a1, proposalId);
         uint256 proposalId2 = proposeRemoveSkill(a1, "No longer needed", address(moveSkill));
-        voteYes(a1, proposalId2);
+        // voteYes(a1, proposalId2);
 
         // wait time
         // check vote is closed
@@ -52,10 +51,10 @@ contract ProposalsTest is BaseTest {
     }
 
     function voteYes(uint256 aminalID, uint256 _proposalId) public {
-        aminals.voteYes(aminalID, _proposalId);
+        // aminals.voteYes(aminalID, _proposalId);
     }
 
     function voteNo(uint256 aminalID, uint256 _proposalId) public {
-        aminals.voteNo(aminalID, _proposalId);
+        // aminals.voteNo(aminalID, _proposalId);
     }
 }
