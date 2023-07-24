@@ -279,8 +279,8 @@ contract AminalTest is BaseTest {
     //     Encountered 1 failing test in test/Aminal.t.sol:AminalTest
     //     [FAIL. Reason: Call reverted as expected, but without data] test_Run() (gas: 5448636)
 
-        // vm.expectRevert("Calling the skill fails because addSkill did not pass with enough love");
-        // aminals.callSkill{value: 0.01 ether}(1, address(mover), data);
+        //  vm.expectRevert("Calling the skill fails because addSkill did not pass with enough love");
+        //  aminals.callSkill{value: 0.01 ether}(1, address(mover), data);
 
         vm.prank(owner);
         aminals.voteSkill(1, proposalId, true); // now the Skill should be approved
