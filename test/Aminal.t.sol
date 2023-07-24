@@ -12,7 +12,6 @@ import {IProposals} from "src/proposals/IProposals.sol";
 import {Move2D} from "src/skills/Move2D.sol";
 import {MoveTwice} from "src/skills/MoveTwice.sol";
 import {VisualsAuction} from "src/utils/VisualsAuction.sol";
-// import {VoteSkill} from "src/skills/VoteSkill.sol";
 
 contract AminalTest is BaseTest {
     Aminals public aminals;

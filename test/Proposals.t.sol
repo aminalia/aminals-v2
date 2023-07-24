@@ -8,7 +8,6 @@ import {Aminals} from "src/Aminals.sol";
 import {IAminal} from "src/IAminal.sol";
 import {IProposals} from "src/proposals/IProposals.sol";
 import {Move2D} from "src/skills/Move2D.sol";
-// import {VoteSkill} from "src/skills/VoteSkill.sol";
 
 contract ProposalsTest is BaseTest {
     IProposals public proposals;
