@@ -96,7 +96,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         uint256 faceId,
         uint256 mouthId,
         uint256 miscId
-    ) _onlyAuction public returns (uint256) {
+    ) public _onlyAuction returns (uint256) {
         // if (msg.sender != address(visualsAuction)) revert NotSpawnable();
 
         return
@@ -340,8 +340,15 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
     {
         // TODO: require minimum love amount?
         proposalId = proposals.proposeAddSkill(aminalID, skillName, skillAddress);
-        proposals.LoveVote(aminalID, msg.sender, proposalId, true, getAminalLoveTotal(aminalID), proposals.LoveQuorum(), proposals.LoveRequiredMajority());
-
+        proposals.LoveVote(
+            aminalID,
+            msg.sender,
+            proposalId,
+            true,
+            getAminalLoveTotal(aminalID),
+            proposals.LoveQuorum(),
+            proposals.LoveRequiredMajority()
+        );
 
         // voteYes(aminalID, proposalId); // SHOULD REPLACE WITH A LOVE_VOTE
     }
@@ -353,12 +360,20 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         // TODO: require minimum love amount?
         proposalId = proposals.proposeRemoveSkill(aminalID, description, skillAddress);
 
-        proposals.LoveVote(aminalID, msg.sender, proposalId, true, getAminalLoveTotal(aminalID), proposals.LoveQuorum(), proposals.LoveRequiredMajority());
+        proposals.LoveVote(
+            aminalID,
+            msg.sender,
+            proposalId,
+            true,
+            getAminalLoveTotal(aminalID),
+            proposals.LoveQuorum(),
+            proposals.LoveRequiredMajority()
+        );
 
         // voteYes(aminalID, proposalId); // SHOULD REPLACE WITH A LOVE_VOTE
     }
 
-    function addSkill(address faddress) internal {
+    function _addSkill(address faddress) internal {
         // currently done such as to add the skills globally to all aminals
         // Aminal storage aminal = aminals[aminalId];
         skills[faddress] = true;
@@ -381,10 +396,18 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
     // }
 
     function voteSkill(uint256 aminalID, uint256 proposalID, bool yesNo) public {
-        proposals.LoveVote(aminalID, msg.sender, proposalID, yesNo, getAminalLoveTotal(aminalID), proposals.LoveQuorum(), proposals.LoveRequiredMajority());
+        proposals.LoveVote(
+            aminalID,
+            msg.sender,
+            proposalID,
+            yesNo,
+            getAminalLoveTotal(aminalID),
+            proposals.LoveQuorum(),
+            proposals.LoveRequiredMajority()
+        );
     }
 
-    function _vote(uint256 aminalID, uint256 proposalId, bool yesNo) _onlyProposal public {
+    function _vote(uint256 aminalID, uint256 proposalId, bool yesNo) public _onlyProposal {
         proposals.AminalVote(
             aminalID,
             proposalId,
@@ -401,7 +424,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
             // address address2 = proposals.getAddress2(proposalId);
 
             uint256 amount = proposals.getAmount(proposalId);
-            if (proposalType == IProposals.ProposalType.AddSkill) addSkill(address1);
+            if (proposalType == IProposals.ProposalType.AddSkill) _addSkill(address1);
             else if (proposalType == IProposals.ProposalType.RemoveSkill) removeSkill(address1);
             proposals.close(proposalId);
         }

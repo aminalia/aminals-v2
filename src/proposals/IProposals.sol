@@ -41,8 +41,6 @@ interface IProposals {
         uint256 requiredMajority
     ) external returns (uint256 squeak);
 
-
-
     function getQuorum(uint256 proposalTime, uint256 currentTime) external view returns (uint256);
 
     function getInitiated(uint256 proposalId) external view returns (uint256);

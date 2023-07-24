@@ -264,20 +264,19 @@ contract AminalTest is BaseTest {
         (uint256 x, uint256 y) = mover.getCoords(3);
         console.log("x = ", x, " y = ", y);
 
-       address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
-       address owner2 = 0x2D3C242d2C074D523112093C67d1c01Bb27ca40D;
+        address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
+        address owner2 = 0x2D3C242d2C074D523112093C67d1c01Bb27ca40D;
 
-        vm.prank(owner2); 
-        uint256 proposalId = aminals.proposeAddSkill(1, "Move Skill", address(mover)); // addSkill also vote from owner
+        vm.prank(owner2);
+        uint256 proposalId = aminals.proposeAddSkill(1, "Move Skill", address(mover));
 
         // with proxy function call
         bytes memory data = mover.getSkillData(888, 999);
 
-
-    // @@@@ THESE 2 LINES BELOW CREATE A STRANGE ERROR -- need to figure out why
-    //    Failing tests:
-    //     Encountered 1 failing test in test/Aminal.t.sol:AminalTest
-    //     [FAIL. Reason: Call reverted as expected, but without data] test_Run() (gas: 5448636)
+        // @@@@ THESE 2 LINES BELOW CREATE A STRANGE ERROR -- need to figure out why
+        //    Failing tests:
+        //     Encountered 1 failing test in test/Aminal.t.sol:AminalTest
+        //     [FAIL. Reason: Call reverted as expected, but without data] test_Run() (gas: 5448636)
 
         //  vm.expectRevert("Calling the skill fails because addSkill did not pass with enough love");
         //  aminals.callSkill{value: 0.01 ether}(1, address(mover), data);
@@ -286,7 +285,7 @@ contract AminalTest is BaseTest {
         aminals.voteSkill(1, proposalId, true); // now the Skill should be approved
 
         aminals.callSkill{value: 0.01 ether}(1, address(mover), data);
- 
+
         (x, y) = mover.getCoords(1);
         console.log("x = ", x, " y = ", y);
 
