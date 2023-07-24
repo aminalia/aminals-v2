@@ -362,12 +362,10 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
     }
 
     function voteNo(uint256 aminalID, uint256 proposalId) public {
-        // TODO require love
         _vote(aminalID, proposalId, false);
     }
 
     function voteYes(uint256 aminalID, uint256 proposalId) public {
-        // TODO require love
         _vote(aminalID, proposalId, true);
     }
 
