@@ -16,28 +16,24 @@ contract AminalMiniTest is BaseTest {
     Aminals public aminals;
     VisualsAuction public visualsAuction;
 
-      function setUp() public {
+    function setUp() public {
         aminals = Aminals(deployAminals());
 
         visualsAuction = VisualsAuction(aminals.visualsAuction());
     }
 
     function test_Run() public {
-
         registerVisuals();
         spawnAminals();
 
-
         feedAminals();
-
 
         breedAminals();
 
         endAuction();
-
     }
 
-        function registerVisuals() public {
+    function registerVisuals() public {
         // first aminal
         aminals.addBackground("bg1");
         aminals.addArm("arm");
@@ -78,7 +74,6 @@ contract AminalMiniTest is BaseTest {
         // console.log("aminal 2 visuals EYES-id = ", visualsTwo.eyesId);
     }
 
-
     function feedAminals() public {
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
@@ -90,25 +85,23 @@ contract AminalMiniTest is BaseTest {
     }
 
     function breedAminals() public {
-       address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
+        address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
-        console.log("Breeding the aminal"); 
+        console.log("Breeding the aminal");
 
         aminals.breedWith{value: 0.01 ether}(1, 2);
         aminals.breedWith{value: 0.01 ether}(2, 1);
-    
     }
 
     function endAuction() public {
-       address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
-        vm.prank(owner); 
-    
+        address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
+        vm.prank(owner);
+
         VisualsAuction visualsAuction = VisualsAuction(aminals.visualsAuction());
 
-
-         for (uint256 i = 1; i <= 2; i++) {
+        for (uint256 i = 1; i <= 2; i++) {
             console.log("Aminal love by ID by user: ", aminals.getAminalLoveByIdByUser(i, owner));
-            console.log("Aminal love total : ",  aminals.getAminalLoveTotal(i));
+            console.log("Aminal love total : ", aminals.getAminalLoveTotal(i));
         }
 
         visualsAuction.endAuction(3);
@@ -118,19 +111,17 @@ contract AminalMiniTest is BaseTest {
 
         console.log(auction.aminalIdOne);
 
-        uint[8] memory winnerId = auction.visualIds[1];
-        console.log("RET visualIDs[0][0] ==", winnerId[0] );
+        uint256[8] memory winnerId = auction.visualIds[1];
+        console.log("RET visualIDs[0][0] ==", winnerId[0]);
 
-      //  winnerId = auction.winnerId;
+        //  winnerId = auction.winnerId;
 
         console.log("We got a winner :::::: ");
         console.log(auction.totalLove);
         for (uint256 i = 0; i < 8; i++) {
             console.log("category ", i);
             console.log(winnerId[i]);
-            console.log(aminals.getVisuals(i,winnerId[i]));
+            console.log(aminals.getVisuals(i, winnerId[i]));
         }
-
     }
-
 }

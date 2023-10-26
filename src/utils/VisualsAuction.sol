@@ -322,7 +322,7 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         amount = uint256(keccak256(abi.encodePacked(block.prevrandao, msg.sender, i)));
         amount = amount % (maxNumber - minNumber);
         amount = amount + minNumber;
-       // console.log("random for ", i, " == ", amount);
+        // console.log("random for ", i, " == ", amount);
         return amount;
     }
 }

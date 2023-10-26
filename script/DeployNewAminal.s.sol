@@ -22,10 +22,8 @@
 //         // string memory uri2 = aminals.tokenURI(2);
 //         // console.log(uri2);
 
-
 //         initialVisuals.push(IAminalStructs.Visuals(3, 3, 3, 3, 3, 3, 3, 3));
 //         aminals.spawnInitialAminals(initialVisuals);
-
 
 //         vm.stopBroadcast();
 //     }
