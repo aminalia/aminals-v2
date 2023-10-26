@@ -10,15 +10,15 @@ contract FeedAminal is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        Aminals aminals = Aminals(0xC5cA00b528daA14036F6edeFA0665D6a4201dDd0);
+        Aminals aminals = Aminals(address(vm.envAddress("CONTRACT")));
 
         for (uint256 i = 1; i <= 2; i++) {
+            aminals.feed{value: 0.01 ether}(i);
             console.log(
                 "Aminal love by ID by user: ",
-                aminals.getAminalLoveByIdByUser(i, 0x1f028f240A90414211425bFa38eB4917Cb32c39C)
+                aminals.getAminalLoveByIdByUser(i, address(vm.envAddress("ADDRESS")))
             );
             console.log("Aminal love total : ", aminals.getAminalLoveTotal(i));
-            // aminals.feed{value: 0.01 ether}(i);
         }
 
         vm.stopBroadcast();
