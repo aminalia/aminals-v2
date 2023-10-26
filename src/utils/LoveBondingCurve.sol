@@ -3,13 +3,14 @@ pragma solidity ^0.8.20;
 
 import {Aminals} from "src/Aminals.sol";
 
+// TODO delete this contract?
 contract LoveBondingCurve {
     Aminals public aminals;
 
     constructor(address _aminals) {
-        // TODO: Replace with Aminals contract address
         aminals = Aminals(_aminals);
     }
+
     // TODO: Add bonding curve for how love is allocated
 
     // TODO: Add a price per love for different actions based on the current level
