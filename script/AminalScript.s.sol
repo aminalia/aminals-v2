@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 import "forge-std/Script.sol";
 import {Aminals} from "src/Aminals.sol";
 import {IAminal} from "src/IAminal.sol";
+import {IAminalStructs} from "src/IAminalStructs.sol";
 import {VisualsAuction} from "src/utils/VisualsAuction.sol";
 import {AminalProposals} from "src/proposals/AminalProposals.sol";
 
@@ -15,6 +16,7 @@ forge script script/AminalScript.s.sol:AminalScript --chain-id 5  --rpc-url "htt
 
 contract AminalScript is Script {
     Aminals aminals;
+    IAminalStructs.Visuals[] initialVisuals;
 
     function deployAminals() internal returns (address) {
         VisualsAuction _visualsAuction = new VisualsAuction();
@@ -31,8 +33,14 @@ contract AminalScript is Script {
         return address(_aminals);
     }
 
+    function spawnInitialAminals(Aminals aminals) internal {
+        initialVisuals.push(IAminalStructs.Visuals(1, 1, 1, 1, 1, 1, 1, 1));
+        initialVisuals.push(IAminalStructs.Visuals(2, 2, 2, 2, 2, 2, 2, 2));
+        aminals.spawnInitialAminals(initialVisuals);
+    }
+
     function run() external {
-        uint256 deployerPrivateKey = vm.envUint("ETH_PRIVATE_KEY");
+        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
         aminals = Aminals(deployAminals());
 
@@ -57,9 +65,8 @@ contract AminalScript is Script {
             '<circle cx="500" cy="354" r="10" fill="#385e5d"/><path fill="#fff" d="M526 205c-24 0-44-19-44-44 0-12 4-23 12-31a44 44 0 1 0 44 73l-12 2Z"/><path fill="#fcfcfc" d="m500 549-19-34-20-34h78l-20 34-19 34z"/>'
         );
         aminals.addMisc("");
-        uint256 a1 = aminals.spawnAminal(0, 0, 1, 1, 1, 1, 1, 1, 1, 1);
 
-        // first aminal
+        // Second aminal
         aminals.addBackground('<g><rect fill="#00a79d" x="0" y="0" width="1000px" height="1000px"/></g>');
         aminals.addTail(
             '<path fill="#f15a29" d="M514 544c22 50 22 108 1 159-14 38-38 85-10 121 5 7 13 11 23 13 10 1 21-1 28-8 5-5 8-15 3-22-2-3-7-4-11-3-8 3-4 14 1 19 6 4 13 4 21 2 17-5 28-20 43-30 10-6 24-9 35-2-5-2-11-2-17-1-5 1-11 3-15 7-14 10-25 27-42 35-9 4-21 5-30-1-11-7-16-26-5-37 8-7 21-7 30-1 14 9 15 30 7 44-13 24-47 30-71 18-33-16-46-56-42-91 1-25 10-50 17-74 6-21 9-42 6-63-2-20-8-41-18-59l47-23Z"/>'
@@ -81,8 +88,7 @@ contract AminalScript is Script {
         );
         aminals.addMisc("");
 
-        uint256 a2 = aminals.spawnAminal(0, 0, 2, 2, 2, 2, 2, 2, 2, 2);
-        uint256 a3 = aminals.spawnAminal(1, 2, 1, 2, 1, 2, 2, 1, 2, 2);
+        spawnInitialAminals(aminals);
 
         vm.stopBroadcast();
     }

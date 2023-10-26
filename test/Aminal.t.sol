@@ -7,7 +7,6 @@ import {AminalProposals} from "src/proposals/AminalProposals.sol";
 import {Aminals} from "src/Aminals.sol";
 import {IAminal} from "src/IAminal.sol";
 import {IAminalStructs} from "src/IAminalStructs.sol";
-import {IAminalStructs} from "src/IAminalStructs.sol";
 import {IProposals} from "src/proposals/IProposals.sol";
 import {Move2D} from "src/skills/Move2D.sol";
 import {MoveTwice} from "src/skills/MoveTwice.sol";
@@ -71,6 +70,10 @@ contract AminalTest is BaseTest {
 
         spawnInitialAminals(aminals);
         console.log("spawned.... ");
+
+        // Can't initialize twice
+        vm.expectRevert("Initializable: contract is already initialized");
+        spawnInitialAminals(aminals);
 
         // Get only the Visuals struct from the mapping
         Aminals.Visuals memory visualsOne;
