@@ -53,6 +53,8 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         addMisc(emptySVG);
     }
 
+    // Creates the initial Aminals.
+    // Only callable on by the owner once to initialize.
     function spawnInitialAminals(Visuals[] calldata _visuals) external initializer onlyOwner {
         for (uint256 _i = 0; _i < _visuals.length; _i++) {
             _spawnAminalInternal(
@@ -70,12 +72,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         }
     }
 
-    // TODO make it so you can only spawn the initial ones
-    // Then restrict all future ones to only come from breeding?
-    // Possibly:
-    //  Initialization period where inititializer can spawn the initial set
-    //  Then there is the breeding period where they can only be spawned during gestation
-    //
+    // Only callable via the auction contract on a successful breeding.
     function spawnAminal(
         uint256 aminalOne,
         uint256 aminalTwo,
@@ -92,6 +89,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
             _spawnAminalInternal(aminalOne, aminalTwo, backId, armId, tailId, earsId, bodyId, faceId, mouthId, miscId);
     }
 
+    // Internal function handling the spawning of new aminals
     function _spawnAminalInternal(
         uint256 aminalOne,
         uint256 aminalTwo,
@@ -121,7 +119,6 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         return aminalId;
     }
 
-    // TODO do we need all the views?
     function getAminalVisualsByID(uint256 aminalID) public view override returns (Visuals memory) {
         return aminals[aminalID].visuals;
     }
@@ -153,14 +150,13 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
     function _feed(uint256 aminalId, address feeder, uint256 amount) internal returns (uint256) {
         Aminal storage aminal = aminals[aminalId];
 
-        //console.log("TESTESTEST: ", feeder);
-
         // TODO: Amount of love should be on a bonding curve, not a direct
         // addition
         //  uint256 amount = (msg.value / 10**16);
 
         // TODO: Change _adjustLove bool to a constant
         _adjustLove(aminalId, amount, feeder, true);
+
         // TODO: Energy should be on a bonding curve that creates an asymptote
         // (possibly a polynomic function), not a direct addition. The bonding
         // curve should be configured so that energy should never reach 100 (the
@@ -211,6 +207,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
 
         Aminal storage aminalOne = aminals[aminalIdOne];
         Aminal storage aminalTwo = aminals[aminalIdTwo];
+
         // Check that Aminal One loves the user enough
         require(aminalOne.lovePerUser[msg.sender] >= 10, "Not enough love");
 
@@ -259,6 +256,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         _adjustLove(aminalId, amount, msg.sender, false);
     }
 
+    // Calls useSkill on an aminal skill
     function callSkill(uint256 aminalId, address skillAddress, bytes calldata data) public payable {
         require(skills[skillAddress] == true);
         uint256 amount = ISkill(skillAddress).useSkill{value: msg.value}(msg.sender, aminalId, data);
@@ -266,7 +264,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         squeak(aminalId, amount);
     }
 
-    // TODO to be internal/ harness
+    // Allows skills to call other skills so that they can be composed
     function callSkillInternal(address sender, uint256 aminalId, address skillAddress, bytes calldata data)
         public
         payable
@@ -295,10 +293,8 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
     // msg.sender functionality in a library that checks for delegation
     function loveDrivenPrice(uint256 aminalId, address sender) public view returns (uint128) {
         Aminal storage aminal = aminals[aminalId];
-        // the higher the love, the cheaper the function calls
-        //
-        // Aminals.Aminal storage aminal = aminals.aminals[aminalId];
-        // Aminals.Aminal storage aminal = aminals.getAminalById(aminalId);
+
+        // The higher the love, the cheaper the function calls
         uint128 price;
         uint256 love = aminal.lovePerUser[sender];
         uint256 totlove = aminal.totalLove;
@@ -387,8 +383,8 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         IProposals.ProposalType proposalType = proposals.getProposalType(proposalId);
         if (proposals.toExecute(proposalId)) {
             string memory description = proposals.getDescription(proposalId);
+            // TODO rename this method? There is no address2 now...
             address address1 = proposals.getAddress1(proposalId);
-            // address address2 = proposals.getAddress2(proposalId);
 
             uint256 amount = proposals.getAmount(proposalId);
             if (proposalType == IProposals.ProposalType.AddSkill) _addSkill(address1);
