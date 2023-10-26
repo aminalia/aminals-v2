@@ -260,7 +260,6 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
     }
 
     // TODO limits on when this can be called?
-    // TODO generate new aminal?
     function endAuction(uint256 auctionId) public _auctionRunning(auctionId) {
         Auction storage auction = auctions[auctionId];
 
@@ -316,13 +315,26 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         // Zero breeding flag via a setter
         aminals.setBreeding(auction.aminalIdOne, false);
         aminals.setBreeding(auction.aminalIdTwo, false);
+
+        aminals.spawnAminal(
+            auction.aminalIdOne,
+            auction.aminalIdTwo,
+            auction.winnerId[0],
+            auction.winnerId[1],
+            auction.winnerId[2],
+            auction.winnerId[3],
+            auction.winnerId[4],
+            auction.winnerId[5],
+            auction.winnerId[6],
+            auction.winnerId[7]
+        );
     }
 
     function _random(uint256 i, uint256 maxNumber, uint256 minNumber) internal view returns (uint256 amount) {
         amount = uint256(keccak256(abi.encodePacked(block.prevrandao, msg.sender, i)));
         amount = amount % (maxNumber - minNumber);
         amount = amount + minNumber;
-       // console.log("random for ", i, " == ", amount);
+        // console.log("random for ", i, " == ", amount);
         return amount;
     }
 }
