@@ -129,6 +129,9 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         auction.visualIds[0][7] = visualsOne.miscId;
         auction.visualIds[1][7] = visualsTwo.miscId;
 
+        console.log("Auction cnt ==", auctionCnt);
+        console.log("VisualIds[0[0]] == ", auction.visualIds[0][0]);
+
         return auctionCnt;
     }
 
@@ -273,14 +276,15 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
             [uint256(0), uint256(0), uint256(0), uint256(0), uint256(0), uint256(0), uint256(0), uint256(0)];
 
         console.log("ENDING AUCTION");
+        console.log("Testing visual id[0[0]] = ", auction.visualIds[0][0]);
 
         for (uint256 i = 0; i < 8; i++) {
             // iterate through each category
             uint256 j;
             for (j = 0; j < 10; j++) {
-                // console.log("i", i);
-                // console.log("j", j);
-                // console.log("visualIds", auction.visualIds[j][i]);
+                console.log("i", i);
+                console.log("j", j);
+                console.log("visualIds", auction.visualIds[j][i]);
 
                 // Break for loop if there is an empty slot with no visuals
                 if (j >= 2 && auction.visualIds[j][i] == 0) break; // break the loop if the visualId is 0, except if index 0 or 1 (inherited traits)
@@ -303,8 +307,9 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
 
             if (maxVotes[i] == 0) {
                 uint256 randomness = _random(i, j, 1);
-                // console.log("random = ", randomness);
-                // console.log("for length = ", j, "category: ", i);
+                console.log("random = ", randomness);
+                console.log("for category: ", i);
+                console.log("trait == ", auction.visualIds[randomness][i]);
                 auction.winnerId[i] = auction.visualIds[randomness][i];
             }
 
@@ -320,7 +325,7 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         amount = uint256(keccak256(abi.encodePacked(block.prevrandao, msg.sender, i)));
         amount = amount % (maxNumber - minNumber);
         amount = amount + minNumber;
-        console.log("random for ", i, " == ", amount);
+       // console.log("random for ", i, " == ", amount);
         return amount;
     }
 }
