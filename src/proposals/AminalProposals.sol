@@ -43,7 +43,6 @@ contract AminalProposals is IProposals, Initializable, Ownable {
     Proposal[] public proposals;
     LoveProposal[] public loveProposals;
 
-
     uint256 public quorum = 80;
     uint256 public quorumDecayPerWeek = 10;
     uint256 public requiredMajority = 70;
@@ -51,7 +50,6 @@ contract AminalProposals is IProposals, Initializable, Ownable {
     uint256 public LoveQuorum = 80;
     uint256 public LoveQuorumDecayPerWeek = 10;
     uint256 public LoveRequiredMajority = 50;
-
 
     event NewProposal(uint256 indexed proposalId, ProposalType indexed proposalType, address indexed proposer);
     event RemoveProposal(uint256 indexed proposalId, ProposalType indexed proposalType, address indexed proposer);
@@ -66,7 +64,6 @@ contract AminalProposals is IProposals, Initializable, Ownable {
         uint256 yesPercent,
         uint256 requiredMajority
     );
-
 
     event LoveVoted(uint256 indexed proposalId, uint256 indexed aminalID, bool vote, uint256 votedYes, uint256 votedNo);
     event LoveVoteResult(
@@ -119,7 +116,7 @@ contract AminalProposals is IProposals, Initializable, Ownable {
             votedYes: 0,
             initiated: block.timestamp,
             closed: 0,
-            pass: false 
+            pass: false
         });
         loveProposals.push(loveprop);
     }
@@ -156,7 +153,6 @@ contract AminalProposals is IProposals, Initializable, Ownable {
             return 0;
         }
     }
-
 
     // THIS IS A DEMOCRACY OF AMINALS: ONE AMINAL ONE VOTE :)
     // TODO: change voted from 1/2 to signed int128 to represent yes/no
@@ -207,6 +203,7 @@ contract AminalProposals is IProposals, Initializable, Ownable {
     // 1. quorumReached is not accurate after the vote passes and accepts a new member
     //    Unless storing it as a storage variable, we can't accurately track the status before the proposal is executed
     // 2. To calculate required additional votes we need to apply a ceiling function which consumes gas
+
     function getVotingStatus(uint256 proposalId, uint256 membersLength, uint256 quorum, uint256 requiredMajority)
         public
         view
@@ -265,8 +262,7 @@ contract AminalProposals is IProposals, Initializable, Ownable {
         return proposals.length;
     }
 
-
-      // THIS IS A MERITOCRACY BASED ON LOVE THAT AMINAL HAS FOR MSG.SENDER
+    // THIS IS A MERITOCRACY BASED ON LOVE THAT AMINAL HAS FOR MSG.SENDER
 
     function LoveVote(
         uint256 aminalID,
@@ -277,7 +273,6 @@ contract AminalProposals is IProposals, Initializable, Ownable {
         uint256 quorum,
         uint256 requiredMajority
     ) external returns (uint256 squeak) {
-
         // replace with squeak calc based on proposal
         squeak = 2;
 
@@ -326,8 +321,5 @@ contract AminalProposals is IProposals, Initializable, Ownable {
         }
 
         return squeak;
-    } 
-
-
-
+    }
 }

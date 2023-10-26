@@ -7,14 +7,6 @@ interface IProposals {
         RemoveSkill //  1 Remove skill
     }
 
-    // uint256 public quorum;
-    // uint256 public quorumDecayPerWeek;
-    // uint256 public requiredMajority;
-
-    // uint256 public LoveQuorum;
-    // uint256 public LoveQuorumDecayPerWeek;
-    // uint256 public LoveRequiredMajority;
-
     function proposeAddSkill(uint256 aminalID, string calldata skillName, address skillAddress)
         external
         returns (uint256 proposalId);
@@ -40,8 +32,6 @@ interface IProposals {
         uint256 quorum,
         uint256 requiredMajority
     ) external returns (uint256 squeak);
-
-
 
     function getQuorum(uint256 proposalTime, uint256 currentTime) external view returns (uint256);
 

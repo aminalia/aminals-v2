@@ -7,6 +7,7 @@ import "forge-std/Test.sol";
 import {Aminals} from "src/Aminals.sol";
 import {IAminal} from "src/IAminal.sol";
 
+// TODO this isn't used yet, should we remove it?
 contract FeedBondingCurve {
     address public aminals;
 

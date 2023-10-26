@@ -68,11 +68,9 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         return auctions[auctionID];
     }
 
-    // TODO: Add return value of auction ID and also emit events
+    // Starts a new auction for the pregnancy of two Aminals, returns the auction id
+    // TODO emit events
     function startAuction(uint256 aminalIdOne, uint256 aminalIdTwo) public _onlyAminals returns (uint256) {
-        // Set the breeding flag on each Aminal
-        //aminals.addSkill();
-
         Visuals memory visualsOne;
         Visuals memory visualsTwo;
 
@@ -111,7 +109,6 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         // Loop through each current visual per Aminal and write it to the
         // struct. i.e. Index [N][0] is AminalIdOne's traits, Index [N][1] is
         // AminalIdTwo's traits.
-
         auction.visualIds[0][0] = visualsOne.backId;
         auction.visualIds[1][0] = visualsTwo.backId;
         auction.visualIds[0][1] = visualsOne.armId;
@@ -135,14 +132,15 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         return auctionCnt;
     }
 
+    // Proposes a new visual traight, only callable if the auction is running.
+    //
+    // Anyone can propose new visuals, but the cost depends on how much they
+    // love you in order to avoid ppl from spamming the available slots.abi
     function proposeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId)
         public
         payable
         _auctionRunning(auctionId)
     {
-        // Anyone can propose new visuals, but the cost depends on how much they
-        // love you in order to avoid ppl from spamming the available slots.abi
-
         uint256 category = uint256(catEnum);
 
         Auction storage auction = auctions[auctionId];
@@ -243,10 +241,6 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
 
             require(k != 0, "The trait to be removed does not exist in the auction list");
 
-            // auction.visualIds[k][category] = 0;
-            // auction.visualIdVotes[k][category] = 0;
-            // auction.visualNoVotes[k][category] = 0;
-
             uint256 j;
             // reset all values, so that new visuals can be submitted
             for (j = k; j < 9 && auction.visualIds[j][category] != 0; j++) {
@@ -270,14 +264,16 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
     function endAuction(uint256 auctionId) public _auctionRunning(auctionId) {
         Auction storage auction = auctions[auctionId];
 
-        // TODO better comment
-        // loop through all the Visuals and identify the winner;
+        console.log("ENDING AUCTION");
+
+        // Initialize maxVotes array with zeros
         uint256[8] memory maxVotes =
             [uint256(0), uint256(0), uint256(0), uint256(0), uint256(0), uint256(0), uint256(0), uint256(0)];
 
         console.log("ENDING AUCTION");
         console.log("Testing visual id[0[0]] = ", auction.visualIds[0][0]);
 
+        // Loop through all the Visuals and identify the winner;
         for (uint256 i = 0; i < 8; i++) {
             // iterate through each category
             uint256 j;
@@ -286,8 +282,9 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
                 console.log("j", j);
                 console.log("visualIds", auction.visualIds[j][i]);
 
-                // Break for loop if there is an empty slot with no visuals
-                if (j >= 2 && auction.visualIds[j][i] == 0) break; // break the loop if the visualId is 0, except if index 0 or 1 (inherited traits)
+                // Break the loop if the visualId is 0 (indicates an empty slot).
+                // We skip indexes 0 and 1 as they are inherited
+                if (j >= 2 && auction.visualIds[j][i] == 0) break;
                 // console.log("maxVotes", maxVotes[i]);
                 // console.log("visualIdVotes", auction.visualIdVotes[j][i]);
 

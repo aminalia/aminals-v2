@@ -21,11 +21,7 @@ contract Move2D is ISkill {
         aminals = _aminals;
     }
 
-    function useSkill(
-        address,
-        uint256 aminalId,
-        bytes calldata data
-    ) public payable returns (uint256 squeak) {
+    function useSkill(address, uint256 aminalId, bytes calldata data) public payable returns (uint256 squeak) {
         require(msg.sender == aminals);
         (uint256 x, uint256 y) = abi.decode(data, (uint256, uint256));
         console.log("request to move to x = ", x, " & y = ", y);

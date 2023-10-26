@@ -14,10 +14,6 @@ interface IAminalStructs {
         Visuals visuals;
         mapping(uint8 => Skills) skills;
     }
-    // uint8 Nskills;
-
-    // TODO: Migrate to VisualsRegistry
-    // Question: this should stay here, and reference the visuals in the VisualsRegistry, right ?
 
     struct Visuals {
         uint256 backId;
@@ -30,7 +26,7 @@ interface IAminalStructs {
         uint256 miscId;
     }
 
-    // TODO: Migrate to SkillsRegistry
+    // TODO: Migrate to SkillsRegistry?
     struct Skills {
         string name;
         address contractAddress;
