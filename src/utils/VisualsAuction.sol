@@ -83,6 +83,7 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         // Reset breedable variable to zero for both aminals
         aminals.disableBreedable(aminalIdOne, aminalIdTwo);
 
+
         // Set breeding flag via a setter
         aminals.setBreeding(aminalIdOne, true);
         aminals.setBreeding(aminalIdTwo, true);
@@ -261,7 +262,7 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
 
     // TODO limits on when this can be called?
     // TODO generate new aminal?
-    function endAuction(uint256 auctionId) public _auctionRunning(auctionId) {
+    function endAuction(uint256 auctionId) public _auctionRunning(auctionId) returns (uint256) {
         Auction storage auction = auctions[auctionId];
 
         console.log("ENDING AUCTION");
@@ -311,11 +312,27 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
             }
 
             auction.ended = true;
+
+            // Spawn a new aminal
+            aminals.spawnAminal(
+                auction.aminalIdOne,
+                auction.aminalIdTwo,
+                auction.winnerId[0],
+                auction.winnerId[1],
+                auction.winnerId[2],
+                auction.winnerId[3],
+                auction.winnerId[4],
+                auction.winnerId[5],
+                auction.winnerId[6],
+                auction.winnerId[7]
+            );
         }
 
         // Zero breeding flag via a setter
         aminals.setBreeding(auction.aminalIdOne, false);
         aminals.setBreeding(auction.aminalIdTwo, false);
+
+        return auction.childAminalId;
     }
 
     function _random(uint256 i, uint256 maxNumber, uint256 minNumber) internal view returns (uint256 amount) {

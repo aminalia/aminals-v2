@@ -37,8 +37,7 @@ contract AminalTest is BaseTest {
         listAuctionedVisuals(i);
         removeTraits(i);
         listAuctionedVisuals(i);
-        uint256[8] memory arr = endAuction(i);
-        spawnNewAminal(1, 2, arr);
+        endAuction(i);
         addAndUseSkills();
     }
 
@@ -226,7 +225,7 @@ contract AminalTest is BaseTest {
     }
 
     function endAuction(uint256 auctionID) public returns (uint256[8] memory) {
-        visualsAuction.endAuction(auctionID);
+        uint256 aminalId = visualsAuction.endAuction(auctionID);
 
         VisualsAuction.Auction memory auction;
         auction = visualsAuction.getAuctionByID(auctionID);
@@ -238,25 +237,28 @@ contract AminalTest is BaseTest {
             console.log(aminals.getVisuals(i, auction.winnerId[i]));
         }
 
+        console.log("aminal id = ", aminalId);
+
         return auction.winnerId;
     }
 
-    function spawnNewAminal(uint256 mom, uint256 dad, uint256[8] memory winnerIds) public {
-        vm.prank(address(visualsAuction));
-        aminals.spawnAminal(
-            mom,
-            dad,
-            winnerIds[0],
-            winnerIds[1],
-            winnerIds[2],
-            winnerIds[3],
-            winnerIds[4],
-            winnerIds[5],
-            winnerIds[6],
-            winnerIds[7]
-        );
-        console.log("spawned a new aminal with the new traits :)");
-    }
+    // // TODO maybe clean up? Leaving here for reference in case we need it for other tests
+    // function spawnNewAminal(uint256 mom, uint256 dad, uint256[8] memory winnerIds) public {
+    //     vm.prank(address(visualsAuction));
+    //     aminals.spawnAminal(
+    //         mom,
+    //         dad,
+    //         winnerIds[0],
+    //         winnerIds[1],
+    //         winnerIds[2],
+    //         winnerIds[3],
+    //         winnerIds[4],
+    //         winnerIds[5],
+    //         winnerIds[6],
+    //         winnerIds[7]
+    //     );
+    //     console.log("spawned a new aminal with the new traits :)");
+    // }
 
     function addAndUseSkills() public {
         console.log("\n now playing with the skillests...");
