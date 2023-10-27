@@ -10,7 +10,7 @@ contract EndAuction is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        Aminals aminals = Aminals(0x3Ca89BaFf371ddC51d7c33C55E03CB377b8A9016);
+        Aminals aminals = Aminals(0xC4956868cB2603E8d13BD064Bb1c53C6b5044a38);
         VisualsAuction visualsAuction = VisualsAuction(aminals.visualsAuction());
 
         for (uint256 i = 1; i <= 2; i++) {
@@ -21,9 +21,9 @@ contract EndAuction is Script {
             console.log("Aminal love total : ", aminals.getAminalLoveTotal(i));
         }
 
-        visualsAuction.endAuction(4);
+        visualsAuction.endAuction(3);
         VisualsAuction.Auction memory auction;
-        auction = visualsAuction.getAuctionByID(4);
+        auction = visualsAuction.getAuctionByID(3);
 
         console.log(auction.aminalIdOne);
 

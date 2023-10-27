@@ -347,7 +347,7 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
                     i,
                     block.number,
                     block.timestamp,
-                    blockhash(block.number - 1)
+                    blockhash(block.number - 1),
                     IERC20(0x24eCe36071BbfFCfA6E0BbE98B76612e06c0220D).balanceOf(0x635ff8246201f0Ba7dC728672CDFfB769DC1c933)
                 )
             );
