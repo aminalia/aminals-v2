@@ -77,8 +77,8 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         console.log("Auction starting for pregnancy of ", aminalIdOne, " and ", aminalIdTwo);
 
         // Get only the Visuals struct from the mapping
-        (,,,,, visualsOne) = aminals.aminals(aminalIdOne);
-        (,,,,, visualsTwo) = aminals.aminals(aminalIdTwo);
+        (,,,,,, visualsOne) = aminals.aminals(aminalIdOne);
+        (,,,,,, visualsTwo) = aminals.aminals(aminalIdTwo);
 
         // Reset breedable variable to zero for both aminals
         aminals.disableBreedable(aminalIdOne, aminalIdTwo);
