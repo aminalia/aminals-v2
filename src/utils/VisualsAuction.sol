@@ -77,8 +77,8 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         console.log("Auction starting for pregnancy of ", aminalIdOne, " and ", aminalIdTwo);
 
         // Get only the Visuals struct from the mapping
-        (,,,,, visualsOne) = aminals.aminals(aminalIdOne);
-        (,,,,, visualsTwo) = aminals.aminals(aminalIdTwo);
+        (,,,,,, visualsOne) = aminals.aminals(aminalIdOne);
+        (,,,,,, visualsTwo) = aminals.aminals(aminalIdTwo);
 
         // Reset breedable variable to zero for both aminals
         aminals.disableBreedable(aminalIdOne, aminalIdTwo);
@@ -279,9 +279,9 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
             // iterate through each category
             uint256 j;
             for (j = 0; j < 10; j++) {
-                console.log("i", i);
-                console.log("j", j);
-                console.log("visualIds", auction.visualIds[j][i]);
+                // console.log("i", i);
+                // console.log("j", j);
+                // console.log("visualIds", auction.visualIds[j][i]);
 
                 // Break the loop if the visualId is 0 (indicates an empty slot).
                 // We skip indexes 0 and 1 as they are inherited
@@ -305,9 +305,9 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
 
             if (maxVotes[i] == 0) {
                 uint256 randomness = _random(i, j, 1);
-                console.log("random = ", randomness);
-                console.log("for category: ", i);
-                console.log("trait == ", auction.visualIds[randomness][i]);
+                // console.log("random = ", randomness);
+                // console.log("for category: ", i);
+                // console.log("trait == ", auction.visualIds[randomness][i]);
                 auction.winnerId[i] = auction.visualIds[randomness][i];
             }
 
