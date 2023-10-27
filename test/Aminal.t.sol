@@ -78,8 +78,8 @@ contract AminalTest is BaseTest {
         // Get only the Visuals struct from the mapping
         Aminals.Visuals memory visualsOne;
         Aminals.Visuals memory visualsTwo;
-        (,,,,, visualsOne) = aminals.aminals(1);
-        (,,,,, visualsTwo) = aminals.aminals(2);
+        (,,,,,, visualsOne) = aminals.aminals(1);
+        (,,,,,, visualsTwo) = aminals.aminals(2);
 
         // Aminals.Visuals storage visuals = aminals.getAminalVisualsById(1);
         // uint256 love = aminals.getAminalLoveTotal(1);

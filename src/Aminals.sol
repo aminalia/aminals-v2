@@ -114,6 +114,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         aminal.visuals.faceId = faceId;
         aminal.visuals.mouthId = mouthId;
         aminal.visuals.miscId = miscId;
+        aminal.exists = true;
         _mint(address(this), aminalId);
 
         return aminalId;
@@ -143,7 +144,12 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
     }
 
     function feed(uint256 aminalId) public payable returns (uint256) {
+        // Check if enough Ether was sent
         if (msg.value < 0.01 ether) revert NotEnoughEther();
+
+        // Check if the aminal actaually exists so people can't pre-feed aminals
+        Aminal storage animal = aminals[aminalId];
+        if (!animal.exists) revert AminalDoesNotExist();
         return _feed(aminalId, msg.sender, msg.value);
     }
 

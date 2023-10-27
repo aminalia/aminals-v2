@@ -9,6 +9,7 @@ interface IAminal is IAminalStructs {
         external
         payable;
 
+    error AminalDoesNotExist();
     error NotEnoughEther();
     error NotSpawnable();
 }
