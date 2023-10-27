@@ -13,7 +13,6 @@ ast
 */
 
 contract SpawnAminal is Script {
-
     IAminalStructs.Visuals[] newVisuals;
 
     function run() external {
@@ -27,17 +26,15 @@ contract SpawnAminal is Script {
         // string memory uri2 = aminals.tokenURI(2);
         // console.log(uri2);
 
-        // Aminals.Visuals[] memory visuals; 
+        // Aminals.Visuals[] memory visuals;
         // // [1, 2, 1, 2, 1, 2, 1 ,2];
         // for (uint i = 1; i <= 8; i++) {
         //     visuals[i] = i % 2;
         // }
 
+        // IAminalStructs.Visuals[] memory newVisuals = new IAminalStructs.Visuals[];
 
-       // IAminalStructs.Visuals[] memory newVisuals = new IAminalStructs.Visuals[];
-
-
-        newVisuals.push(IAminalStructs.Visuals(1,2,1,2,1,2,1,2));
+        newVisuals.push(IAminalStructs.Visuals(1, 2, 1, 2, 1, 2, 1, 2));
 
         aminals.spawnInitialAminals(newVisuals);
 
