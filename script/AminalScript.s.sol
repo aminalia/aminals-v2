@@ -27,8 +27,8 @@ contract AminalScript is Script {
             address(_proposals)
         );
 
-        _visualsAuction.setup(address(aminals));
-        _proposals.setup(address(aminals));
+        _visualsAuction.setup(address(_aminals));
+        _proposals.setup(address(_aminals));
 
         return address(_aminals);
     }

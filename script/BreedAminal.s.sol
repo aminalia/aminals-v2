@@ -10,7 +10,7 @@ contract BreedAminal is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        Aminals aminals = Aminals(0xC5cA00b528daA14036F6edeFA0665D6a4201dDd0);
+        Aminals aminals = Aminals(0x1C147bc1BD3811c1E4B2a1526457151A624b5A98);
 
         for (uint256 i = 1; i <= 2; i++) {
             console.log(
