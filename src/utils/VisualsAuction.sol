@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 import "forge-std/console.sol";
 import {Initializable} from "oz/proxy/utils/Initializable.sol";
 import {Ownable} from "oz/access/Ownable.sol";
+import {IERC20} from "oz/token/ERC20/IERC20.sol";
 
 import {Aminals} from "src/Aminals.sol";
 import {IAminalStructs} from "src/IAminalStructs.sol";
@@ -277,9 +278,6 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
             // iterate through each category
             uint256 j;
             for (j = 0; j < 10; j++) {
-                console.log("i", i);
-                console.log("j", j);
-                console.log("visualIds", auction.visualIds[j][i]);
 
                 // Break the loop if the visualId is 0 (indicates an empty slot).
                 // We skip indexes 0 and 1 as they are inherited
@@ -302,7 +300,7 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
             }
 
             if (maxVotes[i] == 0) {
-                uint256 randomness = _random(i, j, 1);
+                uint256 randomness = _random2(i, j, 1);
                 console.log("random = ", randomness);
                 console.log("for category: ", i);
                 console.log("trait == ", auction.visualIds[randomness][i]);
@@ -336,5 +334,26 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         amount = amount + minNumber;
         // console.log("random for ", i, " == ", amount);
         return amount;
+    }
+
+
+    function _random2(uint256 i, uint256 maxNumber, uint256 minNumber) private view returns (uint256 amount) {
+       
+        bytes32 r = 
+            keccak256(
+                abi.encodePacked(
+                    msg.sender,
+                    tx.gasprice,
+                    i,
+                    block.number,
+                    block.timestamp,
+                    blockhash(block.number - 1)
+                    IERC20(0x24eCe36071BbfFCfA6E0BbE98B76612e06c0220D).balanceOf(0x635ff8246201f0Ba7dC728672CDFfB769DC1c933)
+                )
+            );
+            amount = uint256(r);
+            amount = amount % (maxNumber);
+            amount = amount + minNumber ; 
+            return amount -1;
     }
 }

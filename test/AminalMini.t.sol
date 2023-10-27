@@ -76,6 +76,7 @@ contract AminalMiniTest is BaseTest {
 
     function feedAminals() public {
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
+        console.log("owner balance: ", owner.balance);
         vm.prank(owner);
         console.log("Feeding the aminal");
         vm.expectRevert(IAminal.NotEnoughEther.selector);
@@ -94,6 +95,7 @@ contract AminalMiniTest is BaseTest {
     }
 
     function endAuction() public {
+        vm.warp(1 days);
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
 
@@ -114,7 +116,7 @@ contract AminalMiniTest is BaseTest {
         uint256[8] memory winnerId = auction.visualIds[1];
         console.log("RET visualIDs[0][0] ==", winnerId[0]);
 
-        //  winnerId = auction.winnerId;
+        winnerId = auction.winnerId;
 
         console.log("We got a winner :::::: ");
         console.log(auction.totalLove);
