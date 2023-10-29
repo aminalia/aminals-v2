@@ -13,7 +13,7 @@ interface IAminalStructs {
         mapping(uint256 aminalTwoId => bool readyToBreed) breedableWith;
         mapping(address user => uint256 love) lovePerUser;
         Visuals visuals;
-        mapping(uint8 => Skills) skills;
+        mapping(uint256 => Skills) skills;
     }
 
     struct Visuals {
