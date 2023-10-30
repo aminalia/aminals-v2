@@ -12,8 +12,8 @@ import {IAminalStructs} from "src/IAminalStructs.sol";
 contract VisualsAuction is IAminalStructs, Initializable, Ownable {
     Aminals public aminals;
 
-    address public immutable RANDOMNESS_SOURCE_CONTRACT;
-    address public immutable RANDOMNESS_SOURCE_BALANCE;
+    address public immutable GENERATOR_SOURCE_CONTRACT;
+    address public immutable GENERATOR_SOURCE_BALANCE;
 
     enum VisualsCat {
         BACK,
@@ -28,8 +28,8 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
 
     constructor(address _generatornessSourceContract, address _generatornessSourceBalance) {
         // Ideally a token that has significant activity in every block.
-        RANDOMNESS_SOURCE_CONTRACT = _generatornessSourceContract;
-        RANDOMNESS_SOURCE_BALANCE = _generatornessSourceBalance;
+        GENERATOR_SOURCE_CONTRACT = _generatornessSourceContract;
+        GENERATOR_SOURCE_BALANCE = _generatornessSourceBalance;
     }
 
     function setup(address _aminals) external initializer onlyOwner {
@@ -349,7 +349,7 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
                 block.number,
                 block.timestamp,
                 blockhash(block.number - 1),
-                IERC20(RANDOMNESS_SOURCE_CONTRACT).balanceOf(RANDOMNESS_SOURCE_BALANCE)
+                IERC20(GENERATOR_SOURCE_CONTRACT).balanceOf(GENERATOR_SOURCE_BALANCE)
             )
         );
         amount = uint256(r);
