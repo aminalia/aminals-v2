@@ -55,3 +55,17 @@ jobs:
           node-version: 18
       - run: npm install
       - run: npm run typecheck
+
+  prettier:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm install
+      - run: npm run prettier
