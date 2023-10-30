@@ -65,8 +65,9 @@ contract AminalMiniTest is BaseTest {
         // Get only the Visuals struct from the mapping
         Aminals.Visuals memory visualsOne;
         Aminals.Visuals memory visualsTwo;
-        (,,,,,, visualsOne) = aminals.aminals(1);
-        (,,,,,, visualsTwo) = aminals.aminals(2);
+        (, , , , , visualsOne) = aminals.aminals(1);
+        (, , , , , visualsTwo) = aminals.aminals(2);
+
 
         // Aminals.Visuals storage visuals = aminals.getAminalVisualsById(1);
         // uint256 love = aminals.getAminalLoveTotal(1);
@@ -102,10 +103,15 @@ contract AminalMiniTest is BaseTest {
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
 
-        VisualsAuction visualsAuction = VisualsAuction(aminals.visualsAuction());
+        VisualsAuction visualsAuction = VisualsAuction(
+            aminals.visualsAuction()
+        );
 
         for (uint256 i = 1; i <= 2; i++) {
-            console.log("Aminal love by ID by user: ", aminals.getAminalLoveByIdByUser(i, owner));
+            console.log(
+                "Aminal love by ID by user: ",
+                aminals.getAminalLoveByIdByUser(i, owner)
+            );
             console.log("Aminal love total : ", aminals.getAminalLoveTotal(i));
         }
 
