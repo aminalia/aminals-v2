@@ -39,7 +39,7 @@ contract AminalTest is BaseTest {
         listAuctionedVisuals(i);
         uint256[8] memory arr = endAuction(i);
         spawnNewAminal(1, 2, arr);
-        addAndUseSkills();
+        addUseAndRemoveSkills();
     }
 
     function registerVisuals() public {
@@ -258,7 +258,7 @@ contract AminalTest is BaseTest {
         console.log("spawned a new aminal with the new traits :)");
     }
 
-    function addAndUseSkills() public {
+    function addUseAndRemoveSkills() public {
         console.log("\n now playing with the skillests...");
 
         // introduce skillsets
@@ -269,8 +269,14 @@ contract AminalTest is BaseTest {
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         address owner2 = 0x2D3C242d2C074D523112093C67d1c01Bb27ca40D;
 
+        // Adding skill has a loveDrivenPrice, no funds fails
         vm.prank(owner2);
-        uint256 proposalId = aminals.proposeAddSkill(1, "Move Skill", address(mover));
+        vm.expectRevert("Not enough ether to propose a new Visual");
+        aminals.proposeAddSkill(1, "Move Skill", address(mover));
+
+        // Adding skill succeeds with funds
+        vm.prank(owner2);
+        uint256 proposalId = aminals.proposeAddSkill{value: 0.02 ether}(1, "Move Skill", address(mover));
 
         // with proxy function call
         bytes memory data = mover.getSkillData(888, 999);
@@ -293,12 +299,29 @@ contract AminalTest is BaseTest {
 
         // with proxy function call
         MoveTwice mover2 = new MoveTwice(address(aminals), address(mover));
-        uint256 proposalId2 = aminals.proposeAddSkill(1, "Move Skill 2", address(mover2));
+        uint256 proposalId2 = aminals.proposeAddSkill{value: 0.02 ether}(1, "Move Skill 2", address(mover2));
 
         data = mover2.getSkillData(222, 333, 777, 666);
         console.log("calling mover 2");
         aminals.callSkill{value: 0.5 ether}(1, address(mover2), data);
         (x, y) = mover.getCoords(1);
         console.log("x = ", x, " y = ", y);
+
+        // Test remove skill, fails without loveDrivenPrice
+        vm.prank(owner2);
+        vm.expectRevert("Not enough ether to propose a new Visual");
+        aminals.proposeRemoveSkill(1, "Move Skill", address(mover));
+
+        // proposeRemoveSkill works with funds sent
+        vm.prank(owner2);
+        uint256 proposalId3 = aminals.proposeRemoveSkill{value: 0.02 ether}(1, "Move Skill", address(mover));
+
+        // Vote to remove skill
+        vm.prank(owner);
+        aminals.voteSkill(1, proposalId3, true); // now the Skill should be removed
+
+        // Skill can now not be called
+        vm.expectRevert("Skill does not exist");
+        aminals.callSkill{value: 0.01 ether}(1, address(mover), data);
     }
 }

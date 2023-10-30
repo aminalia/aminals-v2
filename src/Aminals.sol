@@ -310,7 +310,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
 
     // Calls useSkill on an aminal skill
     function callSkill(uint256 aminalId, address skillAddress, bytes calldata data) public payable {
-        require(skills[skillAddress] == true);
+        require(skills[skillAddress] == true, "Skill does not exist");
         uint256 amount = ISkill(skillAddress).useSkill{value: msg.value}(msg.sender, aminalId, data);
         console.log("Call Skill pubilc function (ABOUT TO SQUEEK) for ", amount);
         squeak(aminalId, amount);
@@ -321,8 +321,8 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         public
         payable
     {
-        require(skills[msg.sender] == true);
-        require(skills[skillAddress] == true);
+        require(skills[msg.sender] == true, "callSkillInternal can only be called by a registered skill");
+        require(skills[skillAddress] == true, "Skill does not exist");
         console.log("calling UseSkill externally with msg.value == ", msg.value);
         uint256 amount = ISkill(skillAddress).useSkill{value: msg.value}(sender, aminalId, data);
         console.log("Call Skill Internal (about to squeak) amount === ", amount);
@@ -363,10 +363,15 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
 
     function proposeAddSkill(uint256 aminalID, string calldata skillName, address skillAddress)
         public
+        payable
         returns (uint256 proposalId)
     {
-        // TODO: require minimum love amount?
+        // Adding a skill requires a fee that's adjusted based on love
+        uint128 price = loveDrivenPrice(aminalID, msg.sender);
+        require(msg.value >= price, "Not enough ether to propose a new Visual");
+
         proposalId = proposals.proposeAddSkill(aminalID, skillName, skillAddress);
+
         proposals.LoveVote(
             aminalID,
             msg.sender,
@@ -381,10 +386,16 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
 
     function proposeRemoveSkill(uint256 aminalID, string calldata description, address skillAddress)
         public
+        payable
         returns (uint256 proposalId)
     {
-        // TODO: require minimum love amount?
+        // Removing a skill requires a fee that's adjusted based on love
+        uint128 price = loveDrivenPrice(aminalID, msg.sender);
+        require(msg.value >= price, "Not enough ether to propose a new Visual");
+
         proposalId = proposals.proposeRemoveSkill(aminalID, description, skillAddress);
+
+        console.log(proposalId);
 
         proposals.LoveVote(
             aminalID,
