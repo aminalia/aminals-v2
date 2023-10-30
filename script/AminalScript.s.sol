@@ -48,7 +48,7 @@ contract AminalScript is Script {
         aminals = Aminals(deployAminals());
 
         // first aminal
-        aminals.addBackground('<g><rect fill="#4e2f91" x="0" y="0" width="1000px" height="1000px"/></g>');
+        aminals.addBackground('<g id="BACK"><rect fill="#4e2f91" x="0" y="0" width="1000px" height="1000px"/></g>');
         aminals.addTail(
             '<path fill="#77a9da" d="m460 695-2-13c-14-2-29-5-42-9l1 29c14 4 29 5 44 6l-2-13Z"/><path fill="#77a9da" d="m465 735-4-27c-15-1-30-2-44-6v13l2 20h45Z"/><path fill="#82abdb" d="m419 735 3 15c3 7 7 13 13 17 7 4 16 4 22 0 5-3 8-9 9-15l-2-17h-45Z"/><path fill="#71a0ce" d="m414 628 2 45 42 9c-2-25-5-43-10-56l-34 2Z"/><path fill="#77a9da" d="m542 692 1-13 42-12v29c-14 5-29 7-44 10l1-14Z"/><path fill="#77a9da" d="m540 733 1-27c15-3 30-5 44-10l1 13v21l-46 3Z"/><path fill="#82abdb" d="m586 730-3 15c-2 7-6 13-12 18-6 4-15 5-22 1-5-3-9-9-10-15l1-16 46-3Z"/><path fill="#71a0ce" d="m583 622 2 45-42 12c0-24 2-43 6-56l34-1Z"/>'
         );
