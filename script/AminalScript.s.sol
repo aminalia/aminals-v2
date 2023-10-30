@@ -19,7 +19,10 @@ contract AminalScript is Script {
     IAminalStructs.Visuals[] initialVisuals;
 
     function deployAminals() internal returns (address) {
-        VisualsAuction _visualsAuction = new VisualsAuction();
+        // The randomness source is a very high volume address on Sepolia. This
+        // should be modified for other chains.
+        VisualsAuction _visualsAuction =
+            new VisualsAuction(0x24eCe36071BbfFCfA6E0BbE98B76612e06c0220D, 0x635ff8246201f0Ba7dC728672CDFfB769DC1c933);
         AminalProposals _proposals = new AminalProposals();
 
         Aminals _aminals = new Aminals(
