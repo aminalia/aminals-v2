@@ -76,15 +76,20 @@ contract AminalProposals is IProposals, Initializable, Ownable {
         uint256 requiredMajority
     );
 
+    modifier _onlyAminals() {
+        require(msg.sender == address(aminals));
+        _;
+    }
+
     constructor() {}
 
     function setup(address _aminals) external virtual initializer onlyOwner {
         aminals = _aminals;
     }
 
-    // TODO: Do they require a threashold of love to propose?
     function proposeAddSkill(uint256 aminalID, string calldata skillName, address skillAddress)
         public
+        _onlyAminals
         returns (uint256 proposalId)
     {
         Proposal memory proposal = Proposal({
@@ -121,15 +126,15 @@ contract AminalProposals is IProposals, Initializable, Ownable {
         loveProposals.push(loveprop);
     }
 
-    //  TODO: Do they require a threashold of love to propose?
-    function proposeRemoveSkill(uint256 aminalID, string calldata description, address skillAddress)
+    function proposeRemoveSkill(uint256 aminalID, string calldata skillName, address skillAddress)
         public
+        _onlyAminals
         returns (uint256 proposalId)
     {
         Proposal memory proposal = Proposal({
             proposalType: ProposalType.RemoveSkill,
             proposer: msg.sender,
-            description: description,
+            description: skillName,
             address1: skillAddress,
             address2: address(0),
             amount: 0,
@@ -142,6 +147,22 @@ contract AminalProposals is IProposals, Initializable, Ownable {
         proposals.push(proposal);
         proposalId = proposals.length - 1;
         emit RemoveProposal(proposalId, proposal.proposalType, msg.sender);
+
+        // set up for the love proposals too
+        LoveProposal memory loveprop = LoveProposal({
+            proposalType: ProposalType.AddSkill,
+            proposer: msg.sender,
+            description: skillName,
+            address1: skillAddress,
+            address2: address(0),
+            amount: 0,
+            votedNo: 0,
+            votedYes: 0,
+            initiated: block.timestamp,
+            closed: 0,
+            pass: false
+        });
+        loveProposals.push(loveprop);
     }
 
     // Check for underflows
@@ -163,9 +184,7 @@ contract AminalProposals is IProposals, Initializable, Ownable {
         uint256 membersLength,
         uint256 quorum,
         uint256 requiredMajority
-    ) external {
-        require(msg.sender == aminals);
-
+    ) external _onlyAminals {
         Proposal storage proposal = proposals[proposalId];
         require(proposal.closed == 0);
         // First vote
