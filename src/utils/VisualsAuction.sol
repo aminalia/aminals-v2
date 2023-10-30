@@ -26,10 +26,10 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         MISC
     }
 
-    constructor(address _randomnessSourceContract, address _randomnessSourceBalance) {
+    constructor(address _generatornessSourceContract, address _generatornessSourceBalance) {
         // Ideally a token that has significant activity in every block.
-        RANDOMNESS_SOURCE_CONTRACT = _randomnessSourceContract;
-        RANDOMNESS_SOURCE_BALANCE = _randomnessSourceBalance;
+        RANDOMNESS_SOURCE_CONTRACT = _generatornessSourceContract;
+        RANDOMNESS_SOURCE_BALANCE = _generatornessSourceBalance;
     }
 
     function setup(address _aminals) external initializer onlyOwner {
@@ -304,7 +304,7 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
             }
 
             if (maxVotes[i] == 0) {
-                uint256 randomness = _random2(i, j, 1);
+                uint256 randomness = _generator2(i, j, 1);
                 console.log("random = ", randomness);
                 console.log("for category: ", i);
                 console.log("trait == ", auction.visualIds[randomness][i]);
@@ -332,7 +332,7 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         );
     }
 
-    function _random(uint256 i, uint256 maxNumber, uint256 minNumber) internal view returns (uint256 amount) {
+    function _generator(uint256 i, uint256 maxNumber, uint256 minNumber) internal view returns (uint256 amount) {
         amount = uint256(keccak256(abi.encodePacked(block.prevrandao, msg.sender, i)));
         amount = amount % (maxNumber - minNumber);
         amount = amount + minNumber;
@@ -340,7 +340,7 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         return amount;
     }
 
-    function _random2(uint256 i, uint256 maxNumber, uint256 minNumber) private view returns (uint256 amount) {
+    function _generator2(uint256 i, uint256 maxNumber, uint256 minNumber) private view returns (uint256 amount) {
         bytes32 r = keccak256(
             abi.encodePacked(
                 msg.sender,
