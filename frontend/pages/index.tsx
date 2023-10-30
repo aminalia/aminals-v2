@@ -1,9 +1,9 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import styles from "../styles/index.module.css";
-import { Layout } from "./_layout";
-import { useAminals } from "@/hooks/resources/aminals";
-import AminalCard from "@/components/aminal-card";
+import AminalCard from '@/components/aminal-card';
+import { useAminals } from '@/hooks/resources/aminals';
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import styles from '../styles/index.module.css';
+import { Layout } from './_layout';
 
 const Home: NextPage = () => {
   const { aminals, isLoading: isLoadingAminals } = useAminals();
@@ -16,7 +16,7 @@ const Home: NextPage = () => {
       </Head>
       <Layout>
         {isLoadingAminals
-          ? "Loading..."
+          ? 'Loading...'
           : aminals.map((aminal) => <AminalCard aminal={aminal} />)}
       </Layout>
     </div>

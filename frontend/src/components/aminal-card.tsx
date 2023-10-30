@@ -7,8 +7,8 @@ import {
   CardMedia,
   CardSection,
   CardTitle,
-} from "@/components/ui/card";
-import type { Aminal } from "@/hooks/resources/aminals";
+} from '@/components/ui/card';
+import type { Aminal } from '@/hooks/resources/aminals';
 
 export default function AminalCard({ aminal }: { aminal: Aminal }) {
   return (

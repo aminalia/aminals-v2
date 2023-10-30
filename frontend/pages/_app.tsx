@@ -1,22 +1,22 @@
-import "@rainbow-me/rainbowkit/styles.css";
-import "../styles/globals.css";
 import {
   getDefaultWallets,
   lightTheme,
   RainbowKitProvider,
-} from "@rainbow-me/rainbowkit";
-import type { AppProps } from "next/app";
-import { configureChains, createConfig, WagmiConfig } from "wagmi";
+} from '@rainbow-me/rainbowkit';
+import '@rainbow-me/rainbowkit/styles.css';
+import type { AppProps } from 'next/app';
+import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import {
   arbitrum,
+  base,
   goerli,
   mainnet,
   optimism,
   polygon,
-  base,
   zora,
-} from "wagmi/chains";
-import { publicProvider } from "wagmi/providers/public";
+} from 'wagmi/chains';
+import { publicProvider } from 'wagmi/providers/public';
+import '../styles/globals.css';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
@@ -26,14 +26,14 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
     arbitrum,
     base,
     zora,
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === "true" ? [goerli] : []),
+    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [goerli] : []),
   ],
   [publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({
-  appName: "RainbowKit App",
-  projectId: "YOUR_PROJECT_ID",
+  appName: 'RainbowKit App',
+  projectId: 'YOUR_PROJECT_ID',
   chains,
 });
 
@@ -45,8 +45,8 @@ const wagmiConfig = createConfig({
 });
 
 const rainbowTheme = lightTheme({
-  accentColor: "#000",
-  fontStack: "system",
+  accentColor: '#000',
+  fontStack: 'system',
 });
 
 function MyApp({ Component, pageProps }: AppProps) {

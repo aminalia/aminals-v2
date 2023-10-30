@@ -13,7 +13,7 @@ export const useAminals = () => {
     aminals: [
       {
         id: 7,
-        name: "Shiny Aminal",
+        name: 'Shiny Aminal',
         hunger: 40,
       },
     ],
