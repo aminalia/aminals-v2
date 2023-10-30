@@ -19,7 +19,7 @@ contract SpawnAminal is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        Aminals aminals = Aminals(address(vm.envAddress("CONTRACT")));
+        Aminals aminals = Aminals(address(vm.envAddress("AMINALS_CONTRACT")));
 
         // string memory uri1 = aminals.tokenURI(1);
         // console.log(uri1);

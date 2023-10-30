@@ -10,7 +10,7 @@ contract EndAuction is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        Aminals aminals = Aminals(address(vm.envAddress("CONTRACT")));
+        Aminals aminals = Aminals(address(vm.envAddress("AMINALS_CONTRACT")));
 
         VisualsAuction visualsAuction = VisualsAuction(aminals.visualsAuction());
 
