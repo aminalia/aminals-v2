@@ -68,6 +68,7 @@ contract AminalMiniTest is BaseTest {
         (, , , , , visualsOne) = aminals.aminals(1);
         (, , , , , visualsTwo) = aminals.aminals(2);
 
+
         // Aminals.Visuals storage visuals = aminals.getAminalVisualsById(1);
         // uint256 love = aminals.getAminalLoveTotal(1);
 
@@ -83,6 +84,9 @@ contract AminalMiniTest is BaseTest {
         console.log(uint256(aminals.feed(1)));
         console.log(aminals.feed{value: 0.01 ether}(1));
         console.log(aminals.feed{value: 0.01 ether}(2));
+        // Check if aminal does not exist
+        vm.expectRevert(IAminal.AminalDoesNotExist.selector);
+        console.log(aminals.feed{value: 0.01 ether}(10));
     }
 
     function breedAminals() public {

@@ -9,10 +9,11 @@ interface IAminalStructs {
         // TODO: Check whether gas usage is the same for a uint128
         uint256 energy;
         bool breeding;
+        bool exists;
         mapping(uint256 aminalTwoId => bool readyToBreed) breedableWith;
         mapping(address user => uint256 love) lovePerUser;
         Visuals visuals;
-        mapping(uint8 => Skills) skills;
+        mapping(uint256 => Skills) skills;
     }
 
     struct Visuals {

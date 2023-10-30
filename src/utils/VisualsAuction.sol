@@ -91,6 +91,7 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         (, , , , , visualsOne) = aminals.aminals(aminalIdOne);
         (, , , , , visualsTwo) = aminals.aminals(aminalIdTwo);
 
+
         // Reset breedable variable to zero for both aminals
         aminals.disableBreedable(aminalIdOne, aminalIdTwo);
 
