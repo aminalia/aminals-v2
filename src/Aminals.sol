@@ -25,6 +25,40 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
 
     AminalProposals public proposals;
 
+    event SpawnAminal(
+        uint256 indexed aminalId,
+        uint256 indexed mom,
+        uint256 indexed dad,
+        uint256 backId,
+        uint256 armId,
+        uint256 tailId,
+        uint256 earsId,
+        uint256 bodyId,
+        uint256 faceId,
+        uint256 mouthId,
+        uint256 miscId
+    );
+
+    event BreedAminal(uint256 indexed aminalOne, uint256 indexed aminalTwo, uint256 auctionId);
+
+    event FeedAminal(
+        uint256 indexed aminalId, address sender, uint256 amount, uint256 love, uint256 totalLove, uint256 energy
+    );
+
+    event SkillAdded(uint256 indexed aminalId, address skillAddress);
+
+    event SkillRemoved(uint256 indexed aminalId, address skillAddress);
+
+    event AddSkillProposal(
+        uint256 indexed aminalId, uint256 proposalId, string skillName, address skillAddress, address sender
+    );
+
+    event RemoveSkillProposal(uint256 indexed aminalId, uint256 proposalId, address skillAddress, address sender);
+
+    event Squeak(uint256 indexed aminalId, uint256 amount, uint256 energy);
+
+    event SkillVote(uint256 indexed aminalId, address sender, uint256 proposalId, bool yesNo);
+
     modifier _onlyAuction() {
         require(msg.sender == address(visualsAuction));
         _;
@@ -117,6 +151,8 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         aminal.exists = true;
         _mint(address(this), aminalId);
 
+        emit SpawnAminal(aminalId, aminalOne, aminalTwo, backId, armId, tailId, earsId, bodyId, faceId, mouthId, miscId);
+
         return aminalId;
     }
 
@@ -192,6 +228,8 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         // return ABDKMathQuad.toUInt(ABDKMathQuad.mul(ABDKMathQuad.fromUInt(amount), delta));
         //     return ABDKMathQuad.toUInt(delta);
 
+        emit FeedAminal(aminalId, feeder, amount, aminal.lovePerUser[feeder], aminal.totalLove, aminal.energy);
+
         return delta;
     }
 
@@ -227,14 +265,20 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         if (aminalTwo.breedableWith[aminalIdOne]) {
             require(aminalOne.energy >= 10 && aminalTwo.energy >= 10, "Aminal does not have enough energy to breed");
 
-            return visualsAuction.startAuction(aminalIdOne, aminalIdTwo); // remember to undo the
+            uint256 auctionId = visualsAuction.startAuction(aminalIdOne, aminalIdTwo); // remember to undo the
                 // breedableWith then auction ends!
+
+            emit BreedAminal(aminalIdOne, aminalIdTwo, auctionId);
+
+            return auctionId;
 
             // TODO: Initiate voting for traits on the Visual registry. Voting is
             // denominated in the combined love of both Aminal One and Aminal Two
         } else {
             aminalOne.breedableWith[aminalIdTwo] = true;
             console.log("aminal (", aminalIdOne, ") is now breedable with ", aminalIdTwo);
+
+            emit BreedAminal(aminalIdOne, aminalIdTwo, 0);
 
             return 0;
         }
@@ -260,6 +304,8 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
 
         // TODO: Migrate the bool to a constant for convenience
         _adjustLove(aminalId, amount, msg.sender, false);
+
+        emit Squeak(aminalId, amount, aminal.energy);
     }
 
     // Calls useSkill on an aminal skill
@@ -330,6 +376,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
             proposals.LoveQuorum(),
             proposals.LoveRequiredMajority()
         );
+        emit AddSkillProposal(aminalID, proposalId, skillName, skillAddress, msg.sender);
     }
 
     function proposeRemoveSkill(uint256 aminalID, string calldata description, address skillAddress)
@@ -348,20 +395,23 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
             proposals.LoveQuorum(),
             proposals.LoveRequiredMajority()
         );
+        emit RemoveSkillProposal(aminalID, proposalId, skillAddress, msg.sender);
     }
 
-    function _addSkill(address faddress) internal {
+    function _addSkill(address faddress, uint256 aminalID) internal {
         // currently done such as to add the skills globally to all aminals
         // Aminal storage aminal = aminals[aminalId];
         skills[faddress] = true;
         // aminal.skills[aminal.Nskills++] = skill;
+        emit SkillAdded(aminalID, faddress);
     }
 
-    function removeSkill(address faddress) public {
+    function removeSkill(address faddress, uint256 aminalID) public {
         // currently done such as to add the skills globally to all aminals
         // Aminal storage aminal = aminals[aminalId];
         skills[faddress] = false;
         // aminal.skills[aminal.Nskills++] = skill;
+        emit SkillRemoved(aminalID, faddress);
     }
 
     function voteSkill(uint256 aminalID, uint256 proposalID, bool yesNo) public {
@@ -393,8 +443,8 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
             address address1 = proposals.getAddress1(proposalId);
 
             uint256 amount = proposals.getAmount(proposalId);
-            if (proposalType == IProposals.ProposalType.AddSkill) _addSkill(address1);
-            else if (proposalType == IProposals.ProposalType.RemoveSkill) removeSkill(address1);
+            if (proposalType == IProposals.ProposalType.AddSkill) _addSkill(address1, aminalID);
+            else if (proposalType == IProposals.ProposalType.RemoveSkill) removeSkill(address1, aminalID);
             proposals.close(proposalId);
         }
     }
