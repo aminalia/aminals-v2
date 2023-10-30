@@ -12,8 +12,8 @@ import {IAminalStructs} from "src/IAminalStructs.sol";
 contract VisualsAuction is IAminalStructs, Initializable, Ownable {
     Aminals public aminals;
 
-    address immutable randomnessSourceContract;
-    address immutable randomnessSourceBalance;
+    address public immutable randomnessSourceContract;
+    address public immutable randomnessSourceBalance;
 
     enum VisualsCat {
         BACK,
