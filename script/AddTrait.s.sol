@@ -22,9 +22,7 @@ contract AminalScript is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
         Aminals aminals = Aminals(0xC4956868cB2603E8d13BD064Bb1c53C6b5044a38);
-        VisualsAuction visualsAuction = VisualsAuction(
-            aminals.visualsAuction()
-        );
+        VisualsAuction visualsAuction = VisualsAuction(aminals.visualsAuction());
 
         // first aminal
         // uint256 faceTraitId = aminals.addFace(
@@ -61,10 +59,7 @@ contract AminalScript is Script {
         for (uint256 i = 1; i <= 2; i++) {
             console.log(
                 "Aminal love by ID by user: ",
-                aminals.getAminalLoveByIdByUser(
-                    i,
-                    0x1f028f240A90414211425bFa38eB4917Cb32c39C
-                )
+                aminals.getAminalLoveByIdByUser(i, 0x1f028f240A90414211425bFa38eB4917Cb32c39C)
             );
             console.log("Aminal love total : ", aminals.getAminalLoveTotal(i));
         }
@@ -72,77 +67,29 @@ contract AminalScript is Script {
         aminals.breedWith{value: 0.01 ether}(1, 2);
         uint256 auctionID = aminals.breedWith{value: 0.01 ether}(2, 1);
 
-        visualsAuction.proposeVisual{value: 0.02 ether}(
-            auctionID,
-            VisualsAuction.VisualsCat.FACE,
-            faceTraitId
-        );
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.FACE, faceTraitId);
 
-        visualsAuction.voteVisual(
-            auctionID,
-            VisualsAuction.VisualsCat.FACE,
-            faceTraitId
-        );
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.FACE, faceTraitId);
 
-        visualsAuction.proposeVisual{value: 0.02 ether}(
-            auctionID,
-            VisualsAuction.VisualsCat.BODY,
-            bodyTraitId
-        );
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, bodyTraitId);
 
-        visualsAuction.voteVisual(
-            auctionID,
-            VisualsAuction.VisualsCat.BODY,
-            bodyTraitId
-        );
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, bodyTraitId);
 
-        visualsAuction.proposeVisual{value: 0.02 ether}(
-            auctionID,
-            VisualsAuction.VisualsCat.EARS,
-            earsTraitId
-        );
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.EARS, earsTraitId);
 
-        visualsAuction.voteVisual(
-            auctionID,
-            VisualsAuction.VisualsCat.EARS,
-            earsTraitId
-        );
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.EARS, earsTraitId);
 
-        visualsAuction.proposeVisual{value: 0.02 ether}(
-            auctionID,
-            VisualsAuction.VisualsCat.ARM,
-            armsTraitId
-        );
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.ARM, armsTraitId);
 
-        visualsAuction.voteVisual(
-            auctionID,
-            VisualsAuction.VisualsCat.ARM,
-            armsTraitId
-        );
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.ARM, armsTraitId);
 
-        visualsAuction.proposeVisual{value: 0.02 ether}(
-            auctionID,
-            VisualsAuction.VisualsCat.MISC,
-            miscTraitId
-        );
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.MISC, miscTraitId);
 
-        visualsAuction.voteVisual(
-            auctionID,
-            VisualsAuction.VisualsCat.MISC,
-            miscTraitId
-        );
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.MISC, miscTraitId);
 
-        visualsAuction.proposeVisual{value: 0.02 ether}(
-            auctionID,
-            VisualsAuction.VisualsCat.BACK,
-            backTraitId
-        );
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BACK, backTraitId);
 
-        visualsAuction.voteVisual(
-            auctionID,
-            VisualsAuction.VisualsCat.BACK,
-            backTraitId
-        );
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BACK, backTraitId);
 
         visualsAuction.endAuction(auctionID);
 

@@ -7,12 +7,15 @@ import {Aminals} from "src/Aminals.sol";
 import {IAminal} from "src/IAminal.sol";
 import {IAminalStructs} from "src/IAminalStructs.sol";
 import {VisualsAuction} from "src/utils/VisualsAuction.sol";
+import {ERC20} from "oz/token/ERC20/ERC20.sol";
 
 contract BaseTest is Test {
     IAminalStructs.Visuals[] initialVisuals;
 
     function deployAminals() internal returns (address) {
-        VisualsAuction _visualsAuction = new VisualsAuction();
+        // Deploy a local ERC20 token to use as a source of randomness
+        ERC20 randomnessSource = new ERC20("Randomness", "RAND");
+        VisualsAuction _visualsAuction = new VisualsAuction(address(randomnessSource), address(1));
         AminalProposals _proposals = new AminalProposals();
 
         Aminals _aminals = new Aminals(
