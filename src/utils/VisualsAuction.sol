@@ -72,32 +72,21 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         _;
     }
 
-    function getAuctionByID(
-        uint256 auctionID
-    ) public view returns (Auction memory) {
+    function getAuctionByID(uint256 auctionID) public view returns (Auction memory) {
         return auctions[auctionID];
     }
 
     // Starts a new auction for the pregnancy of two Aminals, returns the auction id
     // TODO emit events
-    function startAuction(
-        uint256 aminalIdOne,
-        uint256 aminalIdTwo
-    ) public _onlyAminals returns (uint256) {
+    function startAuction(uint256 aminalIdOne, uint256 aminalIdTwo) public _onlyAminals returns (uint256) {
         Visuals memory visualsOne;
         Visuals memory visualsTwo;
 
-        console.log(
-            "Auction starting for pregnancy of ",
-            aminalIdOne,
-            " and ",
-            aminalIdTwo
-        );
+        console.log("Auction starting for pregnancy of ", aminalIdOne, " and ", aminalIdTwo);
 
         // Get only the Visuals struct from the mapping
-        (, , , , , visualsOne) = aminals.aminals(aminalIdOne);
-        (, , , , , visualsTwo) = aminals.aminals(aminalIdTwo);
-
+        (,,,,, visualsOne) = aminals.aminals(aminalIdOne);
+        (,,,,, visualsTwo) = aminals.aminals(aminalIdTwo);
 
         // Reset breedable variable to zero for both aminals
         aminals.disableBreedable(aminalIdOne, aminalIdTwo);
@@ -116,9 +105,7 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         //Auction storage auction;
         auction.aminalIdOne = aminalIdOne;
         auction.aminalIdTwo = aminalIdTwo;
-        auction.totalLove =
-            aminals.getAminalLoveTotal(aminalIdOne) +
-            aminals.getAminalLoveTotal(aminalIdTwo);
+        auction.totalLove = aminals.getAminalLoveTotal(aminalIdOne) + aminals.getAminalLoveTotal(aminalIdTwo);
 
         // console.log("recording auctions at count ", auctionCnt, "with aminalIdOne = ", aminalIdOne);
         // console.log("resulting in ", auctions[auctionCnt].aminalIdOne);
@@ -157,23 +144,17 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
     //
     // Anyone can propose new visuals, but the cost depends on how much they
     // love you in order to avoid ppl from spamming the available slots.abi
-    function proposeVisual(
-        uint256 auctionId,
-        VisualsCat catEnum,
-        uint256 visualId
-    ) public payable _auctionRunning(auctionId) {
+    function proposeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId)
+        public
+        payable
+        _auctionRunning(auctionId)
+    {
         uint256 category = uint256(catEnum);
 
         Auction storage auction = auctions[auctionId];
 
-        uint256 priceOne = aminals.loveDrivenPrice(
-            auction.aminalIdOne,
-            msg.sender
-        );
-        uint256 priceTwo = aminals.loveDrivenPrice(
-            auction.aminalIdTwo,
-            msg.sender
-        );
+        uint256 priceOne = aminals.loveDrivenPrice(auction.aminalIdOne, msg.sender);
+        uint256 priceTwo = aminals.loveDrivenPrice(auction.aminalIdTwo, msg.sender);
 
         uint256 price = priceOne + priceTwo;
 
@@ -197,31 +178,19 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         }
     }
 
-    function voteVisual(
-        uint256 auctionId,
-        VisualsCat catEnum,
-        uint256 id
-    ) public payable _auctionRunning(auctionId) {
+    function voteVisual(uint256 auctionId, VisualsCat catEnum, uint256 id) public payable _auctionRunning(auctionId) {
         uint256 category = uint256(catEnum);
 
         Auction storage auction = auctions[auctionId];
 
-        uint256 totallove = aminals.getAminalLoveByIdByUser(
-            auction.aminalIdOne,
-            msg.sender
-        ) + aminals.getAminalLoveByIdByUser(auction.aminalIdTwo, msg.sender);
+        uint256 totallove = aminals.getAminalLoveByIdByUser(auction.aminalIdOne, msg.sender)
+            + aminals.getAminalLoveByIdByUser(auction.aminalIdTwo, msg.sender);
 
         require(
-            visualVoted[msg.sender][auctionId][category] < totallove,
-            "Already consumed all of your love with votes"
+            visualVoted[msg.sender][auctionId][category] < totallove, "Already consumed all of your love with votes"
         );
 
-        console.log(
-            "********** a vote has been casted on category: ",
-            category,
-            " /  iD: ",
-            id
-        );
+        console.log("********** a vote has been casted on category: ", category, " /  iD: ", id);
         // console.log(" == with weight = ", totallove, " .  on auctionId = ", auctionId);
 
         // find the index for the submitted Visual ID
@@ -237,33 +206,23 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         visualVoted[msg.sender][auctionId][category] = totallove;
     }
 
-    function removeVisual(
-        uint256 auctionId,
-        VisualsCat catEnum,
-        uint256 visualId
-    ) public payable _auctionRunning(auctionId) {
+    function removeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId)
+        public
+        payable
+        _auctionRunning(auctionId)
+    {
         uint256 category = uint256(catEnum);
 
         Auction storage auction = auctions[auctionId];
 
-        uint256 totallove = aminals.getAminalLoveByIdByUser(
-            auction.aminalIdOne,
-            msg.sender
-        ) + aminals.getAminalLoveByIdByUser(auction.aminalIdTwo, msg.sender);
+        uint256 totallove = aminals.getAminalLoveByIdByUser(auction.aminalIdOne, msg.sender)
+            + aminals.getAminalLoveByIdByUser(auction.aminalIdTwo, msg.sender);
 
-        require(
-            totallove > 0,
-            "You need love to remove a trait from the auction"
-        );
+        require(totallove > 0, "You need love to remove a trait from the auction");
 
         auction.visualNoVotes[visualId][category] += (totallove);
 
-        console.log(
-            "totallove per user = ",
-            totallove,
-            " from msg.sender = ",
-            msg.sender
-        );
+        console.log("totallove per user = ", totallove, " from msg.sender = ", msg.sender);
         console.log(
             "trying to remove the visual with love: ",
             auction.visualNoVotes[visualId][category],
@@ -286,24 +245,15 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
 
             console.log("REMOVAL......... ", k);
 
-            require(
-                k != 0,
-                "The trait to be removed does not exist in the auction list"
-            );
+            require(k != 0, "The trait to be removed does not exist in the auction list");
 
             uint256 j;
             // reset all values, so that new visuals can be submitted
             for (j = k; j < 9 && auction.visualIds[j][category] != 0; j++) {
                 // stop at 9 because of the j+1 below
-                auction.visualIds[j][category] = auction.visualIds[j + 1][
-                    category
-                ];
-                auction.visualIdVotes[j][category] = auction.visualIdVotes[
-                    j + 1
-                ][category];
-                auction.visualNoVotes[j][category] = auction.visualNoVotes[
-                    j + 1
-                ][category];
+                auction.visualIds[j][category] = auction.visualIds[j + 1][category];
+                auction.visualIdVotes[j][category] = auction.visualIdVotes[j + 1][category];
+                auction.visualNoVotes[j][category] = auction.visualNoVotes[j + 1][category];
                 console.log("current j == ", j);
             }
 
@@ -322,16 +272,8 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         console.log("ENDING AUCTION");
 
         // Initialize maxVotes array with zeros
-        uint256[8] memory maxVotes = [
-            uint256(0),
-            uint256(0),
-            uint256(0),
-            uint256(0),
-            uint256(0),
-            uint256(0),
-            uint256(0),
-            uint256(0)
-        ];
+        uint256[8] memory maxVotes =
+            [uint256(0), uint256(0), uint256(0), uint256(0), uint256(0), uint256(0), uint256(0), uint256(0)];
 
         console.log("ENDING AUCTION");
         console.log("Testing visual id[0[0]] = ", auction.visualIds[0][0]);
@@ -348,24 +290,13 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
                 // console.log("visualIdVotes", auction.visualIdVotes[j][i]);
 
                 // Handle tie
-                if (
-                    auction.visualIdVotes[j][i] != 0 &&
-                    auction.visualIdVotes[j][i] == maxVotes[i]
-                ) {
+                if (auction.visualIdVotes[j][i] != 0 && auction.visualIdVotes[j][i] == maxVotes[i]) {
                     // Randomly select a winner between the tied proposals
-                    uint256 randomness = uint256(
-                        keccak256(
-                            abi.encodePacked(block.prevrandao, msg.sender, i)
-                        )
-                    );
+                    uint256 randomness = uint256(keccak256(abi.encodePacked(block.prevrandao, msg.sender, i)));
                     console.log("TIE, randomly choose winner", randomness % 2);
-                    if (randomness % 2 == 0)
-                        auction.winnerId[i] = auction.visualIds[j][i];
+                    if (randomness % 2 == 0) auction.winnerId[i] = auction.visualIds[j][i];
                 }
-                if (
-                    auction.visualIdVotes[j][i] != 0 &&
-                    auction.visualIdVotes[j][i] > maxVotes[i]
-                ) {
+                if (auction.visualIdVotes[j][i] != 0 && auction.visualIdVotes[j][i] > maxVotes[i]) {
                     // console.log("jjj = ", j, " for category ", i);
                     maxVotes[i] = auction.visualIdVotes[j][i];
                     auction.winnerId[i] = auction.visualIds[j][i];
@@ -401,14 +332,8 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         );
     }
 
-    function _random(
-        uint256 i,
-        uint256 maxNumber,
-        uint256 minNumber
-    ) internal view returns (uint256 amount) {
-        amount = uint256(
-            keccak256(abi.encodePacked(block.prevrandao, msg.sender, i))
-        );
+    function _random(uint256 i, uint256 maxNumber, uint256 minNumber) internal view returns (uint256 amount) {
+        amount = uint256(keccak256(abi.encodePacked(block.prevrandao, msg.sender, i)));
         amount = amount % (maxNumber - minNumber);
         amount = amount + minNumber;
         // console.log("random for ", i, " == ", amount);
