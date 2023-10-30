@@ -278,7 +278,6 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
             // iterate through each category
             uint256 j;
             for (j = 0; j < 10; j++) {
-
                 // Break the loop if the visualId is 0 (indicates an empty slot).
                 // We skip indexes 0 and 1 as they are inherited
                 if (j >= 2 && auction.visualIds[j][i] == 0) break;
@@ -336,24 +335,21 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         return amount;
     }
 
-
     function _random2(uint256 i, uint256 maxNumber, uint256 minNumber) private view returns (uint256 amount) {
-       
-        bytes32 r = 
-            keccak256(
-                abi.encodePacked(
-                    msg.sender,
-                    tx.gasprice,
-                    i,
-                    block.number,
-                    block.timestamp,
-                    blockhash(block.number - 1),
-                    IERC20(0x24eCe36071BbfFCfA6E0BbE98B76612e06c0220D).balanceOf(0x635ff8246201f0Ba7dC728672CDFfB769DC1c933)
-                )
-            );
-            amount = uint256(r);
-            amount = amount % (maxNumber);
-            amount = amount + minNumber ; 
-            return amount -1;
+        bytes32 r = keccak256(
+            abi.encodePacked(
+                msg.sender,
+                tx.gasprice,
+                i,
+                block.number,
+                block.timestamp,
+                blockhash(block.number - 1),
+                IERC20(0x24eCe36071BbfFCfA6E0BbE98B76612e06c0220D).balanceOf(0x635ff8246201f0Ba7dC728672CDFfB769DC1c933)
+            )
+        );
+        amount = uint256(r);
+        amount = amount % (maxNumber);
+        amount = amount + minNumber;
+        return amount - 1;
     }
 }
