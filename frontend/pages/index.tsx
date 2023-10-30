@@ -17,7 +17,9 @@ const Home: NextPage = () => {
       <Layout>
         {isLoadingAminals
           ? 'Loading...'
-          : aminals.map((aminal) => <AminalCard aminal={aminal} />)}
+          : aminals.map((aminal) => (
+              <AminalCard key={aminal.id} aminal={aminal} />
+            ))}
       </Layout>
     </div>
   );
