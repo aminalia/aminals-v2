@@ -332,6 +332,8 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         );
     }
 
+    // Called generator and not random to make it clear that this is not a
+    // secure source of randomness. It's simply better than nothing.
     function _generator(uint256 i, uint256 maxNumber, uint256 minNumber) internal view returns (uint256 amount) {
         amount = uint256(keccak256(abi.encodePacked(block.prevrandao, msg.sender, i)));
         amount = amount % (maxNumber - minNumber);
@@ -340,6 +342,8 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         return amount;
     }
 
+    // Called generator and not random to make it clear that this is not a
+    // secure source of randomness. It's simply better than nothing.
     function _generator2(uint256 i, uint256 maxNumber, uint256 minNumber) private view returns (uint256 amount) {
         bytes32 r = keccak256(
             abi.encodePacked(
