@@ -27,6 +27,8 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
     }
 
     constructor(address _generatornessSourceContract, address _generatornessSourceBalance) {
+        require(_generatornessSourceContract != address(0), "Invalid generator source contract");
+        require(_generatornessSourceBalance != address(0), "Invalid generator source balance");
         // Ideally a token that has significant activity in every block.
         GENERATOR_SOURCE_CONTRACT = _generatornessSourceContract;
         GENERATOR_SOURCE_BALANCE = _generatornessSourceBalance;
