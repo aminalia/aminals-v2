@@ -64,10 +64,10 @@ contract AminalScript is Script {
         aminals.addFace(
             '<path fill="#89cfcb" d="M598 415H402c-35 0-64-29-64-64s22-139 162-69c127-70 162 34 162 69s-29 64-64 64Z"/><circle cx="611" cy="351" r="42" fill="#586b7f"/><circle cx="611" cy="351" r="24" fill="#0a3035"/><circle cx="598" cy="338" r="2" fill="#fff"/><circle cx="602" cy="335" r="1" fill="#fff"/><circle cx="389" cy="351" r="42" fill="#586b7f"/><circle cx="389" cy="351" r="24" fill="#0a3035"/><circle cx="375" cy="338" r="2" fill="#fff"/><circle cx="380" cy="335" r="1" fill="#fff"/><path fill="#ac95b8" d="M515 302c-7 12-23 12-30 0l-4-8-5-8c-6-11 1-25 14-25h19c13 0 21 14 15 25l-5 8-5 8Z"/><circle cx="495" cy="285" r="4" fill="#923018"/><circle cx="505" cy="285" r="4" fill="#923018"/>'
         );
-        aminals.addMouth(
-            '<circle cx="500" cy="354" r="10" fill="#385e5d"/><path fill="#fff" d="M526 205c-24 0-44-19-44-44 0-12 4-23 12-31a44 44 0 1 0 44 73l-12 2Z"/><path fill="#fcfcfc" d="m500 549-19-34-20-34h78l-20 34-19 34z"/>'
+        aminals.addMouth('<circle cx="500" cy="354" r="10" fill="#385e5d"/>');
+        aminals.addMisc(
+            '<path fill="#fff" d="M526 205c-24 0-44-19-44-44 0-12 4-23 12-31a44 44 0 1 0 44 73l-12 2Z"/><path fill="#fcfcfc" d="m500 549-19-34-20-34h78l-20 34-19 34z"/>'
         );
-        aminals.addMisc("");
 
         // Second aminal
         aminals.addBackground('<g><rect fill="#00a79d" x="0" y="0" width="1000px" height="1000px"/></g>');

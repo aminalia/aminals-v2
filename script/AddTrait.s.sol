@@ -21,17 +21,17 @@ contract AminalScript is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
-        Aminals aminals = Aminals(0xC4956868cB2603E8d13BD064Bb1c53C6b5044a38);
+        Aminals aminals = Aminals(0x24BEd8962601Caa39e51F02bdC0251Ae51FF0d70);
         VisualsAuction visualsAuction = VisualsAuction(aminals.visualsAuction());
 
         // third aminal
 
         // uint256 faceTraitId = aminals.addFace(
-        //     '<g id="FACE"><path d="M673 351c0 75-26 111-175 115-133 4-171-44-171-119s85-156 174-156 172 85 172 160z" style="fill:#70968c"/></g><path d="M659 345c0 51-24 59-163 62-123 2-159-14-159-66s76-90 159-90 163 42 163 94z" style="fill:#438786"/><circle cx="389" cy="343" r="43" fill="#265a5d"/><path d="M393 308a36 36 0 1 0 0 71 36 36 0 0 0 0-71zm-1 39c-15 0-27-8-27-18s12-18 27-18 27 8 27 18-12 18-27 18z" fill="#271b27"/><ellipse cx="388" cy="329" fill="#2b565b" rx="27" ry="18"/><circle cx="369" cy="324" r="3" fill="#fff"/><circle cx="376" cy="319" r="2" fill="#fff"/><circle cx="500" cy="300" r="43" fill="#265a5d"/><path d="M504 265a36 36 0 1 0 0 71 36 36 0 0 0 0-71zm-1 39c-15 0-27-8-27-18s12-18 27-18 27 8 27 18-12 18-27 18z" fill="#271b27"/><ellipse cx="499" cy="286" fill="#2b565b" rx="27" ry="18"/><circle cx="480" cy="281" r="3" fill="#fff"/><circle cx="486" cy="276" r="2" fill="#fff"/><circle cx="604" cy="343" r="43" fill="#265a5d"/><path d="M608 308a36 36 0 1 0 0 71 36 36 0 0 0 0-71zm0 39c-15 0-27-8-27-18s12-18 27-18 26 8 26 18-12 18-26 18z" fill="#271b27"/><ellipse cx="604" cy="329" fill="#2b565b" rx="27" ry="18"/><circle cx="584" cy="324" r="3" fill="#fff"/><circle cx="591" cy="319" r="2" fill="#fff"/></g>'
+        //     '<g id="FACE"><path d="M673 351c0 75-26 111-175 115-133 4-171-44-171-119s85-156 174-156 172 85 172 160z" fill="#70968c"/><path d="M659 345c0 51-24 59-163 62-123 2-159-14-159-66s76-90 159-90 163 42 163 94z" fill="#438786"/><circle cx="389" cy="343" r="43" fill="#265a5d"/><path d="M393 308a36 36 0 1 0 0 71 36 36 0 0 0 0-71zm-1 39c-15 0-27-8-27-18s12-18 27-18 27 8 27 18-12 18-27 18z" fill="#271b27"/><ellipse cx="388" cy="329" fill="#2b565b" rx="27" ry="18"/><circle cx="369" cy="324" r="3" fill="#fff"/><circle cx="376" cy="319" r="2" fill="#fff"/><circle cx="500" cy="300" r="43" fill="#265a5d"/><path d="M504 265a36 36 0 1 0 0 71 36 36 0 0 0 0-71zm-1 39c-15 0-27-8-27-18s12-18 27-18 27 8 27 18-12 18-27 18z" fill="#271b27"/><ellipse cx="499" cy="286" fill="#2b565b" rx="27" ry="18"/><circle cx="480" cy="281" r="3" fill="#fff"/><circle cx="486" cy="276" r="2" fill="#fff"/><circle cx="604" cy="343" r="43" fill="#265a5d"/><path d="M608 308a36 36 0 1 0 0 71 36 36 0 0 0 0-71zm0 39c-15 0-27-8-27-18s12-18 27-18 26 8 26 18-12 18-26 18z" fill="#271b27"/><ellipse cx="604" cy="329" fill="#2b565b" rx="27" ry="18"/><circle cx="584" cy="324" r="3" fill="#fff"/><circle cx="591" cy="319" r="2" fill="#fff"/></g>'
         // );
 
         // uint256 bodyTraitId = aminals.addBody(
-        //     '<path d="M710 404c0 362-94 350-210 350s-210 23-210-350c0-116 94-219 210-219s210 103 210 219z" fill="#99726a"/><path d="M504 523c-2 3-6 3-8 0l-2-4-2-4c-2-3 0-7 4-7h8c4 0 6 4 5 7l-2 4-3 4zM504 542c-2 3-6 3-8 0l-2-4-2-4c-2-3 0-7 4-7h8c4 0 6 4 5 7l-2 4-3 4zM504 563c-2 3-6 3-8 0l-2-4-2-3c-2-4 0-8 4-8h8c4 0 6 4 5 8l-2 3-3 4zM504 504c-2 3-6 3-8 0l-2-4-2-4c-2-3 0-7 4-7h8c4 0 6 4 5 7l-2 4-3 4zM482 523c-2 3-7 3-8 0l-3-4-2-4c-2-3 1-7 4-7h9c4 0 6 4 4 7l-2 4-2 4zM482 542c-2 3-7 3-8 0l-3-4-2-4c-2-3 1-7 4-7h9c4 0 6 4 4 7l-2 4-2 4zM482 504c-2 3-7 3-8 0l-3-4-2-4c-2-3 1-7 4-7h9c4 0 6 4 4 7l-2 4-2 4zM461 504c-2 3-6 3-8 0l-2-4-3-4c-1-3 1-7 5-7h8c4 0 6 4 4 7l-2 4-2 4zM527 523c-2 3-7 3-9 0l-2-4-2-4c-2-3 1-7 4-7h9c3 0 6 4 4 7l-2 4-2 4zM527 542c-2 3-7 3-9 0l-2-4-2-4c-2-3 1-7 4-7h9c3 0 6 4 4 7l-2 4-2 4zM527 504c-2 3-7 3-9 0l-2-4-2-4c-2-3 1-7 4-7h9c3 0 6 4 4 7l-2 4-2 4zM547 504c-2 3-7 3-9 0l-2-4-2-4c-2-3 1-7 4-7h9c4 0 6 4 4 7l-2 4-2 4z" fill="#6c5655"/>'
+        //  '<g id="BODY"><path d="M710 404c0 362-94 350-210 350s-210 23-210-350c0-116 94-219 210-219s210 103 210 219z" fill="#99726a"/></g>'
         // );
 
         // uint256 earsTraitId = aminals.addEar(
@@ -40,9 +40,9 @@ contract AminalScript is Script {
 
         // uint256 armsTraitId = aminals.addArm('<g id="ARM"></g>');
 
-        // // uint256 backTraitId = aminals.addBackground(
-        // //     '<g id="BACK"><path d="M0 0h1000v1000H0z" style="fill:#e9d6a2"/><circle cx="147" cy="907" r="44" fill="#d3b36d"/><circle cx="283" cy="874" r="11" fill="#d3b36d"/><circle cx="193" cy="796" r="2" fill="#d3b36d"/><circle cx="77" cy="784" r="6" fill="#d3b36d"/><circle cx="391" cy="828" r="6" fill="#d3b36d"/><circle cx="464" cy="907" r="15" fill="#d3b36d"/><circle cx="331" cy="906" r="5" fill="#d3b36d"/><circle cx="574" cy="841" r="6" fill="#d3b36d"/><circle cx="646" cy="824" r="17" fill="#d3b36d"/><circle cx="635" cy="889" r="4" fill="#d3b36d"/><circle cx="721" cy="936" r="6" fill="#d3b36d"/><circle cx="764" cy="821" r="7" fill="#d3b36d"/><circle cx="827" cy="782" r="16" fill="#d3b36d"/><circle cx="819" cy="859" r="2" fill="#d3b36d"/><circle cx="870" cy="901" r="5" fill="#d3b36d"/><circle cx="50" cy="523" r="3" fill="#d3b36d"/><circle cx="111" cy="566" r="3" fill="#d3b36d"/><circle cx="207" cy="549" r="29" fill="#d3b36d"/><circle cx="739" cy="560" r="3" fill="#d3b36d"/><circle cx="767" cy="624" r="4" fill="#d3b36d"/><circle cx="894" cy="600" r="40" fill="#d3b36d"/><circle cx="910" cy="726" r="6" fill="#d3b36d"/><circle cx="935" cy="833" r="19" fill="#d3b36d"/><circle cx="182" cy="664" r="19" fill="#d3b36d"/><circle cx="53" cy="869" r="5" fill="#d3b36d"/><circle cx="810" cy="269" r="13" fill="#d3b36d"/><circle cx="77" cy="261" r="6" fill="#d3b36d"/><circle cx="130" cy="342" r="2" fill="#d3b36d"/><circle cx="245" cy="719" r="5" fill="#d3b36d"/><circle cx="794" cy="477" r="3" fill="#d3b36d"/><circle cx="554" cy="892" r="4" fill="#d3b36d"/><circle cx="931" cy="916" r="36" fill="#d3b36d"/></g>'
-        // // );
+        // uint256 backTraitId = aminals.addBackground(
+        //     '<g id="BACK"><path d="M0 0h1000v1000H0z" style="fill:#e9d6a2"/><circle cx="147" cy="907" r="44" fill="#d3b36d"/><circle cx="283" cy="874" r="11" fill="#d3b36d"/><circle cx="193" cy="796" r="2" fill="#d3b36d"/><circle cx="77" cy="784" r="6" fill="#d3b36d"/><circle cx="391" cy="828" r="6" fill="#d3b36d"/><circle cx="464" cy="907" r="15" fill="#d3b36d"/><circle cx="331" cy="906" r="5" fill="#d3b36d"/><circle cx="574" cy="841" r="6" fill="#d3b36d"/><circle cx="646" cy="824" r="17" fill="#d3b36d"/><circle cx="635" cy="889" r="4" fill="#d3b36d"/><circle cx="721" cy="936" r="6" fill="#d3b36d"/><circle cx="764" cy="821" r="7" fill="#d3b36d"/><circle cx="827" cy="782" r="16" fill="#d3b36d"/><circle cx="819" cy="859" r="2" fill="#d3b36d"/><circle cx="870" cy="901" r="5" fill="#d3b36d"/><circle cx="50" cy="523" r="3" fill="#d3b36d"/><circle cx="111" cy="566" r="3" fill="#d3b36d"/><circle cx="207" cy="549" r="29" fill="#d3b36d"/><circle cx="739" cy="560" r="3" fill="#d3b36d"/><circle cx="767" cy="624" r="4" fill="#d3b36d"/><circle cx="894" cy="600" r="40" fill="#d3b36d"/><circle cx="910" cy="726" r="6" fill="#d3b36d"/><circle cx="935" cy="833" r="19" fill="#d3b36d"/><circle cx="182" cy="664" r="19" fill="#d3b36d"/><circle cx="53" cy="869" r="5" fill="#d3b36d"/><circle cx="810" cy="269" r="13" fill="#d3b36d"/><circle cx="77" cy="261" r="6" fill="#d3b36d"/><circle cx="130" cy="342" r="2" fill="#d3b36d"/><circle cx="245" cy="719" r="5" fill="#d3b36d"/><circle cx="794" cy="477" r="3" fill="#d3b36d"/><circle cx="554" cy="892" r="4" fill="#d3b36d"/><circle cx="931" cy="916" r="36" fill="#d3b36d"/></g>'
+        // );
 
         // uint256 miscTraitId = aminals.addMisc(
         //     '<g id="MISC"><path d="m502 109 16 33 36 5-26 26 6 36-32-17-32 17 6-36-26-26 36-5z" fill="#fff"/></g>'
@@ -60,12 +60,12 @@ contract AminalScript is Script {
         //     console.log("Aminal love total : ", aminals.getAminalLoveTotal(i));
         // }
 
-        uint256 faceTraitId = 4;
-        uint256 bodyTraitId = 5;
-        uint256 earsTraitId = 5;
-        uint256 armsTraitId = 4;
-        uint256 backTraitId = 4;
-        uint256 miscTraitId = 4;
+        uint256 faceTraitId = 6;
+        uint256 bodyTraitId = 3;
+        uint256 earsTraitId = 3;
+        uint256 armsTraitId = 3;
+        uint256 backTraitId = 3;
+        uint256 miscTraitId = 3;
         uint256 tailTraitId = 3;
 
         aminals.breedWith{value: 0.01 ether}(1, 2);
@@ -75,31 +75,31 @@ contract AminalScript is Script {
 
         // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.FACE, faceTraitId);
 
-        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, bodyTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, bodyTraitId);
 
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, bodyTraitId);
+        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, bodyTraitId);
 
-        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.EARS, earsTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.EARS, earsTraitId);
 
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.EARS, earsTraitId);
+        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.EARS, earsTraitId);
 
-        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.ARM, armsTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.ARM, armsTraitId);
 
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.ARM, armsTraitId);
+        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.ARM, armsTraitId);
 
-        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BACK, backTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BACK, backTraitId);
 
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BACK, backTraitId);
+        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BACK, backTraitId);
 
-        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.MISC, miscTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.MISC, miscTraitId);
 
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.MISC, miscTraitId);
+        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.MISC, miscTraitId);
 
-        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.TAIL, tailTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.TAIL, tailTraitId);
 
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.TAIL, tailTraitId);
+        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.TAIL, tailTraitId);
 
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.MOUTH, 0);
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.MOUTH, 5);
 
         visualsAuction.endAuction(auctionID);
 

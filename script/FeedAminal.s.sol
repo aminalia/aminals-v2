@@ -10,7 +10,7 @@ contract FeedAminal is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        Aminals aminals = Aminals(0xC4956868cB2603E8d13BD064Bb1c53C6b5044a38);
+        Aminals aminals = Aminals(0x24BEd8962601Caa39e51F02bdC0251Ae51FF0d70);
 
         for (uint256 i = 1; i <= 2; i++) {
             aminals.feed{value: 0.01 ether}(i);

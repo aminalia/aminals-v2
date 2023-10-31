@@ -224,13 +224,17 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         // console.log(" == with weight = ", totallove, " .  on auctionId = ", auctionId);
 
         // find the index for the submitted Visual ID
-        uint256 k = 0;
+        uint256 k = 10;
         for (uint256 i = 0; i < 10; i++) {
             if (auction.visualIds[i][category] == id) {
                 k = i;
                 break;
             }
         }
+
+        console.log("*************************************************** K = ", k);
+
+        require(k < 10, "Cannot vote on a trait that is not part of the auction");
 
         auction.visualIdVotes[k][category] += (totallove);
         visualVoted[msg.sender][auctionId][category] = totallove;

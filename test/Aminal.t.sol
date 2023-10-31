@@ -183,6 +183,8 @@ contract AminalTest is BaseTest {
         // Owner 3 causes a tie
         address owner3 = 0x45CbC00e0618880bfB2dBDdEAed1ef1411dd5eeE;
         vm.prank(owner3);
+        vm.expectRevert("Cannot vote on a trait that is not part of the auction");
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, 100);
         visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, 1);
         vm.prank(owner3);
     }
