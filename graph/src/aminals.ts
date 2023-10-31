@@ -15,22 +15,19 @@ import {
 } from "../generated/Aminals/Aminals";
 import {
   Aminal,
-  AddSkillProposal,
+  SkillProposal,
   BreedAminal,
   FeedAminal,
   Initialized,
   OwnershipTransferred,
-  RemoveSkillProposal,
-  SkillAdded,
-  SkillRemoved,
+  Skills,
   SkillVote,
   SpawnAminal,
-  Squeak,
-  Transfer
+  Squeak
 } from "../generated/schema";
 
 export function handleAddSkillProposal(event: AddSkillProposalEvent): void {
-  let entity = new AddSkillProposal(
+  let entity = new SkillProposal(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   );
   entity.aminalId = event.params.aminalId;
@@ -38,7 +35,7 @@ export function handleAddSkillProposal(event: AddSkillProposalEvent): void {
   entity.skillName = event.params.skillName;
   entity.skillAddress = event.params.skillAddress;
   entity.sender = event.params.sender;
-
+  entity.removed = false;
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
   entity.transactionHash = event.transaction.hash;
@@ -111,14 +108,14 @@ export function handleOwnershipTransferred(
 export function handleRemoveSkillProposal(
   event: RemoveSkillProposalEvent
 ): void {
-  let entity = new RemoveSkillProposal(
+  let entity = new SkillProposal(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   );
   entity.aminalId = event.params.aminalId;
   entity.proposalId = event.params.proposalId;
   entity.skillAddress = event.params.skillAddress;
   entity.sender = event.params.sender;
-
+  entity.removed = true;
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
   entity.transactionHash = event.transaction.hash;
@@ -127,12 +124,12 @@ export function handleRemoveSkillProposal(
 }
 
 export function handleSkillAdded(event: SkillAddedEvent): void {
-  let entity = new SkillAdded(
+  let entity = new Skills(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   );
   entity.aminalId = event.params.aminalId;
   entity.skillAddress = event.params.skillAddress;
-
+  entity.removed = false;
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
   entity.transactionHash = event.transaction.hash;
@@ -141,12 +138,12 @@ export function handleSkillAdded(event: SkillAddedEvent): void {
 }
 
 export function handleSkillRemoved(event: SkillRemovedEvent): void {
-  let entity = new SkillRemoved(
+  let entity = new Skills(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   );
   entity.aminalId = event.params.aminalId;
   entity.skillAddress = event.params.skillAddress;
-
+  entity.removed = true;
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
   entity.transactionHash = event.transaction.hash;
@@ -215,21 +212,6 @@ export function handleSqueak(event: SqueakEvent): void {
   entity.aminalId = event.params.aminalId;
   entity.amount = event.params.amount;
   entity.energy = event.params.energy;
-
-  entity.blockNumber = event.block.number;
-  entity.blockTimestamp = event.block.timestamp;
-  entity.transactionHash = event.transaction.hash;
-
-  entity.save();
-}
-
-export function handleTransfer(event: TransferEvent): void {
-  let entity = new Transfer(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
-  entity.from = event.params.from;
-  entity.to = event.params.to;
-  entity.Aminals_id = event.params.id;
 
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;

@@ -14,18 +14,15 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - AddSkillProposal
         - BreedAminal
         - FeedAminal
         - Initialized
         - OwnershipTransferred
-        - RemoveSkillProposal
-        - SkillAdded
-        - SkillRemoved
+        - SkillProposal
+        - Skills
         - SkillVote
         - SpawnAminal
         - Squeak
-        - Transfer
       abis:
         - name: Aminals
           file: ./abis/Aminals.json
@@ -52,6 +49,4 @@ dataSources:
           handler: handleSpawnAminal
         - event: Squeak(indexed uint256,uint256,uint256)
           handler: handleSqueak
-        - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: handleTransfer
       file: ./src/aminals.ts
