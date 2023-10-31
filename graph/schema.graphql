@@ -1,3 +1,13 @@
+type Aminal @entity(immutable: true) {
+  id: Bytes!
+  aminalId: BigInt! # uint256
+  mom: BigInt! # uint256
+  dad: BigInt! # uint256
+  tokenUri: String! # string
+  energy: BigInt! # uint256
+  totalLove: BigInt! # uint256
+}
+
 type AddSkillProposal @entity(immutable: true) {
   id: Bytes!
   aminalId: BigInt! # uint256

@@ -11,6 +11,126 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
+export class Aminal extends Entity {
+  constructor(id: Bytes) {
+    super();
+    this.set("id", Value.fromBytes(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Aminal entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.BYTES,
+        `Entities of type Aminal must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Aminal", id.toBytes().toHexString(), this);
+    }
+  }
+
+  static loadInBlock(id: Bytes): Aminal | null {
+    return changetype<Aminal | null>(
+      store.get_in_block("Aminal", id.toHexString())
+    );
+  }
+
+  static load(id: Bytes): Aminal | null {
+    return changetype<Aminal | null>(store.get("Aminal", id.toHexString()));
+  }
+
+  get id(): Bytes {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set id(value: Bytes) {
+    this.set("id", Value.fromBytes(value));
+  }
+
+  get aminalId(): BigInt {
+    let value = this.get("aminalId");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set aminalId(value: BigInt) {
+    this.set("aminalId", Value.fromBigInt(value));
+  }
+
+  get mom(): BigInt {
+    let value = this.get("mom");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set mom(value: BigInt) {
+    this.set("mom", Value.fromBigInt(value));
+  }
+
+  get dad(): BigInt {
+    let value = this.get("dad");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set dad(value: BigInt) {
+    this.set("dad", Value.fromBigInt(value));
+  }
+
+  get tokenUri(): string {
+    let value = this.get("tokenUri");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set tokenUri(value: string) {
+    this.set("tokenUri", Value.fromString(value));
+  }
+
+  get energy(): BigInt {
+    let value = this.get("energy");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set energy(value: BigInt) {
+    this.set("energy", Value.fromBigInt(value));
+  }
+
+  get totalLove(): BigInt {
+    let value = this.get("totalLove");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set totalLove(value: BigInt) {
+    this.set("totalLove", Value.fromBigInt(value));
+  }
+}
+
 export class AddSkillProposal extends Entity {
   constructor(id: Bytes) {
     super();
