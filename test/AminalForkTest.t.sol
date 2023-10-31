@@ -18,11 +18,11 @@ contract AminalForkTest is Test {
         string memory sepoliaRPC = vm.envString("SEPOLIA_RPC_URL");
         sepoliaFork = vm.createSelectFork(sepoliaRPC);
         // Roll to the block of Aminals contract creation
-        vm.rollFork(4_597_069);
+        vm.rollFork(4_597_442);
     }
 
     function testRenderer() public {
-        aminals.tokenURI(1);
-        aminals.tokenURI(2);
+        aminals.tokenURI(3);
+        aminals.tokenURI(4);
     }
 }
