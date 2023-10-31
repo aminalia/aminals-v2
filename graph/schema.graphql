@@ -1,0 +1,129 @@
+type AddSkillProposal @entity(immutable: true) {
+  id: Bytes!
+  aminalId: BigInt! # uint256
+  proposalId: BigInt! # uint256
+  skillName: String! # string
+  skillAddress: Bytes! # address
+  sender: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type BreedAminal @entity(immutable: true) {
+  id: Bytes!
+  aminalOne: BigInt! # uint256
+  aminalTwo: BigInt! # uint256
+  auctionId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type FeedAminal @entity(immutable: true) {
+  id: Bytes!
+  aminalId: BigInt! # uint256
+  sender: Bytes! # address
+  amount: BigInt! # uint256
+  love: BigInt! # uint256
+  totalLove: BigInt! # uint256
+  energy: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Initialized @entity(immutable: true) {
+  id: Bytes!
+  version: Int! # uint8
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RemoveSkillProposal @entity(immutable: true) {
+  id: Bytes!
+  aminalId: BigInt! # uint256
+  proposalId: BigInt! # uint256
+  skillAddress: Bytes! # address
+  sender: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SkillAdded @entity(immutable: true) {
+  id: Bytes!
+  aminalId: BigInt! # uint256
+  skillAddress: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SkillRemoved @entity(immutable: true) {
+  id: Bytes!
+  aminalId: BigInt! # uint256
+  skillAddress: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SkillVote @entity(immutable: true) {
+  id: Bytes!
+  aminalId: BigInt! # uint256
+  sender: Bytes! # address
+  proposalId: BigInt! # uint256
+  yesNo: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SpawnAminal @entity(immutable: true) {
+  id: Bytes!
+  aminalId: BigInt! # uint256
+  mom: BigInt! # uint256
+  dad: BigInt! # uint256
+  backId: BigInt! # uint256
+  armId: BigInt! # uint256
+  tailId: BigInt! # uint256
+  earsId: BigInt! # uint256
+  bodyId: BigInt! # uint256
+  faceId: BigInt! # uint256
+  mouthId: BigInt! # uint256
+  miscId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Squeak @entity(immutable: true) {
+  id: Bytes!
+  aminalId: BigInt! # uint256
+  amount: BigInt! # uint256
+  energy: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Transfer @entity(immutable: true) {
+  id: Bytes!
+  from: Bytes! # address
+  to: Bytes! # address
+  Aminals_id: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}

@@ -1,0 +1,57 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Aminals
+    network: sepolia
+    source:
+      address: "0x24BEd8962601Caa39e51F02bdC0251Ae51FF0d70"
+      abi: Aminals
+      startBlock: 04597069
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - AddSkillProposal
+        - BreedAminal
+        - FeedAminal
+        - Initialized
+        - OwnershipTransferred
+        - RemoveSkillProposal
+        - SkillAdded
+        - SkillRemoved
+        - SkillVote
+        - SpawnAminal
+        - Squeak
+        - Transfer
+      abis:
+        - name: Aminals
+          file: ./abis/Aminals.json
+      eventHandlers:
+        - event: AddSkillProposal(indexed uint256,uint256,string,address,address)
+          handler: handleAddSkillProposal
+        - event: BreedAminal(indexed uint256,indexed uint256,uint256)
+          handler: handleBreedAminal
+        - event: FeedAminal(indexed uint256,address,uint256,uint256,uint256,uint256)
+          handler: handleFeedAminal
+        - event: Initialized(uint8)
+          handler: handleInitialized
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: RemoveSkillProposal(indexed uint256,uint256,address,address)
+          handler: handleRemoveSkillProposal
+        - event: SkillAdded(indexed uint256,address)
+          handler: handleSkillAdded
+        - event: SkillRemoved(indexed uint256,address)
+          handler: handleSkillRemoved
+        - event: SkillVote(indexed uint256,address,uint256,bool)
+          handler: handleSkillVote
+        - event: SpawnAminal(indexed uint256,indexed uint256,indexed uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleSpawnAminal
+        - event: Squeak(indexed uint256,uint256,uint256)
+          handler: handleSqueak
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/aminals.ts
