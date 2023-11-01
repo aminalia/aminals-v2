@@ -1,3 +1,4 @@
+import { Bytes } from "@graphprotocol/graph-ts";
 import {
   Aminals as AminalsContract,
   AddSkillProposal as AddSkillProposalEvent,
@@ -10,8 +11,7 @@ import {
   SkillRemoved as SkillRemovedEvent,
   SkillVote as SkillVoteEvent,
   SpawnAminal as SpawnAminalEvent,
-  Squeak as SqueakEvent,
-  Transfer as TransferEvent
+  Squeak as SqueakEvent
 } from "../generated/Aminals/Aminals";
 import {
   Aminal,
@@ -27,9 +27,7 @@ import {
 } from "../generated/schema";
 
 export function handleAddSkillProposal(event: AddSkillProposalEvent): void {
-  let entity = new SkillProposal(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
+  let entity = new SkillProposal(Bytes.fromI32(event.params.aminalId.toI32()));
   entity.aminalId = event.params.aminalId;
   entity.proposalId = event.params.proposalId;
   entity.skillName = event.params.skillName;
@@ -59,21 +57,26 @@ export function handleBreedAminal(event: BreedAminalEvent): void {
 }
 
 export function handleFeedAminal(event: FeedAminalEvent): void {
-  let entity = new FeedAminal(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
+  let entity = new FeedAminal(Bytes.fromI32(event.params.aminalId.toI32()));
   entity.aminalId = event.params.aminalId;
   entity.sender = event.params.sender;
   entity.amount = event.params.amount;
   entity.love = event.params.love;
   entity.totalLove = event.params.totalLove;
   entity.energy = event.params.energy;
-
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
   entity.transactionHash = event.transaction.hash;
-
   entity.save();
+
+  let aminal = Aminal.load(Bytes.fromI32(event.params.aminalId.toI32()));
+  let contract = AminalsContract.bind(event.address);
+  if (aminal) {
+    aminal.energy = contract.getEnergy(event.params.aminalId);
+    aminal.totalLove = contract.getAminalLoveTotal(event.params.aminalId);
+
+    aminal.save();
+  }
 }
 
 export function handleInitialized(event: InitializedEvent): void {
@@ -108,9 +111,7 @@ export function handleOwnershipTransferred(
 export function handleRemoveSkillProposal(
   event: RemoveSkillProposalEvent
 ): void {
-  let entity = new SkillProposal(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
+  let entity = new SkillProposal(Bytes.fromI32(event.params.aminalId.toI32()));
   entity.aminalId = event.params.aminalId;
   entity.proposalId = event.params.proposalId;
   entity.skillAddress = event.params.skillAddress;
@@ -124,9 +125,7 @@ export function handleRemoveSkillProposal(
 }
 
 export function handleSkillAdded(event: SkillAddedEvent): void {
-  let entity = new Skills(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
+  let entity = new Skills(Bytes.fromI32(event.params.aminalId.toI32()));
   entity.aminalId = event.params.aminalId;
   entity.skillAddress = event.params.skillAddress;
   entity.removed = false;
@@ -138,9 +137,7 @@ export function handleSkillAdded(event: SkillAddedEvent): void {
 }
 
 export function handleSkillRemoved(event: SkillRemovedEvent): void {
-  let entity = new Skills(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
+  let entity = new Skills(Bytes.fromI32(event.params.aminalId.toI32()));
   entity.aminalId = event.params.aminalId;
   entity.skillAddress = event.params.skillAddress;
   entity.removed = true;
@@ -153,7 +150,7 @@ export function handleSkillRemoved(event: SkillRemovedEvent): void {
 
 export function handleSkillVote(event: SkillVoteEvent): void {
   let entity = new SkillVote(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.transaction.hash.concatI32(event.params.aminalId.toI32())
   );
   entity.aminalId = event.params.aminalId;
   entity.sender = event.params.sender;
@@ -168,9 +165,7 @@ export function handleSkillVote(event: SkillVoteEvent): void {
 }
 
 export function handleSpawnAminal(event: SpawnAminalEvent): void {
-  let entity = new SpawnAminal(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
+  let entity = new SpawnAminal(Bytes.fromI32(event.params.aminalId.toI32()));
 
   entity.aminalId = event.params.aminalId;
   entity.mom = event.params.mom;
@@ -188,9 +183,7 @@ export function handleSpawnAminal(event: SpawnAminalEvent): void {
   entity.blockTimestamp = event.block.timestamp;
   entity.transactionHash = event.transaction.hash;
 
-  let aminal = new Aminal(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
+  let aminal = new Aminal(Bytes.fromI32(event.params.aminalId.toI32()));
   let contract = AminalsContract.bind(event.address);
 
   aminal.aminalId = event.params.aminalId;
@@ -206,9 +199,7 @@ export function handleSpawnAminal(event: SpawnAminalEvent): void {
 }
 
 export function handleSqueak(event: SqueakEvent): void {
-  let entity = new Squeak(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
+  let entity = new Squeak(Bytes.fromI32(event.params.aminalId.toI32()));
   entity.aminalId = event.params.aminalId;
   entity.amount = event.params.amount;
   entity.energy = event.params.energy;
@@ -216,6 +207,15 @@ export function handleSqueak(event: SqueakEvent): void {
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
   entity.transactionHash = event.transaction.hash;
+
+  let aminal = Aminal.load(Bytes.fromI32(event.params.aminalId.toI32()));
+  let contract = AminalsContract.bind(event.address);
+  if (aminal) {
+    aminal.energy = contract.getEnergy(event.params.aminalId);
+    aminal.totalLove = contract.getAminalLoveTotal(event.params.aminalId);
+
+    aminal.save();
+  }
 
   entity.save();
 }
