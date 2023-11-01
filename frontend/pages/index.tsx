@@ -14,11 +14,14 @@ const Home: NextPage = () => {
         <link href="/favicon.ico" rel="icon" />
       </Head>
       <Layout>
-        {isLoadingAminals || !aminals
-          ? 'Loading...'
-          : aminals.map((aminal) => (
-              <AminalCard key={aminal.aminalId} aminal={aminal} />
-            ))}
+        {/* VerticalStack with spacing */}
+        <div className="flex flex-col gap-4">
+          {isLoadingAminals || !aminals
+            ? 'Loading...'
+            : aminals.map((aminal) => (
+                <AminalCard key={aminal.aminalId} aminal={aminal} />
+              ))}
+        </div>
       </Layout>
     </div>
   );
