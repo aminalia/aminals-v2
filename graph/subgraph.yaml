@@ -44,3 +44,36 @@ dataSources:
         - event: Squeak(indexed uint256,uint256,uint256)
           handler: handleSqueak
       file: ./src/aminals.ts
+  - kind: ethereum
+    name: Auction
+    network: sepolia
+    source:
+      address: "0xA9F8235E8f0eA349600B15dCC6d18C7096e1F4B7"
+      abi: Auction
+      startBlock: 04597069
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Auction
+        - EndAuction
+        - StartAuction
+        - RemoveVisual
+        - ProposeVisual
+        - VistualsVote
+      abis:
+        - name: Auction
+          file: ./abis/Auction.json
+      eventHandlers:
+        - event: EndAuction(indexed uint256,indexed uint256,indexed uint256,uint256[8])
+          handler: handleEndAuction
+        - event: ProposeVisual(indexed uint256,address,uint256,uint8)
+          handler: handleProposeVisual
+        - event: RemoveVisual(indexed uint256,address,uint256,uint8)
+          handler: handleRemoveVisual
+        - event: StartAuction(indexed uint256,indexed uint256,indexed uint256,uint256,uint256[8][10])
+          handler: handleStartAuction
+        - event: VisualsVote(indexed uint256,uint256,address,uint8,uint256,uint256)
+          handler: handleVisualsVote
+      file: ./src/auction.ts
