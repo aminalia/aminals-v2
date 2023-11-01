@@ -20,10 +20,16 @@ export default function Header() {
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink
+              asChild
               className={navigationMenuTriggerStyle()}
-              href="/auctions"
             >
-              Auctions
+              <Link href="/auctions">Auctions</Link>
+            </NavigationMenuLink>
+            <NavigationMenuLink
+              asChild
+              className={navigationMenuTriggerStyle()}
+            >
+              <Link href="/visuals">Visuals</Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>

@@ -1,6 +1,7 @@
 import {
   Card,
   CardContent,
+  CardFooter,
   CardHeader,
   CardMedia,
   CardSection,
@@ -9,7 +10,6 @@ import {
 import { Aminal } from '../../.graphclient';
 
 export default function AminalCard({ aminal }: { aminal: Aminal }) {
-  console.log(aminal.aminalId);
   return (
     <Card>
       <CardMedia>
@@ -21,14 +21,12 @@ export default function AminalCard({ aminal }: { aminal: Aminal }) {
           {/* <CardDescription>{aminal.name}</CardDescription> */}
         </CardHeader>
         <CardContent>
-          Love: {aminal.totalLove}
+          Love: {aminal.totalLove / 1e18}
           <br />
-          Energy: {aminal.energy}
+          Energy: {aminal.energy / 1e18}
           <br />
         </CardContent>
-        {/* <CardFooter>
-          <p>Card Footer</p>
-        </CardFooter> */}
+        <CardFooter></CardFooter>
       </CardSection>
     </Card>
   );

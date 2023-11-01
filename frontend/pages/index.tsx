@@ -5,7 +5,7 @@ import Head from 'next/head';
 import styles from '../styles/index.module.css';
 import { Layout } from './_layout';
 
-const Home: NextPage = () => {
+const HomePage: NextPage = () => {
   const { data: aminals, isLoading: isLoadingAminals } = useAminals();
   return (
     <div className={styles.container}>
@@ -27,4 +27,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default HomePage;
