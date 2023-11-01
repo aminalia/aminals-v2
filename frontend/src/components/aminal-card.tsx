@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Aminal } from '../../.graphclient';
+import FeedButton from './actions/feed-button';
 
 export default function AminalCard({ aminal }: { aminal: Aminal }) {
   return (
@@ -26,7 +27,9 @@ export default function AminalCard({ aminal }: { aminal: Aminal }) {
           Energy: {aminal.energy / 1e18}
           <br />
         </CardContent>
-        <CardFooter></CardFooter>
+        <CardFooter>
+          <FeedButton id={aminal.aminalId} />
+        </CardFooter>
       </CardSection>
     </Card>
   );

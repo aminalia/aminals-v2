@@ -6,30 +6,26 @@ import {
 import '@rainbow-me/rainbowkit/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { AppProps } from 'next/app';
-import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import {
-  arbitrum,
-  base,
-  goerli,
-  mainnet,
-  optimism,
-  polygon,
-  zora,
-} from 'wagmi/chains';
+import { configureChains, createConfig, sepolia, WagmiConfig } from 'wagmi';
+import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import '../styles/globals.css';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
-    mainnet,
-    polygon,
-    optimism,
-    arbitrum,
-    base,
-    zora,
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [goerli] : []),
+    sepolia,
+    // mainnet,
+    // polygon,
+    // optimism,
+    // arbitrum,
+    // base,
+    // zora,
+    // ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [goerli] : []),
   ],
-  [publicProvider()]
+  [
+    alchemyProvider({ apiKey: 't8GGQoBW57gYEg8G3MxR5yObhP7XXpoJ' }),
+    publicProvider(),
+  ]
 );
 
 const { connectors } = getDefaultWallets({
