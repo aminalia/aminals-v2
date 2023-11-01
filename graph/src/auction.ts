@@ -1,5 +1,5 @@
+import { Bytes } from "@graphprotocol/graph-ts";
 import {
-  Auction,
   EndAuction as EndAuctionEvent,
   Initialized as InitializedEvent,
   OwnershipTransferred as OwnershipTransferredEvent,
@@ -9,6 +9,7 @@ import {
   VisualsVote as VisualsVoteEvent
 } from "../generated/Auction/Auction";
 import {
+  Auction,
   EndAuction,
   ProposeVisual,
   RemoveVisual,
@@ -33,9 +34,7 @@ export function handleEndAuction(event: EndAuctionEvent): void {
 }
 
 export function handleProposeVisual(event: ProposeVisualEvent): void {
-  let entity = new ProposeVisual(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
+  let entity = new ProposeVisual(Bytes.fromI32(event.params.visualId.toI32()));
   entity.auctionId = event.params.auctionId;
   entity.sender = event.params.sender;
   entity.visualId = event.params.visualId;
@@ -77,6 +76,16 @@ export function handleStartAuction(event: StartAuctionEvent): void {
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
   entity.transactionHash = event.transaction.hash;
+
+  // TODO fix when a new contract is deployed, there was a bug in the previously deployed
+  // contract where aminoIdOne is the auctionId
+  // let auction = new Auction(Bytes.fromI32(event.params.auctionId.toI32()));
+  let auction = new Auction(Bytes.fromI32(event.params.aminalIdOne.toI32()));
+  // TODO fix (see above)
+  auction.auctionId = event.params.aminalIdOne;
+  auction.aminalIdOne = event.params.aminalIdTwo;
+  auction.aminalIdTwo = event.params.childAminalId;
+  auction.childAminalId = event.params.aminalIdOne;
 
   entity.save();
 }
