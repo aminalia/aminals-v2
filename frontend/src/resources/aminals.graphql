@@ -1,0 +1,10 @@
+query AminalsList($first: Int = 100, $skip: Int = 0) {
+  aminals(first: $first, skip: $skip) {
+    aminalId
+    mom
+    dad
+    tokenUri
+    energy
+    totalLove
+  }
+}

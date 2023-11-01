@@ -1,33 +1,56 @@
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardMedia,
   CardSection,
   CardTitle,
 } from '@/components/ui/card';
-import type { Aminal } from '@/hooks/resources/aminals';
+import { Aminal } from '../../.graphclient';
 
 export default function AminalCard({ aminal }: { aminal: Aminal }) {
+  console.log(aminal.aminalId);
   return (
     <Card>
       <CardMedia>
-        <span className="text-gray-400">Here be aminal image</span>
+        <TokenUriImage tokenUri={aminal.tokenUri} />
       </CardMedia>
       <CardSection>
         <CardHeader>
-          <CardTitle>Aminal #{aminal.id}</CardTitle>
-          <CardDescription>{aminal.name}</CardDescription>
+          <CardTitle>Aminal #{aminal.aminalId}</CardTitle>
+          {/* <CardDescription>{aminal.name}</CardDescription> */}
         </CardHeader>
         <CardContent>
-          <p>Card Content</p>
+          Love: {aminal.totalLove}
+          <br />
+          Energy: {aminal.energy}
+          <br />
         </CardContent>
-        <CardFooter>
+        {/* <CardFooter>
           <p>Card Footer</p>
-        </CardFooter>
+        </CardFooter> */}
       </CardSection>
     </Card>
   );
+}
+
+function TokenUriImage({ tokenUri }: { tokenUri: string }) {
+  let image,
+    error = null;
+  try {
+    const base64Payload = tokenUri.split(',')[1];
+    const decodedJsonString = atob(base64Payload);
+
+    // 2. Parse the JSON and extract the "image" field.
+    const json = JSON.parse(decodedJsonString);
+
+    // 3. Render the image.
+    image = json.image;
+  } catch (e) {
+    error = e;
+  }
+  if (error || !image) {
+    return <span className="text-gray-400">Unable to load image</span>;
+  }
+  return <img src={image} alt="Aminal" />;
 }

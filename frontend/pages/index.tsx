@@ -1,13 +1,12 @@
 import AminalCard from '@/components/aminal-card';
-import { useAminals } from '@/hooks/resources/aminals';
+import { useAminals } from '@/resources/aminals';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import styles from '../styles/index.module.css';
 import { Layout } from './_layout';
 
 const Home: NextPage = () => {
-  const { aminals, isLoading: isLoadingAminals } = useAminals();
-
+  const { data: aminals, isLoading: isLoadingAminals } = useAminals();
   return (
     <div className={styles.container}>
       <Head>
@@ -15,10 +14,10 @@ const Home: NextPage = () => {
         <link href="/favicon.ico" rel="icon" />
       </Head>
       <Layout>
-        {isLoadingAminals
+        {isLoadingAminals || !aminals
           ? 'Loading...'
           : aminals.map((aminal) => (
-              <AminalCard key={aminal.id} aminal={aminal} />
+              <AminalCard key={aminal.aminalId} aminal={aminal} />
             ))}
       </Layout>
     </div>
