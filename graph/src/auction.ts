@@ -1,4 +1,4 @@
-import { BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { BigInt, Bytes, log } from "@graphprotocol/graph-ts";
 import { Aminals as AminalsContract } from "../generated/Aminals/Aminals";
 import {
   EndAuction as EndAuctionEvent,
@@ -72,10 +72,17 @@ export function handleProposeVisual(event: ProposeVisualEvent): void {
     visual.catEnum = event.params.catEnum;
     visual.loveVote = BigInt.fromI32(0);
     visual.removed = false;
-    visual.svg = contract.getVisuals(
+    // TODO getVisuals is not working : (
+    let callResult = contract.try_getVisuals(
       BigInt.fromI32(event.params.catEnum),
       event.params.visualId
     );
+    if (callResult.reverted) {
+      visual.svg = "";
+      log.info("getVisuals reverted", []);
+    } else {
+      visual.svg = callResult.value;
+    }
 
     visual.save();
   }
