@@ -61,6 +61,7 @@ dataSources:
         - StartAuction
         - RemoveVisual
         - ProposeVisual
+        - Visual
         - VistualsVote
       abis:
         - name: Auction

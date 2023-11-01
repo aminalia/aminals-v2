@@ -99,6 +99,7 @@ type Auction @entity {
   aminalIdOne: BigInt! # uint256
   aminalIdTwo: BigInt! # uint256
   childAminalId: BigInt! # uint256
+  finished: Boolean!
 }
 
 type EndAuction @entity(immutable: true) {
@@ -112,7 +113,18 @@ type EndAuction @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type ProposeVisual @entity(immutable: true) {
+type Visual @entity {
+  id: Bytes!
+  auctionId: BigInt! # uint256
+  proposer: Bytes! # address
+  visualId: BigInt! # uint256
+  catEnum: Int! # uint8
+  svg: String!
+  loveVote: BigInt! # uint256
+  removed: Boolean!
+}
+
+type ProposeVisual @entity {
   id: Bytes!
   auctionId: BigInt! # uint256
   sender: Bytes! # address
@@ -123,7 +135,7 @@ type ProposeVisual @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type RemoveVisual @entity(immutable: true) {
+type RemoveVisual @entity {
   id: Bytes!
   auctionId: BigInt! # uint256
   sender: Bytes! # address
@@ -140,7 +152,7 @@ type StartAuction @entity(immutable: true) {
   aminalIdTwo: BigInt! # uint256
   childAminalId: BigInt! # uint256
   totalLove: BigInt! # uint256
-  visualIds: [[BigInt!]!]! # uint256[8][10]
+  # visualIds: [[BigInt!]!]! # uint256[8][10]
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

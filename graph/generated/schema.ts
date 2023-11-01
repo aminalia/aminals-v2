@@ -1268,6 +1268,19 @@ export class Auction extends Entity {
   set childAminalId(value: BigInt) {
     this.set("childAminalId", Value.fromBigInt(value));
   }
+
+  get finished(): boolean {
+    let value = this.get("finished");
+    if (!value || value.kind == ValueKind.NULL) {
+      return false;
+    } else {
+      return value.toBoolean();
+    }
+  }
+
+  set finished(value: boolean) {
+    this.set("finished", Value.fromBoolean(value));
+  }
 }
 
 export class EndAuction extends Entity {
@@ -1402,6 +1415,139 @@ export class EndAuction extends Entity {
 
   set transactionHash(value: Bytes) {
     this.set("transactionHash", Value.fromBytes(value));
+  }
+}
+
+export class Visual extends Entity {
+  constructor(id: Bytes) {
+    super();
+    this.set("id", Value.fromBytes(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Visual entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.BYTES,
+        `Entities of type Visual must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Visual", id.toBytes().toHexString(), this);
+    }
+  }
+
+  static loadInBlock(id: Bytes): Visual | null {
+    return changetype<Visual | null>(
+      store.get_in_block("Visual", id.toHexString())
+    );
+  }
+
+  static load(id: Bytes): Visual | null {
+    return changetype<Visual | null>(store.get("Visual", id.toHexString()));
+  }
+
+  get id(): Bytes {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set id(value: Bytes) {
+    this.set("id", Value.fromBytes(value));
+  }
+
+  get auctionId(): BigInt {
+    let value = this.get("auctionId");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set auctionId(value: BigInt) {
+    this.set("auctionId", Value.fromBigInt(value));
+  }
+
+  get proposer(): Bytes {
+    let value = this.get("proposer");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set proposer(value: Bytes) {
+    this.set("proposer", Value.fromBytes(value));
+  }
+
+  get visualId(): BigInt {
+    let value = this.get("visualId");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set visualId(value: BigInt) {
+    this.set("visualId", Value.fromBigInt(value));
+  }
+
+  get catEnum(): i32 {
+    let value = this.get("catEnum");
+    if (!value || value.kind == ValueKind.NULL) {
+      return 0;
+    } else {
+      return value.toI32();
+    }
+  }
+
+  set catEnum(value: i32) {
+    this.set("catEnum", Value.fromI32(value));
+  }
+
+  get svg(): string {
+    let value = this.get("svg");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set svg(value: string) {
+    this.set("svg", Value.fromString(value));
+  }
+
+  get loveVote(): BigInt {
+    let value = this.get("loveVote");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set loveVote(value: BigInt) {
+    this.set("loveVote", Value.fromBigInt(value));
+  }
+
+  get removed(): boolean {
+    let value = this.get("removed");
+    if (!value || value.kind == ValueKind.NULL) {
+      return false;
+    } else {
+      return value.toBoolean();
+    }
+  }
+
+  set removed(value: boolean) {
+    this.set("removed", Value.fromBoolean(value));
   }
 }
 
@@ -1768,19 +1914,6 @@ export class StartAuction extends Entity {
 
   set totalLove(value: BigInt) {
     this.set("totalLove", Value.fromBigInt(value));
-  }
-
-  get visualIds(): Array<Array<BigInt>> {
-    let value = this.get("visualIds");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toStringArray();
-    }
-  }
-
-  set visualIds(value: Array<Array<BigInt>>) {
-    this.set("visualIds", Value.fromBigIntMatrix(value));
   }
 
   get blockNumber(): BigInt {
