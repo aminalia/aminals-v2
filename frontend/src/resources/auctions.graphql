@@ -1,0 +1,14 @@
+query AuctionsList($first: Int = 100, $skip: Int = 0) {
+  auctions(
+    first: $first
+    skip: $skip
+    orderBy: auctionId
+    orderDirection: desc
+  ) {
+    auctionId
+    aminalIdOne
+    aminalIdTwo
+    childAminalId
+    finished
+  }
+}
