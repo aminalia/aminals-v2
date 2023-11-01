@@ -1,4 +1,4 @@
-type Aminal @entity(immutable: true) {
+type Aminal @entity {
   id: Bytes!
   aminalId: BigInt! # uint256
   mom: BigInt! # uint256
@@ -39,23 +39,6 @@ type FeedAminal @entity(immutable: true) {
   love: BigInt! # uint256
   totalLove: BigInt! # uint256
   energy: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Initialized @entity(immutable: true) {
-  id: Bytes!
-  version: Int! # uint8
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type OwnershipTransferred @entity(immutable: true) {
-  id: Bytes!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

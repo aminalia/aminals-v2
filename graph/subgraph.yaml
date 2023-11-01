@@ -16,8 +16,6 @@ dataSources:
       entities:
         - BreedAminal
         - FeedAminal
-        - Initialized
-        - OwnershipTransferred
         - SkillProposal
         - Skills
         - SkillVote
@@ -33,10 +31,6 @@ dataSources:
           handler: handleBreedAminal
         - event: FeedAminal(indexed uint256,address,uint256,uint256,uint256,uint256)
           handler: handleFeedAminal
-        - event: Initialized(uint8)
-          handler: handleInitialized
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
         - event: RemoveSkillProposal(indexed uint256,uint256,address,address)
           handler: handleRemoveSkillProposal
         - event: SkillAdded(indexed uint256,address)
