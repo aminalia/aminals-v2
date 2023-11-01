@@ -40,11 +40,7 @@ function TokenUriImage({ tokenUri }: { tokenUri: string }) {
   try {
     const base64Payload = tokenUri.split(',')[1];
     const decodedJsonString = atob(base64Payload);
-
-    // 2. Parse the JSON and extract the "image" field.
     const json = JSON.parse(decodedJsonString);
-
-    // 3. Render the image.
     image = json.image;
   } catch (e) {
     error = e;
