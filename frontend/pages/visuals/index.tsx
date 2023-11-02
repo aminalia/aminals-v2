@@ -1,6 +1,6 @@
 import { useVisuals } from '@/resources/visuals';
 import type { NextPage } from 'next';
-import { Layout } from '../_layout';
+import Layout from '../_layout';
 
 const VisualsPage: NextPage = () => {
   const { data: visuals, isLoading: isLoadingVisuals } = useVisuals();

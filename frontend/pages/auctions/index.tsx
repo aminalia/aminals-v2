@@ -1,7 +1,7 @@
 import { useAuctions } from '@/resources/auctions';
 import type { NextPage } from 'next';
 import Link from 'next/link';
-import { Layout } from '../_layout';
+import Layout from '../_layout';
 
 const AuctionsPage: NextPage = () => {
   const { data: auctions, isLoading: isLoadingAuctions } = useAuctions();
@@ -11,7 +11,7 @@ const AuctionsPage: NextPage = () => {
         {isLoadingAuctions || !auctions
           ? 'Loading...'
           : auctions.map((auction) => (
-              <div>
+              <div key={auction.auctionId}>
                 <Link href={`/auctions/${auction.auctionId}`}>
                   Auction {auction.auctionId}
                 </Link>{' '}

@@ -1,7 +1,7 @@
 import { useAuction, useAuctionProposeVisuals } from '@/resources/auctions';
 import type { NextPage } from 'next';
 import { useParams } from 'next/navigation';
-import { Layout } from '../_layout';
+import Layout from '../_layout';
 
 const AuctionPage: NextPage = () => {
   const params = useParams();
@@ -17,7 +17,7 @@ const AuctionPage: NextPage = () => {
         <h3>Proposals</h3>
         <div className="flex flex-col gap-4">
           {proposeVisuals?.map((proposeVisual) => (
-            <div>
+            <div key={proposeVisual.visualId}>
               Proposal visualId {proposeVisual.visualId} by{' '}
               {proposeVisual.sender}
             </div>
