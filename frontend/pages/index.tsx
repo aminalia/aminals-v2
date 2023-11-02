@@ -3,7 +3,7 @@ import { useAminals } from '@/resources/aminals';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import styles from '../styles/index.module.css';
-import { Layout } from './_layout';
+import Layout from './_layout';
 
 const HomePage: NextPage = () => {
   const { data: aminals, isLoading: isLoadingAminals } = useAminals();
