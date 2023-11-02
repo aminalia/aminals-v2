@@ -41,7 +41,6 @@ jobs:
         with:
           node-version: 18
       - run: npm install
-      - run: npm run graphclient:build
       - run: npm run lint
 
   typecheck:
@@ -71,5 +70,4 @@ jobs:
         with:
           node-version: 18
       - run: npm install
-      - run: npm run graphclient:build
       - run: npm run prettier
