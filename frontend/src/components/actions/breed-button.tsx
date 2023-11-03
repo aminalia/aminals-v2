@@ -6,9 +6,7 @@ import {
   usePrepareContractWrite,
 } from 'wagmi';
 
-import {
-  useState
-} from 'react';
+import { useState } from 'react';
 
 import contract from '../../../deployments/Aminals.json';
 
@@ -33,7 +31,8 @@ export default function BreedButton({ id1 }: { id1: string }) {
       value: BigInt(0.01 * 1e18),
     });
 
-  const { data: breedData, write: breedWith } = useContractWrite(contractWriteConfig);
+  const { data: breedData, write: breedWith } =
+    useContractWrite(contractWriteConfig);
 
   async function action() {
     if (enabled) {
@@ -43,23 +42,25 @@ export default function BreedButton({ id1 }: { id1: string }) {
 
   const handleBreedWithIdChange = (event: any) => {
     setBreedWithId(event.target.value);
-  }
+  };
 
   return (
-
     <div>
-      <br/>
+      <br />
 
-  <input placeholder="ID of the mate" onChange={ handleBreedWithIdChange }></input>
+      <input
+        placeholder="ID of the mate"
+        onChange={handleBreedWithIdChange}
+      ></input>
 
-    <button
-      type="button"
-      onClick={action}
-      disabled={!enabled}
-      className={enabled ? '' : 'text-neutral-400'}
-    >
-      Breed
-    </button>
+      <button
+        type="button"
+        onClick={action}
+        disabled={!enabled}
+        className={enabled ? '' : 'text-neutral-400'}
+      >
+        Breed
+      </button>
     </div>
   );
 }

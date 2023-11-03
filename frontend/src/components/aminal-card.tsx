@@ -8,8 +8,8 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Aminal } from '../../.graphclient';
-import FeedButton from './actions/feed-button';
 import BreedButton from './actions/breed-button';
+import FeedButton from './actions/feed-button';
 
 export default function AminalCard({ aminal }: { aminal: Aminal }) {
   return (
@@ -29,13 +29,11 @@ export default function AminalCard({ aminal }: { aminal: Aminal }) {
               <br />
               Energy: {aminal.energy / 1e18}
             </td>
-            <td>
-              Breedable with: ??
-            </td>
+            <td>Breedable with: ??</td>
           </table>
         </CardContent>
         <CardFooter>
-          <FeedButton id={aminal.aminalId} /> 
+          <FeedButton id={aminal.aminalId} />
           <BreedButton id1={aminal.aminalId} />
         </CardFooter>
       </CardSection>
