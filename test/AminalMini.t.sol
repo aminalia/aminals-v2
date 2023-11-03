@@ -81,11 +81,11 @@ contract AminalMiniTest is BaseTest {
         console.log("Feeding the aminal");
         vm.expectRevert(IAminal.NotEnoughEther.selector);
         console.log(uint256(aminals.feed(1)));
-        console.log(aminals.feed{value: 0.01 ether}(1));
-        console.log(aminals.feed{value: 0.01 ether}(2));
+        console.log(aminals.feed{value: 0.001 ether}(1));
+        console.log(aminals.feed{value: 0.001 ether}(2));
         // Check if aminal does not exist
         vm.expectRevert(IAminal.AminalDoesNotExist.selector);
-        console.log(aminals.feed{value: 0.01 ether}(10));
+        console.log(aminals.feed{value: 0.001 ether}(10));
     }
 
     function breedAminals() public {
@@ -93,8 +93,8 @@ contract AminalMiniTest is BaseTest {
         vm.prank(owner);
         console.log("Breeding the aminal");
 
-        aminals.breedWith{value: 0.01 ether}(1, 2);
-        aminals.breedWith{value: 0.01 ether}(2, 1);
+        aminals.breedWith{value: 0.001 ether}(1, 2);
+        aminals.breedWith{value: 0.001 ether}(2, 1);
     }
 
     function endAuction() public {
