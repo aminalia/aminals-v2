@@ -31,7 +31,7 @@ type BreedAminal @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type FeedAminal @entity(immutable: true) {
+type FeedAminal @entity {
   id: Bytes!
   aminalId: BigInt! # uint256
   sender: Bytes! # address
@@ -44,7 +44,7 @@ type FeedAminal @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type Skills @entity(immutable: true) {
+type Skills @entity {
   id: Bytes!
   aminalId: BigInt! # uint256
   skillAddress: Bytes! # address
