@@ -181,7 +181,7 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         return auctionCnt;
     }
 
-    // Proposes a new visual traight, only callable if the auction is running.
+    // Proposes a new visual trait, only callable if the auction is running.
     //
     // Anyone can propose new visuals, but the cost depends on how much they
     // love you in order to avoid ppl from spamming the available slots.abi
