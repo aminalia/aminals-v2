@@ -13,7 +13,7 @@ contract FeedAminal is Script {
         Aminals aminals = Aminals(0x24BEd8962601Caa39e51F02bdC0251Ae51FF0d70);
 
         for (uint256 i = 1; i <= 2; i++) {
-            aminals.feed{value: 0.01 ether}(i);
+            aminals.feed{value: 0.001 ether}(i);
 
             console.log(
                 "Aminal love by ID by user: ",

@@ -20,8 +20,8 @@ contract BreedAminal is Script {
             console.log("Aminal love total : ", aminals.getAminalLoveTotal(i));
         }
 
-        aminals.breedWith{value: 0.01 ether}(1, 2);
-        aminals.breedWith{value: 0.01 ether}(2, 1);
+        aminals.breedWith{value: 0.001 ether}(1, 2);
+        aminals.breedWith{value: 0.001 ether}(2, 1);
 
         vm.stopBroadcast();
     }
