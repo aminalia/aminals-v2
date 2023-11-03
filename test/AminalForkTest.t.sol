@@ -21,7 +21,7 @@ contract AminalForkTest is Test {
         vm.rollFork(4_597_442);
     }
 
-    function testRenderer() public {
+    function test_Renderer() public {
         aminals.tokenURI(3);
         aminals.tokenURI(4);
     }
