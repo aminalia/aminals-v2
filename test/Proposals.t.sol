@@ -40,6 +40,7 @@ contract ProposalsTest is BaseTest {
         public
         returns (uint256 proposalId)
     {
+        vm.prank(address(aminals));
         proposalId = proposals.proposeAddSkill(aminalID, _skillName, _skillAddress);
     }
 
@@ -47,6 +48,7 @@ contract ProposalsTest is BaseTest {
         public
         returns (uint256 proposalId)
     {
+        vm.prank(address(aminals));
         proposalId = proposals.proposeRemoveSkill(aminalID, _description, _skillAddress);
     }
 

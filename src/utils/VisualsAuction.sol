@@ -26,6 +26,31 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         MISC
     }
 
+    event StartAuction(
+        uint256 indexed aminalIdOne,
+        uint256 indexed aminalIdTwo,
+        uint256 indexed childAminalId,
+        uint256 totalLove,
+        uint256[8][10] visualIds
+    );
+
+    event EndAuction(
+        uint256 indexed aminalIdOne, uint256 indexed aminalIdTwo, uint256 indexed childAminalId, uint256[8] winningIds
+    );
+
+    event ProposeVisual(uint256 indexed auctionId, address sender, uint256 visualId, VisualsCat catEnum);
+
+    event RemoveVisual(uint256 indexed auctionId, address sender, uint256 visualId, VisualsCat catEnum);
+
+    event VisualsVote(
+        uint256 indexed auctionId,
+        uint256 visualId,
+        address sender,
+        VisualsCat catEnum,
+        uint256 userLoveVote,
+        uint256 totalLove
+    );
+
     constructor(address _generatornessSourceContract, address _generatornessSourceBalance) {
         require(_generatornessSourceContract != address(0), "Invalid generator source contract");
         require(_generatornessSourceBalance != address(0), "Invalid generator source balance");
@@ -79,7 +104,6 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
     }
 
     // Starts a new auction for the pregnancy of two Aminals, returns the auction id
-    // TODO emit events
     function startAuction(uint256 aminalIdOne, uint256 aminalIdTwo) public _onlyAminals returns (uint256) {
         Visuals memory visualsOne;
         Visuals memory visualsTwo;
@@ -139,6 +163,8 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         console.log("Auction cnt ==", auctionCnt);
         console.log("VisualIds[0[0]] == ", auction.visualIds[0][0]);
 
+        emit StartAuction(auctionCnt, aminalIdOne, aminalIdTwo, auction.totalLove, auction.visualIds);
+
         return auctionCnt;
     }
 
@@ -178,6 +204,8 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
                 break;
             }
         }
+
+        emit ProposeVisual(auctionId, msg.sender, visualId, catEnum);
     }
 
     function voteVisual(uint256 auctionId, VisualsCat catEnum, uint256 id) public payable _auctionRunning(auctionId) {
@@ -185,8 +213,8 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
 
         Auction storage auction = auctions[auctionId];
 
-        uint256 totallove = aminals.getAminalLoveByIdByUser(auction.aminalIdOne, msg.sender)
-            + aminals.getAminalLoveByIdByUser(auction.aminalIdTwo, msg.sender);
+        uint256 userlove = aminals.getAminalLoveByIdByUser(auction.aminalIdOne, msg.sender);
+        uint256 totallove = userlove + aminals.getAminalLoveByIdByUser(auction.aminalIdTwo, msg.sender);
 
         require(
             visualVoted[msg.sender][auctionId][category] < totallove, "Already consumed all of your love with votes"
@@ -196,7 +224,7 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         // console.log(" == with weight = ", totallove, " .  on auctionId = ", auctionId);
 
         // find the index for the submitted Visual ID
-        uint256 k = 0;
+        uint256 k = 10;
         for (uint256 i = 0; i < 10; i++) {
             if (auction.visualIds[i][category] == id) {
                 k = i;
@@ -204,8 +232,14 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
             }
         }
 
+        console.log("*************************************************** K = ", k);
+
+        require(k < 10, "Cannot vote on a trait that is not part of the auction");
+
         auction.visualIdVotes[k][category] += (totallove);
         visualVoted[msg.sender][auctionId][category] = totallove;
+
+        emit VisualsVote(auctionId, id, msg.sender, catEnum, userlove, totallove);
     }
 
     function removeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId)
@@ -217,8 +251,8 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
 
         Auction storage auction = auctions[auctionId];
 
-        uint256 totallove = aminals.getAminalLoveByIdByUser(auction.aminalIdOne, msg.sender)
-            + aminals.getAminalLoveByIdByUser(auction.aminalIdTwo, msg.sender);
+        uint256 userlove = aminals.getAminalLoveByIdByUser(auction.aminalIdOne, msg.sender);
+        uint256 totallove = userlove + aminals.getAminalLoveByIdByUser(auction.aminalIdTwo, msg.sender);
 
         require(totallove > 0, "You need love to remove a trait from the auction");
 
@@ -265,6 +299,8 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
             auction.visualIdVotes[j][category] = 0;
             auction.visualNoVotes[j][category] = 0;
         }
+
+        emit RemoveVisual(auctionId, msg.sender, visualId, catEnum);
     }
 
     // TODO limits on when this can be called?
@@ -332,6 +368,8 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
             auction.winnerId[6],
             auction.winnerId[7]
         );
+
+        emit EndAuction(auction.aminalIdOne, auction.aminalIdTwo, auction.childAminalId, auction.winnerId);
     }
 
     // Called generator and not random to make it clear that this is not a
