@@ -22,13 +22,19 @@ contract AminalScript is Script {
         // The randomness source is a very high volume address on Sepolia. This
         // should be modified for other chains.
         VisualsAuction _visualsAuction =
-            new VisualsAuction(0x24eCe36071BbfFCfA6E0BbE98B76612e06c0220D, 0x635ff8246201f0Ba7dC728672CDFfB769DC1c933);
+        new VisualsAuction(address(vm.envAddress("GENERATOR_SOURCE_CONTRACT")), address(vm.envAddress("GENERATOR_SOURCE_BALANCE")));
         AminalProposals _proposals = new AminalProposals();
 
         Aminals _aminals = new Aminals(
             address(_visualsAuction),
             address(_proposals)
         );
+
+        // TODO these don't seem to persist. : (
+        // Set environment variables for contracts
+        vm.setEnv("AMINALS_CONTRACT", vm.toString(address(_aminals)));
+        vm.setEnv("AMINAL_PROPOSALS_CONTRACT", vm.toString(address(_proposals)));
+        vm.setEnv("VISUALS_AUCTION_CONTRACT", vm.toString(address(_visualsAuction)));
 
         _visualsAuction.setup(address(_aminals));
         _proposals.setup(address(_aminals));

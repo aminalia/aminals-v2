@@ -10,14 +10,17 @@ contract BreedAminal is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        Aminals aminals = Aminals(0xC4956868cB2603E8d13BD064Bb1c53C6b5044a38);
+        Aminals aminals = Aminals(address(vm.envAddress("AMINALS_CONTRACT")));
 
         for (uint256 i = 1; i <= 2; i++) {
+            console.log("~~~~~~~~~~~~~~~");
+            console.log("Aminal ID", i);
             console.log(
-                "Aminal love by ID by user: ",
-                aminals.getAminalLoveByIdByUser(i, 0x1f028f240A90414211425bFa38eB4917Cb32c39C)
+                "Aminal love by ID by user: ", aminals.getAminalLoveByIdByUser(i, address(vm.envAddress("ADDRESS")))
             );
             console.log("Aminal love total : ", aminals.getAminalLoveTotal(i));
+            console.log("Aminal energy total : ", aminals.getEnergy(i));
+            console.log("~~~~~~~~~~~~~~~");
         }
 
         aminals.breedWith{value: 0.01 ether}(1, 2);

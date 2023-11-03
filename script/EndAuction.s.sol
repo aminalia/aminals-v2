@@ -10,13 +10,13 @@ contract EndAuction is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        Aminals aminals = Aminals(0xC4956868cB2603E8d13BD064Bb1c53C6b5044a38);
+        Aminals aminals = Aminals(address(vm.envAddress("AMINALS_CONTRACT")));
+
         VisualsAuction visualsAuction = VisualsAuction(aminals.visualsAuction());
 
         for (uint256 i = 1; i <= 2; i++) {
             console.log(
-                "Aminal love by ID by user: ",
-                aminals.getAminalLoveByIdByUser(i, 0x1f028f240A90414211425bFa38eB4917Cb32c39C)
+                "Aminal love by ID by user: ", aminals.getAminalLoveByIdByUser(i, address(vm.envAddress("ADDRESS")))
             );
             console.log("Aminal love total : ", aminals.getAminalLoveTotal(i));
         }
