@@ -99,7 +99,9 @@ contract AminalScript is Script {
 
         // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.TAIL, tailTraitId);
 
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.MOUTH, 5);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.MOUTH, 0);
+
+        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.MOUTH, 0);
 
         visualsAuction.endAuction(auctionID);
 
