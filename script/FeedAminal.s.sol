@@ -14,7 +14,7 @@ contract FeedAminal is Script {
 
         for (uint256 i = 1; i <= 2; i++) {
             aminals.feed{value: 0.001 ether}(i);
-            
+
             console.log(
                 "Aminal love by ID by user: ", aminals.getAminalLoveByIdByUser(i, address(vm.envAddress("ADDRESS")))
             );
