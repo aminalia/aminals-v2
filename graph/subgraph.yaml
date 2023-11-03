@@ -1,0 +1,82 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Aminals
+    network: sepolia
+    source:
+      address: "0x24BEd8962601Caa39e51F02bdC0251Ae51FF0d70"
+      abi: Aminals
+      startBlock: 04597069
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - BreedAminal
+        - FeedAminal
+        - SkillProposal
+        - Skills
+        - SkillVote
+        - SpawnAminal
+        - Squeak
+      abis:
+        - name: Aminals
+          file: ./abis/Aminals.json
+      eventHandlers:
+        - event: AddSkillProposal(indexed uint256,uint256,string,address,address)
+          handler: handleAddSkillProposal
+        - event: BreedAminal(indexed uint256,indexed uint256,uint256)
+          handler: handleBreedAminal
+        - event: FeedAminal(indexed uint256,address,uint256,uint256,uint256,uint256)
+          handler: handleFeedAminal
+        - event: RemoveSkillProposal(indexed uint256,uint256,address,address)
+          handler: handleRemoveSkillProposal
+        - event: SkillAdded(indexed uint256,address)
+          handler: handleSkillAdded
+        - event: SkillRemoved(indexed uint256,address)
+          handler: handleSkillRemoved
+        - event: SkillVote(indexed uint256,address,uint256,bool)
+          handler: handleSkillVote
+        - event: SpawnAminal(indexed uint256,indexed uint256,indexed uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleSpawnAminal
+        - event: Squeak(indexed uint256,uint256,uint256)
+          handler: handleSqueak
+      file: ./src/aminals.ts
+  - kind: ethereum
+    name: Auction
+    network: sepolia
+    source:
+      address: "0xA9F8235E8f0eA349600B15dCC6d18C7096e1F4B7"
+      abi: Auction
+      startBlock: 04597069
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Auction
+        - EndAuction
+        - StartAuction
+        - RemoveVisual
+        - ProposeVisual
+        - Visual
+        - VistualsVote
+      abis:
+        - name: Auction
+          file: ./abis/Auction.json
+        - name: Aminals
+          file: ./abis/Aminals.json
+      eventHandlers:
+        - event: EndAuction(indexed uint256,indexed uint256,indexed uint256,uint256[8])
+          handler: handleEndAuction
+        - event: ProposeVisual(indexed uint256,address,uint256,uint8)
+          handler: handleProposeVisual
+        - event: RemoveVisual(indexed uint256,address,uint256,uint8)
+          handler: handleRemoveVisual
+        - event: StartAuction(indexed uint256,indexed uint256,indexed uint256,uint256,uint256[8][10])
+          handler: handleStartAuction
+        - event: VisualsVote(indexed uint256,uint256,address,uint8,uint256,uint256)
+          handler: handleVisualsVote
+      file: ./src/auction.ts
