@@ -27,15 +27,19 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
     }
 
     event StartAuction(
+        uint256 indexed auctionId,
         uint256 indexed aminalIdOne,
         uint256 indexed aminalIdTwo,
-        uint256 indexed childAminalId,
         uint256 totalLove,
         uint256[8][10] visualIds
     );
 
     event EndAuction(
-        uint256 indexed aminalIdOne, uint256 indexed aminalIdTwo, uint256 indexed childAminalId, uint256[8] winningIds
+        uint256 indexed auctionId,
+        uint256 aminalIdOne,
+        uint256 aminalIdTwo,
+        uint256 childAminalId,
+        uint256[8] winningIds
     );
 
     event ProposeVisual(uint256 indexed auctionId, address sender, uint256 visualId, VisualsCat catEnum);
@@ -369,7 +373,7 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
             auction.winnerId[7]
         );
 
-        emit EndAuction(auction.aminalIdOne, auction.aminalIdTwo, auction.childAminalId, auction.winnerId);
+        emit EndAuction(auctionId, auction.aminalIdOne, auction.aminalIdTwo, auction.childAminalId, auction.winnerId);
     }
 
     // Called generator and not random to make it clear that this is not a

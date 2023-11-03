@@ -68,8 +68,8 @@ contract AminalScript is Script {
         uint256 miscTraitId = 3;
         uint256 tailTraitId = 3;
 
-        aminals.breedWith{value: 0.01 ether}(1, 2);
-        uint256 auctionID = aminals.breedWith{value: 0.01 ether}(2, 1);
+        aminals.breedWith{value: 0.001 ether}(1, 2);
+        uint256 auctionID = aminals.breedWith{value: 0.001 ether}(2, 1);
 
         // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.FACE, faceTraitId);
 

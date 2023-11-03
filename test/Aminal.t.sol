@@ -91,7 +91,7 @@ contract AminalTest is BaseTest {
         vm.expectRevert(IAminal.NotEnoughEther.selector);
         aminals.squeak(1, 1);
         vm.expectRevert("Not enough love");
-        aminals.squeak{value: 0.01 ether}(1, 1);
+        aminals.squeak{value: 0.001 ether}(1, 1);
     }
 
     function feed() public {
@@ -100,8 +100,8 @@ contract AminalTest is BaseTest {
         console.log("Feeding the aminal");
         vm.expectRevert(IAminal.NotEnoughEther.selector);
         console.log(uint256(aminals.feed(1)));
-        console.log(aminals.feed{value: 0.01 ether}(1));
-        console.log(aminals.feed{value: 0.01 ether}(1));
+        console.log(aminals.feed{value: 0.001 ether}(1));
+        console.log(aminals.feed{value: 0.001 ether}(1));
         console.log(aminals.feed{value: 0.03 ether}(1));
         console.log(aminals.feed{value: 0.02 ether}(1));
         console.log(aminals.feed{value: 0.08 ether}(1));
@@ -150,7 +150,7 @@ contract AminalTest is BaseTest {
         uint256 id10 = aminals.addBody("body11");
 
         vm.expectRevert("Not enough ether to propose a new Visual");
-        visualsAuction.proposeVisual{value: 0.01 ether}(auctionID, VisualsAuction.VisualsCat.FACE, id1);
+        visualsAuction.proposeVisual{value: 0.001 ether}(auctionID, VisualsAuction.VisualsCat.FACE, id1);
         visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id2);
         // Test making a bunch of proposals
         visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id3);
@@ -289,12 +289,12 @@ contract AminalTest is BaseTest {
         //     [FAIL. Reason: Call reverted as expected, but without data] test_Run() (gas: 5448636)
 
         //  vm.expectRevert("Calling the skill fails because addSkill did not pass with enough love");
-        //  aminals.callSkill{value: 0.01 ether}(1, address(mover), data);
+        //  aminals.callSkill{value: 0.001 ether}(1, address(mover), data);
 
         vm.prank(owner);
         aminals.voteSkill(1, proposalId, true); // now the Skill should be approved
 
-        aminals.callSkill{value: 0.01 ether}(1, address(mover), data);
+        aminals.callSkill{value: 0.001 ether}(1, address(mover), data);
 
         (x, y) = mover.getCoords(1);
         console.log("x = ", x, " y = ", y);
@@ -324,6 +324,6 @@ contract AminalTest is BaseTest {
 
         // Skill can now not be called
         vm.expectRevert("Skill does not exist");
-        aminals.callSkill{value: 0.01 ether}(1, address(mover), data);
+        aminals.callSkill{value: 0.001 ether}(1, address(mover), data);
     }
 }

@@ -181,7 +181,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
 
     function feed(uint256 aminalId) public payable returns (uint256) {
         // Check if enough Ether was sent
-        if (msg.value < 0.01 ether) revert NotEnoughEther();
+        if (msg.value < 0.001 ether) revert NotEnoughEther();
 
         // Check if the aminal actaually exists so people can't pre-feed aminals
         Aminal storage animal = aminals[aminalId];
@@ -247,7 +247,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
     }
 
     function breedWith(uint256 aminalIdOne, uint256 aminalIdTwo) public payable returns (uint256 ret) {
-        require(msg.value >= 0.01 ether, "Not enough ether");
+        require(msg.value >= 0.001 ether, "Not enough ether");
 
         Aminal storage aminalOne = aminals[aminalIdOne];
         Aminal storage aminalTwo = aminals[aminalIdTwo];
@@ -289,7 +289,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
     // TODO: Allow users to specify the number of squeaks
     function squeak(uint256 aminalId, uint256 amount) public payable {
         console.log("here... with msg.value == ", msg.value);
-        if (msg.value < 0.01 ether) revert NotEnoughEther();
+        if (msg.value < 0.001 ether) revert NotEnoughEther();
 
         Aminal storage aminal = aminals[aminalId];
 

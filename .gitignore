@@ -15,3 +15,7 @@ docs/
 
 # Ignore forge coverage report
 lcov.info
+
+# Node.js
+node_modules
+build
