@@ -1,0 +1,172 @@
+type Aminal @entity {
+  id: Bytes!
+  aminalId: BigInt! # uint256
+  mom: BigInt! # uint256
+  dad: BigInt! # uint256
+  tokenUri: String! # string
+  energy: BigInt! # uint256
+  totalLove: BigInt! # uint256
+}
+
+type SkillProposal @entity(immutable: true) {
+  id: Bytes!
+  aminalId: BigInt! # uint256
+  proposalId: BigInt! # uint256
+  skillName: String! # string
+  skillAddress: Bytes! # address
+  sender: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+  removed: Boolean!
+}
+
+type BreedAminal @entity(immutable: true) {
+  id: Bytes!
+  aminalOne: BigInt! # uint256
+  aminalTwo: BigInt! # uint256
+  auctionId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type FeedAminal @entity(immutable: true) {
+  id: Bytes!
+  aminalId: BigInt! # uint256
+  sender: Bytes! # address
+  amount: BigInt! # uint256
+  love: BigInt! # uint256
+  totalLove: BigInt! # uint256
+  energy: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Skills @entity(immutable: true) {
+  id: Bytes!
+  aminalId: BigInt! # uint256
+  skillAddress: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+  removed: Boolean!
+}
+
+type SkillVote @entity(immutable: true) {
+  id: Bytes!
+  aminalId: BigInt! # uint256
+  sender: Bytes! # address
+  proposalId: BigInt! # uint256
+  yesNo: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SpawnAminal @entity(immutable: true) {
+  id: Bytes!
+  aminalId: BigInt! # uint256
+  mom: BigInt! # uint256
+  dad: BigInt! # uint256
+  backId: BigInt! # uint256
+  armId: BigInt! # uint256
+  tailId: BigInt! # uint256
+  earsId: BigInt! # uint256
+  bodyId: BigInt! # uint256
+  faceId: BigInt! # uint256
+  mouthId: BigInt! # uint256
+  miscId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Squeak @entity(immutable: true) {
+  id: Bytes!
+  aminalId: BigInt! # uint256
+  amount: BigInt! # uint256
+  energy: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Auction @entity {
+  id: Bytes!
+  auctionId: BigInt! # uint256
+  aminalIdOne: BigInt! # uint256
+  aminalIdTwo: BigInt! # uint256
+  childAminalId: BigInt! # uint256
+  finished: Boolean!
+}
+
+type EndAuction @entity(immutable: true) {
+  id: Bytes!
+  aminalIdOne: BigInt! # uint256
+  aminalIdTwo: BigInt! # uint256
+  childAminalId: BigInt! # uint256
+  winningIds: [BigInt!]! # uint256[8]
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Visual @entity {
+  id: Bytes!
+  auctionId: BigInt! # uint256
+  proposer: Bytes! # address
+  visualId: BigInt! # uint256
+  catEnum: Int! # uint8
+  svg: String!
+  loveVote: BigInt! # uint256
+  removed: Boolean!
+}
+
+type ProposeVisual @entity {
+  id: Bytes!
+  auctionId: BigInt! # uint256
+  sender: Bytes! # address
+  visualId: BigInt! # uint256
+  catEnum: Int! # uint8
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RemoveVisual @entity {
+  id: Bytes!
+  auctionId: BigInt! # uint256
+  sender: Bytes! # address
+  visualId: BigInt! # uint256
+  catEnum: Int! # uint8
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type StartAuction @entity(immutable: true) {
+  id: Bytes!
+  aminalIdOne: BigInt! # uint256
+  aminalIdTwo: BigInt! # uint256
+  childAminalId: BigInt! # uint256
+  totalLove: BigInt! # uint256
+  # visualIds: [[BigInt!]!]! # uint256[8][10]
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type VisualsVote @entity(immutable: true) {
+  id: Bytes!
+  auctionId: BigInt! # uint256
+  visualId: BigInt! # uint256
+  sender: Bytes! # address
+  catEnum: Int! # uint8
+  userLoveVote: BigInt! # uint256
+  totalLove: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}

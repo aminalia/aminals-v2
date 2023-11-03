@@ -1,0 +1,8 @@
+sources:
+  - name: aminalsv2
+    handler:
+      graphql:
+        endpoint: https://api.studio.thegraph.com/query/57078/aminals/v0.0.25
+
+documents:
+  - ./src/**/*.graphql

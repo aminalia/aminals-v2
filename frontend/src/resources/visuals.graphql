@@ -1,0 +1,9 @@
+query VisualList($first: Int = 100, $skip: Int = 0) {
+  visuals(first: $first, skip: $skip, orderBy: visualId, orderDirection: desc) {
+    visualId
+    proposer
+    svg
+    loveVote
+    catEnum
+  }
+}
