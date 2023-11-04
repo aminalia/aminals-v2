@@ -55,6 +55,15 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         uint256 totalLove
     );
 
+    event RemoveVisualVote(
+        uint256 indexed auctionId,
+        uint256 visualId,
+        address sender,
+        VisualsCat catEnum,
+        uint256 userLoveVote,
+        uint256 totalLove
+    );
+
     constructor(address _generatornessSourceContract, address _generatornessSourceBalance) {
         require(_generatornessSourceContract != address(0), "Invalid generator source contract");
         require(_generatornessSourceBalance != address(0), "Invalid generator source balance");
@@ -172,7 +181,7 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         return auctionCnt;
     }
 
-    // Proposes a new visual traight, only callable if the auction is running.
+    // Proposes a new visual trait, only callable if the auction is running.
     //
     // Anyone can propose new visuals, but the cost depends on how much they
     // love you in order to avoid ppl from spamming the available slots.abi
@@ -212,7 +221,11 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         emit ProposeVisual(auctionId, msg.sender, visualId, catEnum);
     }
 
-    function voteVisual(uint256 auctionId, VisualsCat catEnum, uint256 id) public payable _auctionRunning(auctionId) {
+    function voteVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId)
+        public
+        payable
+        _auctionRunning(auctionId)
+    {
         uint256 category = uint256(catEnum);
 
         Auction storage auction = auctions[auctionId];
@@ -224,13 +237,13 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
             visualVoted[msg.sender][auctionId][category] < totallove, "Already consumed all of your love with votes"
         );
 
-        console.log("********** a vote has been casted on category: ", category, " /  iD: ", id);
+        console.log("********** a vote has been casted on category: ", category, " /  iD: ", visualId);
         // console.log(" == with weight = ", totallove, " .  on auctionId = ", auctionId);
 
         // find the index for the submitted Visual ID
         uint256 k = 10;
         for (uint256 i = 0; i < 10; i++) {
-            if (auction.visualIds[i][category] == id) {
+            if (auction.visualIds[i][category] == visualId) {
                 k = i;
                 break;
             }
@@ -243,7 +256,7 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         auction.visualIdVotes[k][category] += (totallove);
         visualVoted[msg.sender][auctionId][category] = totallove;
 
-        emit VisualsVote(auctionId, id, msg.sender, catEnum, userlove, totallove);
+        emit VisualsVote(auctionId, visualId, msg.sender, catEnum, userlove, totallove);
     }
 
     function removeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId)
@@ -269,6 +282,8 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
             " and totallove = ",
             auction.totalLove / 3
         );
+
+        emit RemoveVisualVote(auctionId, visualId, msg.sender, catEnum, userlove, totallove);
 
         if (auction.visualNoVotes[visualId][category] > auction.totalLove / 3) {
             // a third of lovers has voted to remove the visual trait from the auction
@@ -302,12 +317,12 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
             auction.visualIds[j][category] = 0;
             auction.visualIdVotes[j][category] = 0;
             auction.visualNoVotes[j][category] = 0;
-        }
 
-        emit RemoveVisual(auctionId, msg.sender, visualId, catEnum);
+            emit RemoveVisual(auctionId, msg.sender, visualId, catEnum);
+        }
     }
 
-    // TODO limits on when this can be called?
+    // TODO limits on when this can be called
     function endAuction(uint256 auctionId) public _auctionRunning(auctionId) {
         Auction storage auction = auctions[auctionId];
 

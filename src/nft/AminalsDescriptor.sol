@@ -83,7 +83,7 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
     function getAminalVisualsByID(uint256 aminalID) public view virtual returns (Visuals memory);
 
     // ------------------------------------------------------------------------
-    // SVG Parts - Need to add owner permissions
+    // SVG Parts - TODO Need to add owner permissions
     // ------------------------------------------------------------------------
 
     // eg. 00a79d
