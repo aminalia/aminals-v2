@@ -1,4 +1,4 @@
-import { BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { BigInt, Bytes, store } from "@graphprotocol/graph-ts";
 import {
   Aminals as AminalsContract,
   AddSkillProposal as AddSkillProposalEvent,
@@ -18,7 +18,8 @@ import {
   FeedAminal,
   Skill,
   SkillVote,
-  Squeak
+  Squeak,
+  User
 } from "../generated/schema";
 
 export function handleAddSkillProposal(event: AddSkillProposalEvent): void {
@@ -41,59 +42,67 @@ export function handleAddSkillProposal(event: AddSkillProposalEvent): void {
 }
 
 export function handleBreedAminal(event: BreedAminalEvent): void {
-  let entity = new BreedAminal(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
-  entity.aminalOne = event.params.aminalOne;
-  entity.aminalTwo = event.params.aminalTwo;
-  entity.auctionId = event.params.auctionId;
-  entity.blockNumber = event.block.number;
-  entity.blockTimestamp = event.block.timestamp;
-  entity.transactionHash = event.transaction.hash;
-  entity.save();
-
   // Load aminal entities
   let aminalOne = Aminal.load(Bytes.fromI32(event.params.aminalOne.toI32()));
   let aminalTwo = Aminal.load(Bytes.fromI32(event.params.aminalTwo.toI32()));
 
-  // If this is 0, then aminalOne is breedable with aminalTwo
-  // But aminalTwo is not breedable with aminalOne
-  if (event.params.auctionId === BigInt.zero() && aminalOne && aminalTwo) {
-    aminalOne.breedableWith = event.params.aminalTwo;
-    aminalOne.save();
-  }
+  if (aminalOne && aminalTwo) {
+    let entity = new BreedAminal(
+      event.transaction.hash.concatI32(event.logIndex.toI32())
+    );
+    entity.aminalOne = aminalOne.id;
+    entity.aminalTwo = aminalTwo.id;
+    entity.auctionId = event.params.auctionId;
+    entity.blockNumber = event.block.number;
+    entity.blockTimestamp = event.block.timestamp;
+    entity.transactionHash = event.transaction.hash;
+    entity.save();
 
-  // If there is a new Auction, we set breeding to true
-  else if (event.params.auctionId !== BigInt.zero() && aminalOne && aminalTwo) {
-    aminalOne.breeding = true;
-    aminalOne.save();
+    // // If this is 0, then aminalOne is breedable with aminalTwo
+    // // But aminalTwo is not breedable with aminalOne
+    // if (event.params.auctionId === BigInt.zero()) {
+    //   aminalOne.breedableWith = event.params.aminalTwo;
+    //   aminalOne.save();
+    // }
 
-    aminalTwo.breeding = true;
-    aminalTwo.save();
+    // If there is a new Auction, we set breeding to true
+    if (event.params.auctionId !== BigInt.zero()) {
+      aminalOne.breeding = true;
+      aminalOne.save();
+
+      aminalTwo.breeding = true;
+      aminalTwo.save();
+    }
   }
 }
 
 export function handleFeedAminal(event: FeedAminalEvent): void {
-  let entity = new FeedAminal(
-    event.transaction.hash.concatI32(event.params.aminalId.toI32())
-  );
-  entity.aminalId = event.params.aminalId;
-  entity.sender = event.params.sender;
-  entity.amount = event.params.amount;
-  entity.love = event.params.love;
-  entity.totalLove = event.params.totalLove;
-  entity.energy = event.params.energy;
-  entity.blockNumber = event.block.number;
-  entity.blockTimestamp = event.block.timestamp;
-  entity.transactionHash = event.transaction.hash;
-  entity.save();
+  let user = User.load(Bytes.fromHexString(event.params.sender.toHexString()));
+  if (!user) {
+    user = new User(Bytes.fromHexString(event.params.sender.toHexString()));
+    user.address = event.params.sender;
+    user.save();
+  }
 
-  // TODO update user
-
-  // Update the aminal's love and energy
   let aminal = Aminal.load(Bytes.fromI32(event.params.aminalId.toI32()));
   let contract = AminalsContract.bind(event.address);
+
   if (aminal) {
+    let entity = new FeedAminal(
+      event.transaction.hash.concatI32(event.params.aminalId.toI32())
+    );
+    entity.aminal = aminal.id;
+    entity.sender = user.id;
+    entity.amount = event.params.amount;
+    entity.love = event.params.love;
+    entity.totalLove = event.params.totalLove;
+    entity.energy = event.params.energy;
+    entity.blockNumber = event.block.number;
+    entity.blockTimestamp = event.block.timestamp;
+    entity.transactionHash = event.transaction.hash;
+    entity.save();
+
+    // Update the aminal's love and energy
     aminal.energy = contract.getEnergy(event.params.aminalId);
     aminal.totalLove = contract.getAminalLoveTotal(event.params.aminalId);
 
@@ -101,7 +110,6 @@ export function handleFeedAminal(event: FeedAminalEvent): void {
   }
 }
 
-// TODO this needs work, but is less important so ignoring for now
 export function handleRemoveSkillProposal(
   event: RemoveSkillProposalEvent
 ): void {
@@ -123,29 +131,33 @@ export function handleRemoveSkillProposal(
 }
 
 export function handleSkillAdded(event: SkillAddedEvent): void {
-  let skill = new Skill(
-    Bytes.fromI32(event.params.aminalId.toI32()).concat(
-      Bytes.fromHexString(event.params.skillAddress.toHexString())
-    )
-  );
-  skill.aminalId = event.params.aminalId;
-  skill.skillAddress = event.params.skillAddress;
-  skill.removed = false;
-  skill.blockNumber = event.block.number;
-  skill.blockTimestamp = event.block.timestamp;
-  skill.transactionHash = event.transaction.hash;
+  let aminal = Aminal.load(Bytes.fromI32(event.params.aminalId.toI32()));
+  if (aminal) {
+    let skill = new Skill(
+      Bytes.fromI32(event.params.aminalId.toI32()).concat(
+        Bytes.fromHexString(event.params.skillAddress.toHexString())
+      )
+    );
+    skill.aminal = aminal.id;
+    skill.skillAddress = event.params.skillAddress;
+    skill.removed = false;
+    skill.blockNumber = event.block.number;
+    skill.blockTimestamp = event.block.timestamp;
+    skill.transactionHash = event.transaction.hash;
 
-  skill.save();
+    skill.save();
+  }
 }
 
 export function handleSkillRemoved(event: SkillRemovedEvent): void {
+  let aminal = Aminal.load(Bytes.fromI32(event.params.aminalId.toI32()));
   let skill = Skill.load(
     Bytes.fromI32(event.params.aminalId.toI32()).concat(
       Bytes.fromHexString(event.params.skillAddress.toHexString())
     )
   );
-  if (skill) {
-    skill.aminalId = event.params.aminalId;
+  if (skill && aminal) {
+    skill.aminal = aminal.id;
     skill.skillAddress = event.params.skillAddress;
     skill.removed = true;
     skill.blockNumber = event.block.number;

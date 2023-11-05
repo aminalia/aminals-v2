@@ -143,21 +143,14 @@ export class Aminal extends Entity {
     this.set("breeding", Value.fromBoolean(value));
   }
 
-  get breedableWith(): BigInt | null {
-    let value = this.get("breedableWith");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set breedableWith(value: BigInt | null) {
-    if (!value) {
-      this.unset("breedableWith");
-    } else {
-      this.set("breedableWith", Value.fromBigInt(<BigInt>value));
-    }
+  get breedableWith(): BreedAminalLoader {
+    return new BreedAminalLoader(
+      "Aminal",
+      this.get("id")!
+        .toBytes()
+        .toHexString(),
+      "breedableWith"
+    );
   }
 
   get backId(): BigInt {
@@ -302,6 +295,16 @@ export class Aminal extends Entity {
   set transactionHash(value: Bytes) {
     this.set("transactionHash", Value.fromBytes(value));
   }
+
+  get skills(): SkillLoader {
+    return new SkillLoader(
+      "Aminal",
+      this.get("id")!
+        .toBytes()
+        .toHexString(),
+      "skills"
+    );
+  }
 }
 
 export class User extends Entity {
@@ -356,6 +359,26 @@ export class User extends Entity {
 
   set address(value: Bytes) {
     this.set("address", Value.fromBytes(value));
+  }
+
+  get lovedBy(): FeedAminalLoader {
+    return new FeedAminalLoader(
+      "User",
+      this.get("id")!
+        .toBytes()
+        .toHexString(),
+      "lovedBy"
+    );
+  }
+
+  get proposedVisuals(): VisualProposalLoader {
+    return new VisualProposalLoader(
+      "User",
+      this.get("id")!
+        .toBytes()
+        .toHexString(),
+      "proposedVisuals"
+    );
   }
 }
 
@@ -563,30 +586,30 @@ export class BreedAminal extends Entity {
     this.set("id", Value.fromBytes(value));
   }
 
-  get aminalOne(): BigInt {
+  get aminalOne(): Bytes {
     let value = this.get("aminalOne");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBigInt();
+      return value.toBytes();
     }
   }
 
-  set aminalOne(value: BigInt) {
-    this.set("aminalOne", Value.fromBigInt(value));
+  set aminalOne(value: Bytes) {
+    this.set("aminalOne", Value.fromBytes(value));
   }
 
-  get aminalTwo(): BigInt {
+  get aminalTwo(): Bytes {
     let value = this.get("aminalTwo");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBigInt();
+      return value.toBytes();
     }
   }
 
-  set aminalTwo(value: BigInt) {
-    this.set("aminalTwo", Value.fromBigInt(value));
+  set aminalTwo(value: Bytes) {
+    this.set("aminalTwo", Value.fromBytes(value));
   }
 
   get auctionId(): BigInt {
@@ -685,17 +708,17 @@ export class FeedAminal extends Entity {
     this.set("id", Value.fromBytes(value));
   }
 
-  get aminalId(): BigInt {
-    let value = this.get("aminalId");
+  get aminal(): Bytes {
+    let value = this.get("aminal");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBigInt();
+      return value.toBytes();
     }
   }
 
-  set aminalId(value: BigInt) {
-    this.set("aminalId", Value.fromBigInt(value));
+  set aminal(value: Bytes) {
+    this.set("aminal", Value.fromBytes(value));
   }
 
   get sender(): Bytes {
@@ -844,17 +867,17 @@ export class Skill extends Entity {
     this.set("id", Value.fromBytes(value));
   }
 
-  get aminalId(): BigInt {
-    let value = this.get("aminalId");
+  get aminal(): Bytes {
+    let value = this.get("aminal");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBigInt();
+      return value.toBytes();
     }
   }
 
-  set aminalId(value: BigInt) {
-    this.set("aminalId", Value.fromBigInt(value));
+  set aminal(value: Bytes) {
+    this.set("aminal", Value.fromBytes(value));
   }
 
   get skillAddress(): Bytes {
@@ -1475,6 +1498,19 @@ export class VisualProposal extends Entity {
     this.set("loveVote", Value.fromBigInt(value));
   }
 
+  get removeVote(): BigInt {
+    let value = this.get("removeVote");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set removeVote(value: BigInt) {
+    this.set("removeVote", Value.fromBigInt(value));
+  }
+
   get removed(): boolean {
     let value = this.get("removed");
     if (!value || value.kind == ValueKind.NULL) {
@@ -1486,32 +1522,6 @@ export class VisualProposal extends Entity {
 
   set removed(value: boolean) {
     this.set("removed", Value.fromBoolean(value));
-  }
-
-  get yesVotes(): BigInt {
-    let value = this.get("yesVotes");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set yesVotes(value: BigInt) {
-    this.set("yesVotes", Value.fromBigInt(value));
-  }
-
-  get noVotes(): BigInt {
-    let value = this.get("noVotes");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set noVotes(value: BigInt) {
-    this.set("noVotes", Value.fromBigInt(value));
   }
 
   get blockNumber(): BigInt {
@@ -1725,5 +1735,77 @@ export class VisualsVote extends Entity {
 
   set remove(value: boolean) {
     this.set("remove", Value.fromBoolean(value));
+  }
+}
+
+export class BreedAminalLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): BreedAminal[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<BreedAminal[]>(value);
+  }
+}
+
+export class SkillLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): Skill[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<Skill[]>(value);
+  }
+}
+
+export class FeedAminalLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): FeedAminal[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<FeedAminal[]>(value);
+  }
+}
+
+export class VisualProposalLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): VisualProposal[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<VisualProposal[]>(value);
   }
 }

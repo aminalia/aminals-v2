@@ -10,7 +10,12 @@ import {
 } from "../generated/Auction/Auction";
 import { store } from "@graphprotocol/graph-ts";
 
-import { Auction, VisualsVote, VisualProposal } from "../generated/schema";
+import {
+  Auction,
+  VisualsVote,
+  VisualProposal,
+  User
+} from "../generated/schema";
 import { AMINALS_CONTRACT_ADDRESS } from "./constants";
 
 export function handleEndAuction(event: EndAuctionEvent): void {
@@ -28,6 +33,13 @@ export function handleEndAuction(event: EndAuctionEvent): void {
 }
 
 export function handleProposeVisual(event: ProposeVisualEvent): void {
+  let user = User.load(Bytes.fromHexString(event.params.sender.toHexString()));
+  if (!user) {
+    user = new User(Bytes.fromHexString(event.params.sender.toHexString()));
+    user.address = event.params.sender;
+    user.save();
+  }
+
   let visual = new VisualProposal(
     Bytes.fromI32(event.params.auctionId.toI32())
       .concatI32(event.params.catEnum)
@@ -38,7 +50,7 @@ export function handleProposeVisual(event: ProposeVisualEvent): void {
   );
   if (visual) {
     visual.auctionId = event.params.auctionId;
-    visual.proposer = event.params.sender;
+    visual.proposer = user.id;
     visual.visualId = event.params.visualId;
     visual.catEnum = event.params.catEnum;
     visual.loveVote = BigInt.zero();
@@ -114,9 +126,6 @@ export function handleStartAuction(event: StartAuctionEvent): void {
     auction.childAminalId = event.params.aminalIdOne;
     auction.totalLove = event.params.totalLove;
     auction.finished = false;
-
-    // TODO save viusalIds?
-    // entity.visualIds = event.params.visualIds;
 
     auction.blockNumber = event.block.number;
     auction.blockTimestamp = event.block.timestamp;

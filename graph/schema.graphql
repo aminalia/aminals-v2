@@ -7,9 +7,7 @@ type Aminal @entity {
   energy: BigInt! # uint256
   totalLove: BigInt! # uint256
   breeding: Boolean!
-  # TODO derive this from Breed Aminal?
-  # TODO can aminals be breadable with multiple aminals?
-  breedableWith: BigInt # uint256
+  breedableWith: [BreedAminal]! @derivedFrom(field: "aminalOne")
 
   # Visual Traits
   backId: BigInt! # uint256
@@ -26,18 +24,15 @@ type Aminal @entity {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 
-  # TODO skills
-  # skills: [Skill]! @derivedFrom(field: "aminalId")
+  skills: [Skill]! @derivedFrom(field: "aminal")
 }
 
-# TODO user love per aminal
-# TODO proposed visuals?
 # TODO traits created
 type User @entity {
   id: Bytes!
   address: Bytes! # address
-  # lovedBy: [FeedAminal]! @derivedFrom(field: "sender")
-  # totalLove: BigInt! # uint256
+  lovedBy: [FeedAminal]! @derivedFrom(field: "sender")
+  proposedVisuals: [VisualProposal]! @derivedFrom(field: "proposer")
 }
 
 type SkillProposal @entity {
@@ -55,8 +50,8 @@ type SkillProposal @entity {
 
 type BreedAminal @entity(immutable: true) {
   id: Bytes!
-  aminalOne: BigInt! # uint256
-  aminalTwo: BigInt! # uint256
+  aminalOne: Aminal! # uint256
+  aminalTwo: Aminal! # uint256
   auctionId: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
@@ -65,8 +60,8 @@ type BreedAminal @entity(immutable: true) {
 
 type FeedAminal @entity {
   id: Bytes!
-  aminalId: BigInt! # uint256
-  sender: Bytes! # address
+  aminal: Aminal! # uint256
+  sender: User! # address
   amount: BigInt! # uint256
   love: BigInt! # uint256
   totalLove: BigInt! # uint256
@@ -78,7 +73,7 @@ type FeedAminal @entity {
 
 type Skill @entity {
   id: Bytes!
-  aminalId: BigInt! # uint256
+  aminal: Aminal! # uint256
   skillAddress: Bytes! # address
   removed: Boolean!
   blockNumber: BigInt!
@@ -119,25 +114,22 @@ type Auction @entity {
   # End data
   winningIds: [BigInt!] # uint256[8]
 
-  # Start data, TODO maybe rename?
+  # Start data
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
 
-# TODO rename to visual proposal
 type VisualProposal @entity {
   id: Bytes!
   auctionId: BigInt! # uint256
-  proposer: Bytes! # address
   visualId: BigInt! # uint256
+  proposer: User! # address
   catEnum: Int! # uint8
-  svg: String!
   loveVote: BigInt! # uint256
   removeVote: BigInt! # uint256
   removed: Boolean!
-
-  # TODO rename...
+  svg: String!
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -149,10 +141,10 @@ type VisualsVote @entity(immutable: true) {
   visualId: BigInt! # uint256
   sender: Bytes! # address
   catEnum: Int! # uint8
+  remove: Boolean!
   userLoveVote: BigInt! # uint256
   totalLove: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
-  remove: Boolean!
 }
