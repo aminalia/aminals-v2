@@ -6,7 +6,7 @@ dataSources:
     name: Aminals
     network: sepolia
     source:
-      address: "0xa3565F689998F6eC256cA8581F637cc1dD617080"
+      address: "0xA3183Bd17b3A0BB420CCc36E495668c00A1007B1"
       abi: Aminals
       startBlock: 4776437
     mapping:
@@ -49,7 +49,7 @@ dataSources:
     name: Auction
     network: sepolia
     source:
-      address: "0xD86e07f730636F407fF1797FcCf0BE05249617A6"
+      address: "0xa202D936b603676207A112522FC3043A88A815b4"
       abi: Auction
       startBlock: 4776437
     mapping:

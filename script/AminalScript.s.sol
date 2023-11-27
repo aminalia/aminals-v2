@@ -12,6 +12,17 @@ forge script script/AminalScript.s.sol:AminalScript --broadcast --verify -vvvv
  
 forge script script/AminalScript.s.sol:AminalScript --chain-id 5  --rpc-url "https://goerli.blockpi.network/v1/rpc/public" --broadcast  --verify -vvvv
 
+
+
+forge script  script/AminalScript.s.sol:AminalScript --chain-id 11155111 --rpc-url "https://ethereum-sepolia.publicnode.com" --broadcast --verify -vvv
+
+
+When updating the smart contract:
+- replace address of the aminal contract (everywhere) + address of the Visuals in subgraph.yaml
+
+When updating the graphQL:
+- .graphclientrc.yml --> change the endpoint
+
 */
 
 contract AminalScript is Script {
