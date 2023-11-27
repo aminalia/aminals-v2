@@ -19,9 +19,11 @@ forge script  script/AminalScript.s.sol:AminalScript --chain-id 11155111 --rpc-u
 
 When updating the smart contract:
 - replace address of the aminal contract (everywhere) + address of the Visuals in subgraph.yaml
+- copy  the ABI in both frontend and graph folder:   out/ContractName.sol/ContractName.json --> frontend/deployments/ + graph/abis/
 
 When updating the graphQL:
 - .graphclientrc.yml --> change the endpoint
+npm run graphclient:build
 
 */
 
