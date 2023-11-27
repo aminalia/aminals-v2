@@ -21,6 +21,7 @@ dataSources:
         - SkillVote
         - SpawnAminal
         - Squeak
+        - User
       abis:
         - name: Aminals
           file: ./abis/Aminals.json
@@ -59,9 +60,7 @@ dataSources:
         - Auction
         - EndAuction
         - StartAuction
-        - RemoveVisual
-        - ProposeVisual
-        - Visual
+        - VisualProposal
         - VistualsVote
       abis:
         - name: Auction
@@ -69,12 +68,14 @@ dataSources:
         - name: Aminals
           file: ./abis/Aminals.json
       eventHandlers:
-        - event: EndAuction(indexed uint256,indexed uint256,indexed uint256,uint256[8])
+        - event: EndAuction(indexed uint256,uint256,uint256,uint256,uint256[8])
           handler: handleEndAuction
         - event: ProposeVisual(indexed uint256,address,uint256,uint8)
           handler: handleProposeVisual
         - event: RemoveVisual(indexed uint256,address,uint256,uint8)
           handler: handleRemoveVisual
+        - event: RemoveVisualVote(indexed uint256,uint256,address,uint8,uint256,uint256)
+          handler: handleRemoveVisualVote
         - event: StartAuction(indexed uint256,indexed uint256,indexed uint256,uint256,uint256[8][10])
           handler: handleStartAuction
         - event: VisualsVote(indexed uint256,uint256,address,uint8,uint256,uint256)

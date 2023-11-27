@@ -23,20 +23,24 @@ export class EndAuction__Params {
     this._event = event;
   }
 
-  get aminalIdOne(): BigInt {
+  get auctionId(): BigInt {
     return this._event.parameters[0].value.toBigInt();
   }
 
-  get aminalIdTwo(): BigInt {
+  get aminalIdOne(): BigInt {
     return this._event.parameters[1].value.toBigInt();
   }
 
-  get childAminalId(): BigInt {
+  get aminalIdTwo(): BigInt {
     return this._event.parameters[2].value.toBigInt();
   }
 
+  get childAminalId(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
+  }
+
   get winningIds(): Array<BigInt> {
-    return this._event.parameters[3].value.toBigIntArray();
+    return this._event.parameters[4].value.toBigIntArray();
   }
 }
 
@@ -140,6 +144,44 @@ export class RemoveVisual__Params {
   }
 }
 
+export class RemoveVisualVote extends ethereum.Event {
+  get params(): RemoveVisualVote__Params {
+    return new RemoveVisualVote__Params(this);
+  }
+}
+
+export class RemoveVisualVote__Params {
+  _event: RemoveVisualVote;
+
+  constructor(event: RemoveVisualVote) {
+    this._event = event;
+  }
+
+  get auctionId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get visualId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get sender(): Address {
+    return this._event.parameters[2].value.toAddress();
+  }
+
+  get catEnum(): i32 {
+    return this._event.parameters[3].value.toI32();
+  }
+
+  get userLoveVote(): BigInt {
+    return this._event.parameters[4].value.toBigInt();
+  }
+
+  get totalLove(): BigInt {
+    return this._event.parameters[5].value.toBigInt();
+  }
+}
+
 export class StartAuction extends ethereum.Event {
   get params(): StartAuction__Params {
     return new StartAuction__Params(this);
@@ -153,15 +195,15 @@ export class StartAuction__Params {
     this._event = event;
   }
 
-  get aminalIdOne(): BigInt {
+  get auctionId(): BigInt {
     return this._event.parameters[0].value.toBigInt();
   }
 
-  get aminalIdTwo(): BigInt {
+  get aminalIdOne(): BigInt {
     return this._event.parameters[1].value.toBigInt();
   }
 
-  get childAminalId(): BigInt {
+  get aminalIdTwo(): BigInt {
     return this._event.parameters[2].value.toBigInt();
   }
 
@@ -788,7 +830,7 @@ export class VoteVisualCall__Inputs {
     return this._call.inputValues[1].value.toI32();
   }
 
-  get id(): BigInt {
+  get visualId(): BigInt {
     return this._call.inputValues[2].value.toBigInt();
   }
 }
