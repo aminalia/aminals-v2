@@ -1,10 +1,5 @@
 import type { Abi, Address } from 'abitype';
-import {
-  useAccount,
-  useContractWrite,
-  useNetwork,
-  usePrepareContractWrite,
-} from 'wagmi';
+import { useAccount, useContractWrite, useNetwork } from 'wagmi';
 
 import { useState } from 'react';
 
@@ -20,25 +15,21 @@ export default function BreedButton({ id1 }: { id1: string }) {
   const { chain } = useNetwork();
   const enabled = isConnected && !chain?.unsupported;
 
+  // Default breadwith ID is set to one
   const [breedWithId, setBreedWithId] = useState(1);
 
-  const { config: contractWriteConfig, isLoading: mintPrepLoading } =
-    usePrepareContractWrite({
-      ...contractConfig,
-      functionName: 'breedWith',
-      args: [id1, breedWithId],
-      enabled,
-      value: BigInt(0.01 * 1e18),
-    });
+  const { writeAsync: breedWith } = useContractWrite({
+    ...contractConfig,
+    functionName: 'breedWith',
+    args: [id1, breedWithId],
+    value: BigInt(0.01 * 1e18),
+  });
 
-  const { data: breedData, write: breedWith } =
-    useContractWrite(contractWriteConfig);
-
-  async function action() {
+  const action = async () => {
     if (enabled) {
-      await breedWith?.();
+      await breedWith();
     }
-  }
+  };
 
   const handleBreedWithIdChange = (event: any) => {
     setBreedWithId(event.target.value);

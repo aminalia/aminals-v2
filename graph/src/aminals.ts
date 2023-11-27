@@ -59,13 +59,6 @@ export function handleBreedAminal(event: BreedAminalEvent): void {
     entity.transactionHash = event.transaction.hash;
     entity.save();
 
-    // // If this is 0, then aminalOne is breedable with aminalTwo
-    // // But aminalTwo is not breedable with aminalOne
-    // if (event.params.auctionId === BigInt.zero()) {
-    //   aminalOne.breedableWith = event.params.aminalTwo;
-    //   aminalOne.save();
-    // }
-
     // If there is a new Auction, we set breeding to true
     if (event.params.auctionId !== BigInt.zero()) {
       aminalOne.breeding = true;
