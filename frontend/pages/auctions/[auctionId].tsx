@@ -19,7 +19,7 @@ const AuctionPage: NextPage = () => {
           {proposeVisuals?.map((proposeVisual) => (
             <div key={proposeVisual.visualId}>
               Proposal visualId {proposeVisual.visualId} by{' '}
-              {proposeVisual.sender}
+              {proposeVisual.proposer.address}
             </div>
           ))}
         </div>

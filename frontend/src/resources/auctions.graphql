@@ -24,8 +24,10 @@ query Auction($id: ID!) {
 }
 
 query AuctionProposeVisualList($auctionId: BigInt) {
-  proposeVisuals(where: { auctionId: $auctionId }) {
-    sender
+  visualProposals(where: { auctionId: $auctionId }) {
+    proposer {
+      address
+    }
     visualId
     catEnum
     blockNumber
@@ -35,13 +37,15 @@ query AuctionProposeVisualList($auctionId: BigInt) {
 }
 
 query ProposeVisualList($first: Int = 100, $skip: Int = 0) {
-  proposeVisuals(
+  visualProposals(
     first: $first
     skip: $skip
     orderBy: auctionId
     orderDirection: desc
   ) {
-    sender
+    proposer {
+      address
+    }
     visualId
     catEnum
     blockNumber
