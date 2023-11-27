@@ -1,10 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import { Visual, VisualListDocument, execute } from '../../.graphclient';
+import {
+  VisualListDocument,
+  VisualProposal,
+  execute,
+} from '../../.graphclient';
 
 const BASE_KEY = 'visuals';
 
 export const useVisuals = () => {
-  return useQuery<Visual[]>({
+  return useQuery<VisualProposal[]>({
     queryKey: [BASE_KEY],
     queryFn: async () => {
       const response = await execute(VisualListDocument, {

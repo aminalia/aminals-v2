@@ -4,8 +4,8 @@ import {
   AuctionDocument,
   AuctionProposeVisualListDocument,
   AuctionsListDocument,
-  ProposeVisual,
   ProposeVisualListDocument,
+  VisualProposal,
   execute,
 } from '../../.graphclient';
 
@@ -39,7 +39,7 @@ export const useAuction = (auctionId: string | string[]) => {
 };
 
 export const useAuctionProposeVisuals = (auctionId: string | string[]) => {
-  return useQuery<ProposeVisual[]>({
+  return useQuery<VisualProposal[]>({
     queryKey: [BASE_KEY, auctionId ?? '', 'proposals'],
     queryFn: async () => {
       const response = await execute(AuctionProposeVisualListDocument, {
@@ -52,7 +52,7 @@ export const useAuctionProposeVisuals = (auctionId: string | string[]) => {
 };
 
 export const useProposeVisuals = () => {
-  return useQuery<ProposeVisual[]>({
+  return useQuery<VisualProposal[]>({
     queryKey: [BASE_KEY, 'all', 'proposals'],
     queryFn: async () => {
       const response = await execute(ProposeVisualListDocument, {

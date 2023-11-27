@@ -1433,19 +1433,6 @@ export class VisualProposal extends Entity {
     this.set("auctionId", Value.fromBigInt(value));
   }
 
-  get proposer(): Bytes {
-    let value = this.get("proposer");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBytes();
-    }
-  }
-
-  set proposer(value: Bytes) {
-    this.set("proposer", Value.fromBytes(value));
-  }
-
   get visualId(): BigInt {
     let value = this.get("visualId");
     if (!value || value.kind == ValueKind.NULL) {
@@ -1459,6 +1446,19 @@ export class VisualProposal extends Entity {
     this.set("visualId", Value.fromBigInt(value));
   }
 
+  get proposer(): Bytes {
+    let value = this.get("proposer");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set proposer(value: Bytes) {
+    this.set("proposer", Value.fromBytes(value));
+  }
+
   get catEnum(): i32 {
     let value = this.get("catEnum");
     if (!value || value.kind == ValueKind.NULL) {
@@ -1470,19 +1470,6 @@ export class VisualProposal extends Entity {
 
   set catEnum(value: i32) {
     this.set("catEnum", Value.fromI32(value));
-  }
-
-  get svg(): string {
-    let value = this.get("svg");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toString();
-    }
-  }
-
-  set svg(value: string) {
-    this.set("svg", Value.fromString(value));
   }
 
   get loveVote(): BigInt {
@@ -1522,6 +1509,19 @@ export class VisualProposal extends Entity {
 
   set removed(value: boolean) {
     this.set("removed", Value.fromBoolean(value));
+  }
+
+  get svg(): string {
+    let value = this.get("svg");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set svg(value: string) {
+    this.set("svg", Value.fromString(value));
   }
 
   get blockNumber(): BigInt {
@@ -1659,6 +1659,19 @@ export class VisualsVote extends Entity {
     this.set("catEnum", Value.fromI32(value));
   }
 
+  get remove(): boolean {
+    let value = this.get("remove");
+    if (!value || value.kind == ValueKind.NULL) {
+      return false;
+    } else {
+      return value.toBoolean();
+    }
+  }
+
+  set remove(value: boolean) {
+    this.set("remove", Value.fromBoolean(value));
+  }
+
   get userLoveVote(): BigInt {
     let value = this.get("userLoveVote");
     if (!value || value.kind == ValueKind.NULL) {
@@ -1722,19 +1735,6 @@ export class VisualsVote extends Entity {
 
   set transactionHash(value: Bytes) {
     this.set("transactionHash", Value.fromBytes(value));
-  }
-
-  get remove(): boolean {
-    let value = this.get("remove");
-    if (!value || value.kind == ValueKind.NULL) {
-      return false;
-    } else {
-      return value.toBoolean();
-    }
-  }
-
-  set remove(value: boolean) {
-    this.set("remove", Value.fromBoolean(value));
   }
 }
 
