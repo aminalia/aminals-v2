@@ -8,7 +8,7 @@ import {
 import contract from '../../../deployments/Aminals.json';
 
 const contractConfig = {
-  address: '0x24BEd8962601Caa39e51F02bdC0251Ae51FF0d70' as Address,
+  address: '0xa3565F689998F6eC256cA8581F637cc1dD617080' as Address,
   abi: contract.abi as Abi,
 };
 

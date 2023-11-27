@@ -1,8 +1,8 @@
 {
   "sepolia": {
     "Aminals": {
-      "address": "0x24BEd8962601Caa39e51F02bdC0251Ae51FF0d70",
-      "startBlock": 4597069
+      "address": "0xa3565F689998F6eC256cA8581F637cc1dD617080",
+      "startBlock": 4776437
     }
   }
 }
