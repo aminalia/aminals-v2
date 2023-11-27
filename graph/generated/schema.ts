@@ -143,13 +143,23 @@ export class Aminal extends Entity {
     this.set("breeding", Value.fromBoolean(value));
   }
 
-  get breedableWith(): BreedAminalLoader {
-    return new BreedAminalLoader(
+  get breedableWith(): BreedAminalEventLoader {
+    return new BreedAminalEventLoader(
       "Aminal",
       this.get("id")!
         .toBytes()
         .toHexString(),
       "breedableWith"
+    );
+  }
+
+  get lovers(): RelationshipLoader {
+    return new RelationshipLoader(
+      "Aminal",
+      this.get("id")!
+        .toBytes()
+        .toHexString(),
+      "lovers"
     );
   }
 
@@ -361,13 +371,13 @@ export class User extends Entity {
     this.set("address", Value.fromBytes(value));
   }
 
-  get lovedBy(): FeedAminalLoader {
-    return new FeedAminalLoader(
+  get lovers(): RelationshipLoader {
+    return new RelationshipLoader(
       "User",
       this.get("id")!
         .toBytes()
         .toHexString(),
-      "lovedBy"
+      "lovers"
     );
   }
 
@@ -382,7 +392,7 @@ export class User extends Entity {
   }
 }
 
-export class SkillProposal extends Entity {
+export class Relationship extends Entity {
   constructor(id: Bytes) {
     super();
     this.set("id", Value.fromBytes(id));
@@ -390,25 +400,25 @@ export class SkillProposal extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save SkillProposal entity without an ID");
+    assert(id != null, "Cannot save Relationship entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type SkillProposal must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Relationship must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("SkillProposal", id.toBytes().toHexString(), this);
+      store.set("Relationship", id.toBytes().toHexString(), this);
     }
   }
 
-  static loadInBlock(id: Bytes): SkillProposal | null {
-    return changetype<SkillProposal | null>(
-      store.get_in_block("SkillProposal", id.toHexString())
+  static loadInBlock(id: Bytes): Relationship | null {
+    return changetype<Relationship | null>(
+      store.get_in_block("Relationship", id.toHexString())
     );
   }
 
-  static load(id: Bytes): SkillProposal | null {
-    return changetype<SkillProposal | null>(
-      store.get("SkillProposal", id.toHexString())
+  static load(id: Bytes): Relationship | null {
+    return changetype<Relationship | null>(
+      store.get("Relationship", id.toHexString())
     );
   }
 
@@ -425,47 +435,8 @@ export class SkillProposal extends Entity {
     this.set("id", Value.fromBytes(value));
   }
 
-  get aminalId(): BigInt {
-    let value = this.get("aminalId");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set aminalId(value: BigInt) {
-    this.set("aminalId", Value.fromBigInt(value));
-  }
-
-  get proposalId(): BigInt {
-    let value = this.get("proposalId");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set proposalId(value: BigInt) {
-    this.set("proposalId", Value.fromBigInt(value));
-  }
-
-  get skillName(): string {
-    let value = this.get("skillName");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toString();
-    }
-  }
-
-  set skillName(value: string) {
-    this.set("skillName", Value.fromString(value));
-  }
-
-  get skillAddress(): Bytes {
-    let value = this.get("skillAddress");
+  get user(): Bytes {
+    let value = this.get("user");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -473,12 +444,12 @@ export class SkillProposal extends Entity {
     }
   }
 
-  set skillAddress(value: Bytes) {
-    this.set("skillAddress", Value.fromBytes(value));
+  set user(value: Bytes) {
+    this.set("user", Value.fromBytes(value));
   }
 
-  get sender(): Bytes {
-    let value = this.get("sender");
+  get aminal(): Bytes {
+    let value = this.get("aminal");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -486,12 +457,12 @@ export class SkillProposal extends Entity {
     }
   }
 
-  set sender(value: Bytes) {
-    this.set("sender", Value.fromBytes(value));
+  set aminal(value: Bytes) {
+    this.set("aminal", Value.fromBytes(value));
   }
 
-  get blockNumber(): BigInt {
-    let value = this.get("blockNumber");
+  get love(): BigInt {
+    let value = this.get("love");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -499,51 +470,12 @@ export class SkillProposal extends Entity {
     }
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
-  }
-
-  get blockTimestamp(): BigInt {
-    let value = this.get("blockTimestamp");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set blockTimestamp(value: BigInt) {
-    this.set("blockTimestamp", Value.fromBigInt(value));
-  }
-
-  get transactionHash(): Bytes {
-    let value = this.get("transactionHash");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBytes();
-    }
-  }
-
-  set transactionHash(value: Bytes) {
-    this.set("transactionHash", Value.fromBytes(value));
-  }
-
-  get removed(): boolean {
-    let value = this.get("removed");
-    if (!value || value.kind == ValueKind.NULL) {
-      return false;
-    } else {
-      return value.toBoolean();
-    }
-  }
-
-  set removed(value: boolean) {
-    this.set("removed", Value.fromBoolean(value));
+  set love(value: BigInt) {
+    this.set("love", Value.fromBigInt(value));
   }
 }
 
-export class BreedAminal extends Entity {
+export class BreedAminalEvent extends Entity {
   constructor(id: Bytes) {
     super();
     this.set("id", Value.fromBytes(id));
@@ -551,25 +483,25 @@ export class BreedAminal extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save BreedAminal entity without an ID");
+    assert(id != null, "Cannot save BreedAminalEvent entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type BreedAminal must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type BreedAminalEvent must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("BreedAminal", id.toBytes().toHexString(), this);
+      store.set("BreedAminalEvent", id.toBytes().toHexString(), this);
     }
   }
 
-  static loadInBlock(id: Bytes): BreedAminal | null {
-    return changetype<BreedAminal | null>(
-      store.get_in_block("BreedAminal", id.toHexString())
+  static loadInBlock(id: Bytes): BreedAminalEvent | null {
+    return changetype<BreedAminalEvent | null>(
+      store.get_in_block("BreedAminalEvent", id.toHexString())
     );
   }
 
-  static load(id: Bytes): BreedAminal | null {
-    return changetype<BreedAminal | null>(
-      store.get("BreedAminal", id.toHexString())
+  static load(id: Bytes): BreedAminalEvent | null {
+    return changetype<BreedAminalEvent | null>(
+      store.get("BreedAminalEvent", id.toHexString())
     );
   }
 
@@ -665,7 +597,7 @@ export class BreedAminal extends Entity {
   }
 }
 
-export class FeedAminal extends Entity {
+export class FeedAminalEvent extends Entity {
   constructor(id: Bytes) {
     super();
     this.set("id", Value.fromBytes(id));
@@ -673,25 +605,25 @@ export class FeedAminal extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save FeedAminal entity without an ID");
+    assert(id != null, "Cannot save FeedAminalEvent entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type FeedAminal must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type FeedAminalEvent must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("FeedAminal", id.toBytes().toHexString(), this);
+      store.set("FeedAminalEvent", id.toBytes().toHexString(), this);
     }
   }
 
-  static loadInBlock(id: Bytes): FeedAminal | null {
-    return changetype<FeedAminal | null>(
-      store.get_in_block("FeedAminal", id.toHexString())
+  static loadInBlock(id: Bytes): FeedAminalEvent | null {
+    return changetype<FeedAminalEvent | null>(
+      store.get_in_block("FeedAminalEvent", id.toHexString())
     );
   }
 
-  static load(id: Bytes): FeedAminal | null {
-    return changetype<FeedAminal | null>(
-      store.get("FeedAminal", id.toHexString())
+  static load(id: Bytes): FeedAminalEvent | null {
+    return changetype<FeedAminalEvent | null>(
+      store.get("FeedAminalEvent", id.toHexString())
     );
   }
 
@@ -943,6 +875,167 @@ export class Skill extends Entity {
 
   set transactionHash(value: Bytes) {
     this.set("transactionHash", Value.fromBytes(value));
+  }
+}
+
+export class SkillProposal extends Entity {
+  constructor(id: Bytes) {
+    super();
+    this.set("id", Value.fromBytes(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save SkillProposal entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.BYTES,
+        `Entities of type SkillProposal must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("SkillProposal", id.toBytes().toHexString(), this);
+    }
+  }
+
+  static loadInBlock(id: Bytes): SkillProposal | null {
+    return changetype<SkillProposal | null>(
+      store.get_in_block("SkillProposal", id.toHexString())
+    );
+  }
+
+  static load(id: Bytes): SkillProposal | null {
+    return changetype<SkillProposal | null>(
+      store.get("SkillProposal", id.toHexString())
+    );
+  }
+
+  get id(): Bytes {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set id(value: Bytes) {
+    this.set("id", Value.fromBytes(value));
+  }
+
+  get aminalId(): BigInt {
+    let value = this.get("aminalId");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set aminalId(value: BigInt) {
+    this.set("aminalId", Value.fromBigInt(value));
+  }
+
+  get proposalId(): BigInt {
+    let value = this.get("proposalId");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set proposalId(value: BigInt) {
+    this.set("proposalId", Value.fromBigInt(value));
+  }
+
+  get skillName(): string {
+    let value = this.get("skillName");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set skillName(value: string) {
+    this.set("skillName", Value.fromString(value));
+  }
+
+  get skillAddress(): Bytes {
+    let value = this.get("skillAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set skillAddress(value: Bytes) {
+    this.set("skillAddress", Value.fromBytes(value));
+  }
+
+  get sender(): Bytes {
+    let value = this.get("sender");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set sender(value: Bytes) {
+    this.set("sender", Value.fromBytes(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
+  get blockTimestamp(): BigInt {
+    let value = this.get("blockTimestamp");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockTimestamp(value: BigInt) {
+    this.set("blockTimestamp", Value.fromBigInt(value));
+  }
+
+  get transactionHash(): Bytes {
+    let value = this.get("transactionHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set transactionHash(value: Bytes) {
+    this.set("transactionHash", Value.fromBytes(value));
+  }
+
+  get removed(): boolean {
+    let value = this.get("removed");
+    if (!value || value.kind == ValueKind.NULL) {
+      return false;
+    } else {
+      return value.toBoolean();
+    }
+  }
+
+  set removed(value: boolean) {
+    this.set("removed", Value.fromBoolean(value));
   }
 }
 
@@ -1738,7 +1831,7 @@ export class VisualsVote extends Entity {
   }
 }
 
-export class BreedAminalLoader extends Entity {
+export class BreedAminalEventLoader extends Entity {
   _entity: string;
   _field: string;
   _id: string;
@@ -1750,9 +1843,27 @@ export class BreedAminalLoader extends Entity {
     this._field = field;
   }
 
-  load(): BreedAminal[] {
+  load(): BreedAminalEvent[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
-    return changetype<BreedAminal[]>(value);
+    return changetype<BreedAminalEvent[]>(value);
+  }
+}
+
+export class RelationshipLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): Relationship[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<Relationship[]>(value);
   }
 }
 
@@ -1771,24 +1882,6 @@ export class SkillLoader extends Entity {
   load(): Skill[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<Skill[]>(value);
-  }
-}
-
-export class FeedAminalLoader extends Entity {
-  _entity: string;
-  _field: string;
-  _id: string;
-
-  constructor(entity: string, id: string, field: string) {
-    super();
-    this._entity = entity;
-    this._id = id;
-    this._field = field;
-  }
-
-  load(): FeedAminal[] {
-    let value = store.loadRelated(this._entity, this._id, this._field);
-    return changetype<FeedAminal[]>(value);
   }
 }
 

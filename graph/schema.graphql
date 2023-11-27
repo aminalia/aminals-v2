@@ -7,7 +7,10 @@ type Aminal @entity {
   energy: BigInt! # uint256
   totalLove: BigInt! # uint256
   breeding: Boolean!
-  breedableWith: [BreedAminal]! @derivedFrom(field: "aminalOne")
+  breedableWith: [BreedAminalEvent]! @derivedFrom(field: "aminalOne")
+
+  # Derived from FeedAminal events
+  lovers: [Relationship]! @derivedFrom(field: "aminal")
 
   # Visual Traits
   backId: BigInt! # uint256
@@ -18,7 +21,6 @@ type Aminal @entity {
   faceId: BigInt! # uint256
   mouthId: BigInt! # uint256
   miscId: BigInt! # uint256
-
   # Creation info
   blockNumber: BigInt!
   blockTimestamp: BigInt!
@@ -27,28 +29,21 @@ type Aminal @entity {
   skills: [Skill]! @derivedFrom(field: "aminal")
 }
 
-# TODO traits created
 type User @entity {
   id: Bytes!
   address: Bytes! # address
-  lovedBy: [FeedAminal]! @derivedFrom(field: "sender")
+  lovers: [Relationship]! @derivedFrom(field: "user")
   proposedVisuals: [VisualProposal]! @derivedFrom(field: "proposer")
 }
 
-type SkillProposal @entity {
+type Relationship @entity {
   id: Bytes!
-  aminalId: BigInt! # uint256
-  proposalId: BigInt! # uint256
-  skillName: String! # string
-  skillAddress: Bytes! # address
-  sender: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-  removed: Boolean!
+  user: User!
+  aminal: Aminal!
+  love: BigInt!
 }
 
-type BreedAminal @entity(immutable: true) {
+type BreedAminalEvent @entity(immutable: true) {
   id: Bytes!
   aminalOne: Aminal! # uint256
   aminalTwo: Aminal! # uint256
@@ -58,7 +53,7 @@ type BreedAminal @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type FeedAminal @entity {
+type FeedAminalEvent @entity {
   id: Bytes!
   aminal: Aminal! # uint256
   sender: User! # address
@@ -79,6 +74,19 @@ type Skill @entity {
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
+}
+
+type SkillProposal @entity {
+  id: Bytes!
+  aminalId: BigInt! # uint256
+  proposalId: BigInt! # uint256
+  skillName: String! # string
+  skillAddress: Bytes! # address
+  sender: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+  removed: Boolean!
 }
 
 type SkillVote @entity(immutable: true) {
@@ -113,7 +121,6 @@ type Auction @entity {
 
   # End data
   winningIds: [BigInt!] # uint256[8]
-
   # Start data
   blockNumber: BigInt!
   blockTimestamp: BigInt!
