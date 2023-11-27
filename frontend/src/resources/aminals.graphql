@@ -9,5 +9,10 @@ query AminalsList($first: Int = 100, $skip: Int = 0, $address: Bytes = "") {
       love
     }
     totalLove
+    breedableWith {
+      aminalTwo {
+        aminalId
+      }
+    }
   }
 }

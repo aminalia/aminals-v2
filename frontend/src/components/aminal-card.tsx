@@ -27,9 +27,14 @@ export default function AminalCard({ aminal }: { aminal: Aminal }) {
             <td>
               Love: {aminal.totalLove / 1e18}
               <br />
+              { aminal.lovers[0] && <>
+              Love for YOU: {aminal.lovers[0].love / 1e18}
+              <br />
+              </> }
+              
               Energy: {aminal.energy / 1e18}
             </td>
-            <td>Breedable with: ??</td>
+            <td>Breedable with: { aminal.breedableWith.map( lovebuddy =>  <>{lovebuddy?.aminalTwo.aminalId}, </>) }</td>
           </table>
         </CardContent>
         <CardFooter>

@@ -246,6 +246,8 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         aminalTwo.breedableWith[aminalIdOne] = false;
     }
 
+    //TODO: need to prevent ppl from calling breedWith an aminal that doesnt exist
+    //TODO: need to prevent ppl from calling breedWith on an aminal that is already breedbale with
     function breedWith(uint256 aminalIdOne, uint256 aminalIdTwo) public payable returns (uint256 ret) {
         require(msg.value >= 0.001 ether, "Not enough ether");
 
