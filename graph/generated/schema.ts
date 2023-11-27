@@ -1215,6 +1215,19 @@ export class Squeak extends Entity {
     this.set("id", Value.fromBytes(value));
   }
 
+  get sender(): Bytes {
+    let value = this.get("sender");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set sender(value: Bytes) {
+    this.set("sender", Value.fromBytes(value));
+  }
+
   get aminalId(): BigInt {
     let value = this.get("aminalId");
     if (!value || value.kind == ValueKind.NULL) {

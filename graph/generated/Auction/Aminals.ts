@@ -334,6 +334,14 @@ export class Squeak__Params {
   get energy(): BigInt {
     return this._event.parameters[2].value.toBigInt();
   }
+
+  get love(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
+  }
+
+  get sender(): Address {
+    return this._event.parameters[4].value.toAddress();
+  }
 }
 
 export class Transfer extends ethereum.Event {

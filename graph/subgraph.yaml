@@ -24,7 +24,7 @@ dataSources:
         - User
       abis:
         - name: Aminals
-          file: ./abis/Aminals.json
+          file: ../out/Aminals.sol/Aminals.json
       eventHandlers:
         - event: AddSkillProposal(indexed uint256,uint256,string,address,address)
           handler: handleAddSkillProposal
@@ -42,7 +42,7 @@ dataSources:
           handler: handleSkillVote
         - event: SpawnAminal(indexed uint256,indexed uint256,indexed uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
           handler: handleSpawnAminal
-        - event: Squeak(indexed uint256,uint256,uint256)
+        - event: Squeak(indexed uint256,uint256,uint256,uint256,address)
           handler: handleSqueak
       file: ./src/aminals.ts
   - kind: ethereum
@@ -64,9 +64,9 @@ dataSources:
         - VistualsVote
       abis:
         - name: Auction
-          file: ./abis/Auction.json
+          file: ../out/VisualsAuction.sol/VisualsAuction.json
         - name: Aminals
-          file: ./abis/Aminals.json
+          file: ../out/Aminals.sol/Aminals.json
       eventHandlers:
         - event: EndAuction(indexed uint256,uint256,uint256,uint256,uint256[8])
           handler: handleEndAuction

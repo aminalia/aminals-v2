@@ -102,6 +102,7 @@ type SkillVote @entity(immutable: true) {
 
 type Squeak @entity(immutable: true) {
   id: Bytes!
+  sender: Bytes! # address
   aminalId: BigInt! # uint256
   amount: BigInt! # uint256
   energy: BigInt! # uint256

@@ -239,6 +239,7 @@ export function handleSqueak(event: SqueakEvent): void {
   entity.aminalId = event.params.aminalId;
   entity.amount = event.params.amount;
   entity.energy = event.params.energy;
+  entity.sender = event.params.sender;
 
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
@@ -251,6 +252,27 @@ export function handleSqueak(event: SqueakEvent): void {
     aminal.totalLove = contract.getAminalLoveTotal(event.params.aminalId);
 
     aminal.save();
+
+    // Load user
+    let user = User.load(
+      Bytes.fromHexString(event.params.sender.toHexString()),
+    );
+    if (user) {
+      // Update relationship (id is user address + aminal id)
+      let relationship = Relationship.load(
+        Bytes.fromHexString(event.params.sender.toHexString()).concatI32(
+          event.params.aminalId.toI32(),
+        ),
+      );
+
+      if (relationship) {
+        // Love is the total love for the user
+        relationship.aminal = aminal.id;
+        relationship.user = user.id;
+        relationship.love = event.params.love;
+        relationship.save();
+      }
+    }
   }
 
   entity.save();
