@@ -11,7 +11,7 @@ import { useState } from 'react';
 import contract from '../../../deployments/Aminals.json';
 
 const contractConfig = {
-  address: '0xA3183Bd17b3A0BB420CCc36E495668c00A1007B1' as Address,
+  address: '0xD2DAEA08DA84CcDAD8Cf1348221155889D63E4b5' as Address,
   abi: contract.abi as Abi,
 };
 

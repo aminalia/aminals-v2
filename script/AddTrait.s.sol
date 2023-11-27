@@ -21,7 +21,7 @@ contract AminalScript is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
-        Aminals aminals = Aminals(0xA3183Bd17b3A0BB420CCc36E495668c00A1007B1);
+        Aminals aminals = Aminals(0xD2DAEA08DA84CcDAD8Cf1348221155889D63E4b5);
         VisualsAuction visualsAuction = VisualsAuction(aminals.visualsAuction());
 
         // third aminal

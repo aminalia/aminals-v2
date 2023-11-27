@@ -10,7 +10,7 @@ import {NFTDescriptor} from "src/nft/NFTDescriptor.sol";
 contract AminalForkTest is Test {
     uint256 internal sepoliaFork;
 
-    Aminals aminals = Aminals(0xA3183Bd17b3A0BB420CCc36E495668c00A1007B1);
+    Aminals aminals = Aminals(0xD2DAEA08DA84CcDAD8Cf1348221155889D63E4b5);
     VisualsAuction visualsAuction = VisualsAuction(aminals.visualsAuction());
     AminalProposals proposals = AminalProposals(aminals.proposals());
 
