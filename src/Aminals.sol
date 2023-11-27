@@ -55,7 +55,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
 
     event RemoveSkillProposal(uint256 indexed aminalId, uint256 proposalId, address skillAddress, address sender);
 
-    event Squeak(uint256 indexed aminalId, uint256 amount, uint256 energy);
+    event Squeak(uint256 indexed aminalId, uint256 amount, uint256 energy, uint256 love);
 
     event SkillVote(uint256 indexed aminalId, address sender, uint256 proposalId, bool yesNo);
 
@@ -305,7 +305,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         // TODO: Migrate the bool to a constant for convenience
         _adjustLove(aminalId, amount, msg.sender, false);
 
-        emit Squeak(aminalId, amount, aminal.energy);
+        emit Squeak(aminalId, amount, aminal.energy, aminal.lovePerUser[msg.sender]);
     }
 
     // Calls useSkill on an aminal skill
