@@ -8,9 +8,11 @@ query AuctionsList($first: Int = 100, $skip: Int = 0) {
     auctionId
     aminalOne {
       aminalId
+      tokenUri
     }
     aminalTwo {
       aminalId
+      tokenUri
     }
     childAminalId
     finished

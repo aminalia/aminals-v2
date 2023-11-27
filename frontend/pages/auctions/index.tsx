@@ -1,6 +1,6 @@
+import AuctionCard from '@/components/auction-card';
 import { useAuctions } from '@/resources/auctions';
 import type { NextPage } from 'next';
-import Link from 'next/link';
 import Layout from '../_layout';
 
 const AuctionsPage: NextPage = () => {
@@ -11,14 +11,7 @@ const AuctionsPage: NextPage = () => {
         {isLoadingAuctions || !auctions
           ? 'Loading...'
           : auctions.map((auction) => (
-              <div key={auction.auctionId}>
-                <Link href={`/auctions/${auction.auctionId}`}>
-                  Auction {auction.auctionId}
-                </Link>{' '}
-                between {auction.aminalIdOne} and {auction.auctionId} (
-                {auction.finished ? 'Finished' : 'In Progress'}){' '}
-                {auction.childAminalId}
-              </div>
+              <AuctionCard key={auction.auctionId} auction={auction} />
             ))}
       </div>
     </Layout>
