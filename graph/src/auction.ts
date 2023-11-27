@@ -22,8 +22,8 @@ export function handleEndAuction(event: EndAuctionEvent): void {
   let auction = Auction.load(Bytes.fromI32(event.params.auctionId.toI32()));
   if (auction) {
     auction.auctionId = event.params.childAminalId;
-    auction.aminalIdOne = event.params.aminalIdOne;
-    auction.aminalIdTwo = event.params.aminalIdTwo;
+    auction.aminalOne = Bytes.fromI32(event.params.aminalIdOne.toI32());
+    auction.aminalTwo = Bytes.fromI32(event.params.aminalIdTwo.toI32());
     auction.childAminalId = event.params.childAminalId;
     auction.finished = true;
     auction.winningIds = event.params.winningIds;
@@ -121,8 +121,8 @@ export function handleStartAuction(event: StartAuctionEvent): void {
   let auction = new Auction(Bytes.fromI32(event.params.auctionId.toI32()));
   if (auction) {
     auction.auctionId = event.params.auctionId;
-    auction.aminalIdOne = event.params.aminalIdOne;
-    auction.aminalIdTwo = event.params.aminalIdTwo;
+    auction.aminalOne = Bytes.fromI32(event.params.aminalIdOne.toI32());
+    auction.aminalTwo = Bytes.fromI32(event.params.aminalIdTwo.toI32());
     auction.childAminalId = event.params.aminalIdOne;
     auction.totalLove = event.params.totalLove;
     auction.finished = false;

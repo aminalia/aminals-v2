@@ -2,7 +2,7 @@ sources:
   - name: aminalsv2
     handler:
       graphql:
-        endpoint: https://api.studio.thegraph.com/query/57078/aminals/v0.0.31
+        endpoint: https://api.studio.thegraph.com/query/57078/aminals/v0.0.32
 
 documents:
   - ./src/**/*.graphql

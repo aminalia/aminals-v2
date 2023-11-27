@@ -1361,30 +1361,30 @@ export class Auction extends Entity {
     this.set("auctionId", Value.fromBigInt(value));
   }
 
-  get aminalIdOne(): BigInt {
-    let value = this.get("aminalIdOne");
+  get aminalOne(): Bytes {
+    let value = this.get("aminalOne");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBigInt();
+      return value.toBytes();
     }
   }
 
-  set aminalIdOne(value: BigInt) {
-    this.set("aminalIdOne", Value.fromBigInt(value));
+  set aminalOne(value: Bytes) {
+    this.set("aminalOne", Value.fromBytes(value));
   }
 
-  get aminalIdTwo(): BigInt {
-    let value = this.get("aminalIdTwo");
+  get aminalTwo(): Bytes {
+    let value = this.get("aminalTwo");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBigInt();
+      return value.toBytes();
     }
   }
 
-  set aminalIdTwo(value: BigInt) {
-    this.set("aminalIdTwo", Value.fromBigInt(value));
+  set aminalTwo(value: Bytes) {
+    this.set("aminalTwo", Value.fromBytes(value));
   }
 
   get childAminalId(): BigInt {

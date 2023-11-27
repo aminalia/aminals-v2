@@ -6,8 +6,12 @@ query AuctionsList($first: Int = 100, $skip: Int = 0) {
     orderDirection: desc
   ) {
     auctionId
-    aminalIdOne
-    aminalIdTwo
+    aminalOne {
+      aminalId
+    }
+    aminalTwo {
+      aminalId
+    }
     childAminalId
     finished
   }
@@ -16,8 +20,12 @@ query AuctionsList($first: Int = 100, $skip: Int = 0) {
 query Auction($id: ID!) {
   auction(id: $id) {
     auctionId
-    aminalIdOne
-    aminalIdTwo
+    aminalOne {
+      aminalId
+    }
+    aminalTwo {
+      aminalId
+    }
     childAminalId
     finished
   }

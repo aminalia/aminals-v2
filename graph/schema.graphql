@@ -114,8 +114,8 @@ type Squeak @entity(immutable: true) {
 type Auction @entity {
   id: Bytes!
   auctionId: BigInt! # uint256
-  aminalIdOne: BigInt! # uint256
-  aminalIdTwo: BigInt! # uint256
+  aminalOne: Aminal!
+  aminalTwo: Aminal!
   childAminalId: BigInt! # uint256
   totalLove: BigInt! # uint256
   finished: Boolean!
