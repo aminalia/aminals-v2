@@ -35,6 +35,7 @@ export default function FeedButton({ id }: { id: string }) {
   }
 
   return (
+    <div>
     <button
       type="button"
       onClick={action}
@@ -43,5 +44,6 @@ export default function FeedButton({ id }: { id: string }) {
     >
       Feed 0.01 ETH
     </button>
+    </div>
   );
 }

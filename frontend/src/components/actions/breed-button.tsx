@@ -37,21 +37,18 @@ export default function BreedButton({ id1 }: { id1: string }) {
 
   return (
     <div>
-      <br />
-
-      <input
-        placeholder="ID of the mate"
-        onChange={handleBreedWithIdChange}
-      ></input>
-
       <button
         type="button"
         onClick={action}
         disabled={!enabled}
         className={enabled ? '' : 'text-neutral-400'}
       >
-        Breed
+        Breed With:
       </button>
+      <input
+        placeholder="ID of the mate"
+        onChange={handleBreedWithIdChange}
+      ></input>
     </div>
   );
 }
