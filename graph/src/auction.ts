@@ -123,7 +123,7 @@ export function handleStartAuction(event: StartAuctionEvent): void {
     auction.auctionId = event.params.auctionId;
     auction.aminalOne = Bytes.fromI32(event.params.aminalIdOne.toI32());
     auction.aminalTwo = Bytes.fromI32(event.params.aminalIdTwo.toI32());
-    auction.childAminalId = event.params.aminalIdOne;
+    auction.childAminalId = event.params.auctionId;
     auction.totalLove = event.params.totalLove;
     auction.finished = false;
 
