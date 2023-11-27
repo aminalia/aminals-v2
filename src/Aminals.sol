@@ -246,8 +246,6 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         aminalTwo.breedableWith[aminalIdOne] = false;
     }
 
-    //TODO: need to prevent ppl from calling breedWith an aminal that doesnt exist
-    //TODO: need to prevent ppl from calling breedWith on an aminal that is already breedbale with
     function breedWith(uint256 aminalIdOne, uint256 aminalIdTwo) public payable returns (uint256 ret) {
         require(msg.value >= 0.001 ether, "Not enough ether");
 
@@ -256,6 +254,8 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
 
         // Check that Aminal One loves the user enough
         require(aminalOne.lovePerUser[msg.sender] >= 10, "Not enough love");
+        require(aminalOne.breedableWith[aminalIdTwo] == false, "Aminal is already breadable with the mate");
+        require(aminals[aminalIdTwo].exists == true, "Proposed Aminal to mate does not exist yet");
 
         // Aminal One loves the user and will follow the user's requessts.
         // Therefore, the breedable status that matters is Aminal Two's, because
