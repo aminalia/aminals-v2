@@ -19,14 +19,16 @@ query AuctionsList($first: Int = 100, $skip: Int = 0) {
   }
 }
 
-query Auction($id: ID!) {
-  auction(id: $id) {
+query Auction($auctionId: BigInt) {
+  auctions(where: { auctionId: $auctionId }) {
     auctionId
     aminalOne {
       aminalId
+      tokenUri
     }
     aminalTwo {
       aminalId
+      tokenUri
     }
     childAminalId
     finished

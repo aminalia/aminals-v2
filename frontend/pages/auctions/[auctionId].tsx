@@ -1,29 +1,41 @@
+import AuctionCard from '@/components/auction-card';
 import { useAuction, useAuctionProposeVisuals } from '@/resources/auctions';
 import type { NextPage } from 'next';
-import { useParams } from 'next/navigation';
+import { useRouter } from 'next/router';
+
 import Layout from '../_layout';
 
 const AuctionPage: NextPage = () => {
-  const params = useParams();
-  const auctionId = params?.auctionId ?? 'pending'; // TODO: Next.js weirdness
-  const { data: auction, isLoading: isLoadingAuction } = useAuction(auctionId);
+  const router = useRouter();
+  const auctionId = router.query.auctionId;
+
+  const { data: auctions, isLoading: isLoadingAuction } = useAuction(
+    auctionId as string
+  );
   const { data: proposeVisuals, isLoading: isLoadingProposeVisuals } =
-    useAuctionProposeVisuals(auctionId);
+    useAuctionProposeVisuals(auctionId as string);
+
+  const auction = auctions[0];
+
   return (
     <Layout>
-      <div>
-        <h2>Auction {auction?.auctionId}</h2>
-        <hr />
-        <h3>Proposals</h3>
-        <div className="flex flex-col gap-4">
-          {proposeVisuals?.map((proposeVisual) => (
-            <div key={proposeVisual.visualId}>
-              Proposal visualId {proposeVisual.visualId} by{' '}
-              {proposeVisual.proposer.address}
-            </div>
-          ))}
+      {isLoadingAuction && isLoadingProposeVisuals ? (
+        'Loading...'
+      ) : (
+        <div>
+          {auction && <AuctionCard auction={auction} />}
+          <hr />
+          <h3>Proposals</h3>
+          <div className="flex flex-col gap-4">
+            {proposeVisuals?.map((proposeVisual) => (
+              <div key={proposeVisual.visualId}>
+                Proposal visualId {proposeVisual.visualId} by{' '}
+                {proposeVisual.proposer.address}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </Layout>
   );
 };
