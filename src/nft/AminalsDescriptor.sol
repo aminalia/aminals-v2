@@ -86,6 +86,8 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
     // SVG Parts - TODO Need to add owner permissions
     // ------------------------------------------------------------------------
 
+    // TODO: need to record the sender and associate it with the svg in the registry
+
     // eg. 00a79d
     function addBackground(string memory background) public returns (uint256 id) {
         backgrounds.push(background);

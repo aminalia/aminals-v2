@@ -10,13 +10,14 @@ import {
 } from '@/components/ui/card';
 import Link from 'next/link';
 import { Auction } from '../../.graphclient';
+import ProposeButton from './actions/propose-button';
 
 export default function AuctionCard({ auction }: { auction: Auction }) {
   let { aminalOne, aminalTwo } = auction;
 
   return (
     <>
-      <Link href={`/auctions/${auction.auctionId}`}>
+  
         <Card>
           <CardMedia>
             <TokenUriImage tokenUri={aminalOne.tokenUri} />
@@ -36,11 +37,14 @@ export default function AuctionCard({ auction }: { auction: Auction }) {
                 <tr>{auction.finished ? 'Finished' : 'In Progress'} </tr>
                 <tr>Child ID: #{auction.childAminalId}</tr>
               </table>
+              <table>
+              <ProposeButton auctionId={auction.auctionId} />
+              </table>
             </CardContent>
             <CardFooter></CardFooter>
           </CardSection>
         </Card>
-      </Link>
+    
     </>
   );
 }
