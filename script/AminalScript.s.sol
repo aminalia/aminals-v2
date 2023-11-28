@@ -21,6 +21,13 @@ When updating the smart contract:
 - replace address of the aminal contract (everywhere) + address of the Visuals in subgraph.yaml
 - copy  the ABI in both frontend and graph folder:   out/ContractName.sol/ContractName.json --> frontend/deployments/ + graph/abis/
 
+reload the graph:
+graph auth --studio 06bd7ece44455bca6730ca207e1f7606
+cd graph
+npm i (if needed)
+graph codegen && graph build
+graph deploy --studio aminals
+
 When updating the graphQL:
 - .graphclientrc.yml --> change the endpoint
 npm run graphclient:build

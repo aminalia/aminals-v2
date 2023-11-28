@@ -9,7 +9,7 @@ import contract from '../../../deployments/Aminals.json';
 import { Button } from '../ui/button';
 
 const contractConfig = {
-  address: '0xD2DAEA08DA84CcDAD8Cf1348221155889D63E4b5' as Address,
+  address: '0x9fe1e3Fd1e936d5348094e861B76C9E9d527E541' as Address,
   abi: contract.abi as Abi,
 };
 

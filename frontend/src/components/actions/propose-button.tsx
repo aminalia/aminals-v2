@@ -8,7 +8,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 
 const contractConfig = {
-  address: '0xbdF4BE45f35Fd6a1BABF16c7C38c1403a569E5B0' as Address,
+  address: '0xb83Aa15dbe5636c656571DDbb74257a81f994B87' as Address,
   abi: contract.abi as Abi,
 };
 
