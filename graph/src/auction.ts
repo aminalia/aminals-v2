@@ -126,6 +126,37 @@ export function handleStartAuction(event: StartAuctionEvent): void {
     auction.transactionHash = event.transaction.hash;
 
     auction.save();
+
+    // Handle creation of proposals for the visual ids inherited from the parents
+    // There are a limited amount of IDs, so map shouldn't cause performance issues
+    // TODO may be we need to skip some of these?
+    for (let cat = 0; cat < event.params.visualIds.length; cat++) {
+      for (let id = 0; id < event.params.visualIds[cat].length; id++) {
+        let visualId = event.params.visualIds[cat][id];
+
+        // There should be a trait
+        let trait = Trait.load(Bytes.fromI32(visualId.toI32()));
+        if (trait) {
+          // Create new VisualProposal entity
+          let visual = new VisualProposal(
+            Bytes.fromI32(event.params.auctionId.toI32())
+              .concatI32(trait.catEnum)
+              .concatI32(trait.visualId.toI32())
+          );
+          visual.auction = auction.id;
+          visual.visual = trait.id;
+          visual.loveVote = BigInt.zero();
+          visual.removeVote = BigInt.zero();
+          visual.removed = false;
+
+          visual.blockNumber = event.block.number;
+          visual.blockTimestamp = event.block.timestamp;
+          visual.transactionHash = event.transaction.hash;
+
+          visual.save();
+        }
+      }
+    }
   }
 }
 
