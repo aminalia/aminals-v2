@@ -46,9 +46,8 @@ export default function VisualCard({ visual }: { visual: VisualProposal }) {
   );
 }
 
-// TODO fix SVG rendering
 function SvgStringToImage({ svg }: { svg: string }) {
-  let image = `<svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny" width="47.4" height="40.65" viewBox="21 18.5 158 135.5">${svg}</svg>`;
+  let image = `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" version="1.2" width="200" height="200" viewBox="0 0 1000 1000">${svg}</svg>`;
 
   return (
     <img
