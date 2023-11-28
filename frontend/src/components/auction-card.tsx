@@ -17,34 +17,34 @@ export default function AuctionCard({ auction }: { auction: Auction }) {
 
   return (
     <>
-  
-        <Card>
-          <CardMedia>
-            <TokenUriImage tokenUri={aminalOne.tokenUri} />
-          </CardMedia>
-          <CardMedia>
-            <TokenUriImage tokenUri={aminalTwo.tokenUri} />
-          </CardMedia>
-          <CardSection>
-            <CardHeader>
+      <Card>
+        <CardMedia>
+          <TokenUriImage tokenUri={aminalOne.tokenUri} />
+        </CardMedia>
+        <CardMedia>
+          <TokenUriImage tokenUri={aminalTwo.tokenUri} />
+        </CardMedia>
+        <CardSection>
+          <CardHeader>
+            <Link href={`/auctions/${auction.auctionId}`}>
               <CardTitle>Auction #{auction.auctionId}</CardTitle>
-              <CardDescription>
-                Between {aminalOne.aminalId} and {aminalTwo.aminalId}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <table>
-                <tr>{auction.finished ? 'Finished' : 'In Progress'} </tr>
-                <tr>Child ID: #{auction.childAminalId}</tr>
-              </table>
-              <table>
+            </Link>
+            <CardDescription>
+              Between {aminalOne.aminalId} and {aminalTwo.aminalId}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <table>
+              <tr>{auction.finished ? 'Finished' : 'In Progress'} </tr>
+              <tr>Child ID: #{auction.childAminalId}</tr>
+            </table>
+            <table>
               <ProposeButton auctionId={auction.auctionId} />
-              </table>
-            </CardContent>
-            <CardFooter></CardFooter>
-          </CardSection>
-        </Card>
-    
+            </table>
+          </CardContent>
+          <CardFooter></CardFooter>
+        </CardSection>
+      </Card>
     </>
   );
 }
