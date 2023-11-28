@@ -4,6 +4,8 @@ import { useAccount, useContractWrite, useNetwork } from 'wagmi';
 import { useState } from 'react';
 
 import contract from '../../../deployments/VisualsAuction.json';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 
 const contractConfig = {
   address: '0xbdF4BE45f35Fd6a1BABF16c7C38c1403a569E5B0' as Address,
@@ -37,26 +39,20 @@ export default function ProposeButton({ auctionId }: { auctionId: any }) {
   };
   const handleVizIdChange = (event: any) => {
     setVizId(event.target.value);
-  }
+  };
 
   return (
     <div>
-      <button
+      <Input placeholder="ID of the category" onChange={handleCatIdChange} />
+      <Input placeholder="ID of the Visual" onChange={handleVizIdChange} />
+      <Button
         type="button"
         onClick={action}
         disabled={!enabled}
         className={enabled ? '' : 'text-neutral-400'}
       >
-        Propose new Visual:
-      </button>
-      <input
-        placeholder="ID of the category"
-        onChange={handleCatIdChange}
-      />
-      <input
-        placeholder="ID of the Visual"
-        onChange={handleVizIdChange}
-      />
+        Propose New Visual
+      </Button>
     </div>
   );
 }

@@ -2,7 +2,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardMedia,
   CardSection,
@@ -48,7 +47,7 @@ export default function AuctionCard({ auction }: { auction: Auction }) {
               <ProposeButton auctionId={auction.auctionId} />
             </table>
           </CardContent>
-          <CardFooter></CardFooter>
+          {/* <CardFooter></CardFooter> */}
         </CardSection>
       </Card>
     </>

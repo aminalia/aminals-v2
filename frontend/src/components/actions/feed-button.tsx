@@ -6,6 +6,7 @@ import {
   usePrepareContractWrite,
 } from 'wagmi';
 import contract from '../../../deployments/Aminals.json';
+import { Button } from '../ui/button';
 
 const contractConfig = {
   address: '0xD2DAEA08DA84CcDAD8Cf1348221155889D63E4b5' as Address,
@@ -35,15 +36,13 @@ export default function FeedButton({ id }: { id: string }) {
   }
 
   return (
-    <div>
-    <button
+    <Button
       type="button"
       onClick={action}
       disabled={!enabled}
       className={enabled ? '' : 'text-neutral-400'}
     >
       Feed 0.01 ETH
-    </button>
-    </div>
+    </Button>
   );
 }

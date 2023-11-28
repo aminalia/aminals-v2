@@ -2,6 +2,7 @@ import type { Abi, Address } from 'abitype';
 import { useAccount, useContractWrite, useNetwork } from 'wagmi';
 
 import contract from '../../../deployments/VisualsAuction.json';
+import { Button } from '../ui/button';
 
 const contractConfig = {
   address: '0xbdF4BE45f35Fd6a1BABF16c7C38c1403a569E5B0' as Address,
@@ -34,15 +35,13 @@ export default function VoteButton({
   };
 
   return (
-    <div>
-      <button
-        type="button"
-        onClick={action}
-        disabled={!enabled}
-        className={enabled ? '' : 'text-neutral-400'}
-      >
-        [Vote on Visual {catId} - {vizId}]
-      </button>
-    </div>
+    <Button
+      type="button"
+      onClick={action}
+      disabled={!enabled}
+      className={enabled ? '' : 'text-neutral-400'}
+    >
+      [Vote on Visual {catId} - {vizId}]
+    </Button>
   );
 }
