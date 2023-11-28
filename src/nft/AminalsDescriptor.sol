@@ -37,6 +37,8 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         MISC
     }
 
+    event TraitAdded(uint256 visualId, VisualsCat catEnum, string svg, address creator);
+
     // ------------------------------------------------------------------------
     // NFT Descriptors
     // ------------------------------------------------------------------------
@@ -97,6 +99,9 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
     function addBackground(string memory background) public returns (uint256 id) {
         VisualTrait memory trait = VisualTrait(background, msg.sender);
         backgrounds.push(trait);
+
+        emit TraitAdded(backgrounds.length - 1, VisualsCat.BACK, background, msg.sender);
+
         return backgrounds.length - 1;
     }
 
@@ -106,6 +111,9 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         VisualTrait memory trait = VisualTrait(arm, msg.sender);
 
         arms.push(trait);
+
+        emit TraitAdded(arms.length - 1, VisualsCat.ARM, arm, msg.sender);
+
         return arms.length - 1;
     }
 
@@ -115,6 +123,9 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         VisualTrait memory trait = VisualTrait(tail, msg.sender);
 
         tails.push(trait);
+
+        emit TraitAdded(tails.length - 1, VisualsCat.TAIL, tail, msg.sender);
+
         return tails.length - 1;
     }
 
@@ -124,6 +135,9 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         VisualTrait memory trait = VisualTrait(ear, msg.sender);
 
         ears.push(trait);
+
+        emit TraitAdded(ears.length - 1, VisualsCat.EAR, ear, msg.sender);
+
         return ears.length - 1;
     }
 
@@ -133,6 +147,9 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         VisualTrait memory trait = VisualTrait(body, msg.sender);
 
         bodies.push(trait);
+
+        emit TraitAdded(bodies.length - 1, VisualsCat.BODY, body, msg.sender);
+
         return bodies.length - 1;
     }
 
@@ -143,6 +160,9 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         VisualTrait memory trait = VisualTrait(face, msg.sender);
 
         faces.push(trait);
+
+        emit TraitAdded(faces.length - 1, VisualsCat.FACE, face, msg.sender);
+
         return faces.length - 1;
     }
 
@@ -152,6 +172,9 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         VisualTrait memory trait = VisualTrait(mouth, msg.sender);
 
         mouths.push(trait);
+
+        emit TraitAdded(mouths.length - 1, VisualsCat.MOUTH, mouth, msg.sender);
+
         return mouths.length - 1;
     }
 
@@ -162,6 +185,9 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
         VisualTrait memory trait = VisualTrait(misc, msg.sender);
 
         miscs.push(trait);
+
+        emit TraitAdded(miscs.length - 1, VisualsCat.MISC, misc, msg.sender);
+
         return miscs.length - 1;
     }
 
