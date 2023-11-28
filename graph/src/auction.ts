@@ -12,7 +12,8 @@ import { store } from "@graphprotocol/graph-ts";
 
 import {
   Auction,
-  VisualsVote,
+  Trait,
+  VisualsVoteEvent as VisualsVote,
   VisualProposal,
   User
 } from "../generated/schema";
@@ -40,19 +41,23 @@ export function handleProposeVisual(event: ProposeVisualEvent): void {
     user.save();
   }
 
+  // Create new visual entity
   let visual = new VisualProposal(
     Bytes.fromI32(event.params.auctionId.toI32())
       .concatI32(event.params.catEnum)
       .concatI32(event.params.visualId.toI32())
   );
-  let contract = AminalsContract.bind(
-    Address.fromString(AMINALS_CONTRACT_ADDRESS)
-  );
-  if (visual) {
-    visual.auctionId = event.params.auctionId;
+
+  // Load auction
+  let auction = Auction.load(Bytes.fromI32(event.params.auctionId.toI32()));
+
+  // Load trait
+  let trait = Trait.load(Bytes.fromI32(event.params.visualId.toI32()));
+
+  if (visual && trait && auction) {
+    visual.auction = auction.id;
     visual.proposer = user.id;
-    visual.visualId = event.params.visualId;
-    visual.catEnum = event.params.catEnum;
+    visual.visual = trait.id;
     visual.loveVote = BigInt.zero();
     visual.removeVote = BigInt.zero();
     visual.removed = false;
@@ -60,17 +65,6 @@ export function handleProposeVisual(event: ProposeVisualEvent): void {
     visual.blockNumber = event.block.number;
     visual.blockTimestamp = event.block.timestamp;
     visual.transactionHash = event.transaction.hash;
-
-    let callResult = contract.try_getVisuals(
-      BigInt.fromI32(event.params.catEnum),
-      event.params.visualId
-    );
-    if (callResult.reverted) {
-      visual.svg = "";
-      log.info("getVisuals reverted", []);
-    } else {
-      visual.svg = callResult.value;
-    }
 
     visual.save();
   }

@@ -390,6 +390,16 @@ export class User extends Entity {
       "proposedVisuals"
     );
   }
+
+  get traitsCreated(): TraitLoader {
+    return new TraitLoader(
+      "User",
+      this.get("id")!
+        .toBytes()
+        .toHexString(),
+      "traitsCreated"
+    );
+  }
 }
 
 export class Relationship extends Entity {
@@ -1426,6 +1436,16 @@ export class Auction extends Entity {
     this.set("finished", Value.fromBoolean(value));
   }
 
+  get visuals(): VisualProposalLoader {
+    return new VisualProposalLoader(
+      "Auction",
+      this.get("id")!
+        .toBytes()
+        .toHexString(),
+      "visuals"
+    );
+  }
+
   get winningIds(): Array<BigInt> | null {
     let value = this.get("winningIds");
     if (!value || value.kind == ValueKind.NULL) {
@@ -1483,6 +1503,104 @@ export class Auction extends Entity {
   }
 }
 
+export class Trait extends Entity {
+  constructor(id: Bytes) {
+    super();
+    this.set("id", Value.fromBytes(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Trait entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.BYTES,
+        `Entities of type Trait must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Trait", id.toBytes().toHexString(), this);
+    }
+  }
+
+  static loadInBlock(id: Bytes): Trait | null {
+    return changetype<Trait | null>(
+      store.get_in_block("Trait", id.toHexString())
+    );
+  }
+
+  static load(id: Bytes): Trait | null {
+    return changetype<Trait | null>(store.get("Trait", id.toHexString()));
+  }
+
+  get id(): Bytes {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set id(value: Bytes) {
+    this.set("id", Value.fromBytes(value));
+  }
+
+  get visualId(): BigInt {
+    let value = this.get("visualId");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set visualId(value: BigInt) {
+    this.set("visualId", Value.fromBigInt(value));
+  }
+
+  get creator(): Bytes | null {
+    let value = this.get("creator");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set creator(value: Bytes | null) {
+    if (!value) {
+      this.unset("creator");
+    } else {
+      this.set("creator", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get catEnum(): i32 {
+    let value = this.get("catEnum");
+    if (!value || value.kind == ValueKind.NULL) {
+      return 0;
+    } else {
+      return value.toI32();
+    }
+  }
+
+  set catEnum(value: i32) {
+    this.set("catEnum", Value.fromI32(value));
+  }
+
+  get svg(): string {
+    let value = this.get("svg");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set svg(value: string) {
+    this.set("svg", Value.fromString(value));
+  }
+}
+
 export class VisualProposal extends Entity {
   constructor(id: Bytes) {
     super();
@@ -1526,34 +1644,8 @@ export class VisualProposal extends Entity {
     this.set("id", Value.fromBytes(value));
   }
 
-  get auctionId(): BigInt {
-    let value = this.get("auctionId");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set auctionId(value: BigInt) {
-    this.set("auctionId", Value.fromBigInt(value));
-  }
-
-  get visualId(): BigInt {
-    let value = this.get("visualId");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set visualId(value: BigInt) {
-    this.set("visualId", Value.fromBigInt(value));
-  }
-
-  get proposer(): Bytes {
-    let value = this.get("proposer");
+  get auction(): Bytes {
+    let value = this.get("auction");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -1561,21 +1653,38 @@ export class VisualProposal extends Entity {
     }
   }
 
-  set proposer(value: Bytes) {
-    this.set("proposer", Value.fromBytes(value));
+  set auction(value: Bytes) {
+    this.set("auction", Value.fromBytes(value));
   }
 
-  get catEnum(): i32 {
-    let value = this.get("catEnum");
+  get visual(): Bytes {
+    let value = this.get("visual");
     if (!value || value.kind == ValueKind.NULL) {
-      return 0;
+      throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toI32();
+      return value.toBytes();
     }
   }
 
-  set catEnum(value: i32) {
-    this.set("catEnum", Value.fromI32(value));
+  set visual(value: Bytes) {
+    this.set("visual", Value.fromBytes(value));
+  }
+
+  get proposer(): Bytes | null {
+    let value = this.get("proposer");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set proposer(value: Bytes | null) {
+    if (!value) {
+      this.unset("proposer");
+    } else {
+      this.set("proposer", Value.fromBytes(<Bytes>value));
+    }
   }
 
   get loveVote(): BigInt {
@@ -1615,19 +1724,6 @@ export class VisualProposal extends Entity {
 
   set removed(value: boolean) {
     this.set("removed", Value.fromBoolean(value));
-  }
-
-  get svg(): string {
-    let value = this.get("svg");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toString();
-    }
-  }
-
-  set svg(value: string) {
-    this.set("svg", Value.fromString(value));
   }
 
   get blockNumber(): BigInt {
@@ -1670,7 +1766,7 @@ export class VisualProposal extends Entity {
   }
 }
 
-export class VisualsVote extends Entity {
+export class VisualsVoteEvent extends Entity {
   constructor(id: Bytes) {
     super();
     this.set("id", Value.fromBytes(id));
@@ -1678,25 +1774,25 @@ export class VisualsVote extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save VisualsVote entity without an ID");
+    assert(id != null, "Cannot save VisualsVoteEvent entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type VisualsVote must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type VisualsVoteEvent must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("VisualsVote", id.toBytes().toHexString(), this);
+      store.set("VisualsVoteEvent", id.toBytes().toHexString(), this);
     }
   }
 
-  static loadInBlock(id: Bytes): VisualsVote | null {
-    return changetype<VisualsVote | null>(
-      store.get_in_block("VisualsVote", id.toHexString())
+  static loadInBlock(id: Bytes): VisualsVoteEvent | null {
+    return changetype<VisualsVoteEvent | null>(
+      store.get_in_block("VisualsVoteEvent", id.toHexString())
     );
   }
 
-  static load(id: Bytes): VisualsVote | null {
-    return changetype<VisualsVote | null>(
-      store.get("VisualsVote", id.toHexString())
+  static load(id: Bytes): VisualsVoteEvent | null {
+    return changetype<VisualsVoteEvent | null>(
+      store.get("VisualsVoteEvent", id.toHexString())
     );
   }
 
@@ -1913,5 +2009,23 @@ export class VisualProposalLoader extends Entity {
   load(): VisualProposal[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<VisualProposal[]>(value);
+  }
+}
+
+export class TraitLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): Trait[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<Trait[]>(value);
   }
 }

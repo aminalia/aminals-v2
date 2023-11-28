@@ -34,6 +34,7 @@ type User @entity {
   address: Bytes! # address
   lovers: [Relationship]! @derivedFrom(field: "user")
   proposedVisuals: [VisualProposal]! @derivedFrom(field: "proposer")
+  traitsCreated: [Trait]! @derivedFrom(field: "creator")
 }
 
 type Relationship @entity {
@@ -119,6 +120,7 @@ type Auction @entity {
   childAminalId: BigInt! # uint256
   totalLove: BigInt! # uint256
   finished: Boolean!
+  visuals: [VisualProposal!]! @derivedFrom(field: "auction")
 
   # End data
   winningIds: [BigInt!] # uint256[8]
@@ -128,22 +130,30 @@ type Auction @entity {
   transactionHash: Bytes!
 }
 
+type Trait @entity {
+  id: Bytes!
+  visualId: BigInt! # uint256
+  creator: User
+  catEnum: Int! # uint8
+  svg: String!
+}
+
 type VisualProposal @entity {
   id: Bytes!
-  auctionId: BigInt! # uint256
-  visualId: BigInt! # uint256
-  proposer: User! # address
-  catEnum: Int! # uint8
+  auction: Auction!
+  visual: Trait!
+  # There won't proposer sometimes if one of the traits
+  # inherited from the parent
+  proposer: User # address
   loveVote: BigInt! # uint256
   removeVote: BigInt! # uint256
   removed: Boolean!
-  svg: String!
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
 
-type VisualsVote @entity(immutable: true) {
+type VisualsVoteEvent @entity(immutable: true) {
   id: Bytes!
   auctionId: BigInt! # uint256
   visualId: BigInt! # uint256

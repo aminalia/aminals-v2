@@ -10,6 +10,7 @@ import {
   SkillVote as SkillVoteEvent,
   SpawnAminal as SpawnAminalEvent,
   Squeak as SqueakEvent,
+  TraitAdded as TraitAddedEvent,
 } from "../generated/Aminals/Aminals";
 import {
   Aminal,
@@ -20,6 +21,7 @@ import {
   Skill,
   SkillVote,
   Squeak,
+  Trait,
   User,
 } from "../generated/schema";
 
@@ -269,4 +271,13 @@ export function handleSqueak(event: SqueakEvent): void {
   }
 
   entity.save();
+}
+
+export function handleTraitAdded(event: TraitAddedEvent): void {
+  let trait = new Trait(Bytes.fromI32(event.params.visualId.toI32()));
+  trait.creator = event.params.creator;
+  trait.catEnum = event.params.catEnum;
+  trait.svg = event.params.svg;
+  trait.visualId = event.params.visualId;
+  trait.save();
 }
