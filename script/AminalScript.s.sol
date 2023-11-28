@@ -106,9 +106,11 @@ contract AminalScript is Script {
             '<rect width="323" height="126" x="338" y="289" fill="#eba220" rx="63" ry="63"/><circle cx="388" cy="352" r="41" fill="#f5d235"/><circle cx="388" cy="352" r="38" fill="#0a3035"/><circle cx="367" cy="331" r="3" fill="#fff"/><circle cx="374" cy="325" r="1" fill="#fff"/><circle cx="612" cy="352" r="41" fill="#e01f26"/><circle cx="612" cy="352" r="38" fill="#0a3035"/><circle cx="590" cy="331" r="3" fill="#fff"/><circle cx="597" cy="325" r="1" fill="#fff"/><g fill="#923018"><circle cx="495" cy="307" r="3"/><circle cx="505" cy="307" r="3"/></g>'
         );
         aminals.addMouth(
-            '<rect width="77" height="45" x="461" y="335" fill="#0a3035" rx="22" ry="22"/><path fill="#fffbd0" d="M492 336c0 2-2 5-5 5s-5-2-5-5M518 336c0 2-2 5-5 5s-5-2-5-5"/><circle cx="499" cy="364" r="13" fill="#001a2a"/><path fill="#7c0506" d="M485 380c0-8 7-12 14-12s14 4 14 12"/><path fill="#1c4349" d="m474 350-4 8 1 9M481 351l-4 8c0 3 0 6 2 8M523 350l4 8-1 9M516 351l4 8c0 3 0 6-2 8"/><path fill="#eba220" d="m530 17-51 83-8-20 81 9-67 78-9-20 66 5 17 1-77 60 54-59 4 11-96 8 71-83 8 20-84-9 89-84Z"/>'
+            '<g id="MOUTH"><rect width="77" height="45" x="461" y="335" fill="#0a3035" rx="22" ry="22"/><path fill="#fffbd0" d="M492 336c0 2-2 5-5 5s-5-2-5-5M518 336c0 2-2 5-5 5s-5-2-5-5"/><circle cx="499" cy="364" r="13" fill="#001a2a"/><path fill="#7c0506" d="M485 380c0-8 7-12 14-12s14 4 14 12"/></g>'
         );
-        aminals.addMisc("");
+        aminals.addMisc(
+            '<g id="MISC"><path fill="#1c4349" d="m474 350-4 8 1 9M481 351l-4 8c0 3 0 6 2 8M523 350l4 8-1 9M516 351l4 8c0 3 0 6-2 8"/><path fill="#eba220" d="m530 17-51 83-8-20 81 9-67 78-9-20 66 5 17 1-77 60 54-59 4 11-96 8 71-83 8 20-84-9 89-84Z"/></g>'
+        );
 
         spawnInitialAminals(aminals);
 

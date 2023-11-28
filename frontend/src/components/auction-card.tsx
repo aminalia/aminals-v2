@@ -11,6 +11,7 @@ import {
 import Link from 'next/link';
 import { Auction } from '../../.graphclient';
 import ProposeButton from './actions/propose-button';
+import EndAuctionButton from './actions/endauction-button';
 
 export default function AuctionCard({ auction }: { auction: Auction }) {
   let { aminalOne, aminalTwo } = auction;
@@ -35,8 +36,13 @@ export default function AuctionCard({ auction }: { auction: Auction }) {
           </CardHeader>
           <CardContent>
             <table>
+              <td>
               <tr>{auction.finished ? 'Finished' : 'In Progress'} </tr>
               <tr>Child ID: #{auction.childAminalId}</tr>
+              </td>
+              <td>
+                <EndAuctionButton auctionId={auction.auctionId} />
+              </td>
             </table>
             <table>
               <ProposeButton auctionId={auction.auctionId} />
