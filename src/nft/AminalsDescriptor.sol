@@ -136,7 +136,7 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
 
         ears.push(trait);
 
-        emit TraitAdded(ears.length - 1, VisualsCat.EAR, ear, msg.sender);
+        emit TraitAdded(ears.length - 1, VisualsCat.EARS, ear, msg.sender);
 
         return ears.length - 1;
     }
