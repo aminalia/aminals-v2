@@ -40,11 +40,14 @@ query AuctionProposeVisualList($auctionId: BigInt) {
     proposer {
       address
     }
+    auctionId
     visualId
     catEnum
     blockNumber
     blockTimestamp
     transactionHash
+    svg
+    loveVote
   }
 }
 
@@ -55,6 +58,7 @@ query ProposeVisualList($first: Int = 100, $skip: Int = 0) {
     orderBy: auctionId
     orderDirection: desc
   ) {
+    auctionId
     proposer {
       address
     }
@@ -63,5 +67,7 @@ query ProposeVisualList($first: Int = 100, $skip: Int = 0) {
     blockNumber
     blockTimestamp
     transactionHash
+    svg
+    loveVote
   }
 }
