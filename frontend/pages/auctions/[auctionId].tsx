@@ -15,15 +15,13 @@ const AuctionPage: NextPage = () => {
   const { data: proposeVisuals, isLoading: isLoadingProposeVisuals } =
     useAuctionProposeVisuals(auctionId as string);
 
-  const auction = auctions[0];
-
   return (
     <Layout>
       {isLoadingAuction && isLoadingProposeVisuals ? (
         'Loading...'
       ) : (
         <div>
-          {auction && <AuctionCard auction={auction} />}
+          {auctions && <AuctionCard auction={auctions[0]} />}
           <hr />
           <h3>Proposals</h3>
           <div className="flex flex-col gap-4">

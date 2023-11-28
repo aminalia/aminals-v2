@@ -26,7 +26,7 @@ export const useAuctions = () => {
 };
 
 export const useAuction = (auctionId: string) => {
-  return useQuery<Auction>({
+  return useQuery<Auction[]>({
     queryKey: [BASE_KEY, auctionId ?? ''],
     queryFn: async () => {
       const response = await execute(AuctionDocument, {
