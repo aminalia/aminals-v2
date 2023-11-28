@@ -3,6 +3,9 @@ import { useAuction, useAuctionProposeVisuals } from '@/resources/auctions';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 
+import VoteButton from '../../src/components/actions/vote-button';
+
+
 import Layout from '../_layout';
 
 const AuctionPage: NextPage = () => {
@@ -26,12 +29,17 @@ const AuctionPage: NextPage = () => {
           <h3>Proposals</h3>
           <div className="flex flex-col gap-4">
             {proposeVisuals?.map((proposeVisual) => (
+              <>
               <div key={proposeVisual.visualId}>
                 Proposal visualId {proposeVisual.visualId} by{' '}
                 {proposeVisual.proposer.address}
               </div>
+              <VoteButton auctionId={auctionId} catId={proposeVisual.catEnum} vizId={proposeVisual.visualId} />
+              </>
             ))}
+
           </div>
+
         </div>
       )}
     </Layout>
