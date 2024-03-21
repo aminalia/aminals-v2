@@ -2,7 +2,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardMedia,
   CardSection,
@@ -10,8 +9,8 @@ import {
 } from '@/components/ui/card';
 import Link from 'next/link';
 import { Auction } from '../../.graphclient';
-import ProposeButton from './actions/propose-button';
 import EndAuctionButton from './actions/endauction-button';
+import ProposeButton from './actions/propose-button';
 
 export default function AuctionCard({ auction }: { auction: Auction }) {
   let { aminalOne, aminalTwo } = auction;
@@ -37,8 +36,8 @@ export default function AuctionCard({ auction }: { auction: Auction }) {
           <CardContent>
             <table>
               <td>
-              <tr>{auction.finished ? 'Finished' : 'In Progress'} </tr>
-              <tr>Child ID: #{auction.childAminalId}</tr>
+                <tr>{auction.finished ? 'Finished' : 'In Progress'} </tr>
+                <tr>Child ID: #{auction.childAminalId}</tr>
               </td>
               <td>
                 <EndAuctionButton auctionId={auction.auctionId} />
@@ -48,7 +47,7 @@ export default function AuctionCard({ auction }: { auction: Auction }) {
               <ProposeButton auctionId={auction.auctionId} />
             </table>
           </CardContent>
-          <CardFooter></CardFooter>
+          {/* <CardFooter></CardFooter> */}
         </CardSection>
       </Card>
     </>

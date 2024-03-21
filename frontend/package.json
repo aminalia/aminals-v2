@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "prettier": "npx prettier --check .",
+    "prettier:fix": "npx prettier --write .",
     "typecheck": "tsc --pretty --noEmit",
     "graphclient:build": "graphclient build"
   },

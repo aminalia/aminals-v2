@@ -18,10 +18,7 @@ contract BaseTest is Test {
         VisualsAuction _visualsAuction = new VisualsAuction(address(randomnessSource), address(1));
         AminalProposals _proposals = new AminalProposals();
 
-        Aminals _aminals = new Aminals(
-            address(_visualsAuction),
-            address(_proposals)
-        );
+        Aminals _aminals = new Aminals(address(_visualsAuction), address(_proposals));
 
         _visualsAuction.setup(address(_aminals));
         _proposals.setup(address(_aminals));

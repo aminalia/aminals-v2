@@ -1,8 +1,6 @@
 import type { Abi, Address } from 'abitype';
 import { useAccount, useContractWrite, useNetwork } from 'wagmi';
 
-import { useState } from 'react';
-
 import contract from '../../../deployments/VisualsAuction.json';
 
 const contractConfig = {
@@ -27,8 +25,6 @@ export default function EndAuctionButton({ auctionId }: { auctionId: any }) {
     }
   };
 
- 
-
   return (
     <div>
       <button
@@ -39,7 +35,6 @@ export default function EndAuctionButton({ auctionId }: { auctionId: any }) {
       >
         [End Auction]
       </button>
-    
     </div>
   );
 }
