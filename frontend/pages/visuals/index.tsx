@@ -9,10 +9,10 @@ const VisualsPage: NextPage = () => {
   return (
     <Layout>
       <div className="flex flex-col gap-4">
-        { isLoadingVisuals || !visuals  
-        ?  'Loading...' : 
-        visuals.map((visual) => (
-          <VisualCard key={visual.visualId} visual={visual}></VisualCard>
+        {isLoadingVisuals || !visuals
+          ? 'Loading...'
+          : visuals.map((visual) => (
+              <VisualCard key={visual.visualId} visual={visual}></VisualCard>
               // <div key={visual.visualId}>
               //   Visual {visual.visualId} by {visual.proposer.address}{' '}
               //   {visual.removed ? 'Removed' : 'Not Removed'} Love Vote:{' '}
