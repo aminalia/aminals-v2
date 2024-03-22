@@ -1,8 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import {
-  GenesListDocument,
-  execute,
-} from '../../.graphclient';
+import { GenesListDocument, execute } from '../../.graphclient';
 
 const BASE_KEY = 'visuals';
 
@@ -15,7 +12,7 @@ export const useGenes = () => {
         skip: 0,
       });
       if (response.errors) throw new Error(response.errors[0].message);
-      console.log("response.... visuals == ", response.data.visualProposals);
+      console.log('response.... visuals == ', response.data.visualProposals);
       return response.data.visualProposals;
     },
   });

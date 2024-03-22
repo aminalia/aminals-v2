@@ -12,7 +12,7 @@ import { Auction } from '../../.graphclient';
 import EndAuctionButton from './actions/endauction-button';
 import ProposeButton from './actions/propose-button';
 
-import '../../styles/index.module.css'
+import '../../styles/index.module.css';
 
 export default function AuctionCard({ auction }: { auction: Auction }) {
   let { aminalOne, aminalTwo } = auction;
@@ -29,7 +29,9 @@ export default function AuctionCard({ auction }: { auction: Auction }) {
         <CardSection>
           <CardHeader>
             <Link href={`/auctions/${auction.auctionId}`}>
-              <CardTitle className="underline">Auction #{auction.auctionId}</CardTitle>
+              <CardTitle className="underline">
+                Auction #{auction.auctionId}
+              </CardTitle>
             </Link>
             <CardDescription>
               Between {aminalOne.aminalId} and {aminalTwo.aminalId}
@@ -38,8 +40,8 @@ export default function AuctionCard({ auction }: { auction: Auction }) {
           <CardContent>
             <table>
               <td>
-              <tr>{auction.finished ? 'Finished' : 'In Progress'} </tr>
-              <tr>Child ID: #{auction.childAminalId}</tr>
+                <tr>{auction.finished ? 'Finished' : 'In Progress'} </tr>
+                <tr>Child ID: #{auction.childAminalId}</tr>
               </td>
               <td>
                 <EndAuctionButton auctionId={auction.auctionId} />
@@ -54,7 +56,6 @@ export default function AuctionCard({ auction }: { auction: Auction }) {
     </>
   );
 }
-
 
 export function AuctionCardActive({ auction }: { auction: Auction }) {
   let { aminalOne, aminalTwo } = auction;
@@ -98,7 +99,6 @@ export function AuctionCardActive({ auction }: { auction: Auction }) {
   );
 }
 
-
 export function AuctionCardInActive({ auction }: { auction: Auction }) {
   let { aminalOne, aminalTwo } = auction;
 
@@ -113,7 +113,7 @@ export function AuctionCardInActive({ auction }: { auction: Auction }) {
         </CardMedia>
         <CardSection>
           <CardHeader>
-            <Link href={`/auctions/${auction.auctionId}`} >
+            <Link href={`/auctions/${auction.auctionId}`}>
               <CardTitle>Auction #{auction.auctionId}</CardTitle>
             </Link>
             <CardDescription>
@@ -123,10 +123,11 @@ export function AuctionCardInActive({ auction }: { auction: Auction }) {
           <CardContent>
             <table>
               <td>
-              <tr>{auction.finished ? 'Finished' : 'In Progress'} </tr>
-              <tr>Child ID: #{auction.childAminalId}</tr>
+                <tr>{auction.finished ? 'Finished' : 'In Progress'} </tr>
+                <tr>Child ID: #{auction.childAminalId}</tr>
               </td>
-              <td>u
+              <td>
+                u
                 <EndAuctionButton auctionId={auction.auctionId} />
               </td>
             </table>
@@ -140,7 +141,6 @@ export function AuctionCardInActive({ auction }: { auction: Auction }) {
     </>
   );
 }
-
 
 function TokenUriImage({ tokenUri }: { tokenUri: string }) {
   let image,

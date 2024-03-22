@@ -1,10 +1,9 @@
 import VisualCard from '@/components/visual-card';
 
-import { useVisuals } from '@/resources/visuals';
 import { useAuctions } from '@/resources/auctions';
+import { useVisuals } from '@/resources/visuals';
 import type { NextPage } from 'next';
 import Layout from '../_layout';
-
 
 // const VisualsPage: NextPage = () => {
 //   const { data: visuals, isLoading: isLoadingVisuals } = useGenes();
@@ -12,7 +11,7 @@ import Layout from '../_layout';
 //   return (
 //     <Layout>
 //       <div className="flex flex-col gap-4">
-//         {isLoadingVisuals || !visuals 
+//         {isLoadingVisuals || !visuals
 //           ? 'Loading...'
 //           : <>
 //               <div>
@@ -22,7 +21,7 @@ import Layout from '../_layout';
 //                     <VisualCard key={visual.visualId} visual={visual} />
 //                   ))}
 //               </div>
-//               </> 
+//               </>
 //         }
 //       </div>
 //     </Layout>
@@ -30,47 +29,50 @@ import Layout from '../_layout';
 
 // }
 
-
 const VisualsPage: NextPage = () => {
   const { data: visuals, isLoading: isLoadingVisuals } = useVisuals();
   const { data: auctions, isLoading: isLoadingAuctions } = useAuctions();
 
-  const activeAuctions = auctions?.filter(auction => !auction.finished) || [];
-  const inactiveAuctions = auctions?.filter(auction => auction.finished) || [];
+  const activeAuctions = auctions?.filter((auction) => !auction.finished) || [];
+  const inactiveAuctions =
+    auctions?.filter((auction) => auction.finished) || [];
 
-  console.log("Inactive auctions == ", inactiveAuctions);
+  console.log('Inactive auctions == ', inactiveAuctions);
 
   // const activeAuctionVisualIds = activeAuctions.map(auction => auction.visualId);
   // const inactiveAuctionVisualIds = inactiveAuctions.map(auction => auction.visualId);
-  const activeIds = visuals?.filter(visual => activeAuctions.some(auction => auction.auctionId === visual.auctionId));
-  const inactiveIds = visuals?.filter(visual => inactiveAuctions.some(auction => auction.auctionId === visual.auctionId));
-  console.log("Inactive IDs === ", inactiveIds);
+  const activeIds = visuals?.filter((visual) =>
+    activeAuctions.some((auction) => auction.auctionId === visual.auctionId)
+  );
+  const inactiveIds = visuals?.filter((visual) =>
+    inactiveAuctions.some((auction) => auction.auctionId === visual.auctionId)
+  );
+  console.log('Inactive IDs === ', inactiveIds);
 
   return (
     <Layout>
       <div className="flex flex-col gap-4">
-        {isLoadingVisuals || isLoadingAuctions || !visuals || !auctions
-          ? 'Loading...'
-          : <>
-              <div>
-                <h2>Proposed Visuals from Active Auctions:</h2>
-                { activeIds
-                  .map((visual) => (
-                    <VisualCard key={visual.visualId} visual={visual} />
-                  ))}
-              </div>
-              <div>
-                <h2>Proposed Visuals from Inactive Auctions:</h2>
-                { inactiveIds
-                  .map((visual) => (
-                    <VisualCard key={visual.visualId} visual={visual} />
-                  ))}
-              </div>
-            </>
-        }
+        {isLoadingVisuals || isLoadingAuctions || !visuals || !auctions ? (
+          'Loading...'
+        ) : (
+          <>
+            <div>
+              <h2>Proposed Visuals from Active Auctions:</h2>
+              {activeIds.map((visual) => (
+                <VisualCard key={visual.visualId} visual={visual} />
+              ))}
+            </div>
+            <div>
+              <h2>Proposed Visuals from Inactive Auctions:</h2>
+              {inactiveIds.map((visual) => (
+                <VisualCard key={visual.visualId} visual={visual} />
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </Layout>
   );
-}; 
+};
 
 export default VisualsPage;

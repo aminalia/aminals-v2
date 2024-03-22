@@ -22,35 +22,34 @@ export default function AminalCard({ aminal }: { aminal: Aminal }) {
           {/* <CardDescription>{aminal.name}</CardDescription> */}
         </CardHeader>
         <CardContent>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <table>
+              <td>
+                <b>Informations:</b>
+                <br />
+                Love: {aminal.totalLove / 1e18}
+                <br />
+                {aminal.lovers[0] && (
+                  <>
+                    Love for YOU: {aminal.lovers[0].love / 1e18}
+                    <br />
+                  </>
+                )}
+                Energy: {aminal.energy / 1e18}
+                <br />
+                Breedable with:{' '}
+                {aminal.breedableWith.map((lovebuddy) => (
+                  <>{lovebuddy?.aminalTwo.aminalId}, </>
+                ))}
+              </td>
+            </table>
 
-          <table>
-            <td>
-            <b>Informations:</b><br/>
-              Love: {aminal.totalLove / 1e18}
+            <div>
+              <b>Actions:</b>
               <br />
-              {aminal.lovers[0] && (
-                <>
-                  Love for YOU: {aminal.lovers[0].love / 1e18}
-                  <br />
-                </>
-              )}
-              Energy: {aminal.energy / 1e18}
-              <br />
-              Breedable with:{' '}
-              {aminal.breedableWith.map((lovebuddy) => (
-                <>{lovebuddy?.aminalTwo.aminalId}, </>
-              ))}
-            </td>
-          </table>
-
-          <div>
-          <b>Actions:</b>
-          <br />
-          <FeedButton id={aminal.aminalId} />
-          <BreedButton id1={aminal.aminalId} />
-          </div>
-
+              <FeedButton id={aminal.aminalId} />
+              <BreedButton id1={aminal.aminalId} />
+            </div>
           </div>
         </CardContent>
         {/* <CardFooter></CardFooter> */}
