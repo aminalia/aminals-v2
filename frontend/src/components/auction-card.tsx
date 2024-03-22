@@ -13,7 +13,52 @@ import { Auction } from '../../.graphclient';
 import ProposeButton from './actions/propose-button';
 import EndAuctionButton from './actions/endauction-button';
 
+import '../../styles/index.module.css'
+
 export default function AuctionCard({ auction }: { auction: Auction }) {
+  let { aminalOne, aminalTwo } = auction;
+
+  return (
+    <>
+      <Card>
+        <CardMedia>
+          <TokenUriImage tokenUri={aminalOne.tokenUri} />
+        </CardMedia>
+        <CardMedia>
+          <TokenUriImage tokenUri={aminalTwo.tokenUri} />
+        </CardMedia>
+        <CardSection>
+          <CardHeader>
+            <Link href={`/auctions/${auction.auctionId}`}>
+              <CardTitle className="underline">Auction #{auction.auctionId}</CardTitle>
+            </Link>
+            <CardDescription>
+              Between {aminalOne.aminalId} and {aminalTwo.aminalId}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <table>
+              <td>
+              <tr>{auction.finished ? 'Finished' : 'In Progress'} </tr>
+              <tr>Child ID: #{auction.childAminalId}</tr>
+              </td>
+              <td>
+                <EndAuctionButton auctionId={auction.auctionId} />
+              </td>
+            </table>
+            <table>
+              <ProposeButton auctionId={auction.auctionId} />
+            </table>
+          </CardContent>
+          <CardFooter></CardFooter>
+        </CardSection>
+      </Card>
+    </>
+  );
+}
+
+
+export function AuctionCardActive({ auction }: { auction: Auction }) {
   let { aminalOne, aminalTwo } = auction;
 
   return (
@@ -54,6 +99,50 @@ export default function AuctionCard({ auction }: { auction: Auction }) {
     </>
   );
 }
+
+
+export function AuctionCardInActive({ auction }: { auction: Auction }) {
+  let { aminalOne, aminalTwo } = auction;
+
+  return (
+    <>
+      <Card>
+        <CardMedia>
+          <TokenUriImage tokenUri={aminalOne.tokenUri} />
+        </CardMedia>
+        <CardMedia>
+          <TokenUriImage tokenUri={aminalTwo.tokenUri} />
+        </CardMedia>
+        <CardSection>
+          <CardHeader>
+            <Link href={`/auctions/${auction.auctionId}`} >
+              <CardTitle>Auction #{auction.auctionId}</CardTitle>
+            </Link>
+            <CardDescription>
+              Between {aminalOne.aminalId} and {aminalTwo.aminalId}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <table>
+              <td>
+              <tr>{auction.finished ? 'Finished' : 'In Progress'} </tr>
+              <tr>Child ID: #{auction.childAminalId}</tr>
+              </td>
+              <td>u
+                <EndAuctionButton auctionId={auction.auctionId} />
+              </td>
+            </table>
+            <table>
+              <ProposeButton auctionId={auction.auctionId} />
+            </table>
+          </CardContent>
+          <CardFooter></CardFooter>
+        </CardSection>
+      </Card>
+    </>
+  );
+}
+
 
 function TokenUriImage({ tokenUri }: { tokenUri: string }) {
   let image,

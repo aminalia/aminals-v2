@@ -18,16 +18,13 @@ export default function VisualCard({ visual }: { visual: VisualProposal }) {
       </CardMedia>
       <CardSection>
         <CardHeader>
-          <CardTitle>Visual #{visual.visualId}</CardTitle>
+          <CardTitle>Category #{visual.catEnum} Visual #{visual.visualId} on Auction #{visual.auctionId}</CardTitle>
           {/* <CardDescription>{visual.name}</CardDescription> */}
         </CardHeader>
         <CardContent>
           <table>
             <tr>
               <td>Proposer: {visual.proposer.address}</td>
-            </tr>
-            <tr>
-              <td>Category: {visual.catEnum}</td>
             </tr>
             <tr>
               <td>Votes: {visual.loveVote}</td>

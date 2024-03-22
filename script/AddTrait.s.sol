@@ -12,6 +12,8 @@ forge script script/AminalScript.s.sol:AminalScript --broadcast --verify -vvvv
  
 forge script script/AminalScript.s.sol:AminalScript --chain-id 5  --rpc-url "https://goerli.blockpi.network/v1/rpc/public" --broadcast  --verify -vvvv
 
+forge script  script/AddTrait.s.sol:AminalScript --chain-id 11155111 --rpc-url "https://ethereum-sepolia.publicnode.com" --broadcast --verify -vvv
+
 */
 
 contract AminalScript is Script {
@@ -26,13 +28,13 @@ contract AminalScript is Script {
 
         // third aminal
 
-        // uint256 faceTraitId = aminals.addFace(
-        //     '<g id="FACE"><path d="M673 351c0 75-26 111-175 115-133 4-171-44-171-119s85-156 174-156 172 85 172 160z" fill="#70968c"/><path d="M659 345c0 51-24 59-163 62-123 2-159-14-159-66s76-90 159-90 163 42 163 94z" fill="#438786"/><circle cx="389" cy="343" r="43" fill="#265a5d"/><path d="M393 308a36 36 0 1 0 0 71 36 36 0 0 0 0-71zm-1 39c-15 0-27-8-27-18s12-18 27-18 27 8 27 18-12 18-27 18z" fill="#271b27"/><ellipse cx="388" cy="329" fill="#2b565b" rx="27" ry="18"/><circle cx="369" cy="324" r="3" fill="#fff"/><circle cx="376" cy="319" r="2" fill="#fff"/><circle cx="500" cy="300" r="43" fill="#265a5d"/><path d="M504 265a36 36 0 1 0 0 71 36 36 0 0 0 0-71zm-1 39c-15 0-27-8-27-18s12-18 27-18 27 8 27 18-12 18-27 18z" fill="#271b27"/><ellipse cx="499" cy="286" fill="#2b565b" rx="27" ry="18"/><circle cx="480" cy="281" r="3" fill="#fff"/><circle cx="486" cy="276" r="2" fill="#fff"/><circle cx="604" cy="343" r="43" fill="#265a5d"/><path d="M608 308a36 36 0 1 0 0 71 36 36 0 0 0 0-71zm0 39c-15 0-27-8-27-18s12-18 27-18 26 8 26 18-12 18-26 18z" fill="#271b27"/><ellipse cx="604" cy="329" fill="#2b565b" rx="27" ry="18"/><circle cx="584" cy="324" r="3" fill="#fff"/><circle cx="591" cy="319" r="2" fill="#fff"/></g>'
-        // );
-
-        uint256 bodyTraitId = aminals.addBody(
-            '<g id="BODY"><path d="M710 404c0 362-94 350-210 350s-210 23-210-350c0-116 94-219 210-219s210 103 210 219z" fill="#99726a"/></g>'
+        uint256 faceTraitId = aminals.addFace(
+            '<g id="FACE"><path d="M673 351c0 75-26 111-175 115-133 4-171-44-171-119s85-156 174-156 172 85 172 160z" fill="#70968c"/><path d="M659 345c0 51-24 59-163 62-123 2-159-14-159-66s76-90 159-90 163 42 163 94z" fill="#438786"/><circle cx="389" cy="343" r="43" fill="#265a5d"/><path d="M393 308a36 36 0 1 0 0 71 36 36 0 0 0 0-71zm-1 39c-15 0-27-8-27-18s12-18 27-18 27 8 27 18-12 18-27 18z" fill="#271b27"/><ellipse cx="388" cy="329" fill="#2b565b" rx="27" ry="18"/><circle cx="369" cy="324" r="3" fill="#fff"/><circle cx="376" cy="319" r="2" fill="#fff"/><circle cx="500" cy="300" r="43" fill="#265a5d"/><path d="M504 265a36 36 0 1 0 0 71 36 36 0 0 0 0-71zm-1 39c-15 0-27-8-27-18s12-18 27-18 27 8 27 18-12 18-27 18z" fill="#271b27"/><ellipse cx="499" cy="286" fill="#2b565b" rx="27" ry="18"/><circle cx="480" cy="281" r="3" fill="#fff"/><circle cx="486" cy="276" r="2" fill="#fff"/><circle cx="604" cy="343" r="43" fill="#265a5d"/><path d="M608 308a36 36 0 1 0 0 71 36 36 0 0 0 0-71zm0 39c-15 0-27-8-27-18s12-18 27-18 26 8 26 18-12 18-26 18z" fill="#271b27"/><ellipse cx="604" cy="329" fill="#2b565b" rx="27" ry="18"/><circle cx="584" cy="324" r="3" fill="#fff"/><circle cx="591" cy="319" r="2" fill="#fff"/></g>'
         );
+
+        // uint256 bodyTraitId = aminals.addBody(
+        //     '<g id="BODY"><path d="M710 404c0 362-94 350-210 350s-210 23-210-350c0-116 94-219 210-219s210 103 210 219z" fill="#99726a"/></g>'
+        // );
 
         // uint256 earsTraitId = aminals.addEar(
         //     '<g id="EARS"><path d="M335 357c-11-23-34-144-30-163 4-17 30 24 65 63 12 13 38 37 48 55" fill="#99726a"/><path d="M346 361c-8-17-25-107-22-121 3-13 23 18 49 46 9 10 28 28 35 41" fill="#896862"/><path d="M663 366c10-24 33-145 29-163s-31 24-66 62c-12 13-38 38-47 56" fill="#99726a"/><path d="M652 370c7-18 24-108 21-122-3-13-23 18-49 47-9 9-28 28-35 41" fill="#896862"/></g>'
