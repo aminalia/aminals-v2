@@ -157,6 +157,9 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
     // '<g id="Face_Mask"><rect class="cls-6" x="338" y="289" width="323" height="126" rx="63" ry="63"/> </g> <g id="Eyes"><g><circle class="cls-17" cx="388" cy="352" r="41"/><g><circle class="cls-12" cx="388" cy="352" r="38"/><circle class="cls-2" cx="367" cy="331" r="3"/><circle class="cls-2" cx="374" cy="325" r="1"/><ellipse class="cls-1" cx="387" cy="336" rx="28" ry="19"/></g><circle class="cls-19" cx="612" cy="352" r="41"/><g><circle class="cls-12" cx="612" cy="352" r="38"/><circle class="cls-2" cx="590" cy="331" r="3"/><circle class="cls-2" cx="597" cy="325" r="1"/><ellipse class="cls-1" cx="611" cy="336" rx="28" ry="19"/> </g></g> </g> <g id="nose"><g><circle class="cls-9" cx="495" cy="307" r="3"/><circle class="cls-9" cx="505" cy="307" r="3"/></g> </g>'
 
     function addFace(string memory face) public returns (uint256 id) {
+        // TODO: Change msg.sender to the ProposerNFT
+        // Only send the NFT if the proposal is accepted
+
         VisualTrait memory trait = VisualTrait(face, msg.sender);
 
         faces.push(trait);
