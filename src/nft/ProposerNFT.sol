@@ -19,13 +19,18 @@ contract ProposerNFT is ERC721S("ProposerNFT", "PROP") {
         aminalsNFT = aminalsNFT_;
     }
 
+    // TODO: Pass in SVG code upon minting
     function mint(address to) external onlyAminalsNFT {
         ++currentId;
         _mint(to, currentId);
     }
 
     // TODO: Make this NFT non-transferable upon calling e.g. addFace(), make it
-    // transferable after it's accepted in the VisualAuction
+    // transferable after it's accepted in the VisualRegistry (VisualRegistry
+    // acceptance is not implemented yet, it's auto-accepted. Eventually it will
+    // be accepted by Aminals voting)
+    // NOTE: Right now, all of the NFTs are transferable. Soulbound NFTs are not
+    // yet implemented.
     function makeTransferable(uint256 id) external onlyAminalsNFT {}
 
     // Can only be burnt by the holder

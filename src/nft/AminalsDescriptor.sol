@@ -164,6 +164,9 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
 
         faces.push(trait);
 
+        // TODO: This is just a skeleton
+        // proposerNFT.mint(msg.sender, svgCode);
+
         emit TraitAdded(faces.length - 1, VisualsCat.FACE, face, msg.sender);
 
         return faces.length - 1;
