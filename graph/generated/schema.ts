@@ -8,7 +8,7 @@ import {
   store,
   Bytes,
   BigInt,
-  BigDecimal
+  BigDecimal,
 } from "@graphprotocol/graph-ts";
 
 export class Aminal extends Entity {
@@ -23,7 +23,7 @@ export class Aminal extends Entity {
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type Aminal must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Aminal must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
       store.set("Aminal", id.toBytes().toHexString(), this);
     }
@@ -31,7 +31,7 @@ export class Aminal extends Entity {
 
   static loadInBlock(id: Bytes): Aminal | null {
     return changetype<Aminal | null>(
-      store.get_in_block("Aminal", id.toHexString())
+      store.get_in_block("Aminal", id.toHexString()),
     );
   }
 
@@ -146,20 +146,16 @@ export class Aminal extends Entity {
   get breedableWith(): BreedAminalEventLoader {
     return new BreedAminalEventLoader(
       "Aminal",
-      this.get("id")!
-        .toBytes()
-        .toHexString(),
-      "breedableWith"
+      this.get("id")!.toBytes().toHexString(),
+      "breedableWith",
     );
   }
 
   get lovers(): RelationshipLoader {
     return new RelationshipLoader(
       "Aminal",
-      this.get("id")!
-        .toBytes()
-        .toHexString(),
-      "lovers"
+      this.get("id")!.toBytes().toHexString(),
+      "lovers",
     );
   }
 
@@ -309,10 +305,8 @@ export class Aminal extends Entity {
   get skills(): SkillLoader {
     return new SkillLoader(
       "Aminal",
-      this.get("id")!
-        .toBytes()
-        .toHexString(),
-      "skills"
+      this.get("id")!.toBytes().toHexString(),
+      "skills",
     );
   }
 }
@@ -329,7 +323,7 @@ export class User extends Entity {
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type User must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type User must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
       store.set("User", id.toBytes().toHexString(), this);
     }
@@ -337,7 +331,7 @@ export class User extends Entity {
 
   static loadInBlock(id: Bytes): User | null {
     return changetype<User | null>(
-      store.get_in_block("User", id.toHexString())
+      store.get_in_block("User", id.toHexString()),
     );
   }
 
@@ -374,20 +368,16 @@ export class User extends Entity {
   get lovers(): RelationshipLoader {
     return new RelationshipLoader(
       "User",
-      this.get("id")!
-        .toBytes()
-        .toHexString(),
-      "lovers"
+      this.get("id")!.toBytes().toHexString(),
+      "lovers",
     );
   }
 
   get proposedVisuals(): VisualProposalLoader {
     return new VisualProposalLoader(
       "User",
-      this.get("id")!
-        .toBytes()
-        .toHexString(),
-      "proposedVisuals"
+      this.get("id")!.toBytes().toHexString(),
+      "proposedVisuals",
     );
   }
 }
@@ -404,7 +394,7 @@ export class Relationship extends Entity {
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type Relationship must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Relationship must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
       store.set("Relationship", id.toBytes().toHexString(), this);
     }
@@ -412,13 +402,13 @@ export class Relationship extends Entity {
 
   static loadInBlock(id: Bytes): Relationship | null {
     return changetype<Relationship | null>(
-      store.get_in_block("Relationship", id.toHexString())
+      store.get_in_block("Relationship", id.toHexString()),
     );
   }
 
   static load(id: Bytes): Relationship | null {
     return changetype<Relationship | null>(
-      store.get("Relationship", id.toHexString())
+      store.get("Relationship", id.toHexString()),
     );
   }
 
@@ -487,7 +477,7 @@ export class BreedAminalEvent extends Entity {
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type BreedAminalEvent must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type BreedAminalEvent must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
       store.set("BreedAminalEvent", id.toBytes().toHexString(), this);
     }
@@ -495,13 +485,13 @@ export class BreedAminalEvent extends Entity {
 
   static loadInBlock(id: Bytes): BreedAminalEvent | null {
     return changetype<BreedAminalEvent | null>(
-      store.get_in_block("BreedAminalEvent", id.toHexString())
+      store.get_in_block("BreedAminalEvent", id.toHexString()),
     );
   }
 
   static load(id: Bytes): BreedAminalEvent | null {
     return changetype<BreedAminalEvent | null>(
-      store.get("BreedAminalEvent", id.toHexString())
+      store.get("BreedAminalEvent", id.toHexString()),
     );
   }
 
@@ -609,7 +599,7 @@ export class FeedAminalEvent extends Entity {
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type FeedAminalEvent must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type FeedAminalEvent must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
       store.set("FeedAminalEvent", id.toBytes().toHexString(), this);
     }
@@ -617,13 +607,13 @@ export class FeedAminalEvent extends Entity {
 
   static loadInBlock(id: Bytes): FeedAminalEvent | null {
     return changetype<FeedAminalEvent | null>(
-      store.get_in_block("FeedAminalEvent", id.toHexString())
+      store.get_in_block("FeedAminalEvent", id.toHexString()),
     );
   }
 
   static load(id: Bytes): FeedAminalEvent | null {
     return changetype<FeedAminalEvent | null>(
-      store.get("FeedAminalEvent", id.toHexString())
+      store.get("FeedAminalEvent", id.toHexString()),
     );
   }
 
@@ -770,7 +760,7 @@ export class Skill extends Entity {
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type Skill must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Skill must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
       store.set("Skill", id.toBytes().toHexString(), this);
     }
@@ -778,7 +768,7 @@ export class Skill extends Entity {
 
   static loadInBlock(id: Bytes): Skill | null {
     return changetype<Skill | null>(
-      store.get_in_block("Skill", id.toHexString())
+      store.get_in_block("Skill", id.toHexString()),
     );
   }
 
@@ -890,7 +880,7 @@ export class SkillProposal extends Entity {
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type SkillProposal must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type SkillProposal must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
       store.set("SkillProposal", id.toBytes().toHexString(), this);
     }
@@ -898,13 +888,13 @@ export class SkillProposal extends Entity {
 
   static loadInBlock(id: Bytes): SkillProposal | null {
     return changetype<SkillProposal | null>(
-      store.get_in_block("SkillProposal", id.toHexString())
+      store.get_in_block("SkillProposal", id.toHexString()),
     );
   }
 
   static load(id: Bytes): SkillProposal | null {
     return changetype<SkillProposal | null>(
-      store.get("SkillProposal", id.toHexString())
+      store.get("SkillProposal", id.toHexString()),
     );
   }
 
@@ -1051,7 +1041,7 @@ export class SkillVote extends Entity {
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type SkillVote must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type SkillVote must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
       store.set("SkillVote", id.toBytes().toHexString(), this);
     }
@@ -1059,13 +1049,13 @@ export class SkillVote extends Entity {
 
   static loadInBlock(id: Bytes): SkillVote | null {
     return changetype<SkillVote | null>(
-      store.get_in_block("SkillVote", id.toHexString())
+      store.get_in_block("SkillVote", id.toHexString()),
     );
   }
 
   static load(id: Bytes): SkillVote | null {
     return changetype<SkillVote | null>(
-      store.get("SkillVote", id.toHexString())
+      store.get("SkillVote", id.toHexString()),
     );
   }
 
@@ -1186,7 +1176,7 @@ export class Squeak extends Entity {
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type Squeak must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Squeak must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
       store.set("Squeak", id.toBytes().toHexString(), this);
     }
@@ -1194,7 +1184,7 @@ export class Squeak extends Entity {
 
   static loadInBlock(id: Bytes): Squeak | null {
     return changetype<Squeak | null>(
-      store.get_in_block("Squeak", id.toHexString())
+      store.get_in_block("Squeak", id.toHexString()),
     );
   }
 
@@ -1319,7 +1309,7 @@ export class Auction extends Entity {
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type Auction must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Auction must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
       store.set("Auction", id.toBytes().toHexString(), this);
     }
@@ -1327,7 +1317,7 @@ export class Auction extends Entity {
 
   static loadInBlock(id: Bytes): Auction | null {
     return changetype<Auction | null>(
-      store.get_in_block("Auction", id.toHexString())
+      store.get_in_block("Auction", id.toHexString()),
     );
   }
 
@@ -1495,7 +1485,7 @@ export class VisualProposal extends Entity {
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type VisualProposal must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type VisualProposal must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
       store.set("VisualProposal", id.toBytes().toHexString(), this);
     }
@@ -1503,13 +1493,13 @@ export class VisualProposal extends Entity {
 
   static loadInBlock(id: Bytes): VisualProposal | null {
     return changetype<VisualProposal | null>(
-      store.get_in_block("VisualProposal", id.toHexString())
+      store.get_in_block("VisualProposal", id.toHexString()),
     );
   }
 
   static load(id: Bytes): VisualProposal | null {
     return changetype<VisualProposal | null>(
-      store.get("VisualProposal", id.toHexString())
+      store.get("VisualProposal", id.toHexString()),
     );
   }
 
@@ -1682,7 +1672,7 @@ export class VisualsVote extends Entity {
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type VisualsVote must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type VisualsVote must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
       store.set("VisualsVote", id.toBytes().toHexString(), this);
     }
@@ -1690,13 +1680,13 @@ export class VisualsVote extends Entity {
 
   static loadInBlock(id: Bytes): VisualsVote | null {
     return changetype<VisualsVote | null>(
-      store.get_in_block("VisualsVote", id.toHexString())
+      store.get_in_block("VisualsVote", id.toHexString()),
     );
   }
 
   static load(id: Bytes): VisualsVote | null {
     return changetype<VisualsVote | null>(
-      store.get("VisualsVote", id.toHexString())
+      store.get("VisualsVote", id.toHexString()),
     );
   }
 

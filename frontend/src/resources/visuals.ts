@@ -16,7 +16,8 @@ export const useVisuals = () => {
         skip: 0,
       });
       if (response.errors) throw new Error(response.errors[0].message);
-      return response.data.visuals;
+      console.log('response.... visuals == ', response.data.visualProposals);
+      return response.data.visualProposals;
     },
   });
 };
