@@ -39,14 +39,17 @@ const VisualsPage: NextPage = () => {
 
   console.log('Inactive auctions == ', inactiveAuctions);
 
-  // const activeAuctionVisualIds = activeAuctions.map(auction => auction.visualId);
-  // const inactiveAuctionVisualIds = inactiveAuctions.map(auction => auction.visualId);
-  const activeIds = visuals?.filter((visual) =>
-    activeAuctions.some((auction) => auction.auctionId === visual.auctionId)
-  );
-  const inactiveIds = visuals?.filter((visual) =>
-    inactiveAuctions.some((auction) => auction.auctionId === visual.auctionId)
-  );
+  // Ensure activeIds and inactiveIds default to an empty array if visuals is undefined
+  const activeIds =
+    visuals?.filter((visual) =>
+      activeAuctions.some((auction) => auction.auctionId === visual.auctionId)
+    ) || [];
+  const inactiveIds =
+    visuals?.filter((visual) =>
+      inactiveAuctions.some((auction) => auction.auctionId === visual.auctionId)
+    ) || [];
+  console.log('Inactive IDs === ', inactiveIds);
+
   console.log('Inactive IDs === ', inactiveIds);
 
   return (
