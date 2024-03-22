@@ -6,6 +6,7 @@ import {
   CardSection,
   CardTitle,
 } from '@/components/ui/card';
+import Image from 'next/image';
 import { Aminal } from '../../.graphclient';
 import BreedButton from './actions/breed-button';
 import FeedButton from './actions/feed-button';
@@ -72,5 +73,5 @@ function TokenUriImage({ tokenUri }: { tokenUri: string }) {
   if (error || !image) {
     return <span className="text-gray-400">Unable to load image</span>;
   }
-  return <img src={image} alt="Aminal" />;
+  return <Image src={image} alt="Aminal" width={200} height={200} />;
 }
