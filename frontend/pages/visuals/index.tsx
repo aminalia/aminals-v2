@@ -48,7 +48,6 @@ const VisualsPage: NextPage = () => {
     visuals?.filter((visual) =>
       inactiveAuctions.some((auction) => auction.auctionId === visual.auctionId)
     ) || [];
-  console.log('Inactive IDs === ', inactiveIds);
 
   console.log('Inactive IDs === ', inactiveIds);
 
