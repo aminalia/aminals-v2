@@ -4,6 +4,8 @@ import { useAccount, useContractWrite, useNetwork } from 'wagmi';
 import { useState } from 'react';
 
 import contract from '../../../deployments/Aminals.json';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 
 const contractConfig = {
   address: '0x9fe1e3Fd1e936d5348094e861B76C9E9d527E541' as Address,
@@ -37,18 +39,15 @@ export default function BreedButton({ id1 }: { id1: string }) {
 
   return (
     <div>
-      <button
+      <Input placeholder="ID of the mate" onChange={handleBreedWithIdChange} />
+      <Button
         type="button"
         onClick={action}
         disabled={!enabled}
         className={enabled ? '' : 'text-neutral-400'}
       >
-        Breed With:
-      </button>
-      <input
-        placeholder="ID of the mate"
-        onChange={handleBreedWithIdChange}
-      ></input>
+        Breed
+      </Button>
     </div>
   );
 }

@@ -1,7 +1,6 @@
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardMedia,
   CardSection,
@@ -27,24 +26,28 @@ export default function AminalCard({ aminal }: { aminal: Aminal }) {
             <td>
               Love: {aminal.totalLove / 1e18}
               <br />
-              { aminal.lovers[0] && <>
-              Love for YOU: {aminal.lovers[0].love / 1e18}
-              <br />
-              </> }
-              
+              {aminal.lovers[0] && (
+                <>
+                  Love for YOU: {aminal.lovers[0].love / 1e18}
+                  <br />
+                </>
+              )}
               Energy: {aminal.energy / 1e18}
-            <br/>
-            Breedable with: { aminal.breedableWith.map( lovebuddy =>  <>{lovebuddy?.aminalTwo.aminalId}, </>) }</td>
+              <br />
+              Breedable with:{' '}
+              {aminal.breedableWith.map((lovebuddy) => (
+                <>{lovebuddy?.aminalTwo.aminalId}, </>
+              ))}
+            </td>
           </table>
 
-          <br/><b>Actions:</b><br/>
+          <br />
+          <b>Actions:</b>
+          <br />
           <FeedButton id={aminal.aminalId} />
           <BreedButton id1={aminal.aminalId} />
-
         </CardContent>
-        <CardFooter>
-        footer
-        </CardFooter>
+        {/* <CardFooter></CardFooter> */}
       </CardSection>
     </Card>
   );

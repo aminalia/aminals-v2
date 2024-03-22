@@ -26,8 +26,8 @@ import {
 export function handleAddSkillProposal(event: AddSkillProposalEvent): void {
   let entity = new SkillProposal(
     Bytes.fromI32(event.params.aminalId.toI32()).concatI32(
-      event.params.proposalId.toI32(),
-    ),
+      event.params.proposalId.toI32()
+    )
   );
   entity.aminalId = event.params.aminalId;
   entity.proposalId = event.params.proposalId;
@@ -49,7 +49,7 @@ export function handleBreedAminal(event: BreedAminalEvent): void {
 
   if (aminalOne && aminalTwo) {
     let entity = new BreedAminal(
-      event.transaction.hash.concatI32(event.logIndex.toI32()),
+      event.transaction.hash.concatI32(event.logIndex.toI32())
     );
     entity.aminalOne = aminalOne.id;
     entity.aminalTwo = aminalTwo.id;
@@ -83,7 +83,7 @@ export function handleFeedAminal(event: FeedAminalEvent): void {
 
   if (aminal) {
     let entity = new FeedAminal(
-      event.transaction.hash.concatI32(event.params.aminalId.toI32()),
+      event.transaction.hash.concatI32(event.params.aminalId.toI32())
     );
     entity.aminal = aminal.id;
     entity.sender = user.id;
@@ -105,16 +105,16 @@ export function handleFeedAminal(event: FeedAminalEvent): void {
     // Update relationship (id is user address + aminal id)
     let relationship = Relationship.load(
       Bytes.fromHexString(event.params.sender.toHexString()).concatI32(
-        event.params.aminalId.toI32(),
-      ),
+        event.params.aminalId.toI32()
+      )
     );
 
     // Create a new relationship if one doesn't exist
     if (!relationship) {
       relationship = new Relationship(
         Bytes.fromHexString(event.params.sender.toHexString()).concatI32(
-          event.params.aminalId.toI32(),
-        ),
+          event.params.aminalId.toI32()
+        )
       );
     }
 
@@ -127,12 +127,12 @@ export function handleFeedAminal(event: FeedAminalEvent): void {
 }
 
 export function handleRemoveSkillProposal(
-  event: RemoveSkillProposalEvent,
+  event: RemoveSkillProposalEvent
 ): void {
   let entity = new SkillProposal(
     Bytes.fromI32(event.params.aminalId.toI32()).concatI32(
-      event.params.proposalId.toI32(),
-    ),
+      event.params.proposalId.toI32()
+    )
   );
   entity.aminalId = event.params.aminalId;
   entity.proposalId = event.params.proposalId;
@@ -151,8 +151,8 @@ export function handleSkillAdded(event: SkillAddedEvent): void {
   if (aminal) {
     let skill = new Skill(
       Bytes.fromI32(event.params.aminalId.toI32()).concat(
-        Bytes.fromHexString(event.params.skillAddress.toHexString()),
-      ),
+        Bytes.fromHexString(event.params.skillAddress.toHexString())
+      )
     );
     skill.aminal = aminal.id;
     skill.skillAddress = event.params.skillAddress;
@@ -169,8 +169,8 @@ export function handleSkillRemoved(event: SkillRemovedEvent): void {
   let aminal = Aminal.load(Bytes.fromI32(event.params.aminalId.toI32()));
   let skill = Skill.load(
     Bytes.fromI32(event.params.aminalId.toI32()).concat(
-      Bytes.fromHexString(event.params.skillAddress.toHexString()),
-    ),
+      Bytes.fromHexString(event.params.skillAddress.toHexString())
+    )
   );
   if (skill && aminal) {
     skill.aminal = aminal.id;
@@ -186,7 +186,7 @@ export function handleSkillRemoved(event: SkillRemovedEvent): void {
 
 export function handleSkillVote(event: SkillVoteEvent): void {
   let entity = new SkillVote(
-    event.transaction.hash.concatI32(event.params.aminalId.toI32()),
+    event.transaction.hash.concatI32(event.params.aminalId.toI32())
   );
   entity.aminalId = event.params.aminalId;
   entity.sender = event.params.sender;
@@ -248,14 +248,14 @@ export function handleSqueak(event: SqueakEvent): void {
 
     // Load user
     let user = User.load(
-      Bytes.fromHexString(event.params.sender.toHexString()),
+      Bytes.fromHexString(event.params.sender.toHexString())
     );
     if (user) {
       // Update relationship (id is user address + aminal id)
       let relationship = Relationship.load(
         Bytes.fromHexString(event.params.sender.toHexString()).concatI32(
-          event.params.aminalId.toI32(),
-        ),
+          event.params.aminalId.toI32()
+        )
       );
 
       if (relationship) {
