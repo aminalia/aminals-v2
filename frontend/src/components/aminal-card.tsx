@@ -22,8 +22,11 @@ export default function AminalCard({ aminal }: { aminal: Aminal }) {
           {/* <CardDescription>{aminal.name}</CardDescription> */}
         </CardHeader>
         <CardContent>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+
           <table>
             <td>
+            <b>Informations:</b><br/>
               Love: {aminal.totalLove / 1e18}
               <br />
               {aminal.lovers[0] && (
@@ -41,11 +44,14 @@ export default function AminalCard({ aminal }: { aminal: Aminal }) {
             </td>
           </table>
 
-          <br />
+          <div>
           <b>Actions:</b>
           <br />
           <FeedButton id={aminal.aminalId} />
           <BreedButton id1={aminal.aminalId} />
+          </div>
+
+          </div>
         </CardContent>
         {/* <CardFooter></CardFooter> */}
       </CardSection>
