@@ -498,9 +498,6 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         }
     }
 
-
-
-
     // ------------------------------------------------------------------------
     // SVG Parts - TODO Need to add owner permissions
     // ------------------------------------------------------------------------
@@ -577,7 +574,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         faces.push(trait);
 
         // TODO: This is just a skeleton
-        this.genesNFT.mint(msg.sender); // @@@ HOW DO WE ATTACH THE SVG TO THE NFT ?
+        genesNFT.mint(msg.sender); // @@@ HOW DO WE ATTACH THE SVG TO THE NFT ?
 
         emit TraitAdded(faces.length - 1, VisualsCat.FACE, face, msg.sender);
 
@@ -608,7 +605,4 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
 
         return miscs.length - 1;
     }
-
-
-
 }
