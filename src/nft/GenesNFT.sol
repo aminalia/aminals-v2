@@ -2,12 +2,15 @@
 pragma solidity ^0.8.20;
 
 import {ERC721S} from "src/nft/ERC721S.sol";
+import {Initializable} from "oz/proxy/utils/Initializable.sol";
+import {Ownable} from "oz/access/Ownable.sol";
 
 error OnlyAminalsNFT();
 error OnlyNFTOwner();
+error AlreadySetup();
 
-contract GenesNFT is ERC721S("ProposerNFT", "PROP") {
-    address public immutable aminalsNFT;
+contract GenesNFT is ERC721S("GenesNFT", "GENES"), Initializable, Ownable {
+    address public aminalsNFT;
     uint256 public currentId;
 
     modifier onlyAminalsNFT() {
@@ -15,7 +18,11 @@ contract GenesNFT is ERC721S("ProposerNFT", "PROP") {
         _;
     }
 
-    constructor(address aminalsNFT_) {
+    constructor(address aminalsNFT_) Initializable() Ownable() {
+        aminalsNFT = aminalsNFT_;
+    }
+
+    function setup(address aminalsNFT_) external initializer onlyOwner {
         aminalsNFT = aminalsNFT_;
     }
 
