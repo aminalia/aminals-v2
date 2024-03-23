@@ -6,6 +6,7 @@ import {IAminal} from "src/IAminal.sol";
 import {IAminalStructs} from "src/IAminalStructs.sol";
 import {VisualsAuction} from "src/utils/VisualsAuction.sol";
 import {AminalProposals} from "src/proposals/AminalProposals.sol";
+import {GenesNFT} from "src/nft/GenesNFT.sol";
 
 /*
 forge script script/AminalScript.s.sol:AminalScript --broadcast --verify -vvvv
@@ -46,7 +47,11 @@ contract AminalScript is Script {
         );
         AminalProposals _proposals = new AminalProposals();
 
-        Aminals _aminals = new Aminals(address(_visualsAuction), address(_proposals));
+        GenesNFT _genesNFT = new GenesNFT();
+
+        Aminals _aminals = new Aminals(address(_visualsAuction), address(_proposals), address(_genesNFT));
+
+
 
         // TODO these don't seem to persist. : (
         // Set environment variables for contracts
@@ -56,6 +61,7 @@ contract AminalScript is Script {
 
         _visualsAuction.setup(address(_aminals));
         _proposals.setup(address(_aminals));
+        _genesNFT.setup(address(_aminals));
 
         return address(_aminals);
     }

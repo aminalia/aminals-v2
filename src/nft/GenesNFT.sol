@@ -6,7 +6,7 @@ import {ERC721S} from "src/nft/ERC721S.sol";
 error OnlyAminalsNFT();
 error OnlyNFTOwner();
 
-contract ProposerNFT is ERC721S("ProposerNFT", "PROP") {
+contract GenesNFT is ERC721S("ProposerNFT", "PROP") {
     address public immutable aminalsNFT;
     uint256 public currentId;
 
