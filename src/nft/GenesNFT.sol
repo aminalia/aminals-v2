@@ -18,10 +18,14 @@ contract GenesNFT is ERC721S("GenesNFT", "GENES"), Initializable, Ownable {
         _;
     }
 
+    event Setup(address aminalsNFT);
+
     constructor() Initializable() Ownable() {}
 
     function setup(address aminalsNFT_) external initializer onlyOwner {
         aminalsNFT = aminalsNFT_;
+
+        emit Setup(aminalsNFT_);
     }
 
     // TODO: Pass in SVG code upon minting
