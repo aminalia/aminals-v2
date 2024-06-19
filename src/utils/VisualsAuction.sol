@@ -8,23 +8,13 @@ import {IERC20} from "oz/token/ERC20/IERC20.sol";
 
 import {Aminals} from "src/Aminals.sol";
 import {IAminalStructs} from "src/IAminalStructs.sol";
+import {GenesNFT} from "src/nft/GenesNFT.sol";
 
 contract VisualsAuction is IAminalStructs, Initializable, Ownable {
     Aminals public aminals;
 
     address public immutable GENERATOR_SOURCE_CONTRACT;
     address public immutable GENERATOR_SOURCE_BALANCE;
-
-    enum VisualsCat {
-        BACK,
-        ARM,
-        TAIL,
-        EARS,
-        BODY,
-        FACE,
-        MOUTH,
-        MISC
-    }
 
     event StartAuction(
         uint256 indexed auctionId,

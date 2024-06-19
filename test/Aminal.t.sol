@@ -150,42 +150,42 @@ contract AminalTest is BaseTest {
         uint256 id10 = aminals.addBody("body11");
 
         vm.expectRevert("Not enough ether to propose a new Visual");
-        visualsAuction.proposeVisual{value: 0.001 ether}(auctionID, VisualsAuction.VisualsCat.FACE, id1);
-        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id2);
+        visualsAuction.proposeVisual{value: 0.001 ether}(auctionID, IAminalStructs.VisualsCat.FACE, id1);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.BODY, id2);
         // Test making a bunch of proposals
-        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id3);
-        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id4);
-        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id5);
-        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id6);
-        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id7);
-        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id8);
-        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id9);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.BODY, id3);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.BODY, id4);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.BODY, id5);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.BODY, id6);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.BODY, id7);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.BODY, id8);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.BODY, id9);
         // 9th proposal fails as there is only 8 slots per category
         vm.expectRevert("Max 8 proposals allowed per category");
-        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id10);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.BODY, id10);
     }
 
     function voteTraits(uint256 auctionID) public {
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.EARS, 1);
+        visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.EARS, 1);
 
         // VisualsAuction.Auction memory auction;
         // auction = visualsAuction.getAuctionByID(auctionID);
 
         address owner2 = 0x2D3C242d2C074D523112093C67d1c01Bb27ca40D;
         vm.prank(owner2);
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, 2);
+        visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.BODY, 2);
         vm.prank(owner2);
         vm.expectRevert("Already consumed all of your love with votes");
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, 1);
+        visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.BODY, 1);
 
         // Owner 3 causes a tie
         address owner3 = 0x45CbC00e0618880bfB2dBDdEAed1ef1411dd5eeE;
         vm.prank(owner3);
         vm.expectRevert("Cannot vote on a trait that is not part of the auction");
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, 100);
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, 1);
+        visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.BODY, 100);
+        visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.BODY, 1);
         vm.prank(owner3);
     }
 
@@ -213,18 +213,18 @@ contract AminalTest is BaseTest {
 
         address owner3 = 0x45CbC00e0618880bfB2dBDdEAed1ef1411dd5eeE;
         vm.prank(owner3);
-        visualsAuction.removeVisual(auctionID, VisualsAuction.VisualsCat.FACE, id1);
+        visualsAuction.removeVisual(auctionID, IAminalStructs.VisualsCat.FACE, id1);
 
         address owner = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
         vm.prank(owner);
         vm.expectRevert("The trait to be removed does not exist in the auction list");
-        visualsAuction.removeVisual(auctionID, VisualsAuction.VisualsCat.FACE, id1);
+        visualsAuction.removeVisual(auctionID, IAminalStructs.VisualsCat.FACE, id1);
 
-        visualsAuction.removeVisual(auctionID, VisualsAuction.VisualsCat.BODY, 5);
+        visualsAuction.removeVisual(auctionID, IAminalStructs.VisualsCat.BODY, 5);
 
         // New visual is added to the auction as there is now a free slot
         uint256 id10 = aminals.addBody("body11");
-        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, id10);
+        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.BODY, id10);
     }
 
     function endAuction(uint256 auctionID) public returns (uint256[8] memory) {
