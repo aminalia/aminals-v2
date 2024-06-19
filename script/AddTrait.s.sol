@@ -73,37 +73,37 @@ contract AminalScript is Script {
         // aminals.breedWith{value: 0.001 ether}(1, 2);
         // uint256 auctionID = aminals.breedWith{value: 0.001 ether}(2, 1);
 
-        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.FACE, faceTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.FACE, faceTraitId);
 
-        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.FACE, faceTraitId);
+        // visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.FACE, faceTraitId);
 
-        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, bodyTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.BODY, bodyTraitId);
 
-        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, bodyTraitId);
+        // visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.BODY, bodyTraitId);
 
-        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.EARS, earsTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.EARS, earsTraitId);
 
-        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.EARS, earsTraitId);
+        // visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.EARS, earsTraitId);
 
-        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.ARM, armsTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.ARM, armsTraitId);
 
-        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.ARM, armsTraitId);
+        // visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.ARM, armsTraitId);
 
-        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BACK, backTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.BACK, backTraitId);
 
-        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BACK, backTraitId);
+        // visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.BACK, backTraitId);
 
-        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.MISC, miscTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.MISC, miscTraitId);
 
-        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.MISC, miscTraitId);
+        // visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.MISC, miscTraitId);
 
-        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.TAIL, tailTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.TAIL, tailTraitId);
 
-        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.TAIL, tailTraitId);
+        // visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.TAIL, tailTraitId);
 
-        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.MOUTH, 0);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.MOUTH, 0);
 
-        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.MOUTH, 0);
+        // visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.MOUTH, 0);
 
         // visualsAuction.endAuction(auctionID);
 
