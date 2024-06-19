@@ -6,7 +6,6 @@ pragma solidity ^0.8.20;
 import {Base64} from "src/utils/Base64.sol";
 import {IAminal} from "src/IAminal.sol";
 import {NFTDescriptor} from "src/nft/NFTDescriptor.sol";
-import {GenesNFT} from "src/nft/GenesNFT.sol";
 
 abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
     uint8 private constant _ADDRESS_LENGTH = 20;
@@ -25,17 +24,6 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
     struct VisualTrait {
         string svg;
         address creator;
-    }
-
-    enum VisualsCat {
-        BACK,
-        ARM,
-        TAIL,
-        EARS,
-        BODY,
-        FACE,
-        MOUTH,
-        MISC
     }
 
     event TraitAdded(uint256 visualId, VisualsCat catEnum, string svg, address creator);
@@ -89,7 +77,6 @@ abstract contract AminalsDescriptor is IAminal, NFTDescriptor {
     }
 
     function getAminalVisualsByID(uint256 aminalID) public view virtual returns (Visuals memory);
-
 
     // forgefmt: disable-start
     function getVisuals(uint256 category, uint256 id) public view returns (string memory) {

@@ -16,17 +16,6 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
     address public immutable GENERATOR_SOURCE_CONTRACT;
     address public immutable GENERATOR_SOURCE_BALANCE;
 
-    enum VisualsCat {
-        BACK,
-        ARM,
-        TAIL,
-        EARS,
-        BODY,
-        FACE,
-        MOUTH,
-        MISC
-    }
-
     event StartAuction(
         uint256 indexed auctionId,
         uint256 indexed aminalIdOne,

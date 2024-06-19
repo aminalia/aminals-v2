@@ -27,6 +27,17 @@ interface IAminalStructs {
         uint256 miscId;
     }
 
+    enum VisualsCat {
+        BACK,
+        ARM,
+        TAIL,
+        EARS,
+        BODY,
+        FACE,
+        MOUTH,
+        MISC
+    }
+
     // TODO: Migrate to SkillsRegistry?
     struct Skills {
         string name;
