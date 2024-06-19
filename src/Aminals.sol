@@ -576,7 +576,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
         faces.push(trait);
 
         // TODO: This is just a skeleton
-        genesNFT.mint(msg.sender); // @@@ HOW DO WE ATTACH THE SVG TO THE NFT ?
+        genesNFT.mint(msg.sender, face, VisualsCat.FACE); // @@@ HOW DO WE ATTACH THE SVG TO THE NFT ?
 
         emit TraitAdded(faces.length - 1, VisualsCat.FACE, face, msg.sender);
 

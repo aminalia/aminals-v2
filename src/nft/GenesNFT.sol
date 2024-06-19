@@ -5,6 +5,8 @@ import {ERC721S} from "src/nft/ERC721S.sol";
 import {Initializable} from "oz/proxy/utils/Initializable.sol";
 import {Ownable} from "oz/access/Ownable.sol";
 
+import {IAminalStructs} from "src/IAminalStructs.sol";
+
 error OnlyAminalsNFT();
 error OnlyNFTOwner();
 error AlreadySetup();
@@ -12,6 +14,8 @@ error AlreadySetup();
 contract GenesNFT is ERC721S("GenesNFT", "GENES"), Initializable, Ownable {
     address public aminalsNFT;
     uint256 public currentId;
+    mapping(uint256 id => string) public geneSVGs;
+    mapping(uint256 id => IAminalStructs.VisualsCat) public geneVisualsCat;
 
     modifier onlyAminalsNFT() {
         if (msg.sender != aminalsNFT) revert OnlyAminalsNFT();
@@ -29,7 +33,13 @@ contract GenesNFT is ERC721S("GenesNFT", "GENES"), Initializable, Ownable {
     }
 
     // TODO: Pass in SVG code upon minting
-    function mint(address to) external onlyAminalsNFT {
+    function mint(address to, string calldata geneSVG, IAminalStructs.VisualsCat visualsCategory)
+        external
+        onlyAminalsNFT
+    {
+        geneSVGs[currentId] = geneSVG;
+        geneVisualsCat[currentId] = visualsCategory;
+
         ++currentId;
         _mint(to, currentId);
     }
