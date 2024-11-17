@@ -1,42 +1,21 @@
-import type { Abi, Address } from 'abitype';
-import {
-  useAccount,
-  useContractWrite,
-  useNetwork,
-  usePrepareContractWrite,
-} from 'wagmi';
+import { useAccount } from 'wagmi';
 
+import { useWriteAminalsBreedWith } from '@/contracts/generated';
 import { useState } from 'react';
 
-import contract from '../../../deployments/Aminals.json';
-
-const contractConfig = {
-  address: '0x24BEd8962601Caa39e51F02bdC0251Ae51FF0d70' as Address,
-  abi: contract.abi as Abi,
-};
-
 export default function BreedButton({ id1 }: { id1: string }) {
-  const { isConnected } = useAccount();
-  const { chain } = useNetwork();
-  const enabled = isConnected && !chain?.unsupported;
+  const { isConnected, chain } = useAccount();
+  const enabled = isConnected && !chain;
 
   const [breedWithId, setBreedWithId] = useState(1);
 
-  const { config: contractWriteConfig, isLoading: mintPrepLoading } =
-    usePrepareContractWrite({
-      ...contractConfig,
-      functionName: 'breedWith',
-      args: [id1, breedWithId],
-      enabled,
-      value: BigInt(0.01 * 1e18),
-    });
-
-  const { data: breedData, write: breedWith } =
-    useContractWrite(contractWriteConfig);
+  const breedWidth = useWriteAminalsBreedWith();
 
   async function action() {
     if (enabled) {
-      await breedWith?.();
+      await breedWidth.writeContractAsync({
+        args: [BigInt(id1), BigInt(breedWithId)],
+      });
     }
   }
 
