@@ -1,36 +1,26 @@
-import type { Abi, Address } from 'abitype';
-import { useAccount, useContractWrite, useNetwork } from 'wagmi';
-
+import { useWriteVisualsAuctionProposeVisual } from '@/contracts/generated';
 import { useState } from 'react';
-
-import contract from '../../../deployments/VisualsAuction.json';
+import { parseEther } from 'viem';
+import { useAccount } from 'wagmi';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 
-const contractConfig = {
-  address: '0xb83Aa15dbe5636c656571DDbb74257a81f994B87' as Address,
-  abi: contract.abi as Abi,
-};
-
 export default function ProposeButton({ auctionId }: { auctionId: any }) {
-  const { isConnected } = useAccount();
-  const { chain } = useNetwork();
-  const enabled = isConnected && !chain?.unsupported;
+  const { isConnected, chain } = useAccount();
+  const enabled = isConnected && chain;
 
   // Default breadwith ID is set to one
-  const [catId, setCatId] = useState();
-  const [vizId, setVizId] = useState();
+  const [catId, setCatId] = useState(0);
+  const [vizId, setVizId] = useState(0);
 
-  const { writeAsync: proposeVisual } = useContractWrite({
-    ...contractConfig,
-    functionName: 'proposeVisual',
-    args: [auctionId, catId, vizId],
-    value: BigInt(0.05 * 1e18), // TODO: don't hard-code this, replace it with a call to LoveDrivenPrice()
-  });
+  const proposeVisual = useWriteVisualsAuctionProposeVisual();
 
   const action = async () => {
     if (enabled) {
-      await proposeVisual();
+      await proposeVisual.writeContractAsync({
+        args: [auctionId, catId, BigInt(vizId)],
+        value: BigInt(parseEther('0.05')),
+      });
     }
   };
 
