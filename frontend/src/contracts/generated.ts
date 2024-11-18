@@ -333,8 +333,46 @@ export const aminalsAbi = [
         type: 'uint256',
         indexed: false,
       },
+      {
+        name: 'love',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'sender',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
     ],
     name: 'Squeak',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'visualId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'catEnum',
+        internalType: 'enum AminalsDescriptor.VisualsCat',
+        type: 'uint8',
+        indexed: false,
+      },
+      { name: 'svg', internalType: 'string', type: 'string', indexed: false },
+      {
+        name: 'creator',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+    ],
+    name: 'TraitAdded',
   },
   {
     type: 'event',
@@ -456,14 +494,20 @@ export const aminalsAbi = [
     type: 'function',
     inputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
     name: 'arms',
-    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    outputs: [
+      { name: 'svg', internalType: 'string', type: 'string' },
+      { name: 'creator', internalType: 'address', type: 'address' },
+    ],
     stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
     name: 'backgrounds',
-    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    outputs: [
+      { name: 'svg', internalType: 'string', type: 'string' },
+      { name: 'creator', internalType: 'address', type: 'address' },
+    ],
     stateMutability: 'view',
   },
   {
@@ -477,7 +521,10 @@ export const aminalsAbi = [
     type: 'function',
     inputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
     name: 'bodies',
-    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    outputs: [
+      { name: 'svg', internalType: 'string', type: 'string' },
+      { name: 'creator', internalType: 'address', type: 'address' },
+    ],
     stateMutability: 'view',
   },
   {
@@ -553,14 +600,20 @@ export const aminalsAbi = [
     type: 'function',
     inputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
     name: 'ears',
-    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    outputs: [
+      { name: 'svg', internalType: 'string', type: 'string' },
+      { name: 'creator', internalType: 'address', type: 'address' },
+    ],
     stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
     name: 'faces',
-    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    outputs: [
+      { name: 'svg', internalType: 'string', type: 'string' },
+      { name: 'creator', internalType: 'address', type: 'address' },
+    ],
     stateMutability: 'view',
   },
   {
@@ -667,14 +720,20 @@ export const aminalsAbi = [
     type: 'function',
     inputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
     name: 'miscs',
-    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    outputs: [
+      { name: 'svg', internalType: 'string', type: 'string' },
+      { name: 'creator', internalType: 'address', type: 'address' },
+    ],
     stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
     name: 'mouths',
-    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    outputs: [
+      { name: 'svg', internalType: 'string', type: 'string' },
+      { name: 'creator', internalType: 'address', type: 'address' },
+    ],
     stateMutability: 'view',
   },
   {
@@ -865,7 +924,10 @@ export const aminalsAbi = [
     type: 'function',
     inputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
     name: 'tails',
-    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    outputs: [
+      { name: 'svg', internalType: 'string', type: 'string' },
+      { name: 'creator', internalType: 'address', type: 'address' },
+    ],
     stateMutability: 'view',
   },
   {
@@ -1069,6 +1131,49 @@ export const visualsAuctionAbi = [
       },
     ],
     name: 'RemoveVisual',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'auctionId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: 'visualId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'sender',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'catEnum',
+        internalType: 'enum VisualsAuction.VisualsCat',
+        type: 'uint8',
+        indexed: false,
+      },
+      {
+        name: 'userLoveVote',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'totalLove',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'RemoveVisualVote',
   },
   {
     type: 'event',
@@ -1311,7 +1416,7 @@ export const visualsAuctionAbi = [
         internalType: 'enum VisualsAuction.VisualsCat',
         type: 'uint8',
       },
-      { name: 'id', internalType: 'uint256', type: 'uint256' },
+      { name: 'visualId', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'voteVisual',
     outputs: [],
@@ -2276,6 +2381,16 @@ export const useWatchAminalsSqueakEvent =
   })
 
 /**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link aminalsAbi}__ and `eventName` set to `"TraitAdded"`
+ */
+export const useWatchAminalsTraitAddedEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: aminalsAbi,
+    address: aminalsAddress,
+    eventName: 'TraitAdded',
+  })
+
+/**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link aminalsAbi}__ and `eventName` set to `"Transfer"`
  */
 export const useWatchAminalsTransferEvent =
@@ -2598,6 +2713,16 @@ export const useWatchVisualsAuctionRemoveVisualEvent =
     abi: visualsAuctionAbi,
     address: visualsAuctionAddress,
     eventName: 'RemoveVisual',
+  })
+
+/**
+ * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link visualsAuctionAbi}__ and `eventName` set to `"RemoveVisualVote"`
+ */
+export const useWatchVisualsAuctionRemoveVisualVoteEvent =
+  /*#__PURE__*/ createUseWatchContractEvent({
+    abi: visualsAuctionAbi,
+    address: visualsAuctionAddress,
+    eventName: 'RemoveVisualVote',
   })
 
 /**
