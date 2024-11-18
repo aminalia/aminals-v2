@@ -1,8 +1,8 @@
 import { defineConfig } from '@wagmi/cli';
 
 const ABI = {
-  Aminals: require('./deployments/sepolia/Aminals.json'),
-  VisualsAuction: require('./deployments/sepolia/VisualsAuction.json'),
+  Aminals: require('./deployments/Aminals.json'),
+  VisualsAuction: require('./deployments/VisualsAuction.json'),
 };
 
 export default defineConfig({
