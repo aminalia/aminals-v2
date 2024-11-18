@@ -1,6 +1,6 @@
-import { useAccount } from 'wagmi';
-
 import { useWriteAminalsFeed } from '@/contracts/generated';
+import { useAccount } from 'wagmi';
+import { Button } from '../ui/button';
 
 export default function FeedButton({ id }: { id: string }) {
   const { isConnected, chain } = useAccount();
@@ -17,13 +17,13 @@ export default function FeedButton({ id }: { id: string }) {
   }
 
   return (
-    <button
+    <Button
       type="button"
       onClick={action}
       disabled={!enabled}
       className={enabled ? '' : 'text-neutral-400'}
     >
       Feed 0.01 ETH
-    </button>
+    </Button>
   );
 }

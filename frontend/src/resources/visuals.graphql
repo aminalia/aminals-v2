@@ -1,7 +1,14 @@
 query VisualList($first: Int = 100, $skip: Int = 0) {
-  visuals(first: $first, skip: $skip, orderBy: visualId, orderDirection: desc) {
+  visualProposals(
+    first: $first
+    skip: $skip
+    orderBy: visualId
+    orderDirection: desc
+  ) {
     visualId
-    proposer
+    proposer {
+      address
+    }
     svg
     loveVote
     catEnum

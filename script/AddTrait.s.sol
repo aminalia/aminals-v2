@@ -12,6 +12,8 @@ forge script script/AminalScript.s.sol:AminalScript --broadcast --verify -vvvv
  
 forge script script/AminalScript.s.sol:AminalScript --chain-id 5  --rpc-url "https://goerli.blockpi.network/v1/rpc/public" --broadcast  --verify -vvvv
 
+forge script  script/AddTrait.s.sol:AminalScript --chain-id 11155111 --rpc-url "https://ethereum-sepolia.publicnode.com" --broadcast --verify -vvv
+
 */
 
 contract AminalScript is Script {
@@ -21,17 +23,17 @@ contract AminalScript is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
-        Aminals aminals = Aminals(0x24BEd8962601Caa39e51F02bdC0251Ae51FF0d70);
+        Aminals aminals = Aminals(0x9fe1e3Fd1e936d5348094e861B76C9E9d527E541);
         VisualsAuction visualsAuction = VisualsAuction(aminals.visualsAuction());
 
         // third aminal
 
-        // uint256 faceTraitId = aminals.addFace(
-        //     '<g id="FACE"><path d="M673 351c0 75-26 111-175 115-133 4-171-44-171-119s85-156 174-156 172 85 172 160z" fill="#70968c"/><path d="M659 345c0 51-24 59-163 62-123 2-159-14-159-66s76-90 159-90 163 42 163 94z" fill="#438786"/><circle cx="389" cy="343" r="43" fill="#265a5d"/><path d="M393 308a36 36 0 1 0 0 71 36 36 0 0 0 0-71zm-1 39c-15 0-27-8-27-18s12-18 27-18 27 8 27 18-12 18-27 18z" fill="#271b27"/><ellipse cx="388" cy="329" fill="#2b565b" rx="27" ry="18"/><circle cx="369" cy="324" r="3" fill="#fff"/><circle cx="376" cy="319" r="2" fill="#fff"/><circle cx="500" cy="300" r="43" fill="#265a5d"/><path d="M504 265a36 36 0 1 0 0 71 36 36 0 0 0 0-71zm-1 39c-15 0-27-8-27-18s12-18 27-18 27 8 27 18-12 18-27 18z" fill="#271b27"/><ellipse cx="499" cy="286" fill="#2b565b" rx="27" ry="18"/><circle cx="480" cy="281" r="3" fill="#fff"/><circle cx="486" cy="276" r="2" fill="#fff"/><circle cx="604" cy="343" r="43" fill="#265a5d"/><path d="M608 308a36 36 0 1 0 0 71 36 36 0 0 0 0-71zm0 39c-15 0-27-8-27-18s12-18 27-18 26 8 26 18-12 18-26 18z" fill="#271b27"/><ellipse cx="604" cy="329" fill="#2b565b" rx="27" ry="18"/><circle cx="584" cy="324" r="3" fill="#fff"/><circle cx="591" cy="319" r="2" fill="#fff"/></g>'
-        // );
+        uint256 faceTraitId = aminals.addFace(
+            '<g id="FACE"><path d="M673 351c0 75-26 111-175 115-133 4-171-44-171-119s85-156 174-156 172 85 172 160z" fill="#70968c"/><path d="M659 345c0 51-24 59-163 62-123 2-159-14-159-66s76-90 159-90 163 42 163 94z" fill="#438786"/><circle cx="389" cy="343" r="43" fill="#265a5d"/><path d="M393 308a36 36 0 1 0 0 71 36 36 0 0 0 0-71zm-1 39c-15 0-27-8-27-18s12-18 27-18 27 8 27 18-12 18-27 18z" fill="#271b27"/><ellipse cx="388" cy="329" fill="#2b565b" rx="27" ry="18"/><circle cx="369" cy="324" r="3" fill="#fff"/><circle cx="376" cy="319" r="2" fill="#fff"/><circle cx="500" cy="300" r="43" fill="#265a5d"/><path d="M504 265a36 36 0 1 0 0 71 36 36 0 0 0 0-71zm-1 39c-15 0-27-8-27-18s12-18 27-18 27 8 27 18-12 18-27 18z" fill="#271b27"/><ellipse cx="499" cy="286" fill="#2b565b" rx="27" ry="18"/><circle cx="480" cy="281" r="3" fill="#fff"/><circle cx="486" cy="276" r="2" fill="#fff"/><circle cx="604" cy="343" r="43" fill="#265a5d"/><path d="M608 308a36 36 0 1 0 0 71 36 36 0 0 0 0-71zm0 39c-15 0-27-8-27-18s12-18 27-18 26 8 26 18-12 18-26 18z" fill="#271b27"/><ellipse cx="604" cy="329" fill="#2b565b" rx="27" ry="18"/><circle cx="584" cy="324" r="3" fill="#fff"/><circle cx="591" cy="319" r="2" fill="#fff"/></g>'
+        );
 
         // uint256 bodyTraitId = aminals.addBody(
-        //  '<g id="BODY"><path d="M710 404c0 362-94 350-210 350s-210 23-210-350c0-116 94-219 210-219s210 103 210 219z" fill="#99726a"/></g>'
+        //     '<g id="BODY"><path d="M710 404c0 362-94 350-210 350s-210 23-210-350c0-116 94-219 210-219s210 103 210 219z" fill="#99726a"/></g>'
         // );
 
         // uint256 earsTraitId = aminals.addEar(
@@ -60,50 +62,50 @@ contract AminalScript is Script {
         //     console.log("Aminal love total : ", aminals.getAminalLoveTotal(i));
         // }
 
-        uint256 faceTraitId = 6;
-        uint256 bodyTraitId = 3;
-        uint256 earsTraitId = 3;
-        uint256 armsTraitId = 3;
-        uint256 backTraitId = 3;
-        uint256 miscTraitId = 3;
-        uint256 tailTraitId = 3;
+        // uint256 faceTraitId = 6;
+        // uint256 bodyTraitId = 3;
+        // uint256 earsTraitId = 3;
+        // uint256 armsTraitId = 3;
+        // uint256 backTraitId = 3;
+        // uint256 miscTraitId = 3;
+        // uint256 tailTraitId = 3;
 
-        aminals.breedWith{value: 0.001 ether}(1, 2);
-        uint256 auctionID = aminals.breedWith{value: 0.001 ether}(2, 1);
+        // aminals.breedWith{value: 0.001 ether}(1, 2);
+        // uint256 auctionID = aminals.breedWith{value: 0.001 ether}(2, 1);
 
-        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.FACE, faceTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.FACE, faceTraitId);
 
-        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.FACE, faceTraitId);
+        // visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.FACE, faceTraitId);
 
-        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BODY, bodyTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.BODY, bodyTraitId);
 
-        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BODY, bodyTraitId);
+        // visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.BODY, bodyTraitId);
 
-        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.EARS, earsTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.EARS, earsTraitId);
 
-        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.EARS, earsTraitId);
+        // visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.EARS, earsTraitId);
 
-        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.ARM, armsTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.ARM, armsTraitId);
 
-        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.ARM, armsTraitId);
+        // visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.ARM, armsTraitId);
 
-        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.BACK, backTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.BACK, backTraitId);
 
-        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.BACK, backTraitId);
+        // visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.BACK, backTraitId);
 
-        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.MISC, miscTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.MISC, miscTraitId);
 
-        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.MISC, miscTraitId);
+        // visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.MISC, miscTraitId);
 
-        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.TAIL, tailTraitId);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.TAIL, tailTraitId);
 
-        // visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.TAIL, tailTraitId);
+        // visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.TAIL, tailTraitId);
 
-        visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, VisualsAuction.VisualsCat.MOUTH, 0);
+        // visualsAuction.proposeVisual{value: 0.02 ether}(auctionID, IAminalStructs.VisualsCat.MOUTH, 0);
 
-        visualsAuction.voteVisual(auctionID, VisualsAuction.VisualsCat.MOUTH, 0);
+        // visualsAuction.voteVisual(auctionID, IAminalStructs.VisualsCat.MOUTH, 0);
 
-        visualsAuction.endAuction(auctionID);
+        // visualsAuction.endAuction(auctionID);
 
         vm.stopBroadcast();
     }

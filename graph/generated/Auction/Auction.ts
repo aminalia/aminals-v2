@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class EndAuction extends ethereum.Event {
@@ -23,20 +23,24 @@ export class EndAuction__Params {
     this._event = event;
   }
 
-  get aminalIdOne(): BigInt {
+  get auctionId(): BigInt {
     return this._event.parameters[0].value.toBigInt();
   }
 
-  get aminalIdTwo(): BigInt {
+  get aminalIdOne(): BigInt {
     return this._event.parameters[1].value.toBigInt();
   }
 
-  get childAminalId(): BigInt {
+  get aminalIdTwo(): BigInt {
     return this._event.parameters[2].value.toBigInt();
   }
 
+  get childAminalId(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
+  }
+
   get winningIds(): Array<BigInt> {
-    return this._event.parameters[3].value.toBigIntArray();
+    return this._event.parameters[4].value.toBigIntArray();
   }
 }
 
@@ -140,6 +144,44 @@ export class RemoveVisual__Params {
   }
 }
 
+export class RemoveVisualVote extends ethereum.Event {
+  get params(): RemoveVisualVote__Params {
+    return new RemoveVisualVote__Params(this);
+  }
+}
+
+export class RemoveVisualVote__Params {
+  _event: RemoveVisualVote;
+
+  constructor(event: RemoveVisualVote) {
+    this._event = event;
+  }
+
+  get auctionId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get visualId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get sender(): Address {
+    return this._event.parameters[2].value.toAddress();
+  }
+
+  get catEnum(): i32 {
+    return this._event.parameters[3].value.toI32();
+  }
+
+  get userLoveVote(): BigInt {
+    return this._event.parameters[4].value.toBigInt();
+  }
+
+  get totalLove(): BigInt {
+    return this._event.parameters[5].value.toBigInt();
+  }
+}
+
 export class StartAuction extends ethereum.Event {
   get params(): StartAuction__Params {
     return new StartAuction__Params(this);
@@ -153,15 +195,15 @@ export class StartAuction__Params {
     this._event = event;
   }
 
-  get aminalIdOne(): BigInt {
+  get auctionId(): BigInt {
     return this._event.parameters[0].value.toBigInt();
   }
 
-  get aminalIdTwo(): BigInt {
+  get aminalIdOne(): BigInt {
     return this._event.parameters[1].value.toBigInt();
   }
 
-  get childAminalId(): BigInt {
+  get aminalIdTwo(): BigInt {
     return this._event.parameters[2].value.toBigInt();
   }
 
@@ -224,7 +266,7 @@ export class Auction__auctionsResult {
     value1: BigInt,
     value2: BigInt,
     value3: BigInt,
-    value4: boolean
+    value4: boolean,
   ) {
     this.value0 = value0;
     this.value1 = value1;
@@ -311,7 +353,7 @@ export class Auction extends ethereum.SmartContract {
     let result = super.call(
       "GENERATOR_SOURCE_BALANCE",
       "GENERATOR_SOURCE_BALANCE():(address)",
-      []
+      [],
     );
 
     return result[0].toAddress();
@@ -321,7 +363,7 @@ export class Auction extends ethereum.SmartContract {
     let result = super.tryCall(
       "GENERATOR_SOURCE_BALANCE",
       "GENERATOR_SOURCE_BALANCE():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -334,7 +376,7 @@ export class Auction extends ethereum.SmartContract {
     let result = super.call(
       "GENERATOR_SOURCE_CONTRACT",
       "GENERATOR_SOURCE_CONTRACT():(address)",
-      []
+      [],
     );
 
     return result[0].toAddress();
@@ -344,7 +386,7 @@ export class Auction extends ethereum.SmartContract {
     let result = super.tryCall(
       "GENERATOR_SOURCE_CONTRACT",
       "GENERATOR_SOURCE_CONTRACT():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -387,7 +429,7 @@ export class Auction extends ethereum.SmartContract {
     let result = super.call(
       "auctions",
       "auctions(uint256):(uint256,uint256,uint256,uint256,bool)",
-      [ethereum.Value.fromUnsignedBigInt(auctionId)]
+      [ethereum.Value.fromUnsignedBigInt(auctionId)],
     );
 
     return new Auction__auctionsResult(
@@ -395,17 +437,17 @@ export class Auction extends ethereum.SmartContract {
       result[1].toBigInt(),
       result[2].toBigInt(),
       result[3].toBigInt(),
-      result[4].toBoolean()
+      result[4].toBoolean(),
     );
   }
 
   try_auctions(
-    auctionId: BigInt
+    auctionId: BigInt,
   ): ethereum.CallResult<Auction__auctionsResult> {
     let result = super.tryCall(
       "auctions",
       "auctions(uint256):(uint256,uint256,uint256,uint256,bool)",
-      [ethereum.Value.fromUnsignedBigInt(auctionId)]
+      [ethereum.Value.fromUnsignedBigInt(auctionId)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -417,8 +459,8 @@ export class Auction extends ethereum.SmartContract {
         value[1].toBigInt(),
         value[2].toBigInt(),
         value[3].toBigInt(),
-        value[4].toBoolean()
-      )
+        value[4].toBoolean(),
+      ),
     );
   }
 
@@ -426,28 +468,28 @@ export class Auction extends ethereum.SmartContract {
     let result = super.call(
       "getAuctionByID",
       "getAuctionByID(uint256):((uint256,uint256,uint256,uint256[8][10],uint256[8][10],uint256[8][10],uint256,uint256[8],bool))",
-      [ethereum.Value.fromUnsignedBigInt(auctionID)]
+      [ethereum.Value.fromUnsignedBigInt(auctionID)],
     );
 
     return changetype<Auction__getAuctionByIDResultValue0Struct>(
-      result[0].toTuple()
+      result[0].toTuple(),
     );
   }
 
   try_getAuctionByID(
-    auctionID: BigInt
+    auctionID: BigInt,
   ): ethereum.CallResult<Auction__getAuctionByIDResultValue0Struct> {
     let result = super.tryCall(
       "getAuctionByID",
       "getAuctionByID(uint256):((uint256,uint256,uint256,uint256[8][10],uint256[8][10],uint256[8][10],uint256,uint256[8],bool))",
-      [ethereum.Value.fromUnsignedBigInt(auctionID)]
+      [ethereum.Value.fromUnsignedBigInt(auctionID)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      changetype<Auction__getAuctionByIDResultValue0Struct>(value[0].toTuple())
+      changetype<Auction__getAuctionByIDResultValue0Struct>(value[0].toTuple()),
     );
   }
 
@@ -472,8 +514,8 @@ export class Auction extends ethereum.SmartContract {
       "startAuction(uint256,uint256):(uint256)",
       [
         ethereum.Value.fromUnsignedBigInt(aminalIdOne),
-        ethereum.Value.fromUnsignedBigInt(aminalIdTwo)
-      ]
+        ethereum.Value.fromUnsignedBigInt(aminalIdTwo),
+      ],
     );
 
     return result[0].toBigInt();
@@ -481,15 +523,15 @@ export class Auction extends ethereum.SmartContract {
 
   try_startAuction(
     aminalIdOne: BigInt,
-    aminalIdTwo: BigInt
+    aminalIdTwo: BigInt,
   ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "startAuction",
       "startAuction(uint256,uint256):(uint256)",
       [
         ethereum.Value.fromUnsignedBigInt(aminalIdOne),
-        ethereum.Value.fromUnsignedBigInt(aminalIdTwo)
-      ]
+        ethereum.Value.fromUnsignedBigInt(aminalIdTwo),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -788,7 +830,7 @@ export class VoteVisualCall__Inputs {
     return this._call.inputValues[1].value.toI32();
   }
 
-  get id(): BigInt {
+  get visualId(): BigInt {
     return this._call.inputValues[2].value.toBigInt();
   }
 }

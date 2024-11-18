@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class AddSkillProposal extends ethereum.Event {
@@ -334,6 +334,44 @@ export class Squeak__Params {
   get energy(): BigInt {
     return this._event.parameters[2].value.toBigInt();
   }
+
+  get love(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
+  }
+
+  get sender(): Address {
+    return this._event.parameters[4].value.toAddress();
+  }
+}
+
+export class TraitAdded extends ethereum.Event {
+  get params(): TraitAdded__Params {
+    return new TraitAdded__Params(this);
+  }
+}
+
+export class TraitAdded__Params {
+  _event: TraitAdded;
+
+  constructor(event: TraitAdded) {
+    this._event = event;
+  }
+
+  get visualId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get catEnum(): i32 {
+    return this._event.parameters[1].value.toI32();
+  }
+
+  get svg(): string {
+    return this._event.parameters[2].value.toString();
+  }
+
+  get creator(): Address {
+    return this._event.parameters[3].value.toAddress();
+  }
 }
 
 export class Transfer extends ethereum.Event {
@@ -412,7 +450,7 @@ export class Aminals__aminalsResult {
     value3: BigInt,
     value4: boolean,
     value5: boolean,
-    value6: Aminals__aminalsResultVisualsStruct
+    value6: Aminals__aminalsResultVisualsStruct,
   ) {
     this.value0 = value0;
     this.value1 = value1;
@@ -464,6 +502,81 @@ export class Aminals__aminalsResult {
   }
 }
 
+export class Aminals__armsResult {
+  value0: string;
+  value1: Address;
+
+  constructor(value0: string, value1: Address) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromString(this.value0));
+    map.set("value1", ethereum.Value.fromAddress(this.value1));
+    return map;
+  }
+
+  getSvg(): string {
+    return this.value0;
+  }
+
+  getCreator(): Address {
+    return this.value1;
+  }
+}
+
+export class Aminals__backgroundsResult {
+  value0: string;
+  value1: Address;
+
+  constructor(value0: string, value1: Address) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromString(this.value0));
+    map.set("value1", ethereum.Value.fromAddress(this.value1));
+    return map;
+  }
+
+  getSvg(): string {
+    return this.value0;
+  }
+
+  getCreator(): Address {
+    return this.value1;
+  }
+}
+
+export class Aminals__bodiesResult {
+  value0: string;
+  value1: Address;
+
+  constructor(value0: string, value1: Address) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromString(this.value0));
+    map.set("value1", ethereum.Value.fromAddress(this.value1));
+    return map;
+  }
+
+  getSvg(): string {
+    return this.value0;
+  }
+
+  getCreator(): Address {
+    return this.value1;
+  }
+}
+
 export class Aminals__constructTokenURIInputParamsStruct extends ethereum.Tuple {
   get name(): string {
     return this[0].toString();
@@ -479,6 +592,56 @@ export class Aminals__constructTokenURIInputParamsStruct extends ethereum.Tuple 
 
   get attributes(): string {
     return this[3].toString();
+  }
+}
+
+export class Aminals__earsResult {
+  value0: string;
+  value1: Address;
+
+  constructor(value0: string, value1: Address) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromString(this.value0));
+    map.set("value1", ethereum.Value.fromAddress(this.value1));
+    return map;
+  }
+
+  getSvg(): string {
+    return this.value0;
+  }
+
+  getCreator(): Address {
+    return this.value1;
+  }
+}
+
+export class Aminals__facesResult {
+  value0: string;
+  value1: Address;
+
+  constructor(value0: string, value1: Address) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromString(this.value0));
+    map.set("value1", ethereum.Value.fromAddress(this.value1));
+    return map;
+  }
+
+  getSvg(): string {
+    return this.value0;
+  }
+
+  getCreator(): Address {
+    return this.value1;
   }
 }
 
@@ -516,6 +679,81 @@ export class Aminals__getAminalVisualsByIDResultValue0Struct extends ethereum.Tu
   }
 }
 
+export class Aminals__miscsResult {
+  value0: string;
+  value1: Address;
+
+  constructor(value0: string, value1: Address) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromString(this.value0));
+    map.set("value1", ethereum.Value.fromAddress(this.value1));
+    return map;
+  }
+
+  getSvg(): string {
+    return this.value0;
+  }
+
+  getCreator(): Address {
+    return this.value1;
+  }
+}
+
+export class Aminals__mouthsResult {
+  value0: string;
+  value1: Address;
+
+  constructor(value0: string, value1: Address) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromString(this.value0));
+    map.set("value1", ethereum.Value.fromAddress(this.value1));
+    return map;
+  }
+
+  getSvg(): string {
+    return this.value0;
+  }
+
+  getCreator(): Address {
+    return this.value1;
+  }
+}
+
+export class Aminals__tailsResult {
+  value0: string;
+  value1: Address;
+
+  constructor(value0: string, value1: Address) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromString(this.value0));
+    map.set("value1", ethereum.Value.fromAddress(this.value1));
+    return map;
+  }
+
+  getSvg(): string {
+    return this.value0;
+  }
+
+  getCreator(): Address {
+    return this.value1;
+  }
+}
+
 export class Aminals extends ethereum.SmartContract {
   static bind(address: Address): Aminals {
     return new Aminals("Aminals", address);
@@ -523,7 +761,7 @@ export class Aminals extends ethereum.SmartContract {
 
   addArm(arm: string): BigInt {
     let result = super.call("addArm", "addArm(string):(uint256)", [
-      ethereum.Value.fromString(arm)
+      ethereum.Value.fromString(arm),
     ]);
 
     return result[0].toBigInt();
@@ -531,7 +769,7 @@ export class Aminals extends ethereum.SmartContract {
 
   try_addArm(arm: string): ethereum.CallResult<BigInt> {
     let result = super.tryCall("addArm", "addArm(string):(uint256)", [
-      ethereum.Value.fromString(arm)
+      ethereum.Value.fromString(arm),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -544,7 +782,7 @@ export class Aminals extends ethereum.SmartContract {
     let result = super.call(
       "addBackground",
       "addBackground(string):(uint256)",
-      [ethereum.Value.fromString(background)]
+      [ethereum.Value.fromString(background)],
     );
 
     return result[0].toBigInt();
@@ -554,7 +792,7 @@ export class Aminals extends ethereum.SmartContract {
     let result = super.tryCall(
       "addBackground",
       "addBackground(string):(uint256)",
-      [ethereum.Value.fromString(background)]
+      [ethereum.Value.fromString(background)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -565,7 +803,7 @@ export class Aminals extends ethereum.SmartContract {
 
   addBody(body: string): BigInt {
     let result = super.call("addBody", "addBody(string):(uint256)", [
-      ethereum.Value.fromString(body)
+      ethereum.Value.fromString(body),
     ]);
 
     return result[0].toBigInt();
@@ -573,7 +811,7 @@ export class Aminals extends ethereum.SmartContract {
 
   try_addBody(body: string): ethereum.CallResult<BigInt> {
     let result = super.tryCall("addBody", "addBody(string):(uint256)", [
-      ethereum.Value.fromString(body)
+      ethereum.Value.fromString(body),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -584,7 +822,7 @@ export class Aminals extends ethereum.SmartContract {
 
   addEar(ear: string): BigInt {
     let result = super.call("addEar", "addEar(string):(uint256)", [
-      ethereum.Value.fromString(ear)
+      ethereum.Value.fromString(ear),
     ]);
 
     return result[0].toBigInt();
@@ -592,7 +830,7 @@ export class Aminals extends ethereum.SmartContract {
 
   try_addEar(ear: string): ethereum.CallResult<BigInt> {
     let result = super.tryCall("addEar", "addEar(string):(uint256)", [
-      ethereum.Value.fromString(ear)
+      ethereum.Value.fromString(ear),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -603,7 +841,7 @@ export class Aminals extends ethereum.SmartContract {
 
   addFace(face: string): BigInt {
     let result = super.call("addFace", "addFace(string):(uint256)", [
-      ethereum.Value.fromString(face)
+      ethereum.Value.fromString(face),
     ]);
 
     return result[0].toBigInt();
@@ -611,7 +849,7 @@ export class Aminals extends ethereum.SmartContract {
 
   try_addFace(face: string): ethereum.CallResult<BigInt> {
     let result = super.tryCall("addFace", "addFace(string):(uint256)", [
-      ethereum.Value.fromString(face)
+      ethereum.Value.fromString(face),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -622,7 +860,7 @@ export class Aminals extends ethereum.SmartContract {
 
   addMisc(misc: string): BigInt {
     let result = super.call("addMisc", "addMisc(string):(uint256)", [
-      ethereum.Value.fromString(misc)
+      ethereum.Value.fromString(misc),
     ]);
 
     return result[0].toBigInt();
@@ -630,7 +868,7 @@ export class Aminals extends ethereum.SmartContract {
 
   try_addMisc(misc: string): ethereum.CallResult<BigInt> {
     let result = super.tryCall("addMisc", "addMisc(string):(uint256)", [
-      ethereum.Value.fromString(misc)
+      ethereum.Value.fromString(misc),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -641,7 +879,7 @@ export class Aminals extends ethereum.SmartContract {
 
   addMouth(mouth: string): BigInt {
     let result = super.call("addMouth", "addMouth(string):(uint256)", [
-      ethereum.Value.fromString(mouth)
+      ethereum.Value.fromString(mouth),
     ]);
 
     return result[0].toBigInt();
@@ -649,7 +887,7 @@ export class Aminals extends ethereum.SmartContract {
 
   try_addMouth(mouth: string): ethereum.CallResult<BigInt> {
     let result = super.tryCall("addMouth", "addMouth(string):(uint256)", [
-      ethereum.Value.fromString(mouth)
+      ethereum.Value.fromString(mouth),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -660,7 +898,7 @@ export class Aminals extends ethereum.SmartContract {
 
   addTail(tail: string): BigInt {
     let result = super.call("addTail", "addTail(string):(uint256)", [
-      ethereum.Value.fromString(tail)
+      ethereum.Value.fromString(tail),
     ]);
 
     return result[0].toBigInt();
@@ -668,7 +906,7 @@ export class Aminals extends ethereum.SmartContract {
 
   try_addTail(tail: string): ethereum.CallResult<BigInt> {
     let result = super.tryCall("addTail", "addTail(string):(uint256)", [
-      ethereum.Value.fromString(tail)
+      ethereum.Value.fromString(tail),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -681,7 +919,7 @@ export class Aminals extends ethereum.SmartContract {
     let result = super.call(
       "aminals",
       "aminals(uint256):(uint256,uint256,uint256,uint256,bool,bool,(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256))",
-      [ethereum.Value.fromUnsignedBigInt(aminalId)]
+      [ethereum.Value.fromUnsignedBigInt(aminalId)],
     );
 
     return new Aminals__aminalsResult(
@@ -691,7 +929,7 @@ export class Aminals extends ethereum.SmartContract {
       result[3].toBigInt(),
       result[4].toBoolean(),
       result[5].toBoolean(),
-      changetype<Aminals__aminalsResultVisualsStruct>(result[6].toTuple())
+      changetype<Aminals__aminalsResultVisualsStruct>(result[6].toTuple()),
     );
   }
 
@@ -699,7 +937,7 @@ export class Aminals extends ethereum.SmartContract {
     let result = super.tryCall(
       "aminals",
       "aminals(uint256):(uint256,uint256,uint256,uint256,bool,bool,(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256))",
-      [ethereum.Value.fromUnsignedBigInt(aminalId)]
+      [ethereum.Value.fromUnsignedBigInt(aminalId)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -713,52 +951,65 @@ export class Aminals extends ethereum.SmartContract {
         value[3].toBigInt(),
         value[4].toBoolean(),
         value[5].toBoolean(),
-        changetype<Aminals__aminalsResultVisualsStruct>(value[6].toTuple())
-      )
+        changetype<Aminals__aminalsResultVisualsStruct>(value[6].toTuple()),
+      ),
     );
   }
 
-  arms(param0: BigInt): string {
-    let result = super.call("arms", "arms(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
+  arms(param0: BigInt): Aminals__armsResult {
+    let result = super.call("arms", "arms(uint256):(string,address)", [
+      ethereum.Value.fromUnsignedBigInt(param0),
     ]);
 
-    return result[0].toString();
+    return new Aminals__armsResult(result[0].toString(), result[1].toAddress());
   }
 
-  try_arms(param0: BigInt): ethereum.CallResult<string> {
-    let result = super.tryCall("arms", "arms(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
+  try_arms(param0: BigInt): ethereum.CallResult<Aminals__armsResult> {
+    let result = super.tryCall("arms", "arms(uint256):(string,address)", [
+      ethereum.Value.fromUnsignedBigInt(param0),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
+    return ethereum.CallResult.fromValue(
+      new Aminals__armsResult(value[0].toString(), value[1].toAddress()),
+    );
   }
 
-  backgrounds(param0: BigInt): string {
-    let result = super.call("backgrounds", "backgrounds(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
-    ]);
+  backgrounds(param0: BigInt): Aminals__backgroundsResult {
+    let result = super.call(
+      "backgrounds",
+      "backgrounds(uint256):(string,address)",
+      [ethereum.Value.fromUnsignedBigInt(param0)],
+    );
 
-    return result[0].toString();
+    return new Aminals__backgroundsResult(
+      result[0].toString(),
+      result[1].toAddress(),
+    );
   }
 
-  try_backgrounds(param0: BigInt): ethereum.CallResult<string> {
-    let result = super.tryCall("backgrounds", "backgrounds(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
-    ]);
+  try_backgrounds(
+    param0: BigInt,
+  ): ethereum.CallResult<Aminals__backgroundsResult> {
+    let result = super.tryCall(
+      "backgrounds",
+      "backgrounds(uint256):(string,address)",
+      [ethereum.Value.fromUnsignedBigInt(param0)],
+    );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
+    return ethereum.CallResult.fromValue(
+      new Aminals__backgroundsResult(value[0].toString(), value[1].toAddress()),
+    );
   }
 
   balanceOf(owner: Address): BigInt {
     let result = super.call("balanceOf", "balanceOf(address):(uint256)", [
-      ethereum.Value.fromAddress(owner)
+      ethereum.Value.fromAddress(owner),
     ]);
 
     return result[0].toBigInt();
@@ -766,7 +1017,7 @@ export class Aminals extends ethereum.SmartContract {
 
   try_balanceOf(owner: Address): ethereum.CallResult<BigInt> {
     let result = super.tryCall("balanceOf", "balanceOf(address):(uint256)", [
-      ethereum.Value.fromAddress(owner)
+      ethereum.Value.fromAddress(owner),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -775,44 +1026,49 @@ export class Aminals extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  bodies(param0: BigInt): string {
-    let result = super.call("bodies", "bodies(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
+  bodies(param0: BigInt): Aminals__bodiesResult {
+    let result = super.call("bodies", "bodies(uint256):(string,address)", [
+      ethereum.Value.fromUnsignedBigInt(param0),
     ]);
 
-    return result[0].toString();
+    return new Aminals__bodiesResult(
+      result[0].toString(),
+      result[1].toAddress(),
+    );
   }
 
-  try_bodies(param0: BigInt): ethereum.CallResult<string> {
-    let result = super.tryCall("bodies", "bodies(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
+  try_bodies(param0: BigInt): ethereum.CallResult<Aminals__bodiesResult> {
+    let result = super.tryCall("bodies", "bodies(uint256):(string,address)", [
+      ethereum.Value.fromUnsignedBigInt(param0),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
+    return ethereum.CallResult.fromValue(
+      new Aminals__bodiesResult(value[0].toString(), value[1].toAddress()),
+    );
   }
 
   constructTokenURI(
-    params: Aminals__constructTokenURIInputParamsStruct
+    params: Aminals__constructTokenURIInputParamsStruct,
   ): string {
     let result = super.call(
       "constructTokenURI",
       "constructTokenURI((string,string,string,string)):(string)",
-      [ethereum.Value.fromTuple(params)]
+      [ethereum.Value.fromTuple(params)],
     );
 
     return result[0].toString();
   }
 
   try_constructTokenURI(
-    params: Aminals__constructTokenURIInputParamsStruct
+    params: Aminals__constructTokenURIInputParamsStruct,
   ): ethereum.CallResult<string> {
     let result = super.tryCall(
       "constructTokenURI",
       "constructTokenURI((string,string,string,string)):(string)",
-      [ethereum.Value.fromTuple(params)]
+      [ethereum.Value.fromTuple(params)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -823,7 +1079,7 @@ export class Aminals extends ethereum.SmartContract {
 
   dataURI(tokenId: BigInt): string {
     let result = super.call("dataURI", "dataURI(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(tokenId)
+      ethereum.Value.fromUnsignedBigInt(tokenId),
     ]);
 
     return result[0].toString();
@@ -831,7 +1087,7 @@ export class Aminals extends ethereum.SmartContract {
 
   try_dataURI(tokenId: BigInt): ethereum.CallResult<string> {
     let result = super.tryCall("dataURI", "dataURI(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(tokenId)
+      ethereum.Value.fromUnsignedBigInt(tokenId),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -840,49 +1096,56 @@ export class Aminals extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
-  ears(param0: BigInt): string {
-    let result = super.call("ears", "ears(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
+  ears(param0: BigInt): Aminals__earsResult {
+    let result = super.call("ears", "ears(uint256):(string,address)", [
+      ethereum.Value.fromUnsignedBigInt(param0),
     ]);
 
-    return result[0].toString();
+    return new Aminals__earsResult(result[0].toString(), result[1].toAddress());
   }
 
-  try_ears(param0: BigInt): ethereum.CallResult<string> {
-    let result = super.tryCall("ears", "ears(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
+  try_ears(param0: BigInt): ethereum.CallResult<Aminals__earsResult> {
+    let result = super.tryCall("ears", "ears(uint256):(string,address)", [
+      ethereum.Value.fromUnsignedBigInt(param0),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
+    return ethereum.CallResult.fromValue(
+      new Aminals__earsResult(value[0].toString(), value[1].toAddress()),
+    );
   }
 
-  faces(param0: BigInt): string {
-    let result = super.call("faces", "faces(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
+  faces(param0: BigInt): Aminals__facesResult {
+    let result = super.call("faces", "faces(uint256):(string,address)", [
+      ethereum.Value.fromUnsignedBigInt(param0),
     ]);
 
-    return result[0].toString();
+    return new Aminals__facesResult(
+      result[0].toString(),
+      result[1].toAddress(),
+    );
   }
 
-  try_faces(param0: BigInt): ethereum.CallResult<string> {
-    let result = super.tryCall("faces", "faces(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
+  try_faces(param0: BigInt): ethereum.CallResult<Aminals__facesResult> {
+    let result = super.tryCall("faces", "faces(uint256):(string,address)", [
+      ethereum.Value.fromUnsignedBigInt(param0),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
+    return ethereum.CallResult.fromValue(
+      new Aminals__facesResult(value[0].toString(), value[1].toAddress()),
+    );
   }
 
   generateAttributesList(tokenId: BigInt): string {
     let result = super.call(
       "generateAttributesList",
       "generateAttributesList(uint256):(string)",
-      [ethereum.Value.fromUnsignedBigInt(tokenId)]
+      [ethereum.Value.fromUnsignedBigInt(tokenId)],
     );
 
     return result[0].toString();
@@ -892,7 +1155,7 @@ export class Aminals extends ethereum.SmartContract {
     let result = super.tryCall(
       "generateAttributesList",
       "generateAttributesList(uint256):(string)",
-      [ethereum.Value.fromUnsignedBigInt(tokenId)]
+      [ethereum.Value.fromUnsignedBigInt(tokenId)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -905,7 +1168,7 @@ export class Aminals extends ethereum.SmartContract {
     _name: string,
     _description: string,
     _image: string,
-    _attributes: string
+    _attributes: string,
   ): string {
     let result = super.call(
       "genericDataURI",
@@ -914,8 +1177,8 @@ export class Aminals extends ethereum.SmartContract {
         ethereum.Value.fromString(_name),
         ethereum.Value.fromString(_description),
         ethereum.Value.fromString(_image),
-        ethereum.Value.fromString(_attributes)
-      ]
+        ethereum.Value.fromString(_attributes),
+      ],
     );
 
     return result[0].toString();
@@ -925,7 +1188,7 @@ export class Aminals extends ethereum.SmartContract {
     _name: string,
     _description: string,
     _image: string,
-    _attributes: string
+    _attributes: string,
   ): ethereum.CallResult<string> {
     let result = super.tryCall(
       "genericDataURI",
@@ -934,8 +1197,8 @@ export class Aminals extends ethereum.SmartContract {
         ethereum.Value.fromString(_name),
         ethereum.Value.fromString(_description),
         ethereum.Value.fromString(_image),
-        ethereum.Value.fromString(_attributes)
-      ]
+        ethereum.Value.fromString(_attributes),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -950,8 +1213,8 @@ export class Aminals extends ethereum.SmartContract {
       "getAminalLoveByIdByUser(uint256,address):(uint256)",
       [
         ethereum.Value.fromUnsignedBigInt(aminalID),
-        ethereum.Value.fromAddress(user)
-      ]
+        ethereum.Value.fromAddress(user),
+      ],
     );
 
     return result[0].toBigInt();
@@ -959,15 +1222,15 @@ export class Aminals extends ethereum.SmartContract {
 
   try_getAminalLoveByIdByUser(
     aminalID: BigInt,
-    user: Address
+    user: Address,
   ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "getAminalLoveByIdByUser",
       "getAminalLoveByIdByUser(uint256,address):(uint256)",
       [
         ethereum.Value.fromUnsignedBigInt(aminalID),
-        ethereum.Value.fromAddress(user)
-      ]
+        ethereum.Value.fromAddress(user),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -980,7 +1243,7 @@ export class Aminals extends ethereum.SmartContract {
     let result = super.call(
       "getAminalLoveTotal",
       "getAminalLoveTotal(uint256):(uint256)",
-      [ethereum.Value.fromUnsignedBigInt(aminalID)]
+      [ethereum.Value.fromUnsignedBigInt(aminalID)],
     );
 
     return result[0].toBigInt();
@@ -990,7 +1253,7 @@ export class Aminals extends ethereum.SmartContract {
     let result = super.tryCall(
       "getAminalLoveTotal",
       "getAminalLoveTotal(uint256):(uint256)",
-      [ethereum.Value.fromUnsignedBigInt(aminalID)]
+      [ethereum.Value.fromUnsignedBigInt(aminalID)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -1000,26 +1263,26 @@ export class Aminals extends ethereum.SmartContract {
   }
 
   getAminalVisualsByID(
-    aminalID: BigInt
+    aminalID: BigInt,
   ): Aminals__getAminalVisualsByIDResultValue0Struct {
     let result = super.call(
       "getAminalVisualsByID",
       "getAminalVisualsByID(uint256):((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256))",
-      [ethereum.Value.fromUnsignedBigInt(aminalID)]
+      [ethereum.Value.fromUnsignedBigInt(aminalID)],
     );
 
     return changetype<Aminals__getAminalVisualsByIDResultValue0Struct>(
-      result[0].toTuple()
+      result[0].toTuple(),
     );
   }
 
   try_getAminalVisualsByID(
-    aminalID: BigInt
+    aminalID: BigInt,
   ): ethereum.CallResult<Aminals__getAminalVisualsByIDResultValue0Struct> {
     let result = super.tryCall(
       "getAminalVisualsByID",
       "getAminalVisualsByID(uint256):((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256))",
-      [ethereum.Value.fromUnsignedBigInt(aminalID)]
+      [ethereum.Value.fromUnsignedBigInt(aminalID)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -1027,14 +1290,14 @@ export class Aminals extends ethereum.SmartContract {
     let value = result.value;
     return ethereum.CallResult.fromValue(
       changetype<Aminals__getAminalVisualsByIDResultValue0Struct>(
-        value[0].toTuple()
-      )
+        value[0].toTuple(),
+      ),
     );
   }
 
   getEnergy(aminalID: BigInt): BigInt {
     let result = super.call("getEnergy", "getEnergy(uint256):(uint256)", [
-      ethereum.Value.fromUnsignedBigInt(aminalID)
+      ethereum.Value.fromUnsignedBigInt(aminalID),
     ]);
 
     return result[0].toBigInt();
@@ -1042,7 +1305,7 @@ export class Aminals extends ethereum.SmartContract {
 
   try_getEnergy(aminalID: BigInt): ethereum.CallResult<BigInt> {
     let result = super.tryCall("getEnergy", "getEnergy(uint256):(uint256)", [
-      ethereum.Value.fromUnsignedBigInt(aminalID)
+      ethereum.Value.fromUnsignedBigInt(aminalID),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -1057,8 +1320,8 @@ export class Aminals extends ethereum.SmartContract {
       "getVisuals(uint256,uint256):(string)",
       [
         ethereum.Value.fromUnsignedBigInt(category),
-        ethereum.Value.fromUnsignedBigInt(id)
-      ]
+        ethereum.Value.fromUnsignedBigInt(id),
+      ],
     );
 
     return result[0].toString();
@@ -1070,8 +1333,8 @@ export class Aminals extends ethereum.SmartContract {
       "getVisuals(uint256,uint256):(string)",
       [
         ethereum.Value.fromUnsignedBigInt(category),
-        ethereum.Value.fromUnsignedBigInt(id)
-      ]
+        ethereum.Value.fromUnsignedBigInt(id),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -1101,8 +1364,8 @@ export class Aminals extends ethereum.SmartContract {
       "loveDrivenPrice(uint256,address):(uint128)",
       [
         ethereum.Value.fromUnsignedBigInt(aminalId),
-        ethereum.Value.fromAddress(sender)
-      ]
+        ethereum.Value.fromAddress(sender),
+      ],
     );
 
     return result[0].toBigInt();
@@ -1110,15 +1373,15 @@ export class Aminals extends ethereum.SmartContract {
 
   try_loveDrivenPrice(
     aminalId: BigInt,
-    sender: Address
+    sender: Address,
   ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "loveDrivenPrice",
       "loveDrivenPrice(uint256,address):(uint128)",
       [
         ethereum.Value.fromUnsignedBigInt(aminalId),
-        ethereum.Value.fromAddress(sender)
-      ]
+        ethereum.Value.fromAddress(sender),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -1127,42 +1390,52 @@ export class Aminals extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  miscs(param0: BigInt): string {
-    let result = super.call("miscs", "miscs(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
+  miscs(param0: BigInt): Aminals__miscsResult {
+    let result = super.call("miscs", "miscs(uint256):(string,address)", [
+      ethereum.Value.fromUnsignedBigInt(param0),
     ]);
 
-    return result[0].toString();
+    return new Aminals__miscsResult(
+      result[0].toString(),
+      result[1].toAddress(),
+    );
   }
 
-  try_miscs(param0: BigInt): ethereum.CallResult<string> {
-    let result = super.tryCall("miscs", "miscs(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
+  try_miscs(param0: BigInt): ethereum.CallResult<Aminals__miscsResult> {
+    let result = super.tryCall("miscs", "miscs(uint256):(string,address)", [
+      ethereum.Value.fromUnsignedBigInt(param0),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
+    return ethereum.CallResult.fromValue(
+      new Aminals__miscsResult(value[0].toString(), value[1].toAddress()),
+    );
   }
 
-  mouths(param0: BigInt): string {
-    let result = super.call("mouths", "mouths(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
+  mouths(param0: BigInt): Aminals__mouthsResult {
+    let result = super.call("mouths", "mouths(uint256):(string,address)", [
+      ethereum.Value.fromUnsignedBigInt(param0),
     ]);
 
-    return result[0].toString();
+    return new Aminals__mouthsResult(
+      result[0].toString(),
+      result[1].toAddress(),
+    );
   }
 
-  try_mouths(param0: BigInt): ethereum.CallResult<string> {
-    let result = super.tryCall("mouths", "mouths(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
+  try_mouths(param0: BigInt): ethereum.CallResult<Aminals__mouthsResult> {
+    let result = super.tryCall("mouths", "mouths(uint256):(string,address)", [
+      ethereum.Value.fromUnsignedBigInt(param0),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
+    return ethereum.CallResult.fromValue(
+      new Aminals__mouthsResult(value[0].toString(), value[1].toAddress()),
+    );
   }
 
   name(): string {
@@ -1197,7 +1470,7 @@ export class Aminals extends ethereum.SmartContract {
 
   ownerOf(id: BigInt): Address {
     let result = super.call("ownerOf", "ownerOf(uint256):(address)", [
-      ethereum.Value.fromUnsignedBigInt(id)
+      ethereum.Value.fromUnsignedBigInt(id),
     ]);
 
     return result[0].toAddress();
@@ -1205,7 +1478,7 @@ export class Aminals extends ethereum.SmartContract {
 
   try_ownerOf(id: BigInt): ethereum.CallResult<Address> {
     let result = super.tryCall("ownerOf", "ownerOf(uint256):(address)", [
-      ethereum.Value.fromUnsignedBigInt(id)
+      ethereum.Value.fromUnsignedBigInt(id),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -1231,7 +1504,7 @@ export class Aminals extends ethereum.SmartContract {
 
   skills(param0: Address): boolean {
     let result = super.call("skills", "skills(address):(bool)", [
-      ethereum.Value.fromAddress(param0)
+      ethereum.Value.fromAddress(param0),
     ]);
 
     return result[0].toBoolean();
@@ -1239,7 +1512,7 @@ export class Aminals extends ethereum.SmartContract {
 
   try_skills(param0: Address): ethereum.CallResult<boolean> {
     let result = super.tryCall("skills", "skills(address):(bool)", [
-      ethereum.Value.fromAddress(param0)
+      ethereum.Value.fromAddress(param0),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -1258,7 +1531,7 @@ export class Aminals extends ethereum.SmartContract {
     bodyId: BigInt,
     faceId: BigInt,
     mouthId: BigInt,
-    miscId: BigInt
+    miscId: BigInt,
   ): BigInt {
     let result = super.call(
       "spawnAminal",
@@ -1273,8 +1546,8 @@ export class Aminals extends ethereum.SmartContract {
         ethereum.Value.fromUnsignedBigInt(bodyId),
         ethereum.Value.fromUnsignedBigInt(faceId),
         ethereum.Value.fromUnsignedBigInt(mouthId),
-        ethereum.Value.fromUnsignedBigInt(miscId)
-      ]
+        ethereum.Value.fromUnsignedBigInt(miscId),
+      ],
     );
 
     return result[0].toBigInt();
@@ -1290,7 +1563,7 @@ export class Aminals extends ethereum.SmartContract {
     bodyId: BigInt,
     faceId: BigInt,
     mouthId: BigInt,
-    miscId: BigInt
+    miscId: BigInt,
   ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "spawnAminal",
@@ -1305,8 +1578,8 @@ export class Aminals extends ethereum.SmartContract {
         ethereum.Value.fromUnsignedBigInt(bodyId),
         ethereum.Value.fromUnsignedBigInt(faceId),
         ethereum.Value.fromUnsignedBigInt(mouthId),
-        ethereum.Value.fromUnsignedBigInt(miscId)
-      ]
+        ethereum.Value.fromUnsignedBigInt(miscId),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -1319,7 +1592,7 @@ export class Aminals extends ethereum.SmartContract {
     let result = super.call(
       "supportsInterface",
       "supportsInterface(bytes4):(bool)",
-      [ethereum.Value.fromFixedBytes(interfaceId)]
+      [ethereum.Value.fromFixedBytes(interfaceId)],
     );
 
     return result[0].toBoolean();
@@ -1329,7 +1602,7 @@ export class Aminals extends ethereum.SmartContract {
     let result = super.tryCall(
       "supportsInterface",
       "supportsInterface(bytes4):(bool)",
-      [ethereum.Value.fromFixedBytes(interfaceId)]
+      [ethereum.Value.fromFixedBytes(interfaceId)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -1353,28 +1626,33 @@ export class Aminals extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
-  tails(param0: BigInt): string {
-    let result = super.call("tails", "tails(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
+  tails(param0: BigInt): Aminals__tailsResult {
+    let result = super.call("tails", "tails(uint256):(string,address)", [
+      ethereum.Value.fromUnsignedBigInt(param0),
     ]);
 
-    return result[0].toString();
+    return new Aminals__tailsResult(
+      result[0].toString(),
+      result[1].toAddress(),
+    );
   }
 
-  try_tails(param0: BigInt): ethereum.CallResult<string> {
-    let result = super.tryCall("tails", "tails(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(param0)
+  try_tails(param0: BigInt): ethereum.CallResult<Aminals__tailsResult> {
+    let result = super.tryCall("tails", "tails(uint256):(string,address)", [
+      ethereum.Value.fromUnsignedBigInt(param0),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
+    return ethereum.CallResult.fromValue(
+      new Aminals__tailsResult(value[0].toString(), value[1].toAddress()),
+    );
   }
 
   tokenURI(aminalID: BigInt): string {
     let result = super.call("tokenURI", "tokenURI(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(aminalID)
+      ethereum.Value.fromUnsignedBigInt(aminalID),
     ]);
 
     return result[0].toString();
@@ -1382,7 +1660,7 @@ export class Aminals extends ethereum.SmartContract {
 
   try_tokenURI(aminalID: BigInt): ethereum.CallResult<string> {
     let result = super.tryCall("tokenURI", "tokenURI(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(aminalID)
+      ethereum.Value.fromUnsignedBigInt(aminalID),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -1401,7 +1679,7 @@ export class Aminals extends ethereum.SmartContract {
     let result = super.tryCall(
       "visualsAuction",
       "visualsAuction():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -2355,9 +2633,7 @@ export class SpawnInitialAminalsCall__Inputs {
   }
 
   get _visuals(): Array<SpawnInitialAminalsCall_visualsStruct> {
-    return this._call.inputValues[0].value.toTupleArray<
-      SpawnInitialAminalsCall_visualsStruct
-    >();
+    return this._call.inputValues[0].value.toTupleArray<SpawnInitialAminalsCall_visualsStruct>();
   }
 }
 

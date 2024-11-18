@@ -1,0 +1,16 @@
+{
+  "name": "aminals-v2",
+  "version": "0.0.1",
+  "description": "V2 iteraction of Aminals",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "GPL-3.0"
+}

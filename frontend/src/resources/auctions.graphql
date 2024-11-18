@@ -6,46 +6,68 @@ query AuctionsList($first: Int = 100, $skip: Int = 0) {
     orderDirection: desc
   ) {
     auctionId
-    aminalIdOne
-    aminalIdTwo
+    aminalOne {
+      aminalId
+      tokenUri
+    }
+    aminalTwo {
+      aminalId
+      tokenUri
+    }
     childAminalId
     finished
   }
 }
 
-query Auction($id: ID!) {
-  auction(id: $id) {
+query Auction($auctionId: BigInt) {
+  auctions(where: { auctionId: $auctionId }) {
     auctionId
-    aminalIdOne
-    aminalIdTwo
+    aminalOne {
+      aminalId
+      tokenUri
+    }
+    aminalTwo {
+      aminalId
+      tokenUri
+    }
     childAminalId
     finished
   }
 }
 
 query AuctionProposeVisualList($auctionId: BigInt) {
-  proposeVisuals(where: { auctionId: $auctionId }) {
-    sender
+  visualProposals(where: { auctionId: $auctionId }) {
+    proposer {
+      address
+    }
+    auctionId
     visualId
     catEnum
     blockNumber
     blockTimestamp
     transactionHash
+    svg
+    loveVote
   }
 }
 
 query ProposeVisualList($first: Int = 100, $skip: Int = 0) {
-  proposeVisuals(
+  visualProposals(
     first: $first
     skip: $skip
     orderBy: auctionId
     orderDirection: desc
   ) {
-    sender
+    auctionId
+    proposer {
+      address
+    }
     visualId
     catEnum
     blockNumber
     blockTimestamp
     transactionHash
+    svg
+    loveVote
   }
 }

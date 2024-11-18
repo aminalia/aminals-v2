@@ -6,35 +6,57 @@ type Aminal @entity {
   tokenUri: String! # string
   energy: BigInt! # uint256
   totalLove: BigInt! # uint256
-}
+  breeding: Boolean!
+  breedableWith: [BreedAminalEvent]! @derivedFrom(field: "aminalOne")
 
-type SkillProposal @entity(immutable: true) {
-  id: Bytes!
-  aminalId: BigInt! # uint256
-  proposalId: BigInt! # uint256
-  skillName: String! # string
-  skillAddress: Bytes! # address
-  sender: Bytes! # address
+  # Derived from FeedAminal events
+  lovers: [Relationship]! @derivedFrom(field: "aminal")
+
+  # Visual Traits
+  backId: BigInt! # uint256
+  armId: BigInt! # uint256
+  tailId: BigInt! # uint256
+  earsId: BigInt! # uint256
+  bodyId: BigInt! # uint256
+  faceId: BigInt! # uint256
+  mouthId: BigInt! # uint256
+  miscId: BigInt! # uint256
+  # Creation info
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
-  removed: Boolean!
+
+  skills: [Skill]! @derivedFrom(field: "aminal")
 }
 
-type BreedAminal @entity(immutable: true) {
+type User @entity {
   id: Bytes!
-  aminalOne: BigInt! # uint256
-  aminalTwo: BigInt! # uint256
+  address: Bytes! # address
+  lovers: [Relationship]! @derivedFrom(field: "user")
+  proposedVisuals: [VisualProposal]! @derivedFrom(field: "proposer")
+}
+
+type Relationship @entity {
+  id: Bytes!
+  user: User!
+  aminal: Aminal!
+  love: BigInt!
+}
+
+type BreedAminalEvent @entity(immutable: true) {
+  id: Bytes!
+  aminalOne: Aminal! # uint256
+  aminalTwo: Aminal! # uint256
   auctionId: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
 
-type FeedAminal @entity {
+type FeedAminalEvent @entity {
   id: Bytes!
-  aminalId: BigInt! # uint256
-  sender: Bytes! # address
+  aminal: Aminal! # uint256
+  sender: User! # address
   amount: BigInt! # uint256
   love: BigInt! # uint256
   totalLove: BigInt! # uint256
@@ -44,10 +66,23 @@ type FeedAminal @entity {
   transactionHash: Bytes!
 }
 
-type Skills @entity {
+type Skill @entity {
+  id: Bytes!
+  aminal: Aminal! # uint256
+  skillAddress: Bytes! # address
+  removed: Boolean!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SkillProposal @entity {
   id: Bytes!
   aminalId: BigInt! # uint256
+  proposalId: BigInt! # uint256
+  skillName: String! # string
   skillAddress: Bytes! # address
+  sender: Bytes! # address
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -65,26 +100,9 @@ type SkillVote @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type SpawnAminal @entity(immutable: true) {
-  id: Bytes!
-  aminalId: BigInt! # uint256
-  mom: BigInt! # uint256
-  dad: BigInt! # uint256
-  backId: BigInt! # uint256
-  armId: BigInt! # uint256
-  tailId: BigInt! # uint256
-  earsId: BigInt! # uint256
-  bodyId: BigInt! # uint256
-  faceId: BigInt! # uint256
-  mouthId: BigInt! # uint256
-  miscId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
 type Squeak @entity(immutable: true) {
   id: Bytes!
+  sender: Bytes! # address
   aminalId: BigInt! # uint256
   amount: BigInt! # uint256
   energy: BigInt! # uint256
@@ -96,63 +114,30 @@ type Squeak @entity(immutable: true) {
 type Auction @entity {
   id: Bytes!
   auctionId: BigInt! # uint256
-  aminalIdOne: BigInt! # uint256
-  aminalIdTwo: BigInt! # uint256
-  childAminalId: BigInt! # uint256
-  finished: Boolean!
-}
-
-type EndAuction @entity(immutable: true) {
-  id: Bytes!
-  aminalIdOne: BigInt! # uint256
-  aminalIdTwo: BigInt! # uint256
-  childAminalId: BigInt! # uint256
-  winningIds: [BigInt!]! # uint256[8]
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Visual @entity {
-  id: Bytes!
-  auctionId: BigInt! # uint256
-  proposer: Bytes! # address
-  visualId: BigInt! # uint256
-  catEnum: Int! # uint8
-  svg: String!
-  loveVote: BigInt! # uint256
-  removed: Boolean!
-}
-
-type ProposeVisual @entity {
-  id: Bytes!
-  auctionId: BigInt! # uint256
-  sender: Bytes! # address
-  visualId: BigInt! # uint256
-  catEnum: Int! # uint8
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type RemoveVisual @entity {
-  id: Bytes!
-  auctionId: BigInt! # uint256
-  sender: Bytes! # address
-  visualId: BigInt! # uint256
-  catEnum: Int! # uint8
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type StartAuction @entity(immutable: true) {
-  id: Bytes!
-  aminalIdOne: BigInt! # uint256
-  aminalIdTwo: BigInt! # uint256
+  aminalOne: Aminal!
+  aminalTwo: Aminal!
   childAminalId: BigInt! # uint256
   totalLove: BigInt! # uint256
-  # visualIds: [[BigInt!]!]! # uint256[8][10]
+  finished: Boolean!
+
+  # End data
+  winningIds: [BigInt!] # uint256[8]
+  # Start data
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type VisualProposal @entity {
+  id: Bytes!
+  auctionId: BigInt! # uint256
+  visualId: BigInt! # uint256
+  proposer: User! # address
+  catEnum: Int! # uint8
+  loveVote: BigInt! # uint256
+  removeVote: BigInt! # uint256
+  removed: Boolean!
+  svg: String!
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -164,6 +149,7 @@ type VisualsVote @entity(immutable: true) {
   visualId: BigInt! # uint256
   sender: Bytes! # address
   catEnum: Int! # uint8
+  remove: Boolean!
   userLoveVote: BigInt! # uint256
   totalLove: BigInt! # uint256
   blockNumber: BigInt!

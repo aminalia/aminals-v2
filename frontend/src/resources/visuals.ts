@@ -1,10 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
-import { Visual, VisualListDocument, execute } from '../../.graphclient';
+import {
+  VisualListDocument,
+  VisualProposal,
+  execute,
+} from '../../.graphclient';
 
 const BASE_KEY = 'visuals';
 
 export const useVisuals = () => {
-  return useQuery<Visual[]>({
+  return useQuery<VisualProposal[]>({
     queryKey: [BASE_KEY],
     queryFn: async () => {
       const response = await execute(VisualListDocument, {
@@ -12,7 +16,8 @@ export const useVisuals = () => {
         skip: 0,
       });
       if (response.errors) throw new Error(response.errors[0].message);
-      return response.data.visuals;
+      console.log('response.... visuals == ', response.data.visualProposals);
+      return response.data.visualProposals;
     },
   });
 };

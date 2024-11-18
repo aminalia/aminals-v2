@@ -1,10 +1,18 @@
-query AminalsList($first: Int = 100, $skip: Int = 0) {
+query AminalsList($first: Int = 100, $skip: Int = 0, $address: Bytes = "") {
   aminals(first: $first, skip: $skip) {
     aminalId
     mom
     dad
     tokenUri
     energy
+    lovers(where: { user_: { address: $address } }) {
+      love
+    }
     totalLove
+    breedableWith {
+      aminalTwo {
+        aminalId
+      }
+    }
   }
 }

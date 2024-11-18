@@ -5,6 +5,7 @@ interface IProposals {
     enum ProposalType {
         AddSkill, //  0 Add skill
         RemoveSkill //  1 Remove skill
+
     }
 
     function proposeAddSkill(uint256 aminalID, string calldata skillName, address skillAddress)

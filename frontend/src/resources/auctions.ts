@@ -4,12 +4,12 @@ import {
   AuctionDocument,
   AuctionProposeVisualListDocument,
   AuctionsListDocument,
-  ProposeVisual,
   ProposeVisualListDocument,
+  VisualProposal,
   execute,
 } from '../../.graphclient';
 
-const BASE_KEY = 'aminals';
+const BASE_KEY = 'auctions';
 
 export const useAuctions = () => {
   return useQuery<Auction[]>({
@@ -25,12 +25,12 @@ export const useAuctions = () => {
   });
 };
 
-export const useAuction = (auctionId: string | string[]) => {
-  return useQuery<Auction>({
+export const useAuction = (auctionId: string) => {
+  return useQuery<Auction[]>({
     queryKey: [BASE_KEY, auctionId ?? ''],
     queryFn: async () => {
       const response = await execute(AuctionDocument, {
-        id: auctionId,
+        auctionId,
       });
       if (response.errors) throw new Error(response.errors[0].message);
       return response.data.auctions;
@@ -38,21 +38,21 @@ export const useAuction = (auctionId: string | string[]) => {
   });
 };
 
-export const useAuctionProposeVisuals = (auctionId: string | string[]) => {
-  return useQuery<ProposeVisual[]>({
+export const useAuctionProposeVisuals = (auctionId: string) => {
+  return useQuery<VisualProposal[]>({
     queryKey: [BASE_KEY, auctionId ?? '', 'proposals'],
     queryFn: async () => {
       const response = await execute(AuctionProposeVisualListDocument, {
         auctionId,
       });
       if (response.errors) throw new Error(response.errors[0].message);
-      return response.data.proposeVisuals;
+      return response.data.visualProposals;
     },
   });
 };
 
 export const useProposeVisuals = () => {
-  return useQuery<ProposeVisual[]>({
+  return useQuery<VisualProposal[]>({
     queryKey: [BASE_KEY, 'all', 'proposals'],
     queryFn: async () => {
       const response = await execute(ProposeVisualListDocument, {
@@ -60,7 +60,7 @@ export const useProposeVisuals = () => {
         skip: 0,
       });
       if (response.errors) throw new Error(response.errors[0].message);
-      return response.data.proposeVisuals;
+      return response.data.visualProposals;
     },
   });
 };
