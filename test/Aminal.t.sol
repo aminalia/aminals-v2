@@ -51,9 +51,20 @@ contract AminalTest is BaseTest {
 
         // Test that ID 0 does not exist after feeding and breeding
         feed();
-        breed();
+        uint256 i = breed();
         vm.expectRevert("NOT_MINTED");
         aminals.ownerOf(0);
+
+        // listAuctionedVisuals(i);
+        proposeTraits(i);
+        // listAuctionedVisuals(i);
+        voteTraits(i);
+        listAuctionedVisuals(i);
+        removeTraits(i);
+        listAuctionedVisuals(i);
+        uint256[8] memory arr = endAuction(i);
+        spawnNewAminal(1, 2, arr);
+        addUseAndRemoveSkills();
     }
 
     function registerVisuals() public {
