@@ -11,12 +11,12 @@ export default defineConfig({
     {
       abi: ABI.Aminals.abi,
       name: 'Aminals',
-      address: '0xb60971942e4528a811d24826768bc91ad1383d21',
+      address: '0x18fb0d34dd411ac314dcb8c9e0331b76bebf002a',
     },
     {
       abi: ABI.VisualsAuction.abi,
       name: 'VisualsAuction',
-      address: '0xfccab12127c6b007ab56733be57cd364182ccecc',
+      address: '0x3350b16c29ea6eb7c0a0b40cb11ba630eb511827',
     },
   ],
 });
