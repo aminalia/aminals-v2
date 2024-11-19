@@ -42,6 +42,39 @@ contract AminalTest is BaseTest {
         addUseAndRemoveSkills();
     }
 
+    function test_idZeroDoesNotExist() public {
+        // Test that ID 0 does not exist upon initialization
+        registerVisuals();
+        spawnAminals();
+        vm.expectRevert("NOT_MINTED");
+        aminals.ownerOf(0);
+        vm.expectRevert("Aminal does not exist");
+        console.log(aminals.tokenURI(0));
+
+        // Test that ID 0 does not exist after feeding and breeding
+        feed();
+        uint256 i = breed();
+        vm.expectRevert("NOT_MINTED");
+        aminals.ownerOf(0);
+        vm.expectRevert("Aminal does not exist");
+        console.log(aminals.tokenURI(0));
+
+        // listAuctionedVisuals(i);
+        proposeTraits(i);
+        // listAuctionedVisuals(i);
+        voteTraits(i);
+        listAuctionedVisuals(i);
+        removeTraits(i);
+        listAuctionedVisuals(i);
+        uint256[8] memory arr = endAuction(i);
+        spawnNewAminal(1, 2, arr);
+        addUseAndRemoveSkills();
+        vm.expectRevert("NOT_MINTED");
+        aminals.ownerOf(0);
+        vm.expectRevert("Aminal does not exist");
+        console.log(aminals.tokenURI(0));
+    }
+
     function registerVisuals() public {
         // first aminal
         aminals.addBackground("bg1");
