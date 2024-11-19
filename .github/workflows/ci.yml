@@ -22,6 +22,10 @@ jobs:
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
 
+      - name: Install dependencies
+        run: |
+          forge install
+
       - name: Build contracts
         run: |
           forge --version
@@ -34,6 +38,10 @@ jobs:
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Install dependencies
+        run: |
+          forge install
 
       - name: Run tests
         run: forge test --no-match-contract ForkTest
