@@ -42,6 +42,20 @@ contract AminalTest is BaseTest {
         addUseAndRemoveSkills();
     }
 
+    function test_idZeroDoesNotExist() public {
+        // Test that ID 0 does not exist upon initialization
+        registerVisuals();
+        spawnAminals();
+        vm.expectRevert("NOT_MINTED");
+        aminals.ownerOf(0);
+
+        // Test that ID 0 does not exist after feeding and breeding
+        feed();
+        breed();
+        vm.expectRevert("NOT_MINTED");
+        aminals.ownerOf(0);
+    }
+
     function registerVisuals() public {
         // first aminal
         aminals.addBackground("bg1");
