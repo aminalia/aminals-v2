@@ -79,9 +79,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
 
         // TODO decide if and how this proposal address could be modified/upgraded
         proposals = AminalProposals(_aminalProposals);
-    }
 
-    function setup() external {
         // initialize the AminalsDescriptor with empty SVG for index 0
         string memory emptySVG = "";
         addBackground(emptySVG);
