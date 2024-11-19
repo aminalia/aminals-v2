@@ -168,6 +168,7 @@ contract Aminals is IAminal, ERC721S("Aminals", "AMINALS"), AminalsDescriptor, I
     }
 
     function tokenURI(uint256 aminalID) public view override returns (string memory) {
+        require(aminals[aminalID].exists, "Aminal does not exist");
         return dataURI(aminalID);
     }
 
