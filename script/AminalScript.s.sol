@@ -64,8 +64,8 @@ contract AminalScript is Script {
     }
 
     function spawnInitialAminals(Aminals aminals) public {
+        initialVisuals.push(IAminalStructs.Visuals(0, 0, 0, 0, 0, 0, 0, 0));
         initialVisuals.push(IAminalStructs.Visuals(1, 1, 1, 1, 1, 1, 1, 1));
-        initialVisuals.push(IAminalStructs.Visuals(2, 2, 2, 2, 2, 2, 2, 2));
         aminals.spawnInitialAminals(initialVisuals);
     }
 
