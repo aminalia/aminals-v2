@@ -1,37 +1,25 @@
-import type { Abi, Address } from 'abitype';
-import { useAccount, useContractWrite, useNetwork } from 'wagmi';
-
+import { useWriteAminalsBreedWith } from '@/contracts/generated';
 import { useState } from 'react';
-
-import contract from '../../../deployments/Aminals.json';
+import { useAccount } from 'wagmi';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 
-const contractConfig = {
-  address: '0x9fe1e3Fd1e936d5348094e861B76C9E9d527E541' as Address,
-  abi: contract.abi as Abi,
-};
-
 export default function BreedButton({ id1 }: { id1: string }) {
-  const { isConnected } = useAccount();
-  const { chain } = useNetwork();
-  const enabled = isConnected && !chain?.unsupported;
+  const { isConnected, chain } = useAccount();
+  const enabled = isConnected && !chain;
 
   // Default breadwith ID is set to one
   const [breedWithId, setBreedWithId] = useState(1);
 
-  const { writeAsync: breedWith } = useContractWrite({
-    ...contractConfig,
-    functionName: 'breedWith',
-    args: [id1, breedWithId],
-    value: BigInt(0.01 * 1e18),
-  });
+  const breedWidth = useWriteAminalsBreedWith();
 
-  const action = async () => {
+  async function action() {
     if (enabled) {
-      await breedWith();
+      await breedWidth.writeContractAsync({
+        args: [BigInt(id1), BigInt(breedWithId)],
+      });
     }
-  };
+  }
 
   const handleBreedWithIdChange = (event: any) => {
     setBreedWithId(event.target.value);

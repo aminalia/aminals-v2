@@ -1,13 +1,6 @@
-import type { Abi, Address } from 'abitype';
-import { useAccount, useContractWrite, useNetwork } from 'wagmi';
-
-import contract from '../../../deployments/VisualsAuction.json';
+import { useWriteVisualsAuctionVoteVisual } from '@/contracts/generated';
+import { useAccount } from 'wagmi';
 import { Button } from '../ui/button';
-
-const contractConfig = {
-  address: '0xb83Aa15dbe5636c656571DDbb74257a81f994B87' as Address,
-  abi: contract.abi as Abi,
-};
 
 export default function VoteButton({
   auctionId,
@@ -18,19 +11,15 @@ export default function VoteButton({
   catId: any;
   vizId: any;
 }) {
-  const { isConnected } = useAccount();
-  const { chain } = useNetwork();
-  const enabled = isConnected && !chain?.unsupported;
-
-  const { writeAsync: voteVisual } = useContractWrite({
-    ...contractConfig,
-    functionName: 'voteVisual',
-    args: [auctionId, catId, vizId],
-  });
+  const { isConnected, chain } = useAccount();
+  const enabled = isConnected && chain;
+  const voteVisual = useWriteVisualsAuctionVoteVisual();
 
   const action = async () => {
     if (enabled) {
-      await voteVisual();
+      await voteVisual.writeContractAsync({
+        args: [auctionId, catId, BigInt(vizId)],
+      });
     }
   };
 

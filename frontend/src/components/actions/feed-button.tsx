@@ -1,37 +1,18 @@
-import type { Abi, Address } from 'abitype';
-import {
-  useAccount,
-  useContractWrite,
-  useNetwork,
-  usePrepareContractWrite,
-} from 'wagmi';
-import contract from '../../../deployments/Aminals.json';
+import { useWriteAminalsFeed } from '@/contracts/generated';
+import { useAccount } from 'wagmi';
 import { Button } from '../ui/button';
 
-const contractConfig = {
-  address: '0x9fe1e3Fd1e936d5348094e861B76C9E9d527E541' as Address,
-  abi: contract.abi as Abi,
-};
-
 export default function FeedButton({ id }: { id: string }) {
-  const { isConnected } = useAccount();
-  const { chain } = useNetwork();
-  const enabled = isConnected && !chain?.unsupported;
+  const { isConnected, chain } = useAccount();
+  const enabled = isConnected && chain;
 
-  const { config: contractWriteConfig, isLoading: mintPrepLoading } =
-    usePrepareContractWrite({
-      ...contractConfig,
-      functionName: 'feed',
-      args: [id],
-      enabled,
-      value: BigInt(0.01 * 1e18),
-    });
-
-  const { data: feedData, write: feed } = useContractWrite(contractWriteConfig);
+  const feed = useWriteAminalsFeed();
 
   async function action() {
     if (enabled) {
-      await feed?.();
+      await feed.writeContractAsync({
+        args: [BigInt(id)],
+      });
     }
   }
 
