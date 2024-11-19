@@ -49,7 +49,7 @@ contract AminalTest is BaseTest {
         vm.expectRevert("NOT_MINTED");
         aminals.ownerOf(0);
         vm.expectRevert("Aminal does not exist");
-        console.log(aminals.tokenURI(0));
+        aminals.tokenURI(0);
 
         // Test that ID 0 does not exist after feeding and breeding
         feed();
@@ -57,7 +57,7 @@ contract AminalTest is BaseTest {
         vm.expectRevert("NOT_MINTED");
         aminals.ownerOf(0);
         vm.expectRevert("Aminal does not exist");
-        console.log(aminals.tokenURI(0));
+        aminals.tokenURI(0);
 
         // listAuctionedVisuals(i);
         proposeTraits(i);
@@ -72,7 +72,7 @@ contract AminalTest is BaseTest {
         vm.expectRevert("NOT_MINTED");
         aminals.ownerOf(0);
         vm.expectRevert("Aminal does not exist");
-        console.log(aminals.tokenURI(0));
+        aminals.tokenURI(0);
     }
 
     function registerVisuals() public {
