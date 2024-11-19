@@ -15,14 +15,14 @@ contract FeedBondingCurve {
         aminals = _aminals;
     }
 
-    function ratio_rule(uint256 amount) public returns (uint256) {
+    function ratioRule(uint256 amount) public returns (uint256) {
         // int c = 1;
         // uint256 constant_v = (999 / 1000) ** (1/c);
         // /// rule in order to ensure that when prior_energy = 0, it takes "c" amount to reach post_energy = 1;
         // /// given energy ranging from [ 0 - 1000];
 
         // return constant_v ** amount; // need to divide by number > 1 rather than divide by number < 1
-            // ratio rule must equal 1 when amount = 0; and go to 0 when amount --> infinity
+        // ratio rule must equal 1 when amount = 0; and go to 0 when amount --> infinity
     }
 
     function feedBondingCurve(uint256 aminalID, uint256 amount) public {

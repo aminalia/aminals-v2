@@ -14,7 +14,6 @@ forge script script/AminalScript.s.sol:AminalScript --broadcast --verify -vvvv
 forge script script/AminalScript.s.sol:AminalScript --chain-id 5  --rpc-url "https://goerli.blockpi.network/v1/rpc/public" --broadcast  --verify -vvvv
 
 
-
 forge script  script/AminalScript.s.sol:AminalScript --chain-id 11155111 --rpc-url "https://ethereum-sepolia.publicnode.com" --broadcast --verify -vvv
 
 
@@ -36,10 +35,10 @@ npm run graphclient:build
 */
 
 contract AminalScript is Script {
-    Aminals aminals;
-    IAminalStructs.Visuals[] initialVisuals;
+    Aminals public aminals;
+    IAminalStructs.Visuals[] public initialVisuals;
 
-    function deployAminals() internal returns (address) {
+    function deployAminals() public returns (address) {
         // The randomness source is a very high volume address on Sepolia. This
         // should be modified for other chains.
         VisualsAuction _visualsAuction = new VisualsAuction(
@@ -50,8 +49,6 @@ contract AminalScript is Script {
         GenesNFT _genesNFT = new GenesNFT();
 
         Aminals _aminals = new Aminals(address(_visualsAuction), address(_proposals), address(_genesNFT));
-
-
 
         // TODO these don't seem to persist. : (
         // Set environment variables for contracts
@@ -66,7 +63,7 @@ contract AminalScript is Script {
         return address(_aminals);
     }
 
-    function spawnInitialAminals(Aminals aminals) internal {
+    function spawnInitialAminals(Aminals aminals) public {
         initialVisuals.push(IAminalStructs.Visuals(1, 1, 1, 1, 1, 1, 1, 1));
         initialVisuals.push(IAminalStructs.Visuals(2, 2, 2, 2, 2, 2, 2, 2));
         aminals.spawnInitialAminals(initialVisuals);
