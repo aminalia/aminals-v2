@@ -25,6 +25,7 @@ contract BaseTest is Test {
         _visualsAuction.setup(address(_aminals));
         _proposals.setup(address(_aminals));
         _genesNFT.setup(address(_aminals));
+
         _aminals.setup();
 
         return address(_aminals);

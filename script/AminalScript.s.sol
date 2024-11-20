@@ -17,6 +17,9 @@ forge script script/AminalScript.s.sol:AminalScript --chain-id 5  --rpc-url "htt
 forge script  script/AminalScript.s.sol:AminalScript --chain-id 11155111 --rpc-url "https://ethereum-sepolia.publicnode.com" --broadcast --verify -vvv
 
 
+forge script  script/AminalScript.s.sol:AminalScript --chain-id 17000 --rpc-url "https://ethereum-holesky.publicnode.com" --broadcast --verify -vv
+
+
 When updating the smart contract:
 - replace address of the aminal contract (everywhere) + address of the Visuals in subgraph.yaml
 - copy  the ABI in both frontend and graph folder:   out/ContractName.sol/ContractName.json --> frontend/deployments/ + graph/abis/
@@ -59,6 +62,8 @@ contract AminalScript is Script {
         _visualsAuction.setup(address(_aminals));
         _proposals.setup(address(_aminals));
         _genesNFT.setup(address(_aminals));
+
+        _aminals.setup();
 
         return address(_aminals);
     }
