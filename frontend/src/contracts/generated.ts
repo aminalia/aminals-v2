@@ -978,7 +978,7 @@ export const aminalsAbi = [
 ] as const
 
 export const aminalsAddress =
-  '0x81ED8e0325B17A266B2aF225570679cfd635d0bb' as const
+  '0x18fb0d34dd411ac314dcb8c9e0331b76bebf002a' as const
 
 export const aminalsConfig = {
   address: aminalsAddress,
@@ -1425,7 +1425,7 @@ export const visualsAuctionAbi = [
 ] as const
 
 export const visualsAuctionAddress =
-  '0x645B0f55268eF561176f3247D06d0b7742f79819' as const
+  '0x3350b16c29ea6eb7c0a0b40cb11ba630eb511827' as const
 
 export const visualsAuctionConfig = {
   address: visualsAuctionAddress,

@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: Aminals
-    network: sepolia
+    network: holesky
     source:
-      address: "0x9fe1e3Fd1e936d5348094e861B76C9E9d527E541"
+      address: "0x18fb0d34dd411ac314dcb8c9e0331b76bebf002a"
       abi: Aminals
-      startBlock: 4776437
+      startBlock: 2758719
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -47,11 +47,11 @@ dataSources:
       file: ./src/aminals.ts
   - kind: ethereum
     name: Auction
-    network: sepolia
+    network: holesky
     source:
-      address: "0xb83Aa15dbe5636c656571DDbb74257a81f994B87"
+      address: "0x3350b16c29ea6eb7c0a0b40cb11ba630eb511827"
       abi: Auction
-      startBlock: 4776437
+      startBlock: 2758719
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

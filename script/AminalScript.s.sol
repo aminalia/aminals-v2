@@ -9,13 +9,17 @@ import {AminalProposals} from "src/proposals/AminalProposals.sol";
 import {GenesNFT} from "src/nft/GenesNFT.sol";
 
 /*
+// Mainnet
 forge script script/AminalScript.s.sol:AminalScript --broadcast --verify -vvvv
- 
+
+// Goerli
 forge script script/AminalScript.s.sol:AminalScript --chain-id 5  --rpc-url "https://goerli.blockpi.network/v1/rpc/public" --broadcast  --verify -vvvv
 
-
+// Sepolia
 forge script  script/AminalScript.s.sol:AminalScript --chain-id 11155111 --rpc-url "https://ethereum-sepolia.publicnode.com" --broadcast --verify -vvv
 
+// Holesky
+forge script  script/AminalScript.s.sol:AminalScript --chain-id 17000 --rpc-url "https://ethereum-holesky.publicnode.com" --broadcast --verify -vvv
 
 forge script  script/AminalScript.s.sol:AminalScript --chain-id 17000 --rpc-url "https://ethereum-holesky.publicnode.com" --broadcast --verify -vv
 
@@ -34,7 +38,6 @@ graph deploy --studio aminals
 When updating the graphQL:
 - .graphclientrc.yml --> change the endpoint
 npm run graphclient:build
-
 */
 
 contract AminalScript is Script {

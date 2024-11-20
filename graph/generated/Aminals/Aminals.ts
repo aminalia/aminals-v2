@@ -1207,6 +1207,21 @@ export class Aminals extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
+  genesNFT(): Address {
+    let result = super.call("genesNFT", "genesNFT():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_genesNFT(): ethereum.CallResult<Address> {
+    let result = super.tryCall("genesNFT", "genesNFT():(address)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
   getAminalLoveByIdByUser(aminalID: BigInt, user: Address): BigInt {
     let result = super.call(
       "getAminalLoveByIdByUser",
@@ -1712,6 +1727,10 @@ export class ConstructorCall__Inputs {
 
   get _aminalProposals(): Address {
     return this._call.inputValues[1].value.toAddress();
+  }
+
+  get _genesNFT(): Address {
+    return this._call.inputValues[2].value.toAddress();
   }
 }
 
@@ -2541,6 +2560,32 @@ export class SetBreedingCall__Outputs {
   _call: SetBreedingCall;
 
   constructor(call: SetBreedingCall) {
+    this._call = call;
+  }
+}
+
+export class SetupCall extends ethereum.Call {
+  get inputs(): SetupCall__Inputs {
+    return new SetupCall__Inputs(this);
+  }
+
+  get outputs(): SetupCall__Outputs {
+    return new SetupCall__Outputs(this);
+  }
+}
+
+export class SetupCall__Inputs {
+  _call: SetupCall;
+
+  constructor(call: SetupCall) {
+    this._call = call;
+  }
+}
+
+export class SetupCall__Outputs {
+  _call: SetupCall;
+
+  constructor(call: SetupCall) {
     this._call = call;
   }
 }

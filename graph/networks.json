@@ -1,8 +1,8 @@
 {
-  "sepolia": {
+  "holesky": {
     "Aminals": {
-      "address": "0x9fe1e3Fd1e936d5348094e861B76C9E9d527E541",
-      "startBlock": 4776437
+      "address": "0x18fb0d34dd411ac314dcb8c9e0331b76bebf002a",
+      "startBlock": 2758718
     }
   }
 }
