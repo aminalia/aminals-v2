@@ -63,6 +63,8 @@ contract AminalScript is Script {
         _proposals.setup(address(_aminals));
         _genesNFT.setup(address(_aminals));
 
+        _aminals.setup();
+
         return address(_aminals);
     }
 
