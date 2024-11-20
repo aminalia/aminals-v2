@@ -1,4 +1,5 @@
 import { useWriteAminalsFeed } from '@/contracts/generated';
+import { parseEther } from 'viem';
 import { useAccount } from 'wagmi';
 import { Button } from '../ui/button';
 
@@ -12,6 +13,7 @@ export default function FeedButton({ id }: { id: string }) {
     if (enabled) {
       await feed.writeContractAsync({
         args: [BigInt(id)],
+        value: parseEther('0.01'),
       });
     }
   }
