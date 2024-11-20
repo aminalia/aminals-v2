@@ -75,6 +75,22 @@ contract AminalTest is BaseTest {
         aminals.tokenURI(0);
     }
 
+    function test_tokenURIReturnsForExisting() public {
+        vm.expectRevert("Aminal does not exist");
+        aminals.tokenURI(1);
+        vm.expectRevert("Aminal does not exist");
+        aminals.tokenURI(2);
+
+        registerVisuals();
+        spawnAminals();
+
+        aminals.tokenURI(1);
+        aminals.tokenURI(2);
+
+        vm.expectRevert("Aminal does not exist");
+        aminals.tokenURI(3);
+    }
+
     function registerVisuals() public {
         // first aminal
         aminals.addBackground("bg1");
