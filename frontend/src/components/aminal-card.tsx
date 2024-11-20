@@ -49,7 +49,7 @@ export default function AminalCard({ aminal }: { aminal: Aminal }) {
               <b>Actions:</b>
               <br />
               <FeedButton id={aminal.aminalId} />
-              <BreedButton id1={aminal.aminalId} />
+              <BreedButton id={aminal.aminalId} />
             </div>
           </div>
         </CardContent>
