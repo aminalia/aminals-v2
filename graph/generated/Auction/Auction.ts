@@ -575,6 +575,40 @@ export class ConstructorCall__Outputs {
   }
 }
 
+export class BulkVoteVisualCall extends ethereum.Call {
+  get inputs(): BulkVoteVisualCall__Inputs {
+    return new BulkVoteVisualCall__Inputs(this);
+  }
+
+  get outputs(): BulkVoteVisualCall__Outputs {
+    return new BulkVoteVisualCall__Outputs(this);
+  }
+}
+
+export class BulkVoteVisualCall__Inputs {
+  _call: BulkVoteVisualCall;
+
+  constructor(call: BulkVoteVisualCall) {
+    this._call = call;
+  }
+
+  get auctionId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get visualsIds(): Array<BigInt> {
+    return this._call.inputValues[1].value.toBigIntArray();
+  }
+}
+
+export class BulkVoteVisualCall__Outputs {
+  _call: BulkVoteVisualCall;
+
+  constructor(call: BulkVoteVisualCall) {
+    this._call = call;
+  }
+}
+
 export class EndAuctionCall extends ethereum.Call {
   get inputs(): EndAuctionCall__Inputs {
     return new EndAuctionCall__Inputs(this);

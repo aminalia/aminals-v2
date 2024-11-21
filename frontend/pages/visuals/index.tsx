@@ -1,7 +1,7 @@
 import VisualCard from '@/components/visual-card';
 
 import { useAuctions } from '@/resources/auctions';
-import { useVisuals } from '@/resources/visuals';
+import { useVisualsProposals } from '@/resources/visuals';
 import type { NextPage } from 'next';
 import Layout from '../_layout';
 
@@ -30,7 +30,7 @@ import Layout from '../_layout';
 // }
 
 const VisualsPage: NextPage = () => {
-  const { data: visuals, isLoading: isLoadingVisuals } = useVisuals();
+  const { data: visuals, isLoading: isLoadingVisuals } = useVisualsProposals();
   const { data: auctions, isLoading: isLoadingAuctions } = useAuctions();
 
   const activeAuctions = auctions?.filter((auction) => !auction.finished) || [];

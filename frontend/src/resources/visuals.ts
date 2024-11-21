@@ -7,7 +7,7 @@ import {
 
 const BASE_KEY = 'visuals';
 
-export const useVisuals = () => {
+export const useVisualsProposals = () => {
   return useQuery<VisualProposal[]>({
     queryKey: [BASE_KEY],
     queryFn: async () => {

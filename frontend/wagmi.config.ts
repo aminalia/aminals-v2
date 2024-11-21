@@ -16,7 +16,7 @@ export default defineConfig({
     {
       abi: ABI.VisualsAuction.abi,
       name: 'VisualsAuction',
-      address: '0x3350b16c29ea6eb7c0a0b40cb11ba630eb511827',
+      address: '0xe4d8c56167c6508588a84a64d9234bad238cd95b',
     },
   ],
 });
