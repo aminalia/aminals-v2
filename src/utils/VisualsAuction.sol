@@ -249,6 +249,27 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
         emit VisualsVote(auctionId, visualId, msg.sender, catEnum, userlove, totallove);
     }
 
+    // Visuals must be passed in the order of the VisualsCat enum:
+    // enum VisualsCat {
+    //     BACK,
+    //     ARM,
+    //     TAIL,
+    //     EARS,
+    //     BODY,
+    //     FACE,
+    //     MOUTH,
+    //     MISC
+    // }
+    function bulkVoteVisual(uint256 auctionId, uint256[8] calldata visualsIds)
+        public
+        payable
+        _auctionRunning(auctionId)
+    {
+        for (uint256 i = 0; i < 8; i++) {
+            voteVisual(auctionId, VisualsCat(i), visualsIds[i]);
+        }
+    }
+
     function removeVisual(uint256 auctionId, VisualsCat catEnum, uint256 visualId)
         public
         payable
