@@ -1,3 +1,4 @@
+import BulkVoteButton from '@/components/actions/bulk-vote-button';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useAuction, useAuctionProposeVisuals } from '@/resources/auctions';
@@ -16,16 +17,21 @@ const AuctionPage: NextPage = () => {
   const { data: proposeVisuals, isLoading: isLoadingProposeVisuals } =
     useAuctionProposeVisuals(auctionId as string);
 
+  // TODO maybe we should randomize this?
   const [selectedParts, setSelectedParts] = useState({
     background: 0,
     tail: 0,
     arm: 0,
-    ear: 0,
+    ears: 0,
     body: 0,
     face: 0,
     mouth: 0,
     misc: 0,
   });
+
+  console.log('Proposed visuals: ', proposeVisuals);
+
+  console.log('Selected parts: ', selectedParts);
 
   // TODO add proposed visuals as well
   const [activeCategory, setActiveCategory] = useState('background');
@@ -34,36 +40,36 @@ const AuctionPage: NextPage = () => {
     auctions && auctions[0]
       ? {
           background: [
-            auctions[0].aminalOne.traits[0].svg,
-            auctions[0].aminalTwo.traits[0].svg,
+            auctions[0].aminalOne.traits[0],
+            auctions[0].aminalTwo.traits[0],
           ],
           body: [
-            auctions[0].aminalOne.traits[4].svg,
-            auctions[0].aminalTwo.traits[4].svg,
+            auctions[0].aminalOne.traits[4],
+            auctions[0].aminalTwo.traits[4],
           ],
           face: [
-            auctions[0].aminalOne.traits[5].svg,
-            auctions[0].aminalTwo.traits[5].svg,
+            auctions[0].aminalOne.traits[5],
+            auctions[0].aminalTwo.traits[5],
           ],
           mouth: [
-            auctions[0].aminalOne.traits[6].svg,
-            auctions[0].aminalTwo.traits[6].svg,
+            auctions[0].aminalOne.traits[6],
+            auctions[0].aminalTwo.traits[6],
           ],
-          ear: [
-            auctions[0].aminalOne.traits[3].svg,
-            auctions[0].aminalTwo.traits[3].svg,
+          ears: [
+            auctions[0].aminalOne.traits[3],
+            auctions[0].aminalTwo.traits[3],
           ],
           arm: [
-            auctions[0].aminalOne.traits[1].svg,
-            auctions[0].aminalTwo.traits[1].svg,
+            auctions[0].aminalOne.traits[1],
+            auctions[0].aminalTwo.traits[1],
           ],
           tail: [
-            auctions[0].aminalOne.traits[2].svg,
-            auctions[0].aminalTwo.traits[2].svg,
+            auctions[0].aminalOne.traits[2],
+            auctions[0].aminalTwo.traits[2],
           ],
           misc: [
-            auctions[0].aminalOne.traits[7].svg,
-            auctions[0].aminalTwo.traits[7].svg,
+            auctions[0].aminalOne.traits[7],
+            auctions[0].aminalTwo.traits[7],
           ],
         }
       : {
@@ -71,7 +77,7 @@ const AuctionPage: NextPage = () => {
           body: [],
           face: [],
           mouth: [],
-          ear: [],
+          ears: [],
           arm: [],
           tail: [],
           misc: [],
@@ -97,7 +103,7 @@ const AuctionPage: NextPage = () => {
                   className="w-full h-full"
                   dangerouslySetInnerHTML={{
                     __html: Object.entries(selectedParts)
-                      .map(([part, index]) => parts[part][index])
+                      .map(([part, index]) => parts[part][index]?.svg)
                       .join(''),
                   }}
                 />
@@ -144,7 +150,7 @@ const AuctionPage: NextPage = () => {
                       viewBox="0 0 1000 1000"
                       className="w-full h-full"
                       dangerouslySetInnerHTML={{
-                        __html: parts[activeCategory][index],
+                        __html: parts[activeCategory][index]?.svg,
                       }}
                     />
                   </div>
@@ -152,6 +158,17 @@ const AuctionPage: NextPage = () => {
               </div>
             </div>
           </div>
+          <BulkVoteButton
+            auctionId={auctionId}
+            backId={parts.background[selectedParts.background].visualId}
+            armId={parts.arm[selectedParts.arm].visualId}
+            tailId={parts.tail[selectedParts.tail].visualId}
+            earsId={parts.ears[selectedParts.ears].visualId}
+            bodyId={parts.body[selectedParts.body].visualId}
+            faceId={parts.face[selectedParts.face].visualId}
+            mouthId={parts.mouth[selectedParts.mouth].visualId}
+            miscId={parts.misc[selectedParts.misc].visualId}
+          />
         </CardContent>
       </Card>
     </Layout>

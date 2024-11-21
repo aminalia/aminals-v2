@@ -6,7 +6,7 @@ dataSources:
     name: Aminals
     network: holesky
     source:
-      address: "0x18fb0d34dd411ac314dcb8c9e0331b76bebf002a"
+      address: "0xe8c32532c1599279a8016c7b3a5fc777f22c672c"
       abi: Aminals
       startBlock: 2758719
     mapping:
@@ -51,7 +51,7 @@ dataSources:
     name: Auction
     network: holesky
     source:
-      address: "0x3350b16c29ea6eb7c0a0b40cb11ba630eb511827"
+      address: "0xe4d8c56167c6508588a84a64d9234bad238cd95b"
       abi: Auction
       startBlock: 2758719
     mapping:
