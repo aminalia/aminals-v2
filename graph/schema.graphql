@@ -12,21 +12,13 @@ type Aminal @entity {
   # Derived from FeedAminal events
   lovers: [Relationship]! @derivedFrom(field: "aminal")
 
-  # Visual Traits
-  backId: BigInt! # uint256
-  armId: BigInt! # uint256
-  tailId: BigInt! # uint256
-  earsId: BigInt! # uint256
-  bodyId: BigInt! # uint256
-  faceId: BigInt! # uint256
-  mouthId: BigInt! # uint256
-  miscId: BigInt! # uint256
   # Creation info
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 
   skills: [Skill]! @derivedFrom(field: "aminal")
+  traits: [Trait!]! @derivedFrom(field: "aminals")
 }
 
 type User @entity {
@@ -34,6 +26,7 @@ type User @entity {
   address: Bytes! # address
   lovers: [Relationship]! @derivedFrom(field: "user")
   proposedVisuals: [VisualProposal]! @derivedFrom(field: "proposer")
+  traits: [Trait!] @derivedFrom(field: "creator")
 }
 
 type Relationship @entity {
@@ -41,6 +34,15 @@ type Relationship @entity {
   user: User!
   aminal: Aminal!
   love: BigInt!
+}
+
+type Trait @entity {
+  id: Bytes!
+  visualId: BigInt!
+  catEnum: Int!
+  svg: String!
+  creator: User!
+  aminals: [Aminal!]!
 }
 
 type BreedAminalEvent @entity(immutable: true) {
