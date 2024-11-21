@@ -159,110 +159,6 @@ export class Aminal extends Entity {
     );
   }
 
-  get backId(): BigInt {
-    let value = this.get("backId");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set backId(value: BigInt) {
-    this.set("backId", Value.fromBigInt(value));
-  }
-
-  get armId(): BigInt {
-    let value = this.get("armId");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set armId(value: BigInt) {
-    this.set("armId", Value.fromBigInt(value));
-  }
-
-  get tailId(): BigInt {
-    let value = this.get("tailId");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set tailId(value: BigInt) {
-    this.set("tailId", Value.fromBigInt(value));
-  }
-
-  get earsId(): BigInt {
-    let value = this.get("earsId");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set earsId(value: BigInt) {
-    this.set("earsId", Value.fromBigInt(value));
-  }
-
-  get bodyId(): BigInt {
-    let value = this.get("bodyId");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set bodyId(value: BigInt) {
-    this.set("bodyId", Value.fromBigInt(value));
-  }
-
-  get faceId(): BigInt {
-    let value = this.get("faceId");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set faceId(value: BigInt) {
-    this.set("faceId", Value.fromBigInt(value));
-  }
-
-  get mouthId(): BigInt {
-    let value = this.get("mouthId");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set mouthId(value: BigInt) {
-    this.set("mouthId", Value.fromBigInt(value));
-  }
-
-  get miscId(): BigInt {
-    let value = this.get("miscId");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set miscId(value: BigInt) {
-    this.set("miscId", Value.fromBigInt(value));
-  }
-
   get blockNumber(): BigInt {
     let value = this.get("blockNumber");
     if (!value || value.kind == ValueKind.NULL) {
@@ -307,6 +203,14 @@ export class Aminal extends Entity {
       "Aminal",
       this.get("id")!.toBytes().toHexString(),
       "skills",
+    );
+  }
+
+  get traits(): TraitLoader {
+    return new TraitLoader(
+      "Aminal",
+      this.get("id")!.toBytes().toHexString(),
+      "traits",
     );
   }
 }
@@ -378,6 +282,14 @@ export class User extends Entity {
       "User",
       this.get("id")!.toBytes().toHexString(),
       "proposedVisuals",
+    );
+  }
+
+  get traits(): TraitLoader {
+    return new TraitLoader(
+      "User",
+      this.get("id")!.toBytes().toHexString(),
+      "traits",
     );
   }
 }
@@ -462,6 +374,113 @@ export class Relationship extends Entity {
 
   set love(value: BigInt) {
     this.set("love", Value.fromBigInt(value));
+  }
+}
+
+export class Trait extends Entity {
+  constructor(id: Bytes) {
+    super();
+    this.set("id", Value.fromBytes(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Trait entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.BYTES,
+        `Entities of type Trait must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("Trait", id.toBytes().toHexString(), this);
+    }
+  }
+
+  static loadInBlock(id: Bytes): Trait | null {
+    return changetype<Trait | null>(
+      store.get_in_block("Trait", id.toHexString()),
+    );
+  }
+
+  static load(id: Bytes): Trait | null {
+    return changetype<Trait | null>(store.get("Trait", id.toHexString()));
+  }
+
+  get id(): Bytes {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set id(value: Bytes) {
+    this.set("id", Value.fromBytes(value));
+  }
+
+  get visualId(): BigInt {
+    let value = this.get("visualId");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set visualId(value: BigInt) {
+    this.set("visualId", Value.fromBigInt(value));
+  }
+
+  get catEnum(): i32 {
+    let value = this.get("catEnum");
+    if (!value || value.kind == ValueKind.NULL) {
+      return 0;
+    } else {
+      return value.toI32();
+    }
+  }
+
+  set catEnum(value: i32) {
+    this.set("catEnum", Value.fromI32(value));
+  }
+
+  get svg(): string {
+    let value = this.get("svg");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set svg(value: string) {
+    this.set("svg", Value.fromString(value));
+  }
+
+  get creator(): Bytes {
+    let value = this.get("creator");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set creator(value: Bytes) {
+    this.set("creator", Value.fromBytes(value));
+  }
+
+  get aminals(): Array<Bytes> {
+    let value = this.get("aminals");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytesArray();
+    }
+  }
+
+  set aminals(value: Array<Bytes>) {
+    this.set("aminals", Value.fromBytesArray(value));
   }
 }
 
@@ -1885,6 +1904,24 @@ export class SkillLoader extends Entity {
   load(): Skill[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<Skill[]>(value);
+  }
+}
+
+export class TraitLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): Trait[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<Trait[]>(value);
   }
 }
 

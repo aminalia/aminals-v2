@@ -25,10 +25,26 @@ query Auction($auctionId: BigInt) {
     aminalOne {
       aminalId
       tokenUri
+      traits {
+        catEnum
+        visualId
+        svg
+        creator {
+          address
+        }
+      }
     }
     aminalTwo {
       aminalId
       tokenUri
+      traits {
+        catEnum
+        visualId
+        svg
+        creator {
+          address
+        }
+      }
     }
     childAminalId
     finished

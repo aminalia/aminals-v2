@@ -1,4 +1,4 @@
-import { BigInt, Bytes, store } from "@graphprotocol/graph-ts";
+import { BigInt, Bytes, log, store } from "@graphprotocol/graph-ts";
 import {
   Aminals as AminalsContract,
   AddSkillProposal as AddSkillProposalEvent,
@@ -10,6 +10,7 @@ import {
   SkillVote as SkillVoteEvent,
   SpawnAminal as SpawnAminalEvent,
   Squeak as SqueakEvent,
+  TraitAdded as TraitAddedEvent,
 } from "../generated/Aminals/Aminals";
 import {
   Aminal,
@@ -21,6 +22,7 @@ import {
   SkillVote,
   Squeak,
   User,
+  Trait,
 } from "../generated/schema";
 
 export function handleAddSkillProposal(event: AddSkillProposalEvent): void {
@@ -213,7 +215,7 @@ export function handleSpawnAminal(event: SpawnAminalEvent): void {
   if (!tokenURIResult.reverted) {
     aminal.tokenUri = tokenURIResult.value;
   } else {
-    aminal.tokenUri = ""; // or handle the error case appropriately
+    aminal.tokenUri = "";
   }
 
   // Use try_getEnergy instead of direct getEnergy call
@@ -221,7 +223,7 @@ export function handleSpawnAminal(event: SpawnAminalEvent): void {
   if (!energyResult.reverted) {
     aminal.energy = energyResult.value;
   } else {
-    aminal.energy = BigInt.fromI32(0); // or handle the error case appropriately
+    aminal.energy = BigInt.fromI32(0);
   }
 
   // Use try_getAminalLoveTotal instead of direct call
@@ -229,25 +231,44 @@ export function handleSpawnAminal(event: SpawnAminalEvent): void {
   if (!loveTotalResult.reverted) {
     aminal.totalLove = loveTotalResult.value;
   } else {
-    aminal.totalLove = BigInt.fromI32(0); // or handle the error case appropriately
+    aminal.totalLove = BigInt.fromI32(0);
   }
 
   aminal.breeding = false;
-  aminal.backId = event.params.backId;
-  aminal.armId = event.params.armId;
-  aminal.tailId = event.params.tailId;
-  aminal.earsId = event.params.earsId;
-  aminal.bodyId = event.params.bodyId;
-  aminal.faceId = event.params.faceId;
-  aminal.mouthId = event.params.mouthId;
-  aminal.miscId = event.params.miscId;
 
   // Creation info
   aminal.blockNumber = event.block.number;
   aminal.blockTimestamp = event.block.timestamp;
   aminal.transactionHash = event.transaction.hash;
 
+  // Save the aminal first so it exists for the relationships
   aminal.save();
+
+  function loadTrait(traitId: BigInt, catEnum: i32): Trait | null {
+    return Trait.load(
+      Bytes.fromI32(traitId.toI32()).concat(Bytes.fromI32(catEnum)),
+    );
+  }
+
+  // Handle traits
+  let traits = [
+    loadTrait(event.params.backId, 0),
+    loadTrait(event.params.armId, 1),
+    loadTrait(event.params.tailId, 2),
+    loadTrait(event.params.earsId, 3),
+    loadTrait(event.params.bodyId, 4),
+    loadTrait(event.params.faceId, 5),
+    loadTrait(event.params.mouthId, 6),
+    loadTrait(event.params.miscId, 7),
+  ];
+
+  for (let i = 0; i < traits.length; i++) {
+    let trait = traits[i];
+    if (trait != null) {
+      trait.aminals = trait.aminals.concat([aminal.id]);
+      trait.save();
+    }
+  }
 }
 
 export function handleSqueak(event: SqueakEvent): void {
@@ -292,4 +313,26 @@ export function handleSqueak(event: SqueakEvent): void {
   }
 
   entity.save();
+}
+
+export function handleTraitAdded(event: TraitAddedEvent): void {
+  let trait = new Trait(
+    Bytes.fromI32(event.params.visualId.toI32()).concat(
+      Bytes.fromI32(event.params.catEnum),
+    ),
+  );
+
+  trait.visualId = event.params.visualId;
+  trait.catEnum = event.params.catEnum;
+  trait.svg = event.params.svg;
+  let user = User.load(Bytes.fromHexString(event.params.creator.toHexString()));
+  if (!user) {
+    user = new User(Bytes.fromHexString(event.params.creator.toHexString()));
+    user.address = event.params.creator;
+    user.save();
+  }
+  trait.creator = user.id;
+  trait.aminals = []; // Initialize with empty array
+
+  trait.save();
 }
