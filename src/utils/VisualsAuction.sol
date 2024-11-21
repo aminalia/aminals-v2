@@ -260,7 +260,11 @@ contract VisualsAuction is IAminalStructs, Initializable, Ownable {
     //     MOUTH,
     //     MISC
     // }
-    function bulkVoteVisual(uint256 auctionId, uint256[8] visualsIds) public payable _auctionRunning(auctionId) {
+    function bulkVoteVisual(uint256 auctionId, uint256[8] calldata visualsIds)
+        public
+        payable
+        _auctionRunning(auctionId)
+    {
         for (uint256 i = 0; i < 8; i++) {
             voteVisual(auctionId, VisualsCat(i), visualsIds[i]);
         }
