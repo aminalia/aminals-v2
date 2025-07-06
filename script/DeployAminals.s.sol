@@ -14,18 +14,18 @@ import {InitialGenesMinter2} from "script/InitialGenesMinter2.sol";
 
 /*
 // Mainnet
-forge script script/AminalScript.s.sol:AminalScript --broadcast --verify -vvvv
+forge script script/DeployAminals.s.sol:DeployAminals --broadcast --verify -vvvv
 
 // Goerli
-forge script script/AminalScript.s.sol:AminalScript --chain-id 5  --rpc-url "https://goerli.blockpi.network/v1/rpc/public" --broadcast  --verify -vvvv
+forge script script/DeployAminals.s.sol:DeployAminals --chain-id 5  --rpc-url "https://goerli.blockpi.network/v1/rpc/public" --broadcast  --verify -vvvv
 
 // Sepolia
-forge script  script/AminalScript.s.sol:AminalScript --chain-id 11155111 --rpc-url "https://ethereum-sepolia.publicnode.com" --broadcast --verify -vvv
+forge script  script/DeployAminals.s.sol:DeployAminals --chain-id 11155111 --rpc-url "https://ethereum-sepolia.publicnode.com" --broadcast --verify -vvv
 
 // Holesky
-forge script  script/AminalScript.s.sol:AminalScript --chain-id 17000 --rpc-url "https://ethereum-holesky.publicnode.com" --broadcast --verify -vvv
+forge script  script/DeployAminals.s.sol:DeployAminals --chain-id 17000 --rpc-url "https://ethereum-holesky.publicnode.com" --broadcast --verify -vvv
 
-forge script  script/AminalScript.s.sol:AminalScript --chain-id 17000 --rpc-url "https://ethereum-holesky.publicnode.com" --broadcast --verify -vv
+forge script  script/DeployAminals.s.sol:DeployAminals --chain-id 17000 --rpc-url "https://ethereum-holesky.publicnode.com" --broadcast --verify -vv
 
 
 When updating the smart contract:
@@ -44,7 +44,7 @@ When updating the graphQL:
 npm run graphclient:build
 */
 
-contract AminalScript is Script {
+contract DeployAminals is Script {
     AminalFactory public factory;
     IAminalStructs.Visuals[] public initialVisuals;
 

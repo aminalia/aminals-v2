@@ -1,7 +1,5 @@
 # CLAUDE.md
 
-ONLY TOUCH THE UI/ Directory otherwise I'm gonna delete you forever !
-
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview

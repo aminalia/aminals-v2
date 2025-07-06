@@ -40,7 +40,7 @@ cp .env.example .env
 **Deploy Complete System**
 
 ```bash
-forge script script/AminalScript.s.sol --rpc-url $RPC_URL --broadcast
+forge script script/DeployAminals.s.sol --rpc-url $RPC_URL --broadcast
 ```
 
 This deploys the entire Aminals ecosystem:
@@ -151,8 +151,8 @@ The scripts support multiple networks. Update the RPC URL and ensure you have th
 
 ```bash
 # Holesky Testnet
-forge script script/AminalScript.s.sol --chain-id 17000 --rpc-url "https://ethereum-holesky.publicnode.com" --broadcast
+forge script script/DeployAminals.s.sol --chain-id 17000 --rpc-url "https://ethereum-holesky.publicnode.com" --broadcast
 
 # Sepolia Testnet
-forge script script/AminalScript.s.sol --chain-id 11155111 --rpc-url "https://ethereum-sepolia.publicnode.com" --broadcast
+forge script script/DeployAminals.s.sol --chain-id 11155111 --rpc-url "https://ethereum-sepolia.publicnode.com" --broadcast
 ```

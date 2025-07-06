@@ -5,7 +5,7 @@ import { Input } from '../ui/input';
 const aminalFactoryAbi = require('../../../deployments/AminalFactory.json').abi;
 
 const AMINAL_FACTORY_ADDRESS =
-  '0x82583ad09b5f685f927e490f13a65e6627dd59b0' as const;
+  '0x5dcda867599155a796ff92b39b07fc9f6febe208' as const;
 
 interface ProposeSkillButtonProps {
   id: string;

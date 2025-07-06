@@ -40,21 +40,21 @@ Deploy the core contracts using the existing deployment script:
 
 ```bash
 # Deploy to Sepolia testnet
-forge script script/AminalScript.s.sol:AminalScript --chain-id 11155111 --rpc-url "https://ethereum-sepolia.publicnode.com" --broadcast --verify
+forge script script/DeployAminals.s.sol:DeployAminals --chain-id 11155111 --rpc-url "https://ethereum-sepolia.publicnode.com" --broadcast --verify
 
 # Deploy to Base Sepolia
-forge script script/AminalScript.s.sol:AminalScript --chain-id 84532 --rpc-url "https://sepolia.base.org" --broadcast --verify
+forge script script/DeployAminals.s.sol:DeployAminals --chain-id 84532 --rpc-url "https://sepolia.base.org" --broadcast --verify
 
 # Deploy to Goerli (if needed)
-forge script script/AminalScript.s.sol:AminalScript --chain-id 5 --rpc-url "https://goerli.blockpi.network/v1/rpc/public" --broadcast --verify
+forge script script/DeployAminals.s.sol:DeployAminals --chain-id 5 --rpc-url "https://goerli.blockpi.network/v1/rpc/public" --broadcast --verify
 
 # Deploy to Holesky (alternative testnet)
-forge script script/AminalScript.s.sol:AminalScript --chain-id 17000 --rpc-url "https://ethereum-holesky.publicnode.com" --broadcast --verify
+forge script script/DeployAminals.s.sol:DeployAminals --chain-id 17000 --rpc-url "https://ethereum-holesky.publicnode.com" --broadcast --verify
 ```
 
 ### Step 2: Verify Contract Deployment
 
-After deployment, check the contract addresses from the deployment logs. The AminalScript automatically:
+After deployment, check the contract addresses from the deployment logs. The DeployAminals automatically:
 
 - Deploys all core contracts (Factory, Genes, GeneAuction, Proposals)
 - Initializes all contracts with proper configuration
@@ -121,7 +121,7 @@ holesky = { key = "${ETHERSCAN_API_KEY}" }
 
 The following scripts are available in the `script/` directory:
 
-- `AminalScript.s.sol`: Main deployment script - deploys all contracts and initializes the system
+- `DeployAminals.s.sol`: Main deployment script - deploys all contracts and initializes the system
 - `SpawnAminal.s.sol`: Spawns additional Aminals with custom visuals
 - `FeedAminal.s.sol`: Feeds existing Aminals to test the love/energy system
 - `DeploySkill.s.sol`: Deploys new skill contracts

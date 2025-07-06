@@ -28,7 +28,7 @@ export RPC_URL="https://ethereum-sepolia.publicnode.com"
 export PRIVATE_KEY="your_private_key"
 
 # Deploy using forge
-forge script script/AminalScript.s.sol --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --verify
+forge script script/DeployAminals.s.sol --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast --verify
 ```
 
 ## Step 2: Update Subgraph Configuration

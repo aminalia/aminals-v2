@@ -22,7 +22,7 @@ echo "   RPC URL: $SEPOLIA_RPC_URL"
 
 # Deploy contracts
 echo "📦 Deploying contracts..."
-forge script script/AminalScript.s.sol \
+forge script script/DeployAminals.s.sol \
     --rpc-url $SEPOLIA_RPC_URL \
     --private-key $PRIVATE_KEY \
     --broadcast \

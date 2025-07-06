@@ -23,7 +23,7 @@ export function handleVotingCreated(event: VotingCreatedEvent): void {
   // Get factory address from event address (the gene auction contract knows the factory)
   // For now, we'll use a known factory address - in production this should be configurable
   let factoryAddress = Address.fromString(
-    "0x82583ad09b5f685f927e490f13a65e6627dd59b0",
+    "0x5dcda867599155a796ff92b39b07fc9f6febe208"
   );
 
   // Load parent Aminals by index using factory contract
@@ -45,7 +45,7 @@ export function handleVotingCreated(event: VotingCreatedEvent): void {
         event.params.auctionId.toString(),
         aminalOneIndex.toString(),
         aminalTwoIndex.toString(),
-      ],
+      ]
     );
     return;
   }
@@ -75,7 +75,7 @@ export function handleVotingCreated(event: VotingCreatedEvent): void {
       aminalTwoIndex.toString(),
       aminalTwoAddress.toHexString(),
       event.params.totalLove.toString(),
-    ],
+    ]
   );
 }
 
@@ -130,7 +130,7 @@ export function handleGeneProposed(event: GeneProposedEvent): void {
   proposal.auction = auction.id;
   // Store gene NFT reference (will be resolved later)
   proposal.geneNFT = event.address.concat(
-    Bytes.fromI32(event.params.geneId.toI32()),
+    Bytes.fromI32(event.params.geneId.toI32())
   );
   proposal.traitType = event.params.category;
   proposal.proposer = user.id;
@@ -191,8 +191,13 @@ export function handleGeneVoteCast(event: GeneVoteCastEvent): void {
   vote.isRemoveVote = false; // Regular vote
   // Get user's voting power from contract since the event doesn't include it
   let geneAuctionContract = GeneAuctionContract.bind(event.address);
-  let votingPowerResult = geneAuctionContract.try_getUserVotingPower(event.params.auctionId, event.params.voter);
-  let votingPower = votingPowerResult.reverted ? BigInt.fromI32(0) : votingPowerResult.value;
+  let votingPowerResult = geneAuctionContract.try_getUserVotingPower(
+    event.params.auctionId,
+    event.params.voter
+  );
+  let votingPower = votingPowerResult.reverted
+    ? BigInt.fromI32(0)
+    : votingPowerResult.value;
   vote.loveAmount = votingPower;
   vote.blockNumber = event.block.number;
   vote.blockTimestamp = event.block.timestamp;
@@ -211,7 +216,7 @@ export function handleGeneVoteCast(event: GeneVoteCastEvent): void {
       event.params.category.toString(),
       event.params.voter.toHexString(),
       votingPower.toString(),
-    ],
+    ]
   );
 }
 
@@ -237,7 +242,7 @@ export function handleGeneRemovalVote(event: GeneRemovalVoteEvent): void {
         event.params.auctionId.toString(),
         event.params.geneId.toString(),
         event.params.category.toString(),
-      ],
+      ]
     );
     return;
   }
@@ -275,7 +280,7 @@ export function handleGeneRemovalVote(event: GeneRemovalVoteEvent): void {
       event.params.category.toString(),
       event.params.voter.toHexString(),
       event.params.voteWeight.toString(),
-    ],
+    ]
   );
 }
 
@@ -292,7 +297,7 @@ export function handleGeneRemoved(event: GeneRemovedEvent): void {
         event.params.auctionId.toString(),
         event.params.geneId.toString(),
         event.params.category.toString(),
-      ],
+      ]
     );
     return;
   }
@@ -328,8 +333,13 @@ export function handleBulkVoteCast(event: BulkVoteCastEvent): void {
 
   // Get user's voting power from contract since the event doesn't include it
   let geneAuctionContract = GeneAuctionContract.bind(event.address);
-  let votingPowerResult = geneAuctionContract.try_getUserVotingPower(event.params.auctionId, event.params.voter);
-  let votingPower = votingPowerResult.reverted ? BigInt.fromI32(0) : votingPowerResult.value;
+  let votingPowerResult = geneAuctionContract.try_getUserVotingPower(
+    event.params.auctionId,
+    event.params.voter
+  );
+  let votingPower = votingPowerResult.reverted
+    ? BigInt.fromI32(0)
+    : votingPowerResult.value;
 
   log.info("Bulk vote cast for auction {} by {} with total vote weight {}", [
     event.params.auctionId.toString(),

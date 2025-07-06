@@ -4,7 +4,7 @@ Contracts:
 
 - setFactory in Genes is not good... maybe use an initializer? Owner can set factory whenever
 - Sync env variables between graph, frontend, and contracts (less to replace on new deployments)
-- More genes test cover (renderer, auction, registry, NFT contract)
+- More genes test coverage (renderer, auction, registry, NFT contract)
 - Genes implement ERC721URIStorage, ERC721Enumerable?
 
 Indexer:
