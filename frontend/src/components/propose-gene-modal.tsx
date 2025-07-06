@@ -4,13 +4,13 @@ import toast from 'react-hot-toast';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { TRAIT_CATEGORIES } from '@/constants/trait-categories';
-import { useTraits, CategoryFilter } from '@/resources/traits';
+import { useGenes, CategoryFilter } from '@/resources/genes';
 import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
 
 const geneAuctionAbi = require('../../deployments/GeneAuction.json').abi;
 
-interface ProposeVisualModalProps {
+interface ProposeGeneModalProps {
   auctionId: bigint | string;
   isOpen: boolean;
   onClose: () => void;
@@ -29,7 +29,7 @@ const CATEGORIES = [
 
 const GENE_AUCTION_ADDRESS = '0x30484F8a6CEC8Fc02EFEA2320e3E3A5f710B7605' as const;
 
-export default function ProposeVisualModal({ auctionId, isOpen, onClose }: ProposeVisualModalProps) {
+export default function ProposeGeneModal({ auctionId, isOpen, onClose }: ProposeGeneModalProps) {
   const [selectedCategory, setSelectedCategory] = useState<number>(0);
   const [selectedGeneId, setSelectedGeneId] = useState<string>('');
   const [manualGeneId, setManualGeneId] = useState<string>('');
@@ -51,8 +51,8 @@ export default function ProposeVisualModal({ auctionId, isOpen, onClose }: Propo
     return selectedCategory.toString() as CategoryFilter;
   }, [selectedCategory]);
 
-  // Fetch traits for the selected category
-  const { data: traits, isLoading: isLoadingTraits } = useTraits('all', 'aminals-count', categoryKey);
+  // Fetch genes for the selected category
+  const { data: genes, isLoading: isLoadingGenes } = useGenes('all', 'aminals-count', categoryKey);
 
   // Handle transaction success
   useEffect(() => {
@@ -122,7 +122,7 @@ export default function ProposeVisualModal({ auctionId, isOpen, onClose }: Propo
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div>
-            <h2 className="text-xl font-bold">Propose New Visual</h2>
+            <h2 className="text-xl font-bold">Propose New Gene</h2>
             <p className="text-sm text-gray-600">
               Select a gene from the registry or enter a specific ID
             </p>
@@ -205,38 +205,38 @@ export default function ProposeVisualModal({ auctionId, isOpen, onClose }: Propo
               </div>
             ) : (
               <div>
-                {isLoadingTraits ? (
+                {isLoadingGenes ? (
                   <div className="flex justify-center items-center h-32">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                   </div>
-                ) : !traits || traits.length === 0 ? (
+                ) : !genes || genes.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
                     No genes found for this category
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {traits.map((trait: any) => (
+                    {genes.map((gene: any) => (
                       <div
-                        key={trait.id}
+                        key={gene.id}
                         className={cn(
                           'border-2 rounded-lg p-3 cursor-pointer transition-all',
-                          selectedGeneId === trait.tokenId
+                          selectedGeneId === gene.tokenId
                             ? 'border-blue-500 bg-blue-50'
                             : 'border-gray-200 hover:border-gray-300'
                         )}
-                        onClick={() => setSelectedGeneId(trait.tokenId)}
+                        onClick={() => setSelectedGeneId(gene.tokenId)}
                       >
                         <div className="aspect-square mb-2 bg-gray-50 rounded-lg overflow-hidden">
                           <svg
                             viewBox="0 0 1000 1000"
                             className="w-full h-full"
                             dangerouslySetInnerHTML={{
-                              __html: trait.svg || '',
+                              __html: gene.svg || '',
                             }}
                           />
                         </div>
                         <div className="text-sm font-medium text-center">
-                          Gene #{trait.tokenId}
+                          Gene #{gene.tokenId}
                         </div>
                       </div>
                     ))}

@@ -1,6 +1,6 @@
 import { TokenUriImage } from '@/components/aminal-card';
 import { TRAIT_CATEGORIES } from '@/constants/trait-categories';
-import { useTrait } from '@/resources/traits';
+import { useGene } from '@/resources/genes';
 import type { NextPage } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -18,7 +18,7 @@ interface AminalWithDetails {
 const TraitDetailPage: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
-  const { data: trait, isLoading } = useTrait(id as string);
+  const { data: gene, isLoading } = useGene(id as string);
 
   if (isLoading) {
     return (
@@ -32,12 +32,12 @@ const TraitDetailPage: NextPage = () => {
     );
   }
 
-  if (!trait) {
+  if (!gene) {
     return (
       <Layout>
         <div className="container max-w-5xl mx-auto px-4 py-8">
           <div className="text-center py-12 bg-gray-50 rounded-lg">
-            <p className="text-gray-600">Trait not found.</p>
+            <p className="text-gray-600">Gene not found.</p>
           </div>
         </div>
       </Layout>
@@ -45,14 +45,14 @@ const TraitDetailPage: NextPage = () => {
   }
 
   const category =
-    TRAIT_CATEGORIES[trait.traitType as keyof typeof TRAIT_CATEGORIES];
+    TRAIT_CATEGORIES[gene.traitType as keyof typeof TRAIT_CATEGORIES];
   // Extract unique Aminals from proposals (each proposal has 2 Aminals)
-  const uniqueAminals = trait.proposalsUsingGene ? 
+  const uniqueAminals = gene.proposalsUsingGene ? 
     Array.from(new Set([
-      ...trait.proposalsUsingGene.map((p: any) => p.auction.aminalOne),
-      ...trait.proposalsUsingGene.map((p: any) => p.auction.aminalTwo)
+      ...gene.proposalsUsingGene.map((p: any) => p.auction.aminalOne),
+      ...gene.proposalsUsingGene.map((p: any) => p.auction.aminalTwo)
     ].map(a => a.id))).map(id => 
-      [...trait.proposalsUsingGene.map((p: any) => p.auction.aminalOne), ...trait.proposalsUsingGene.map((p: any) => p.auction.aminalTwo)]
+      [...gene.proposalsUsingGene.map((p: any) => p.auction.aminalOne), ...gene.proposalsUsingGene.map((p: any) => p.auction.aminalTwo)]
         .find(a => a.id === id)
     ) : [];
   const aminalCount = uniqueAminals.length;
@@ -66,7 +66,7 @@ const TraitDetailPage: NextPage = () => {
             <div className="flex items-center gap-2">
               <h1 className="text-3xl font-bold flex items-center gap-2">
                 <span className="text-3xl">{category.emoji}</span>
-                Trait #{trait.tokenId}
+                Gene #{gene.tokenId}
               </h1>
               <span className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-full font-medium">
                 {category.name}
@@ -76,7 +76,7 @@ const TraitDetailPage: NextPage = () => {
               href="/traits"
               className="text-blue-600 hover:text-blue-700 text-sm font-medium"
             >
-              ← Back to all Traits
+              ← Back to all Genes
             </Link>
           </div>
 
@@ -88,7 +88,7 @@ const TraitDetailPage: NextPage = () => {
                 viewBox="0 0 1000 1000"
                 className="w-full h-full"
                 dangerouslySetInnerHTML={{
-                  __html: trait.svg || '',
+                  __html: gene.svg || '',
                 }}
               />
             </div>
@@ -105,7 +105,7 @@ const TraitDetailPage: NextPage = () => {
                   <div>
                     <div className="font-medium">Address</div>
                     <div className="font-mono text-sm text-gray-600">
-                      {trait.creator.address}
+                      {gene.creator.address}
                     </div>
                   </div>
                 </div>
@@ -135,10 +135,10 @@ const TraitDetailPage: NextPage = () => {
 
           {/* Aminals with this Trait */}
           <div className="mt-8 space-y-6">
-            <h2 className="text-2xl font-bold">Aminals with this Trait</h2>
+            <h2 className="text-2xl font-bold">Aminals with this Gene</h2>
             {aminalCount === 0 ? (
               <div className="text-center py-12 bg-gray-50 rounded-lg">
-                <p className="text-gray-600">No Aminals have this trait yet.</p>
+                <p className="text-gray-600">No Aminals have this gene yet.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

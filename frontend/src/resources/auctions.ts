@@ -51,7 +51,7 @@ export const useAuction = (auctionId: string) => {
   });
 };
 
-export const useAuctionProposeVisuals = (auctionId: string) => {
+export const useAuctionProposeGenes = (auctionId: string) => {
   return useQuery<GeneProposal[]>({
     queryKey: [BASE_KEY, auctionId ?? '', 'proposals'],
     queryFn: async () => {
@@ -64,7 +64,7 @@ export const useAuctionProposeVisuals = (auctionId: string) => {
   });
 };
 
-export const useProposeVisuals = () => {
+export const useProposeGenes = () => {
   return useQuery<GeneProposal[]>({
     queryKey: [BASE_KEY, 'all', 'proposals'],
     queryFn: async () => {

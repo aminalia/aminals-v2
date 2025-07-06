@@ -1,18 +1,18 @@
 import BulkVoteButton from '@/components/actions/bulk-vote-button';
-import ProposeVisualModal from '@/components/propose-visual-modal';
+import ProposeGeneModal from '@/components/propose-gene-modal';
 import TraitSelector, {
   SelectedParts,
   TraitParts,
 } from '@/components/trait-selector';
 import { Button } from '@/components/ui/button';
-import VisualsList from '@/components/visuals-list';
+import GenesList from '@/components/genes-list';
 import VoteStats from '@/components/vote-stats';
-import { useAuction, useAuctionProposeVisuals } from '@/resources/auctions';
-import { useTraitsByIds } from '@/resources/traits';
+import { useAuction, useAuctionProposeGenes } from '@/resources/auctions';
+import { useGenesByIds } from '@/resources/genes';
 import type { NextPage } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import Layout from '../_layout';
 
 const AuctionPage: NextPage = () => {
@@ -24,13 +24,17 @@ const AuctionPage: NextPage = () => {
     isLoading: isLoadingAuction,
     error,
   } = useAuction(auctionId);
-  const { data: proposeVisuals, isLoading: isLoadingProposeVisuals } =
-    useAuctionProposeVisuals(auctionId);
+  const {
+    data: proposeGenes,
+    isLoading: isLoadingProposeGenes,
+    error: proposeGenesError,
+  } = useAuctionProposeGenes(auctionId);
 
   console.log('auction data:', auction, error);
+  console.log('propose genes:', proposeGenes, proposeGenesError);
 
-  // Get all trait IDs from parent Aminals
-  const traitIds = useMemo(() => {
+  // Get all gene IDs from parent Aminals
+  const geneIds = useMemo(() => {
     if (!auction) return [];
 
     const ids = [
@@ -59,11 +63,11 @@ const AuctionPage: NextPage = () => {
     return Array.from(new Set(ids)); // Remove duplicates
   }, [auction]);
 
-  // Fetch gene NFT data for the trait IDs
-  const { data: traitData, isLoading: isLoadingTraits } =
-    useTraitsByIds(traitIds);
+  // Fetch gene NFT data for the gene IDs
+  const { data: geneData, isLoading: isLoadingGenes } =
+    useGenesByIds(geneIds);
 
-  // State for selected trait parts
+  // State for selected gene parts
   const [selectedParts, setSelectedParts] = useState<SelectedParts>({
     background: 0,
     tail: 0,
@@ -75,23 +79,23 @@ const AuctionPage: NextPage = () => {
     misc: 0,
   });
 
-  // State for propose modal
+  // State for propose gene modal
   const [isProposalModalOpen, setIsProposalModalOpen] = useState(false);
 
-  // Create a lookup map for trait data
-  const traitMap = useMemo(() => {
-    if (!traitData) return {};
+  // Create a lookup map for gene data
+  const geneMap = useMemo(() => {
+    if (!geneData) return {};
 
     const map: { [key: string]: any } = {};
-    traitData.forEach((trait) => {
-      if (trait && trait.tokenId) {
-        map[trait.tokenId] = trait;
+    geneData.forEach((gene) => {
+      if (gene && gene.tokenId) {
+        map[gene.tokenId] = gene;
       }
     });
     return map;
-  }, [traitData]);
+  }, [geneData]);
 
-  // Define the trait parts from the auction data
+  // Define the gene parts from the auction data
   const parts: TraitParts = useMemo(() => {
     if (!auction) {
       return {
@@ -106,62 +110,53 @@ const AuctionPage: NextPage = () => {
       };
     }
 
-    const getTraitForId = (id: any) => {
+    const getGeneForId = (id: any) => {
       if (!id || id.toString() === '0') {
         return null;
       }
-      const trait = traitMap[id.toString()];
-      return trait ? { ...trait, visualId: trait.tokenId } : null;
+      const gene = geneMap[id.toString()];
+      return gene ? { ...gene, visualId: gene.tokenId } : null;
     };
 
     const result = {
       background: [
-        getTraitForId(auction.aminalOne.backId),
-        getTraitForId(auction.aminalTwo.backId),
+        getGeneForId(auction.aminalOne.backId),
+        getGeneForId(auction.aminalTwo.backId),
       ].filter(Boolean),
       body: [
-        getTraitForId(auction.aminalOne.bodyId),
-        getTraitForId(auction.aminalTwo.bodyId),
+        getGeneForId(auction.aminalOne.bodyId),
+        getGeneForId(auction.aminalTwo.bodyId),
       ].filter(Boolean),
       face: [
-        getTraitForId(auction.aminalOne.faceId),
-        getTraitForId(auction.aminalTwo.faceId),
+        getGeneForId(auction.aminalOne.faceId),
+        getGeneForId(auction.aminalTwo.faceId),
       ].filter(Boolean),
       mouth: [
-        getTraitForId(auction.aminalOne.mouthId),
-        getTraitForId(auction.aminalTwo.mouthId),
+        getGeneForId(auction.aminalOne.mouthId),
+        getGeneForId(auction.aminalTwo.mouthId),
       ].filter(Boolean),
       ears: [
-        getTraitForId(auction.aminalOne.earsId),
-        getTraitForId(auction.aminalTwo.earsId),
+        getGeneForId(auction.aminalOne.earsId),
+        getGeneForId(auction.aminalTwo.earsId),
       ].filter(Boolean),
       arm: [
-        getTraitForId(auction.aminalOne.armId),
-        getTraitForId(auction.aminalTwo.armId),
+        getGeneForId(auction.aminalOne.armId),
+        getGeneForId(auction.aminalTwo.armId),
       ].filter(Boolean),
       tail: [
-        getTraitForId(auction.aminalOne.tailId),
-        getTraitForId(auction.aminalTwo.tailId),
+        getGeneForId(auction.aminalOne.tailId),
+        getGeneForId(auction.aminalTwo.tailId),
       ].filter(Boolean),
       misc: [
-        getTraitForId(auction.aminalOne.miscId),
-        getTraitForId(auction.aminalTwo.miscId),
+        getGeneForId(auction.aminalOne.miscId),
+        getGeneForId(auction.aminalTwo.miscId),
       ].filter(Boolean),
     };
 
     return result;
-  }, [auction, traitMap]);
+  }, [auction, geneMap]);
 
-  // Debug logging
-  useEffect(() => {
-    console.log('Selected Parts:', selectedParts);
-    console.log('Trait Data Count:', traitData?.length || 0);
-    console.log('Available traits:', Object.keys(traitMap).join(', '));
-    console.log('Background parts:', parts.background.length);
-    console.log('Arm parts:', parts.arm.length);
-  }, [selectedParts, traitData, traitMap, parts]);
-
-  // Handler for trait selection
+  // Handler for gene selection
   const handlePartSelection = (part: string, index: number) => {
     setSelectedParts((prev) => ({
       ...prev,
@@ -173,8 +168,10 @@ const AuctionPage: NextPage = () => {
   const getParentAddresses = () => {
     if (!auction) return { parentOne: '?', parentTwo: '?' };
     return {
-      parentOne: auction.aminalOne.contractAddress || auction.aminalOne.aminalIndex,
-      parentTwo: auction.aminalTwo.contractAddress || auction.aminalTwo.aminalIndex,
+      parentOne:
+        auction.aminalOne.contractAddress || auction.aminalOne.aminalIndex,
+      parentTwo:
+        auction.aminalTwo.contractAddress || auction.aminalTwo.aminalIndex,
     };
   };
 
@@ -200,7 +197,7 @@ const AuctionPage: NextPage = () => {
             </Link>
           </div>
 
-          {isLoadingAuction || isLoadingTraits ? (
+          {isLoadingAuction || isLoadingGenes ? (
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
             </div>
@@ -245,7 +242,7 @@ const AuctionPage: NextPage = () => {
                 <div className="p-6 border-b border-gray-200">
                   <h2 className="text-2xl font-bold">Design Your Offspring</h2>
                   <p className="text-gray-600 mt-1">
-                    Choose which traits to inherit from each parent, or insert a
+                    Choose which genes to inherit from each parent, or insert a
                     new gene.
                   </p>
                 </div>
@@ -269,53 +266,60 @@ const AuctionPage: NextPage = () => {
                       />
                     </div>
                     <div className="mt-6 space-y-4">
-
                       <BulkVoteButton
                         auctionId={auctionId}
                         backId={
-                          selectedParts.background === -1 ? '0' :
-                          parts.background[selectedParts.background]
-                            ?.visualId || '0'
+                          selectedParts.background === -1
+                            ? '0'
+                            : parts.background[selectedParts.background]
+                                ?.visualId || '0'
                         }
                         armId={
-                          selectedParts.arm === -1 ? '0' :
-                          parts.arm[selectedParts.arm]?.visualId || '0'
+                          selectedParts.arm === -1
+                            ? '0'
+                            : parts.arm[selectedParts.arm]?.visualId || '0'
                         }
                         tailId={
-                          selectedParts.tail === -1 ? '0' :
-                          parts.tail[selectedParts.tail]?.visualId || '0'
+                          selectedParts.tail === -1
+                            ? '0'
+                            : parts.tail[selectedParts.tail]?.visualId || '0'
                         }
                         earsId={
-                          selectedParts.ears === -1 ? '0' :
-                          parts.ears[selectedParts.ears]?.visualId || '0'
+                          selectedParts.ears === -1
+                            ? '0'
+                            : parts.ears[selectedParts.ears]?.visualId || '0'
                         }
                         bodyId={
-                          selectedParts.body === -1 ? '0' :
-                          parts.body[selectedParts.body]?.visualId || '0'
+                          selectedParts.body === -1
+                            ? '0'
+                            : parts.body[selectedParts.body]?.visualId || '0'
                         }
                         faceId={
-                          selectedParts.face === -1 ? '0' :
-                          parts.face[selectedParts.face]?.visualId || '0'
+                          selectedParts.face === -1
+                            ? '0'
+                            : parts.face[selectedParts.face]?.visualId || '0'
                         }
                         mouthId={
-                          selectedParts.mouth === -1 ? '0' :
-                          parts.mouth[selectedParts.mouth]?.visualId || '0'
+                          selectedParts.mouth === -1
+                            ? '0'
+                            : parts.mouth[selectedParts.mouth]?.visualId || '0'
                         }
                         miscId={
-                          selectedParts.misc === -1 ? '0' :
-                          parts.misc[selectedParts.misc]?.visualId || '0'
+                          selectedParts.misc === -1
+                            ? '0'
+                            : parts.misc[selectedParts.misc]?.visualId || '0'
                         }
                       />
                       <Button
                         onClick={() => setIsProposalModalOpen(true)}
                         className="w-full bg-green-600 hover:bg-green-700 text-white"
                       >
-                        ✨ Propose New Visual
+                        ✨ Propose New Gene
                       </Button>
                     </div>
                   </div>
 
-                  {/* Right Column - Trait Selector */}
+                  {/* Right Column - Gene Selector */}
                   <div>
                     <TraitSelector
                       parts={parts}
@@ -326,10 +330,10 @@ const AuctionPage: NextPage = () => {
                 </div>
               </div>
 
-              {/* Visuals List Section */}
+              {/* Genes List Section */}
               <div className="mt-4 space-y-6">
                 <h2 className="text-2xl font-bold">Community Proposals</h2>
-                <VisualsList auctionId={auctionId} />
+                <GenesList auctionId={auctionId} />
               </div>
 
               {/* Vote Statistics Section */}
@@ -341,8 +345,8 @@ const AuctionPage: NextPage = () => {
         </div>
       </div>
 
-      {/* Propose Visual Modal */}
-      <ProposeVisualModal
+      {/* Propose Gene Modal */}
+      <ProposeGeneModal
         auctionId={auctionId}
         isOpen={isProposalModalOpen}
         onClose={() => setIsProposalModalOpen(false)}

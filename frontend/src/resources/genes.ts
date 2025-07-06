@@ -10,10 +10,10 @@ import {
   execute,
 } from '../../.graphclient';
 
-const BASE_KEY = 'traits';
+const BASE_KEY = 'genes';
 
-export type TraitFilter = 'all' | 'yours';
-export type TraitSort = 'aminals-count' | 'created-at';
+export type GeneFilter = 'all' | 'yours';
+export type GeneSort = 'aminals-count' | 'created-at';
 export type CategoryFilter =
   | 'all'
   | '0'
@@ -27,9 +27,9 @@ export type CategoryFilter =
 
 type GeneNFT = GeneNftsListQuery['geneNFTs'][number];
 
-export const useTraits = (
-  filter: TraitFilter = 'all',
-  sort: TraitSort = 'aminals-count',
+export const useGenes = (
+  filter: GeneFilter = 'all',
+  sort: GeneSort = 'aminals-count',
   category: CategoryFilter = 'all'
 ) => {
   const { address } = useAccount();
@@ -37,7 +37,7 @@ export const useTraits = (
   return useQuery<GeneNftsListQuery['geneNFTs']>({
     queryKey: [BASE_KEY, filter, sort, category, address],
     queryFn: async () => {
-      console.log('Fetching traits with params:', { filter, sort, category, address });
+      console.log('Fetching genes with params:', { filter, sort, category, address });
       
       try {
         console.log('About to execute GraphQL query...');
@@ -168,14 +168,14 @@ export const useTraits = (
       
       return geneNFTs;
       } catch (error) {
-        console.error('Error in traits query:', error);
+        console.error('Error in genes query:', error);
         throw error;
       }
     },
   });
 };
 
-export const useTrait = (id: string) => {
+export const useGene = (id: string) => {
   return useQuery<GeneNftByIdQuery['geneNFT']>({
     queryKey: [BASE_KEY, id],
     queryFn: async () => {
@@ -256,7 +256,7 @@ export const useTrait = (id: string) => {
   });
 };
 
-export const useTraitsByIds = (ids: string[]) => {
+export const useGenesByIds = (ids: string[]) => {
   return useQuery<GeneNftByIdQuery['geneNFT'][]>({
     queryKey: [BASE_KEY, 'multiple', ids.sort()],
     queryFn: async () => {
@@ -304,7 +304,7 @@ export const useTraitsByIds = (ids: string[]) => {
 
       const data = await response.json();
 
-      console.log('GraphQL Response for multiple traits:', data);
+      console.log('GraphQL Response for multiple genes:', data);
 
       if (data.errors) {
         console.error('GraphQL Errors:', data.errors);

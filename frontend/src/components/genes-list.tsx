@@ -1,34 +1,34 @@
 import { useAccount } from 'wagmi';
-import { useVisualProposalsByAuctionId } from '../resources/visuals';
-import VisualCard from './visual-card';
+import { useGeneProposalsByAuctionId } from '../resources/gene-proposals';
+import GeneCard from './gene-card';
 
-interface VisualsListProps {
+interface GenesListProps {
   auctionId: string;
 }
 
-const VisualsList = ({ auctionId }: VisualsListProps) => {
+const GenesList = ({ auctionId }: GenesListProps) => {
   const { address } = useAccount();
   const {
-    data: visuals,
+    data: genes,
     isLoading,
     error,
-  } = useVisualProposalsByAuctionId(auctionId);
+  } = useGeneProposalsByAuctionId(auctionId);
 
   if (isLoading) {
-    return <div className="text-center py-8">Loading visuals...</div>;
+    return <div className="text-center py-8">Loading genes...</div>;
   }
 
   if (error) {
-    console.error('Visuals loading error:', error);
+    console.error('Genes loading error:', error);
     return (
       <div className="text-center py-8 text-red-500">
-        <div>Error loading visuals</div>
+        <div>Error loading genes</div>
         <div className="text-sm mt-2">{error.message}</div>
       </div>
     );
   }
 
-  if (!visuals || visuals.length === 0) {
+  if (!genes || genes.length === 0) {
     return (
       <div className="text-center py-8 bg-gray-50 rounded-lg border border-gray-200">
         <div className="text-gray-600">
@@ -42,14 +42,14 @@ const VisualsList = ({ auctionId }: VisualsListProps) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {visuals.map((visual) => (
-        <VisualCard
-          key={`${visual.auction.auctionId}-${visual.geneNFT.tokenId}`}
-          visual={visual}
+      {genes.map((gene) => (
+        <GeneCard
+          key={`${gene.auction.auctionId}-${gene.geneNFT.tokenId}`}
+          gene={gene}
         />
       ))}
     </div>
   );
 };
 
-export default VisualsList;
+export default GenesList;
