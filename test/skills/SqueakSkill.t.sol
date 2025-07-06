@@ -82,7 +82,18 @@ contract SqueakSkillTest is SkillTestBase {
     function test_SqueakInsufficientEnergy() public {
         // Get current energy from the already-fed aminal
         uint256 energy = IAminal(testAminal1).getEnergy();
-        uint256 squeakAmount = energy + 1; // Try to squeak more than available
+        
+        // Exhaust most of the energy first
+        if (energy > 5) {
+            uint256 exhaustAmount = energy - 5;
+            bytes memory exhaustData = abi.encodeWithSelector(SqueakSkill.squeak.selector, exhaustAmount);
+            vm.prank(alice);
+            IAminal(testAminal1).useSkill(address(squeakSkill), exhaustData);
+        }
+        
+        // Now try to squeak more than remaining energy
+        uint256 remainingEnergy = IAminal(testAminal1).getEnergy();
+        uint256 squeakAmount = remainingEnergy + 1;
 
         bytes memory squeakData = abi.encodeWithSelector(SqueakSkill.squeak.selector, squeakAmount);
 
@@ -92,19 +103,30 @@ contract SqueakSkillTest is SkillTestBase {
     }
 
     function test_SqueakInsufficientLove() public {
-        // SkillTestBase already gives alice some love
-        // Feed more from bob to add energy but not alice's love
+        // First, add more energy via bob feeding (alice gets no love from this)
+        vm.deal(bob, 10 ether);
         vm.prank(bob);
-        IAminal(testAminal1).feed{value: 0.1 ether}();
-
-        // User1 tries to squeak more than their love but less than the cap
+        IAminal(testAminal1).feed{value: 10 ether}();
+        
+        // Start fresh - exhaust alice's existing love completely
         uint256 aliceLove = IAminal(testAminal1).getLoveByUser(alice);
-        uint256 squeakAmount = aliceLove + 1;
+        
+        if (aliceLove > 0) {
+            // Exhaust all love in chunks of 10000 or less
+            while (aliceLove > 0) {
+                uint256 exhaustAmount = aliceLove > 10_000 ? 10_000 : aliceLove;
+                bytes memory exhaustData = abi.encodeWithSelector(SqueakSkill.squeak.selector, exhaustAmount);
+                vm.prank(alice);
+                IAminal(testAminal1).useSkill(address(squeakSkill), exhaustData);
+                aliceLove = IAminal(testAminal1).getLoveByUser(alice);
+                
+                // Safety check to avoid infinite loop
+                if (IAminal(testAminal1).getEnergy() == 0) break;
+            }
+        }
 
-        // Ensure the amount is less than or equal to 10000 cap
-        assertTrue(squeakAmount <= 10_000, "Squeak amount should be less than or equal to cap");
-
-        bytes memory squeakData = abi.encodeWithSelector(SqueakSkill.squeak.selector, squeakAmount);
+        // Now alice should have 0 love but aminal has energy. Try to squeak 1 unit.
+        bytes memory squeakData = abi.encodeWithSelector(SqueakSkill.squeak.selector, 1);
 
         vm.prank(alice);
         vm.expectRevert(); // Expect any revert for insufficient love
@@ -184,9 +206,12 @@ contract SqueakSkillTest is SkillTestBase {
     }
 
     function testFuzz_SqueakVariousAmounts(uint256 feedAmount, uint256 squeakAmount) public {
-        // Bound inputs
-        feedAmount = bound(feedAmount, 0.001 ether, 10 ether);
-        squeakAmount = bound(squeakAmount, 1, 10_000);
+        // Bound inputs to reasonable ranges
+        feedAmount = bound(feedAmount, 0.001 ether, 1 ether); // Max 1 ETH to avoid OutOfFunds
+        squeakAmount = bound(squeakAmount, 1, 10_000); // Cap at 10_000 due to useSkill logic
+
+        // Give alice some ETH for feeding
+        vm.deal(alice, feedAmount);
 
         // Feed the Aminal with specified amount  
         vm.prank(alice);
@@ -211,16 +236,34 @@ contract SqueakSkillTest is SkillTestBase {
     function test_SqueakExhaustAllResources() public {
         // SkillTestBase already feeds the aminals in setUp
 
-        // Get the minimum of energy and love
+        // Get the minimum of energy and love (but cap at 10000 due to useSkill logic)
         uint256 energy = IAminal(testAminal1).getEnergy();
         uint256 love = IAminal(testAminal1).getLoveByUser(alice);
         uint256 maxSqueak = energy < love ? energy : love;
+        
+        // Cap at 10000 to match useSkill logic
+        if (maxSqueak > 10_000) maxSqueak = 10_000;
 
         bytes memory squeakData = abi.encodeWithSelector(SqueakSkill.squeak.selector, maxSqueak);
 
-        // Squeak the maximum amount
+        // Squeak the maximum amount (capped)
         vm.prank(alice);
         IAminal(testAminal1).useSkill(address(squeakSkill), squeakData);
+
+        // Continue exhausting resources until depleted
+        while (true) {
+            uint256 currentEnergy = IAminal(testAminal1).getEnergy();
+            uint256 currentLove = IAminal(testAminal1).getLoveByUser(alice);
+            
+            if (currentEnergy == 0 || currentLove == 0) break;
+            
+            uint256 nextSqueak = currentEnergy < currentLove ? currentEnergy : currentLove;
+            if (nextSqueak > 10_000) nextSqueak = 10_000;
+            
+            bytes memory nextSqueakData = abi.encodeWithSelector(SqueakSkill.squeak.selector, nextSqueak);
+            vm.prank(alice);
+            IAminal(testAminal1).useSkill(address(squeakSkill), nextSqueakData);
+        }
 
         // Verify we've exhausted at least one resource
         assertTrue(IAminal(testAminal1).getEnergy() == 0 || IAminal(testAminal1).getLoveByUser(alice) == 0);

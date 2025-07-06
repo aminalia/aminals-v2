@@ -34,7 +34,7 @@ contract CallSkill is Script {
 
         // Prepare skill data using the new Move2D format
         Move2D move2DSkill = Move2D(skillAddress);
-        bytes memory skillData = move2DSkill.getSkillData(5, 10);
+        bytes memory skillData = abi.encodeWithSelector(move2DSkill.move.selector, 5, 10);
 
         // Call the skill using the new method
         aminal.useSkill(skillAddress, skillData);
@@ -79,11 +79,11 @@ contract CallFight is Script {
         console.log("Victim energy before:", aminal.getEnergy());
         console.log("Aminal health before:", health2);
 
-        // Prepare skill data (x, y coordinates for Move2D)
-        bytes memory skillData = abi.encode(victim, int256(1));
+        // Prepare skill data for FightSkill attack function
+        bytes memory skillData = abi.encodeWithSelector(skillContract.attack.selector, victimAddress, 1);
 
         // Call the skill
-        aminal.callSkill(address(skillContract), skillData);
+        aminal.useSkill(address(skillContract), skillData);
 
         console.log("Skill called successfully");
 
