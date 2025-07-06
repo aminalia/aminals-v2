@@ -77,6 +77,7 @@ contract AminalFactory is IAminalStructs, Initializable, Ownable {
     /// @notice VRGDA for calculating love based on energy levels 📈
     AminalVRGDA public loveVRGDA;
 
+    // TODO maybe this would be more elegant as a unit256 array with length of eight?
     event AminalSpawned(
         address indexed aminalAddress,
         uint256 indexed aminalIndex,
@@ -120,9 +121,11 @@ contract AminalFactory is IAminalStructs, Initializable, Ownable {
     {
         geneAuction = GeneAuction(_geneAuction);
         genes = Genes(_Genes);
+        // TODO maybe remove or implement Aminals DAO
         proposals = AminalProposals(_aminalProposals);
     }
 
+    // TODO maybe make these configurable in the setup function?
     function setup() external onlyOwner {
         // Deploy VRGDA with optimal parameters for love curves
         // Parameters: targetPrice, priceDecayPercent, logisticAsymptote, timeScale

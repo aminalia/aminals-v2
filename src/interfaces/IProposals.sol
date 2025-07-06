@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.20;
 
+// TODO maybe remove?
 interface IProposals {
     /// We dream of Aminals voting together in Aminal Democracy.
     // function AminalVote(

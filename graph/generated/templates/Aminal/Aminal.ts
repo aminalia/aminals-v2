@@ -445,7 +445,7 @@ export class Aminal__visualsResult {
     value4: BigInt,
     value5: BigInt,
     value6: BigInt,
-    value7: BigInt,
+    value7: BigInt
   ) {
     this.value0 = value0;
     this.value1 = value1;
@@ -554,7 +554,7 @@ export class Aminal extends ethereum.SmartContract {
     let result = super.tryCall(
       "breedableWith",
       "breedableWith(address):(bool)",
-      [ethereum.Value.fromAddress(param0)],
+      [ethereum.Value.fromAddress(param0)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();

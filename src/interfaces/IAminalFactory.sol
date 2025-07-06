@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import {IAminalStructs} from "src/interfaces/IAminalStructs.sol";
 
+// TODO review what should be in here
 interface IAminalFactory is IAminalStructs {
     /**
      * @notice Spawn a new Aminal from auction results

@@ -173,6 +173,7 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
         return energyGained;
     }
 
+    // TODO deprecate?
     /**
      * @notice Express yourself through this Aminal's voice 🗣️
      * @dev Uses love and energy to create a squeak - a digital cry of expression
@@ -248,6 +249,7 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
         emit SkillUsed(msg.sender, energyCost, target, selector);
     }
 
+    // TODO do we need this?
     /**
      * @notice Set breeding consent with another Aminal 💕
      * @dev Requires sufficient love to establish breeding consent
@@ -296,16 +298,19 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
         revert("Aminals are soulbound and cannot be approved");
     }
 
+    // TODO how often is this used? Should it just be inline?
     function _addLove(address user, uint256 love) internal {
         lovePerUser[user] += love;
         totalLove += love;
     }
 
+    // TODO how often is this used? Should it just be inline?
     function _subtractLove(address user, uint256 love) internal {
         lovePerUser[user] -= love;
         totalLove -= love;
     }
 
+    // TODO should this use VRGDA instead?
     function loveDrivenPrice(address user) external view returns (uint128) {
         uint256 love = lovePerUser[user];
         uint256 totlove = totalLove;
@@ -321,12 +326,14 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
         return price * 10 ** 15;
     }
 
+    // TODO is this needed?
     function setSkillProperty(string calldata key, bytes32 value) external {
         // Skills are globally accessible - any address can set properties
         // This allows for flexible skill system without registration
         skillProperties[msg.sender][key] = value;
     }
 
+    // TODO is this needed?
     function getSkillProperty(address skill, string calldata key) external view returns (bytes32) {
         return skillProperties[skill][key];
     }
@@ -383,7 +390,7 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
         return visuals;
     }
 
-    // Generate token URI using Gene-based descriptor
+    // Generate token URI using GeneRenderer
     function tokenURI(uint256 id) public view override returns (string memory) {
         require(id == 1, "Token does not exist");
         return dataURI(aminalIndex);

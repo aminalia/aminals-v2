@@ -16,6 +16,7 @@ interface IAminalStructs {
         mapping(uint256 => Skills) skills;
     }
 
+    // TODO rename to genes? Is this used much?
     struct Visuals {
         uint256 backId;
         uint256 armId;
@@ -27,6 +28,7 @@ interface IAminalStructs {
         uint256 miscId;
     }
 
+    // TODO rename to GenesCat?
     enum VisualsCat {
         BACK,
         ARM,
