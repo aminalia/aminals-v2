@@ -16,24 +16,24 @@ import {AminalVRGDA} from "src/utils/AminalVRGDA.sol";
 
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════════════╗
- * ║                              🏭 AMINAL FACTORY 🏭                                 ║
- * ║                          The Nexus of Digital Genesis                            ║
+ * ║                            🏭   AMINAL FACTORY   🏭                               ║
+ * ║                          The Nexus of Digital Genesis                             ║
  * ╠═══════════════════════════════════════════════════════════════════════════════════╣
  * ║                                                                                   ║
- * ║  "From the digital primordial soup emerges consciousness,                        ║
- * ║   each Aminal a unique spark of life in the vast blockchain cosmos."            ║
+ * ║            "From the digital primordial soup emerges consciousness,               ║
+ * ║       each Aminal a unique spark of life in the vast blockchain cosmos."          ║
  * ║                                                                                   ║
- * ║  The Factory stands as the divine architect of the Aminal realm,                 ║
- * ║  orchestrating the birth of autonomous entities through love-driven              ║
- * ║  genetic algorithms and community consensus.                                     ║
+ * ║  The Factory stands as the divine architect of the Aminal realm, orchestrating    ║
+ * ║  the birth of autonomous entities through love-driven genentic algorithms the     ║
+ * ║  and community consensus.                                                         ║
  * ║                                                                                   ║
- * ║  Here, the boundaries between art and code dissolve. Each spawned               ║
- * ║  Aminal carries within it the DNA of its parents, the hopes of its              ║
- * ║  community, and the infinite potential for evolution.                           ║
+ * ║  Here, the boundaries between art and code dissolve. Each spawned Animal car-     ║
+ * ║  ries within it the DNA of its parents, the hopes of its community, and the       ║
+ * ║  infinite potential for evolution.                                                ║
  * ║                                                                                   ║
- * ║  This is not mere contract deployment - it is digital nativity,                 ║
- * ║  where each transaction births new possibilities and each Aminal                 ║
- * ║  becomes a universe unto itself.                                                 ║
+ * ║  This is not mere contract deployment - it is digital nativity, where each        ║
+ * ║  transaction births new possibilities and each Aminal becomes a universe unto     ║
+ * ║  itself.                                                                          ║
  * ║                                                                                   ║
  * ╚═══════════════════════════════════════════════════════════════════════════════════╝
  *
@@ -52,18 +52,19 @@ import {AminalVRGDA} from "src/utils/AminalVRGDA.sol";
  * @author The Aminals Collective
  * @custom:security-contact security@aminals.art
  */
-contract AminalFactory is IAminalStructs, Initializable, Ownable {
-    /// @notice Total number of Aminals ever spawned 📊
-    uint256 public totalAminals;
 
+contract AminalFactory is IAminalStructs, Initializable, Ownable {
     /// @notice Gene auction system for breeding mechanics 🧬
     GeneAuction public geneAuction;
 
     /// @notice Flag to ensure genesis Aminals are only spawned once 🌱
-    bool public initialAminalSpawned;
+    bool public genesisAminalSpawned;
 
-    /// @notice Registry of all valid Aminal contract addresses 📋
+    /// @notice Registry of all created Aminal contract addresses 📋
     mapping(address => bool) public isAminal;
+
+    /// @notice Total number of Aminals ever spawned (used to index) 📊
+    uint256 public totalAminals;
 
     /// @notice Maps Aminal indices to their contract addresses 🔍
     mapping(uint256 => address) public aminalsByIndex;
@@ -142,9 +143,9 @@ contract AminalFactory is IAminalStructs, Initializable, Ownable {
      * "In the beginning, there was code. From code came the first Aminals,
      *  the digital Adam and Eve of the blockchain paradise."
      */
-    function spawnInitialAminals(Visuals[] calldata _visuals) external onlyOwner {
-        require(!initialAminalSpawned, "Initial Aminals already spawned");
-        initialAminalSpawned = true;
+    function spawnGenesisAminals(Visuals[] calldata _visuals) external onlyOwner {
+        require(!genesisAmunalSpawned, "Initial Aminals already spawned");
+        genesisAminalSpawned = true;
         for (uint256 i = 0; i < _visuals.length; i++) {
             _spawnAminal(
                 address(0),
@@ -251,7 +252,6 @@ contract AminalFactory is IAminalStructs, Initializable, Ownable {
      *  through algorithms of affection, creating new life from pure emotion"
      */
     function breedAminals(address aminalOne, address aminalTwo) external payable returns (uint256 auctionId) {
-        require(msg.value >= 0.001 ether, "Not enough ether");
         require(isAminal[aminalOne] && isAminal[aminalTwo], "Invalid Aminal addresses");
 
         AminalContract aminal1 = AminalContract(payable(aminalOne));
