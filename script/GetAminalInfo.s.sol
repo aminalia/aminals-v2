@@ -21,7 +21,7 @@ contract GetAminalInfo is Script {
         console.log("Total Aminals:", factory.totalAminals());
         console.log("Gene Auction:", address(factory.geneAuction()));
         console.log("Proposals:", address(factory.proposals()));
-        console.log("Genes NFT:", address(factory.genesNFT()));
+        console.log("Genes NFT:", address(factory.genes()));
 
         console.log("\n=== INDIVIDUAL AMINALS ===");
 
@@ -55,7 +55,7 @@ contract GetAminalInfo is Script {
 
         console.log("\n=== GENE NFT SYSTEM ===");
         console.log("Note: Traits are now managed through the Gene NFT system");
-        console.log("Anyone can create Gene NFTs for traits through the GeneNFTFactory");
+        console.log("Anyone can create Gene NFTs for traits through the GeneRegistry");
         console.log("Traits are selected through love-based voting in gene auctions");
     }
 }

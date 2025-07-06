@@ -83,7 +83,7 @@ export const aminalAbi = [
     inputs: [
       {
         name: 'params',
-        internalType: 'struct GeneBasedDescriptor.TokenURIParams',
+        internalType: 'struct GeneRenderer.TokenURIParams',
         type: 'tuple',
         components: [
           { name: 'name', internalType: 'string', type: 'string' },
@@ -146,7 +146,7 @@ export const aminalAbi = [
     inputs: [],
     name: 'geneFactory',
     outputs: [
-      { name: '', internalType: 'contract GeneNFTFactory', type: 'address' },
+      { name: '', internalType: 'contract GeneRegistry', type: 'address' },
     ],
     stateMutability: 'view',
   },
@@ -160,8 +160,8 @@ export const aminalAbi = [
   {
     type: 'function',
     inputs: [],
-    name: 'genesNFT',
-    outputs: [{ name: '', internalType: 'contract GenesNFT', type: 'address' }],
+    name: 'Genes',
+    outputs: [{ name: '', internalType: 'contract Genes', type: 'address' }],
     stateMutability: 'view',
   },
   {
@@ -658,7 +658,7 @@ export const aminalAbi = [
   { type: 'error', inputs: [], name: 'NotEnoughEther' },
   { type: 'error', inputs: [], name: 'NotEnoughLove' },
   { type: 'error', inputs: [], name: 'NotRegisteredSkill' },
-] as const
+] as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // AminalFactory
@@ -695,8 +695,8 @@ export const aminalFactoryAbi = [
   {
     type: 'function',
     inputs: [],
-    name: 'genesNFT',
-    outputs: [{ name: '', internalType: 'contract GenesNFT', type: 'address' }],
+    name: 'Genes',
+    outputs: [{ name: '', internalType: 'contract Genes', type: 'address' }],
     stateMutability: 'view',
   },
   {
@@ -743,7 +743,7 @@ export const aminalFactoryAbi = [
     inputs: [
       { name: '_geneAuction', internalType: 'address', type: 'address' },
       { name: '_aminalProposals', internalType: 'address', type: 'address' },
-      { name: '_genesNFT', internalType: 'address', type: 'address' },
+      { name: '_Genes', internalType: 'address', type: 'address' },
     ],
     name: 'initialize',
     outputs: [],
@@ -968,15 +968,15 @@ export const aminalFactoryAbi = [
     ],
     name: 'OwnershipTransferred',
   },
-] as const
+] as const;
 
 export const aminalFactoryAddress =
-  '0x82583ad09b5F685F927E490f13a65e6627DD59b0' as const
+  '0x82583ad09b5F685F927E490f13a65e6627DD59b0' as const;
 
 export const aminalFactoryConfig = {
   address: aminalFactoryAddress,
   abi: aminalFactoryAbi,
-} as const
+} as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GeneAuction
@@ -986,7 +986,7 @@ export const geneAuctionAbi = [
   {
     type: 'constructor',
     inputs: [
-      { name: '_genesNFT', internalType: 'address', type: 'address' },
+      { name: '_Genes', internalType: 'address', type: 'address' },
       { name: '_geneFactory', internalType: 'address', type: 'address' },
     ],
     stateMutability: 'nonpayable',
@@ -1077,15 +1077,15 @@ export const geneAuctionAbi = [
     inputs: [],
     name: 'geneFactory',
     outputs: [
-      { name: '', internalType: 'contract GeneNFTFactory', type: 'address' },
+      { name: '', internalType: 'contract GeneRegistry', type: 'address' },
     ],
     stateMutability: 'view',
   },
   {
     type: 'function',
     inputs: [],
-    name: 'genesNFT',
-    outputs: [{ name: '', internalType: 'contract GenesNFT', type: 'address' }],
+    name: 'Genes',
+    outputs: [{ name: '', internalType: 'contract Genes', type: 'address' }],
     stateMutability: 'view',
   },
   {
@@ -1572,21 +1572,21 @@ export const geneAuctionAbi = [
   { type: 'error', inputs: [], name: 'VotingAlreadySettled' },
   { type: 'error', inputs: [], name: 'VotingNotActive' },
   { type: 'error', inputs: [], name: 'VotingNotEnded' },
-] as const
+] as const;
 
 export const geneAuctionAddress =
-  '0xB32868A1Ccd5B4541A1751251C3663127908E460' as const
+  '0xB32868A1Ccd5B4541A1751251C3663127908E460' as const;
 
 export const geneAuctionConfig = {
   address: geneAuctionAddress,
   abi: geneAuctionAbi,
-} as const
+} as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// GenesNFT
+// Genes
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const genesNftAbi = [
+export const GenesAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
   {
     type: 'function',
@@ -1930,12 +1930,12 @@ export const genesNftAbi = [
   },
   { type: 'error', inputs: [], name: 'OnlyFactory' },
   { type: 'error', inputs: [], name: 'OnlyNFTOwner' },
-] as const
+] as const;
 
-export const genesNftAddress =
-  '0x4a1C11060Bde95b957b852c81B4453a35470912B' as const
+export const GenesAddress =
+  '0x4a1C11060Bde95b957b852c81B4453a35470912B' as const;
 
-export const genesNftConfig = {
-  address: genesNftAddress,
-  abi: genesNftAbi,
-} as const
+export const GenesConfig = {
+  address: GenesAddress,
+  abi: GenesAbi,
+} as const;

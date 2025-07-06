@@ -81,8 +81,8 @@ export class AminalFactory extends Entity {
     this.set("geneAuction", Value.fromBytes(value));
   }
 
-  get genesNFT(): Bytes {
-    let value = this.get("genesNFT");
+  get genes(): Bytes {
+    let value = this.get("genes");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -90,8 +90,8 @@ export class AminalFactory extends Entity {
     }
   }
 
-  set genesNFT(value: Bytes) {
-    this.set("genesNFT", Value.fromBytes(value));
+  set genes(value: Bytes) {
+    this.set("genes", Value.fromBytes(value));
   }
 
   get loveVRGDA(): Bytes {

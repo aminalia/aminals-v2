@@ -8,8 +8,8 @@ import {AminalVRGDA} from "src/utils/AminalVRGDA.sol";
 import {IAminalStructs} from "src/interfaces/IAminalStructs.sol";
 import {GeneAuction} from "src/genes/GeneAuction.sol";
 import {AminalProposals} from "src/proposals/AminalProposals.sol";
-import {GenesNFT} from "src/genes/GenesNFT.sol";
-import {GeneNFTFactory} from "src/genes/GeneNFTFactory.sol";
+import {Genes} from "src/genes/Genes.sol";
+import {GeneRegistry} from "src/genes/GeneRegistry.sol";
 
 contract AminalVRGDATest is Test, IAminalStructs {
     AminalFactory public factory;
@@ -17,26 +17,26 @@ contract AminalVRGDATest is Test, IAminalStructs {
     AminalVRGDA public vrgda;
     GeneAuction public geneAuction;
     AminalProposals public proposals;
-    GenesNFT public genesNFT;
-    GeneNFTFactory public geneFactory;
+    Genes public genes;
+    GeneRegistry public geneFactory;
 
     address public user1 = makeAddr("user1");
     address public user2 = makeAddr("user2");
 
     function setUp() public {
         // Deploy real dependencies
-        genesNFT = new GenesNFT();
-        geneFactory = new GeneNFTFactory(address(genesNFT));
-        geneAuction = new GeneAuction(address(genesNFT), address(geneFactory));
+        genes = new Genes();
+        geneFactory = new GeneRegistry(address(genes));
+        geneAuction = new GeneAuction(address(genes), address(geneFactory));
         proposals = new AminalProposals();
 
         // Deploy factory
         factory = new AminalFactory();
-        factory.initialize(address(geneAuction), address(proposals), address(genesNFT));
+        factory.initialize(address(geneAuction), address(proposals), address(genes));
 
         // Setup contracts properly
-        genesNFT.setup(address(factory));
-        genesNFT.setFactory(address(geneFactory));
+        genes.setup(address(factory));
+        genes.setFactory(address(geneFactory));
         geneAuction.setup(address(factory), address(factory));
         proposals.setup(address(factory));
         factory.setup(); // This deploys the VRGDA

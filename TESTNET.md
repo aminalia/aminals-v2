@@ -5,20 +5,22 @@ This guide provides instructions for deploying the Aminals ecosystem to testnet 
 ## Prerequisites
 
 1. **Environment Setup**
+
    ```bash
    # Install Foundry if not already installed
    curl -L https://foundry.paradigm.xyz | bash
    foundryup
-   
+
    # Install dependencies
    forge install
    ```
 
 2. **Configure Environment Variables**
+
    ```bash
    # Copy environment template
    cp .env.example .env
-   
+
    # Edit .env with your values
    PRIVATE_KEY=your_private_key_here
    ETHERSCAN_API_KEY=your_etherscan_api_key_here
@@ -53,7 +55,8 @@ forge script script/AminalScript.s.sol:AminalScript --chain-id 17000 --rpc-url "
 ### Step 2: Verify Contract Deployment
 
 After deployment, check the contract addresses from the deployment logs. The AminalScript automatically:
-- Deploys all core contracts (Factory, GenesNFT, GeneAuction, Proposals)
+
+- Deploys all core contracts (Factory, Genes, GeneAuction, Proposals)
 - Initializes all contracts with proper configuration
 - Deploys sample skills (Move2D, MoveTwice)
 - Mints initial Gene NFTs using InitialGenesMinter
@@ -62,7 +65,7 @@ After deployment, check the contract addresses from the deployment logs. The Ami
 ```bash
 # Check deployment addresses from environment variables set by the script
 echo "Factory: $AMINAL_FACTORY_CONTRACT"
-echo "GenesNFT: $GENES_NFT_CONTRACT"
+echo "Genes: $GENES_NFT_CONTRACT"
 echo "GeneAuction: $GENE_AUCTION_CONTRACT"
 echo "Proposals: $AMINAL_PROPOSALS_CONTRACT"
 ```
@@ -81,14 +84,16 @@ forge test --fork-url sepolia --fork-block-number latest
 After deployment, update this section with the deployed contract addresses:
 
 ### Sepolia Testnet
+
 - **AminalFactory**: `0x...`
-- **GenesNFT**: `0x...`
+- **Genes**: `0x...`
 - **GeneAuction**: `0x...`
 - **AminalProposals**: `0x...`
 
 ### Base Sepolia
+
 - **AminalFactory**: `0x...`
-- **GenesNFT**: `0x...`
+- **Genes**: `0x...`
 - **GeneAuction**: `0x...`
 - **AminalProposals**: `0x...`
 
@@ -132,6 +137,7 @@ The following scripts are available in the `script/` directory:
 The deployment script creates 16 initial Gene NFTs with these themes:
 
 **Blue/Purple Theme (IDs 0-7):**
+
 - BACK: Purple gradient background
 - TAIL: Blue flowing tail design
 - ARM: Blue wing-like arms
@@ -142,6 +148,7 @@ The deployment script creates 16 initial Gene NFTs with these themes:
 - MISC: White accessories
 
 **Red/Orange Theme (IDs 8-15):**
+
 - BACK: Teal gradient background
 - TAIL: Red flame-like tail
 - ARM: Red flowing arms
@@ -156,26 +163,29 @@ The deployment script creates 16 initial Gene NFTs with these themes:
 ### Basic Flow Test
 
 1. **Spawn Additional Aminals**
+
    ```bash
    # Use the existing spawn script
    AMINAL_FACTORY_CONTRACT=$FACTORY_ADDRESS forge script script/SpawnAminal.s.sol:SpawnAminal --rpc-url sepolia --broadcast
    ```
 
 2. **Feed an Aminal**
+
    ```bash
    # Use the existing feed script
    AMINAL_FACTORY_CONTRACT=$FACTORY_ADDRESS forge script script/FeedAminal.s.sol:FeedAminal --rpc-url sepolia --broadcast
-   
+
    # Or manually feed with cast
    AMINAL_ADDRESS=$(cast call $FACTORY_ADDRESS "getAminalByIndex(uint256)" 0 --rpc-url sepolia)
    cast send $AMINAL_ADDRESS "feed()" --value 0.01ether --rpc-url sepolia --private-key $PRIVATE_KEY
    ```
 
 3. **Check Love and Energy**
+
    ```bash
    # Check energy
    cast call $AMINAL_ADDRESS "getEnergy()" --rpc-url sepolia
-   
+
    # Check love
    cast call $AMINAL_ADDRESS "getTotalLove()" --rpc-url sepolia
    ```
@@ -183,33 +193,36 @@ The deployment script creates 16 initial Gene NFTs with these themes:
 ### Advanced Testing
 
 4. **Create Gene NFTs**
+
    ```bash
    # The deployment script automatically creates initial Gene NFTs (IDs 0-15)
-   # To create additional Gene NFTs, you need to deploy GeneNFTFactory first
+   # To create additional Gene NFTs, you need to deploy GeneRegistry first
    # For now, initial genes are created via InitialGenesMinter during deployment
-   
+
    # Check existing Gene NFTs
    cast call $GENES_NFT_CONTRACT "totalSupply()" --rpc-url sepolia
    cast call $GENES_NFT_CONTRACT "tokenURI(uint256)" 0 --rpc-url sepolia
    ```
 
 5. **Test Breeding**
+
    ```bash
    # Set breeding consent
    cast send $AMINAL_ADDRESS "setBreedableWith(address,bool)" $PARTNER_ADDRESS true --rpc-url sepolia --private-key $PRIVATE_KEY
-   
+
    # Initiate breeding
    cast send $FACTORY_ADDRESS "breed(address,address)" $AMINAL_ADDRESS $PARTNER_ADDRESS --rpc-url sepolia --private-key $PRIVATE_KEY
    ```
 
 6. **Use Skills**
+
    ```bash
    # Deploy a skill contract using the existing script
    AMINAL_FACTORY_CONTRACT=$FACTORY_ADDRESS forge script script/DeploySkill.s.sol:DeploySkill --rpc-url sepolia --broadcast
-   
+
    # Use the skill with call skill script
    AMINAL_FACTORY_CONTRACT=$FACTORY_ADDRESS forge script script/CallSkill.s.sol:CallSkill --rpc-url sepolia --broadcast
-   
+
    # Or manually use cast
    cast send $AMINAL_ADDRESS "callSkill(address,bytes)" $SKILL_ADDRESS "0x..." --value 0.001ether --rpc-url sepolia --private-key $PRIVATE_KEY
    ```
@@ -219,10 +232,12 @@ The deployment script creates 16 initial Gene NFTs with these themes:
 ### Common Issues
 
 1. **Gas Estimation Failures**
+
    - Increase gas limit: `--gas-limit 3000000`
    - Check contract state and prerequisites
 
 2. **Verification Failures**
+
    - Ensure constructor args match exactly
    - Wait for block confirmations before verifying
 
@@ -248,25 +263,27 @@ cast logs --address $CONTRACT_ADDRESS --rpc-url sepolia
 After testnet deployment, update the frontend configuration:
 
 1. **Update Contract Addresses**
+
    ```typescript
    // frontend/src/contracts/addresses.ts
    export const TESTNET_ADDRESSES = {
      sepolia: {
-       factory: '0x...',
-       genesNFT: '0x...',
+       factory: "0x...",
+       Genes: "0x...",
        // ... other addresses
-     }
+     },
    };
    ```
 
 2. **Configure Network**
+
    ```typescript
    // frontend/src/config/networks.ts
    export const SEPOLIA_CONFIG = {
      chainId: 11155111,
-     name: 'Sepolia',
-     rpcUrl: 'https://rpc.sepolia.org',
-     blockExplorer: 'https://sepolia.etherscan.io',
+     name: "Sepolia",
+     rpcUrl: "https://rpc.sepolia.org",
+     blockExplorer: "https://sepolia.etherscan.io",
    };
    ```
 
@@ -315,10 +332,10 @@ cast call $GENES_NFT_CONTRACT "tokenURI(uint256)" 0 --rpc-url sepolia
 
 ## Advanced Gene NFT System
 
-The current deployment uses `InitialGenesMinter` for initial Gene NFTs. For a full permissionless trait system, you can deploy the `GeneNFTFactory`:
+The current deployment uses `InitialGenesMinter` for initial Gene NFTs. For a full permissionless trait system, you can deploy the `GeneRegistry`:
 
 ```bash
-# Deploy GeneNFTFactory (optional - for permissionless trait creation)
+# Deploy GeneRegistry (optional - for permissionless trait creation)
 forge script script/DeployGeneFactory.s.sol:DeployGeneFactory --rpc-url sepolia --broadcast
 ```
 
@@ -329,7 +346,8 @@ Once deployed, users can create their own Gene NFTs:
 cast send $GENE_FACTORY_ADDRESS "createGene(string,uint8)" "<svg>...</svg>" 5 --value 0.001ether --rpc-url sepolia --private-key $PRIVATE_KEY
 ```
 
-The GeneNFTFactory provides:
+The GeneRegistry provides:
+
 - **Permissionless Trait Creation**: Anyone can create Gene NFTs for traits
 - **Registry System**: Tracks which Gene NFTs came from the factory
 - **Fee Protection**: Prevents spam with minimum creation fee
@@ -342,7 +360,7 @@ After successful testnet deployment:
 1. **Conduct User Testing**: Invite community to test on testnet
 2. **Performance Testing**: Monitor gas usage and optimization opportunities
 3. **Security Audit**: Prepare for security audit of deployed contracts
-4. **Deploy GeneNFTFactory**: Enable permissionless trait creation
+4. **Deploy GeneRegistry**: Enable permissionless trait creation
 5. **Mainnet Preparation**: Create mainnet deployment scripts and checklist
 
 ---

@@ -107,7 +107,7 @@
         {
           "name": "",
           "type": "address",
-          "internalType": "contract GenesNFT"
+          "internalType": "contract Genes"
         }
       ],
       "stateMutability": "view"

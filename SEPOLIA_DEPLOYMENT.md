@@ -1,11 +1,13 @@
 # Sepolia Deployment Guide
 
 ## Overview
+
 This guide will help you deploy the optimized Aminals subgraph to Sepolia testnet.
 
 ## Prerequisites
 
 1. **Graph CLI and Authentication**
+
    ```bash
    npm install -g @graphprotocol/graph-cli
    graph auth --studio <YOUR_DEPLOY_KEY>
@@ -32,6 +34,7 @@ forge script script/AminalScript.s.sol --rpc-url $RPC_URL --private-key $PRIVATE
 ## Step 2: Update Subgraph Configuration
 
 ### Current Configuration Status:
+
 - ✅ Network updated to `sepolia`
 - ✅ **COMPLETED**: Contract addresses updated to Sepolia addresses
 - ✅ **COMPLETED**: Start blocks updated to actual deployment block (8700538)
@@ -39,23 +42,24 @@ forge script script/AminalScript.s.sol --rpc-url $RPC_URL --private-key $PRIVATE
 ### Contract Addresses (UPDATED):
 
 1. **Contract Addresses** (updated in `subgraph.yaml`):
+
    ```yaml
    # AminalFactory address
    address: "0x42fa457b1a742c5d7330f24916c60985448b8e8f"  # ✅ SEPOLIA ADDRESS
-   
-   # GeneAuction address  
+
+   # GeneAuction address
    address: "0x9c0ad5e98b4a3dcdaef1a2162172c9ac4391ac1f"  # ✅ SEPOLIA ADDRESS
-   
-   # GenesNFT address
+
+   # Genes address
    address: "0xbddca7fae18cba8fc457a8b69338d404d443cb0d"  # ✅ SEPOLIA ADDRESS
-   
-   # GeneNFTFactory address - COMMENTED OUT (not deployed yet)
+
+   # GeneRegistry address - COMMENTED OUT (not deployed yet)
    # address: "0x41063967aa8337ab89a2f69ca8ff54ba13ce1f06"  # PLACEHOLDER
    ```
 
 2. **Start Blocks** (updated to actual deployment blocks):
    ```yaml
-   startBlock: 8700538  # ✅ ACTUAL DEPLOYMENT BLOCK
+   startBlock: 8700538 # ✅ ACTUAL DEPLOYMENT BLOCK
    ```
 
 ## Step 3: Build and Deploy Subgraph
@@ -74,13 +78,15 @@ npm run deploy   # ⚠️  REQUIRES AUTHENTICATION
 ```
 
 ### Build Status:
+
 - ✅ **COMPLETED**: Code generation successful
 - ✅ **COMPLETED**: Build successful (Build ID: `QmZiYq3SDeU8oJi9ovGpYGsGgiCdKBfhq1z8xEpEDdSmeo`)
 - ✅ **COMPLETED**: IPFS upload successful
-- ⚠️  **PENDING**: Deployment requires The Graph Studio authentication
+- ⚠️ **PENDING**: Deployment requires The Graph Studio authentication
 
 ### To Complete Deployment:
-1. **Authenticate with The Graph Studio**: 
+
+1. **Authenticate with The Graph Studio**:
    ```bash
    npx graph auth --studio <YOUR_DEPLOY_KEY>
    ```
@@ -94,6 +100,7 @@ npm run deploy   # ⚠️  REQUIRES AUTHENTICATION
 Update the frontend to use the new Sepolia subgraph:
 
 1. **Update GraphQL endpoint** in `frontend/src/resources/traits.ts`:
+
    ```typescript
    // Replace the URL with your new Sepolia subgraph endpoint
    const response = await fetch('https://api.studio.thegraph.com/query/[YOUR_USER_ID]/[SEPOLIA_SUBGRAPH_NAME]/version/latest'

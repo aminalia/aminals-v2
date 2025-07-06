@@ -84,6 +84,32 @@ export class BreedableSet__Params {
   }
 }
 
+export class EnergyLost extends ethereum.Event {
+  get params(): EnergyLost__Params {
+    return new EnergyLost__Params(this);
+  }
+}
+
+export class EnergyLost__Params {
+  _event: EnergyLost;
+
+  constructor(event: EnergyLost) {
+    this._event = event;
+  }
+
+  get user(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get remainingEnergy(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+}
+
 export class EnergyTransferred extends ethereum.Event {
   get params(): EnergyTransferred__Params {
     return new EnergyTransferred__Params(this);
@@ -148,6 +174,32 @@ export class FeedAminal__Params {
   }
 }
 
+export class LoveConsumed extends ethereum.Event {
+  get params(): LoveConsumed__Params {
+    return new LoveConsumed__Params(this);
+  }
+}
+
+export class LoveConsumed__Params {
+  _event: LoveConsumed;
+
+  constructor(event: LoveConsumed) {
+    this._event = event;
+  }
+
+  get user(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get remainingLove(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+}
+
 export class SkillCall extends ethereum.Event {
   get params(): SkillCall__Params {
     return new SkillCall__Params(this);
@@ -171,6 +223,36 @@ export class SkillCall__Params {
 
   get squeakCost(): BigInt {
     return this._event.parameters[2].value.toBigInt();
+  }
+}
+
+export class SkillUsed extends ethereum.Event {
+  get params(): SkillUsed__Params {
+    return new SkillUsed__Params(this);
+  }
+}
+
+export class SkillUsed__Params {
+  _event: SkillUsed;
+
+  constructor(event: SkillUsed) {
+    this._event = event;
+  }
+
+  get user(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get cost(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get target(): Address {
+    return this._event.parameters[2].value.toAddress();
+  }
+
+  get selector(): Bytes {
+    return this._event.parameters[3].value.toBytes();
   }
 }
 
@@ -610,14 +692,14 @@ export class Aminal extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
-  genesNFT(): Address {
-    let result = super.call("genesNFT", "genesNFT():(address)", []);
+  genes(): Address {
+    let result = super.call("genes", "genes():(address)", []);
 
     return result[0].toAddress();
   }
 
-  try_genesNFT(): ethereum.CallResult<Address> {
-    let result = super.tryCall("genesNFT", "genesNFT():(address)", []);
+  try_genes(): ethereum.CallResult<Address> {
+    let result = super.tryCall("genes", "genes():(address)", []);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -1176,40 +1258,6 @@ export class ConstructorCall_visualsStruct extends ethereum.Tuple {
   }
 }
 
-export class CallSkillCall extends ethereum.Call {
-  get inputs(): CallSkillCall__Inputs {
-    return new CallSkillCall__Inputs(this);
-  }
-
-  get outputs(): CallSkillCall__Outputs {
-    return new CallSkillCall__Outputs(this);
-  }
-}
-
-export class CallSkillCall__Inputs {
-  _call: CallSkillCall;
-
-  constructor(call: CallSkillCall) {
-    this._call = call;
-  }
-
-  get skillAddress(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
-  get data(): Bytes {
-    return this._call.inputValues[1].value.toBytes();
-  }
-}
-
-export class CallSkillCall__Outputs {
-  _call: CallSkillCall;
-
-  constructor(call: CallSkillCall) {
-    this._call = call;
-  }
-}
-
 export class DisableBreedableWithCall extends ethereum.Call {
   get inputs(): DisableBreedableWithCall__Inputs {
     return new DisableBreedableWithCall__Inputs(this);
@@ -1432,6 +1480,40 @@ export class TransferEnergyToOwnerCall__Outputs {
   _call: TransferEnergyToOwnerCall;
 
   constructor(call: TransferEnergyToOwnerCall) {
+    this._call = call;
+  }
+}
+
+export class UseSkillCall extends ethereum.Call {
+  get inputs(): UseSkillCall__Inputs {
+    return new UseSkillCall__Inputs(this);
+  }
+
+  get outputs(): UseSkillCall__Outputs {
+    return new UseSkillCall__Outputs(this);
+  }
+}
+
+export class UseSkillCall__Inputs {
+  _call: UseSkillCall;
+
+  constructor(call: UseSkillCall) {
+    this._call = call;
+  }
+
+  get target(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get data(): Bytes {
+    return this._call.inputValues[1].value.toBytes();
+  }
+}
+
+export class UseSkillCall__Outputs {
+  _call: UseSkillCall;
+
+  constructor(call: UseSkillCall) {
     this._call = call;
   }
 }

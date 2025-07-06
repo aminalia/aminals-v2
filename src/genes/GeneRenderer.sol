@@ -5,10 +5,10 @@ pragma solidity ^0.8.20;
 
 import {Base64} from "src/utils/Base64.sol";
 import {IAminalStructs} from "src/interfaces/IAminalStructs.sol";
-import {GenesNFT} from "src/genes/GenesNFT.sol";
-import {GeneNFTFactory} from "src/genes/GeneNFTFactory.sol";
+import {Genes} from "src/genes/Genes.sol";
+import {GeneRegistry} from "src/genes/GeneRegistry.sol";
 
-abstract contract GeneBasedDescriptor is IAminalStructs {
+abstract contract GeneRenderer is IAminalStructs {
     uint8 private constant _ADDRESS_LENGTH = 20;
     bytes16 private constant _SYMBOLS = "0123456789abcdef";
 
@@ -21,12 +21,12 @@ abstract contract GeneBasedDescriptor is IAminalStructs {
     }
 
     /// @notice Gene NFT contracts
-    GenesNFT public genesNFT;
-    GeneNFTFactory public geneFactory;
+    Genes public genes;
+    GeneRegistry public geneFactory;
 
-    constructor(address _genesNFT, address _geneFactory) {
-        genesNFT = GenesNFT(_genesNFT);
-        geneFactory = GeneNFTFactory(_geneFactory);
+    constructor(address _Genes, address _geneFactory) {
+        genes = Genes(_Genes);
+        geneFactory = GeneRegistry(_geneFactory);
     }
 
     /**
@@ -113,7 +113,7 @@ abstract contract GeneBasedDescriptor is IAminalStructs {
         if (geneId == 0) return ""; // No trait set
 
         // Try to get gene info, but handle case where Gene NFT doesn't exist
-        try genesNFT.getGeneInfo(geneId) returns (string memory svg, VisualsCat) {
+        try genes.getGeneInfo(geneId) returns (string memory svg, VisualsCat) {
             return svg;
         } catch {
             // Gene NFT doesn't exist, return empty string
@@ -154,7 +154,7 @@ abstract contract GeneBasedDescriptor is IAminalStructs {
 
                 // Try to get creator address, but handle case where Gene NFT doesn't exist
                 address creator = address(0);
-                try genesNFT.ownerOf(geneId) returns (address owner) {
+                try genes.ownerOf(geneId) returns (address owner) {
                     creator = owner;
                 } catch {
                     // Gene NFT doesn't exist, use zero address

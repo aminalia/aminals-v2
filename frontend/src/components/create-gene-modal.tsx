@@ -1,14 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { TRAIT_CATEGORIES } from '@/constants/trait-categories';
+import { useEffect, useState } from 'react';
+import {
+  useAccount,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from 'wagmi';
+import { SimpleSVGBuilder } from './simple-svg-builder';
 import { Button } from './ui/button';
+import { Card } from './ui/card';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Card } from './ui/card';
-import { SimpleSVGBuilder } from './simple-svg-builder';
-import { TRAIT_CATEGORIES } from '@/constants/trait-categories';
-// import { geneNftFactoryAbi, geneNftFactoryAddress } from '@/contracts/generated'; // Commented out - GeneNFTFactory not deployed to Sepolia
+// import { GeneRegistryAbi, GeneRegistryAddress } from '@/contracts/generated'; // Commented out - GeneRegistry not deployed to Sepolia
 import toast from 'react-hot-toast';
 
 interface CreateGeneModalProps {
@@ -22,29 +26,42 @@ function CreateGeneModal({ isOpen, onClose, onSuccess }: CreateGeneModalProps) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState<number>(0);
-  const [svg, setSvg] = useState('<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">\n  <circle cx="100" cy="100" r="50" fill="#ff6b6b"/>\n</svg>');
+  const [svg, setSvg] = useState(
+    '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">\n  <circle cx="100" cy="100" r="50" fill="#ff6b6b"/>\n</svg>'
+  );
   const [isCreating, setIsCreating] = useState(false);
 
-  const { writeContract, data: hash, isPending, error: writeError } = useWriteContract();
-  
-  const { isLoading: isConfirming, isSuccess: isConfirmed, error: receiptError } = useWaitForTransactionReceipt({
+  const {
+    writeContract,
+    data: hash,
+    isPending,
+    error: writeError,
+  } = useWriteContract();
+
+  const {
+    isLoading: isConfirming,
+    isSuccess: isConfirmed,
+    error: receiptError,
+  } = useWaitForTransactionReceipt({
     hash,
   });
 
   // Handle transaction success
   useEffect(() => {
     if (isConfirmed && isCreating) {
-      toast.success('🧬 Gene NFT created successfully!', { 
+      toast.success('🧬 Gene NFT created successfully!', {
         id: 'create-gene-tx',
         duration: 5000,
       });
-      
+
       setIsCreating(false);
       // Reset form
       setName('');
       setDescription('');
       setCategory(0);
-      setSvg('<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">\n  <circle cx="100" cy="100" r="50" fill="#ff6b6b"/>\n</svg>');
+      setSvg(
+        '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">\n  <circle cx="100" cy="100" r="50" fill="#ff6b6b"/>\n</svg>'
+      );
       onSuccess?.();
       onClose();
     }
@@ -54,7 +71,9 @@ function CreateGeneModal({ isOpen, onClose, onSuccess }: CreateGeneModalProps) {
   useEffect(() => {
     if (writeError) {
       console.error('Write contract error:', writeError);
-      toast.error('Failed to create gene. Please try again.', { id: 'create-gene-tx' });
+      toast.error('Failed to create gene. Please try again.', {
+        id: 'create-gene-tx',
+      });
       setIsCreating(false);
     }
   }, [writeError]);
@@ -63,7 +82,9 @@ function CreateGeneModal({ isOpen, onClose, onSuccess }: CreateGeneModalProps) {
   useEffect(() => {
     if (receiptError) {
       console.error('Transaction receipt error:', receiptError);
-      toast.error('Transaction failed. Please try again.', { id: 'create-gene-tx' });
+      toast.error('Transaction failed. Please try again.', {
+        id: 'create-gene-tx',
+      });
       setIsCreating(false);
     }
   }, [receiptError]);
@@ -73,36 +94,40 @@ function CreateGeneModal({ isOpen, onClose, onSuccess }: CreateGeneModalProps) {
     if (isPending) {
       toast.loading('Preparing transaction...', { id: 'create-gene-tx' });
     } else if (isConfirming && hash) {
-      toast.loading('Transaction submitted, waiting for confirmation...', { id: 'create-gene-tx' });
+      toast.loading('Transaction submitted, waiting for confirmation...', {
+        id: 'create-gene-tx',
+      });
     }
   }, [isPending, isConfirming, hash]);
 
   const handleCreate = () => {
-    // GeneNFTFactory not deployed to Sepolia yet
-    toast.error('Gene creation is not available yet on Sepolia. GeneNFTFactory contract needs to be deployed.');
+    // GeneRegistry not deployed to Sepolia yet
+    toast.error(
+      'Gene creation is not available yet on Sepolia. GeneRegistry contract needs to be deployed.'
+    );
     setIsCreating(false);
-    
-    // TODO: Uncomment when GeneNFTFactory is deployed to Sepolia
+
+    // TODO: Uncomment when GeneRegistry is deployed to Sepolia
     // if (!address) {
     //   toast.error('Please connect your wallet first');
     //   return;
     // }
-    // 
+    //
     // if (!name.trim()) {
     //   toast.error('Please enter a name for your gene');
     //   return;
     // }
-    // 
+    //
     // if (!svg.trim() || svg.includes('<!-- Your SVG content here -->')) {
     //   toast.error('Please create or paste an SVG design');
     //   return;
     // }
     //
     // setIsCreating(true);
-    // 
+    //
     // writeContract({
-    //   address: geneNftFactoryAddress,
-    //   abi: geneNftFactoryAbi,
+    //   address: GeneRegistryAddress,
+    //   abi: GeneRegistryAbi,
     //   functionName: 'createGene',
     //   args: [
     //     svg, // svg
@@ -148,7 +173,10 @@ function CreateGeneModal({ isOpen, onClose, onSuccess }: CreateGeneModalProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor="gene-description" className="text-sm font-medium">
+                  <Label
+                    htmlFor="gene-description"
+                    className="text-sm font-medium"
+                  >
                     Description (Optional)
                   </Label>
                   <textarea
@@ -161,7 +189,10 @@ function CreateGeneModal({ isOpen, onClose, onSuccess }: CreateGeneModalProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor="gene-category" className="text-sm font-medium">
+                  <Label
+                    htmlFor="gene-category"
+                    className="text-sm font-medium"
+                  >
                     Trait Category *
                   </Label>
                   <select
@@ -170,11 +201,13 @@ function CreateGeneModal({ isOpen, onClose, onSuccess }: CreateGeneModalProps) {
                     onChange={(e) => setCategory(Number(e.target.value))}
                     className="mt-1 w-full px-3 py-2 border border-gray-200 rounded-md text-sm"
                   >
-                    {Object.entries(TRAIT_CATEGORIES).map(([key, { name, emoji }]) => (
-                      <option key={key} value={key}>
-                        {emoji} {name}
-                      </option>
-                    ))}
+                    {Object.entries(TRAIT_CATEGORIES).map(
+                      ([key, { name, emoji }]) => (
+                        <option key={key} value={key}>
+                          {emoji} {name}
+                        </option>
+                      )
+                    )}
                   </select>
                   <p className="text-xs text-gray-500 mt-1">
                     Choose which part of the Aminal this gene affects
@@ -186,13 +219,18 @@ function CreateGeneModal({ isOpen, onClose, onSuccess }: CreateGeneModalProps) {
                   <Label className="text-sm font-medium">Preview</Label>
                   <div className="mt-2 p-4 border border-gray-200 rounded-lg bg-gray-50">
                     <div className="flex items-center justify-center">
-                      <div 
+                      <div
                         className="w-24 h-24 border border-gray-300 rounded bg-white flex items-center justify-center"
                         dangerouslySetInnerHTML={{ __html: svg }}
                       />
                     </div>
                     <div className="text-center mt-2 text-sm text-gray-600">
-                      {name || 'Unnamed Gene'} • {TRAIT_CATEGORIES[category as keyof typeof TRAIT_CATEGORIES]?.name}
+                      {name || 'Unnamed Gene'} •{' '}
+                      {
+                        TRAIT_CATEGORIES[
+                          category as keyof typeof TRAIT_CATEGORIES
+                        ]?.name
+                      }
                     </div>
                   </div>
                 </div>
@@ -203,7 +241,10 @@ function CreateGeneModal({ isOpen, onClose, onSuccess }: CreateGeneModalProps) {
                     <span className="text-amber-600">⚠️</span>
                     <div className="text-sm text-amber-800">
                       <p className="font-medium">Creation Fee: 0.001 ETH</p>
-                      <p className="text-xs">This fee helps maintain the Gene NFT system and prevents spam.</p>
+                      <p className="text-xs">
+                        This fee helps maintain the Gene NFT system and prevents
+                        spam.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -213,7 +254,13 @@ function CreateGeneModal({ isOpen, onClose, onSuccess }: CreateGeneModalProps) {
                   <div className="flex gap-3">
                     <Button
                       onClick={handleCreate}
-                      disabled={!address || !svg.trim() || !name.trim() || isPending || isConfirming}
+                      disabled={
+                        !address ||
+                        !svg.trim() ||
+                        !name.trim() ||
+                        isPending ||
+                        isConfirming
+                      }
                       className="flex-1"
                     >
                       {isPending || isConfirming ? (
@@ -229,13 +276,13 @@ function CreateGeneModal({ isOpen, onClose, onSuccess }: CreateGeneModalProps) {
                       Cancel
                     </Button>
                   </div>
-                  
+
                   {!address && (
                     <p className="text-sm text-red-600 mt-2">
                       Please connect your wallet to create a gene
                     </p>
                   )}
-                  
+
                   {hash && (
                     <p className="text-sm text-gray-600 mt-2">
                       Transaction: {hash.slice(0, 10)}...{hash.slice(-8)}
@@ -247,23 +294,33 @@ function CreateGeneModal({ isOpen, onClose, onSuccess }: CreateGeneModalProps) {
 
             {/* Right side - SVG Builder */}
             <div>
-              <SimpleSVGBuilder 
-                onSVGChange={setSvg}
-                initialSVG={svg}
-              />
+              <SimpleSVGBuilder onSVGChange={setSvg} initialSVG={svg} />
             </div>
           </div>
 
           {/* Tips */}
           <Card className="mt-6 p-4 bg-blue-50 border-blue-200">
             <div className="text-sm">
-              <h3 className="font-medium text-blue-900 mb-2">💡 Tips for Creating Great Genes</h3>
+              <h3 className="font-medium text-blue-900 mb-2">
+                💡 Tips for Creating Great Genes
+              </h3>
               <ul className="space-y-1 text-blue-800">
                 <li>• Use the SVG builder to create simple, clean designs</li>
-                <li>• Choose colors that work well with different Aminal combinations</li>
-                <li>• Keep designs simple - they&apos;ll be small when used on Aminals</li>
-                <li>• Consider how your trait will look alongside other traits</li>
-                <li>• You can edit the SVG code directly for advanced customization</li>
+                <li>
+                  • Choose colors that work well with different Aminal
+                  combinations
+                </li>
+                <li>
+                  • Keep designs simple - they&apos;ll be small when used on
+                  Aminals
+                </li>
+                <li>
+                  • Consider how your trait will look alongside other traits
+                </li>
+                <li>
+                  • You can edit the SVG code directly for advanced
+                  customization
+                </li>
               </ul>
             </div>
           </Card>

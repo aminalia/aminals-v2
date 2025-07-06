@@ -189,14 +189,18 @@ export function handleGeneVoteCast(event: GeneVoteCastEvent): void {
   vote.proposal = proposal.id;
   vote.voter = user.id;
   vote.isRemoveVote = false; // Regular vote
-  vote.loveAmount = event.params.voteWeight;
+  // Get user's voting power from contract since the event doesn't include it
+  let geneAuctionContract = GeneAuctionContract.bind(event.address);
+  let votingPowerResult = geneAuctionContract.try_getUserVotingPower(event.params.auctionId, event.params.voter);
+  let votingPower = votingPowerResult.reverted ? BigInt.fromI32(0) : votingPowerResult.value;
+  vote.loveAmount = votingPower;
   vote.blockNumber = event.block.number;
   vote.blockTimestamp = event.block.timestamp;
   vote.transactionHash = event.transaction.hash;
   vote.save();
 
   // Update proposal vote counts
-  proposal.loveVotes = proposal.loveVotes.plus(event.params.voteWeight);
+  proposal.loveVotes = proposal.loveVotes.plus(votingPower);
   proposal.save();
 
   log.info(
@@ -206,7 +210,7 @@ export function handleGeneVoteCast(event: GeneVoteCastEvent): void {
       event.params.geneId.toString(),
       event.params.category.toString(),
       event.params.voter.toHexString(),
-      event.params.voteWeight.toString(),
+      votingPower.toString(),
     ],
   );
 }
@@ -322,10 +326,15 @@ export function handleBulkVoteCast(event: BulkVoteCastEvent): void {
     user.save();
   }
 
+  // Get user's voting power from contract since the event doesn't include it
+  let geneAuctionContract = GeneAuctionContract.bind(event.address);
+  let votingPowerResult = geneAuctionContract.try_getUserVotingPower(event.params.auctionId, event.params.voter);
+  let votingPower = votingPowerResult.reverted ? BigInt.fromI32(0) : votingPowerResult.value;
+
   log.info("Bulk vote cast for auction {} by {} with total vote weight {}", [
     event.params.auctionId.toString(),
     event.params.voter.toHexString(),
-    event.params.totalVoteWeight.toString(),
+    votingPower.toString(),
   ]);
 
   // Note: Individual gene votes will be handled by handleGeneVoteCast events

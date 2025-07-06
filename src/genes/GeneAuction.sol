@@ -9,16 +9,16 @@ import {ReentrancyGuard} from "oz/security/ReentrancyGuard.sol";
 import {IAminalStructs} from "src/interfaces/IAminalStructs.sol";
 import {IAminalFactory} from "src/interfaces/IAminalFactory.sol";
 import {IAminal} from "src/interfaces/IAminal.sol";
-import {GenesNFT} from "src/genes/GenesNFT.sol";
-import {GeneNFTFactory} from "src/genes/GeneNFTFactory.sol";
+import {Genes} from "src/genes/Genes.sol";
+import {GeneRegistry} from "src/genes/GeneRegistry.sol";
 
 /**
  * @title GeneAuction
  * @dev Love-based voting system for Gene NFT trait selection with energy rewards to Gene NFT owners
  */
 contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard {
-    GenesNFT public genesNFT;
-    GeneNFTFactory public geneFactory;
+    Genes public genes;
+    GeneRegistry public geneFactory;
     address public aminalsContract;
     IAminalFactory public aminalFactory;
 
@@ -120,9 +120,9 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         _;
     }
 
-    constructor(address _genesNFT, address _geneFactory) {
-        genesNFT = GenesNFT(_genesNFT);
-        geneFactory = GeneNFTFactory(_geneFactory);
+    constructor(address _Genes, address _geneFactory) {
+        genes = Genes(_Genes);
+        geneFactory = GeneRegistry(_geneFactory);
     }
 
     function setup(address _aminalsContract, address _aminalFactory) external initializer onlyOwner {
@@ -532,7 +532,7 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
                     uint256 energyPerGene = (energyFromAminalOne + energyFromAminalTwo) / 8;
 
                     if (energyPerGene > 0) {
-                        address geneOwner = genesNFT.ownerOf(selectedGeneId);
+                        address geneOwner = genes.ownerOf(selectedGeneId);
 
                         // Deduct energy from parents (split equally)
                         try IAminal(aminalOneAddress).transferEnergyToOwner(energyPerGene / 2, geneOwner) {

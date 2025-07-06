@@ -164,7 +164,7 @@ export class Transfer__Params {
   }
 }
 
-export class GenesNFT__getGeneInfoResult {
+export class Genes__getGeneInfoResult {
   value0: string;
   value1: i32;
 
@@ -178,7 +178,7 @@ export class GenesNFT__getGeneInfoResult {
     map.set("value0", ethereum.Value.fromString(this.value0));
     map.set(
       "value1",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value1)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value1))
     );
     return map;
   }
@@ -192,9 +192,9 @@ export class GenesNFT__getGeneInfoResult {
   }
 }
 
-export class GenesNFT extends ethereum.SmartContract {
-  static bind(address: Address): GenesNFT {
-    return new GenesNFT("GenesNFT", address);
+export class Genes extends ethereum.SmartContract {
+  static bind(address: Address): Genes {
+    return new Genes("Genes", address);
   }
 
   aminalsNFT(): Address {
@@ -284,7 +284,7 @@ export class GenesNFT extends ethereum.SmartContract {
     let result = super.call(
       "geneVisualsCat",
       "geneVisualsCat(uint256):(uint8)",
-      [ethereum.Value.fromUnsignedBigInt(id)],
+      [ethereum.Value.fromUnsignedBigInt(id)]
     );
 
     return result[0].toI32();
@@ -294,7 +294,7 @@ export class GenesNFT extends ethereum.SmartContract {
     let result = super.tryCall(
       "geneVisualsCat",
       "geneVisualsCat(uint256):(uint8)",
-      [ethereum.Value.fromUnsignedBigInt(id)],
+      [ethereum.Value.fromUnsignedBigInt(id)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -315,7 +315,7 @@ export class GenesNFT extends ethereum.SmartContract {
     let result = super.tryCall(
       "getApproved",
       "getApproved(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(tokenId)],
+      [ethereum.Value.fromUnsignedBigInt(tokenId)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -324,33 +324,31 @@ export class GenesNFT extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  getGeneInfo(id: BigInt): GenesNFT__getGeneInfoResult {
+  getGeneInfo(id: BigInt): Genes__getGeneInfoResult {
     let result = super.call(
       "getGeneInfo",
       "getGeneInfo(uint256):(string,uint8)",
-      [ethereum.Value.fromUnsignedBigInt(id)],
+      [ethereum.Value.fromUnsignedBigInt(id)]
     );
 
-    return new GenesNFT__getGeneInfoResult(
+    return new Genes__getGeneInfoResult(
       result[0].toString(),
-      result[1].toI32(),
+      result[1].toI32()
     );
   }
 
-  try_getGeneInfo(
-    id: BigInt,
-  ): ethereum.CallResult<GenesNFT__getGeneInfoResult> {
+  try_getGeneInfo(id: BigInt): ethereum.CallResult<Genes__getGeneInfoResult> {
     let result = super.tryCall(
       "getGeneInfo",
       "getGeneInfo(uint256):(string,uint8)",
-      [ethereum.Value.fromUnsignedBigInt(id)],
+      [ethereum.Value.fromUnsignedBigInt(id)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new GenesNFT__getGeneInfoResult(value[0].toString(), value[1].toI32()),
+      new Genes__getGeneInfoResult(value[0].toString(), value[1].toI32())
     );
   }
 
@@ -358,7 +356,7 @@ export class GenesNFT extends ethereum.SmartContract {
     let result = super.call(
       "isApprovedForAll",
       "isApprovedForAll(address,address):(bool)",
-      [ethereum.Value.fromAddress(owner), ethereum.Value.fromAddress(operator)],
+      [ethereum.Value.fromAddress(owner), ethereum.Value.fromAddress(operator)]
     );
 
     return result[0].toBoolean();
@@ -366,12 +364,12 @@ export class GenesNFT extends ethereum.SmartContract {
 
   try_isApprovedForAll(
     owner: Address,
-    operator: Address,
+    operator: Address
   ): ethereum.CallResult<boolean> {
     let result = super.tryCall(
       "isApprovedForAll",
       "isApprovedForAll(address,address):(bool)",
-      [ethereum.Value.fromAddress(owner), ethereum.Value.fromAddress(operator)],
+      [ethereum.Value.fromAddress(owner), ethereum.Value.fromAddress(operator)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -433,7 +431,7 @@ export class GenesNFT extends ethereum.SmartContract {
     let result = super.call(
       "supportsInterface",
       "supportsInterface(bytes4):(bool)",
-      [ethereum.Value.fromFixedBytes(interfaceId)],
+      [ethereum.Value.fromFixedBytes(interfaceId)]
     );
 
     return result[0].toBoolean();
@@ -443,7 +441,7 @@ export class GenesNFT extends ethereum.SmartContract {
     let result = super.tryCall(
       "supportsInterface",
       "supportsInterface(bytes4):(bool)",
-      [ethereum.Value.fromFixedBytes(interfaceId)],
+      [ethereum.Value.fromFixedBytes(interfaceId)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();

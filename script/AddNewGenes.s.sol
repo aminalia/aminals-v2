@@ -5,7 +5,7 @@ import {AminalFactory} from "src/AminalFactory.sol";
 import {IAminal} from "src/interfaces/IAminal.sol";
 import {Aminal} from "src/Aminal.sol";
 import {InitialGenesMinter} from "script/InitialGenesMinter.sol";
-import {GenesNFT} from "src/genes/GenesNFT.sol";
+import {Genes} from "src/genes/Genes.sol";
 
 contract AddNewGenes is Script {
     function run() external {
@@ -14,16 +14,16 @@ contract AddNewGenes is Script {
 
         // AminalFactory factory = AminalFactory(address(vm.envAddress("AMINAL_FACTORY_CONTRACT")));
 
-        GenesNFT genesNFT = GenesNFT(address(vm.envAddress("GENES_NFT_CONTRACT")));
-        console.log("genes nft address ===> ", address(genesNFT));
+        Genes genes = Genes(address(vm.envAddress("GENES_NFT_CONTRACT")));
+        console.log("genes nft address ===> ", address(genes));
 
         InitialGenesMinter minter = new InitialGenesMinter();
 
         // Set minter as temporary gene factory
-        genesNFT.setFactory(address(minter));
+        genes.setFactory(address(minter));
         console.log("Set minter as temporary gene factory");
 
-        minter.mintInitialGenesAnimated(genesNFT, msg.sender);
+        minter.mintInitialGenesAnimated(genes, msg.sender);
 
         vm.stopBroadcast();
     }

@@ -34,10 +34,6 @@ export class BulkVoteCast__Params {
   get geneIds(): Array<BigInt> {
     return this._event.parameters[2].value.toBigIntArray();
   }
-
-  get totalVoteWeight(): BigInt {
-    return this._event.parameters[3].value.toBigInt();
-  }
 }
 
 export class GeneProposed extends ethereum.Event {
@@ -157,10 +153,6 @@ export class GeneVoteCast__Params {
 
   get voter(): Address {
     return this._event.parameters[3].value.toAddress();
-  }
-
-  get voteWeight(): BigInt {
-    return this._event.parameters[4].value.toBigInt();
   }
 }
 
@@ -660,14 +652,14 @@ export class GeneAuction extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  genesNFT(): Address {
-    let result = super.call("genesNFT", "genesNFT():(address)", []);
+  genes(): Address {
+    let result = super.call("genes", "genes():(address)", []);
 
     return result[0].toAddress();
   }
 
-  try_genesNFT(): ethereum.CallResult<Address> {
-    let result = super.tryCall("genesNFT", "genesNFT():(address)", []);
+  try_genes(): ethereum.CallResult<Address> {
+    let result = super.tryCall("genes", "genes():(address)", []);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -909,6 +901,41 @@ export class GeneAuction extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
+  getUserVotedGene(auctionId: BigInt, category: i32, user: Address): BigInt {
+    let result = super.call(
+      "getUserVotedGene",
+      "getUserVotedGene(uint256,uint8,address):(uint256)",
+      [
+        ethereum.Value.fromUnsignedBigInt(auctionId),
+        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(category)),
+        ethereum.Value.fromAddress(user),
+      ],
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_getUserVotedGene(
+    auctionId: BigInt,
+    category: i32,
+    user: Address,
+  ): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "getUserVotedGene",
+      "getUserVotedGene(uint256,uint8,address):(uint256)",
+      [
+        ethereum.Value.fromUnsignedBigInt(auctionId),
+        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(category)),
+        ethereum.Value.fromAddress(user),
+      ],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   getUserVotingPower(auctionId: BigInt, user: Address): BigInt {
     let result = super.call(
       "getUserVotingPower",
@@ -997,7 +1024,7 @@ export class ConstructorCall__Inputs {
     this._call = call;
   }
 
-  get _genesNFT(): Address {
+  get _Genes(): Address {
     return this._call.inputValues[0].value.toAddress();
   }
 
@@ -1037,10 +1064,6 @@ export class BulkVoteOnGenesCall__Inputs {
 
   get geneIds(): Array<BigInt> {
     return this._call.inputValues[1].value.toBigIntArray();
-  }
-
-  get voteWeights(): Array<BigInt> {
-    return this._call.inputValues[2].value.toBigIntArray();
   }
 }
 
@@ -1305,10 +1328,6 @@ export class VoteOnGeneCall__Inputs {
 
   get geneId(): BigInt {
     return this._call.inputValues[2].value.toBigInt();
-  }
-
-  get voteWeight(): BigInt {
-    return this._call.inputValues[3].value.toBigInt();
   }
 }
 

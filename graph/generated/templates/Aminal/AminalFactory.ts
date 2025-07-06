@@ -215,14 +215,14 @@ export class AminalFactory extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  genesNFT(): Address {
-    let result = super.call("genesNFT", "genesNFT():(address)", []);
+  genes(): Address {
+    let result = super.call("genes", "genes():(address)", []);
 
     return result[0].toAddress();
   }
 
-  try_genesNFT(): ethereum.CallResult<Address> {
-    let result = super.tryCall("genesNFT", "genesNFT():(address)", []);
+  try_genes(): ethereum.CallResult<Address> {
+    let result = super.tryCall("genes", "genes():(address)", []);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -517,7 +517,7 @@ export class InitializeCall__Inputs {
     return this._call.inputValues[1].value.toAddress();
   }
 
-  get _genesNFT(): Address {
+  get _Genes(): Address {
     return this._call.inputValues[2].value.toAddress();
   }
 }

@@ -2,15 +2,15 @@ type AminalFactory @entity(immutable: false) {
   id: Bytes! # Factory contract address
   totalAminals: BigInt!
   geneAuction: Bytes! # GeneAuction contract address
-  genesNFT: Bytes! # GenesNFT contract address
+  genes: Bytes! # Genes contract address
   loveVRGDA: Bytes! # Love VRGDA contract address
   initialAminalSpawned: Boolean!
-  
+
   # Creation info
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
-  
+
   # Derived relationships
   aminals: [Aminal!]! @derivedFrom(field: "factory")
 }
@@ -20,14 +20,13 @@ type Aminal @entity(immutable: false) {
   contractAddress: Bytes! # Contract address (same as id)
   aminalIndex: BigInt! # Index in factory
   factory: AminalFactory! # Factory that created this Aminal
-  
   # Parent relationships (addresses, not indices)
   momAddress: Bytes # Mother Aminal contract address (null for genesis)
   dadAddress: Bytes # Father Aminal contract address (null for genesis)
   mother: Aminal # Mother Aminal entity
   father: Aminal # Father Aminal entity
   children: [Aminal!]! @derivedFrom(field: "mother")
-  
+
   # Visual traits (Gene NFT IDs)
   backId: BigInt!
   armId: BigInt!
@@ -37,31 +36,32 @@ type Aminal @entity(immutable: false) {
   faceId: BigInt!
   mouthId: BigInt!
   miscId: BigInt!
-  
+
   # Metadata
   tokenURI: String # TokenURI with base64 encoded JSON metadata
-  
   # State
   energy: BigInt!
   totalLove: BigInt!
   breeding: Boolean!
-  
+
   # Breeding consent (derived from events)
   breedableWith: [BreedingConsent!]! @derivedFrom(field: "aminal")
-  
+
   # Relationships
   lovers: [Relationship]! @derivedFrom(field: "aminal")
-  
+
   # Skills and activities
   skillCalls: [SkillCall!]! @derivedFrom(field: "aminal")
   squeaks: [Squeak!]! @derivedFrom(field: "aminal")
   feeds: [FeedAminalEvent!]! @derivedFrom(field: "aminal")
-  
+
   # Breeding activities
-  breedingEventsAsParentOne: [BreedAminalEvent!]! @derivedFrom(field: "aminalOne")
-  breedingEventsAsParentTwo: [BreedAminalEvent!]! @derivedFrom(field: "aminalTwo")
+  breedingEventsAsParentOne: [BreedAminalEvent!]!
+    @derivedFrom(field: "aminalOne")
+  breedingEventsAsParentTwo: [BreedAminalEvent!]!
+    @derivedFrom(field: "aminalTwo")
   auctions: [GeneAuction!]! @derivedFrom(field: "aminalOne")
-  
+
   # Creation info
   blockNumber: BigInt!
   blockTimestamp: BigInt!
@@ -92,7 +92,7 @@ type BreedingConsent @entity(immutable: false) {
   aminal: Aminal!
   partner: Aminal!
   consented: Boolean!
-  
+
   # Creation info
   blockNumber: BigInt!
   blockTimestamp: BigInt!
@@ -105,7 +105,6 @@ type BreedAminalEvent @entity(immutable: true) {
   aminalTwo: Aminal! # Parent 2 address
   auctionId: BigInt! # Gene auction ID (0 if just setting consent)
   auction: GeneAuction # Related auction entity
-  
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -119,7 +118,6 @@ type FeedAminalEvent @entity(immutable: true) {
   love: BigInt! # Love gained by user
   totalLove: BigInt! # Total love for Aminal
   energy: BigInt! # Energy after feeding
-  
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -132,7 +130,6 @@ type SkillCall @entity(immutable: true) {
   skillAddress: Bytes! # Skill contract address
   data: Bytes! # Encoded skill parameters
   squeakCost: BigInt! # Energy cost for the skill
-  
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -142,14 +139,13 @@ type GlobalSkill @entity(immutable: false) {
   id: Bytes! # Skill contract address
   skillAddress: Bytes! # Skill contract address
   name: String # Skill name if available
-  
   # Usage statistics
   callCount: BigInt!
   totalSqueakCost: BigInt!
-  
+
   # Derived relationships - removed due to type mismatch
   # calls: [SkillCall!]! @derivedFrom(field: "skillAddress")
-  
+
   # Creation info
   blockNumber: BigInt!
   blockTimestamp: BigInt!
@@ -166,7 +162,6 @@ type Squeak @entity(immutable: true) {
   love: BigInt! # Love remaining for user
   totalLove: BigInt! # Total love for Aminal
   energy: BigInt! # Energy after squeak
-  
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -179,15 +174,14 @@ type GeneAuction @entity(immutable: false) {
   aminalTwo: Aminal! # Parent 2
   totalLove: BigInt! # Combined love for voting power
   finished: Boolean!
-  
+
   # Result data
   childAminal: Aminal # Spawned child (when auction completes)
   winningGeneIds: [BigInt!] # Winning gene IDs [8]
-  
   # Gene proposals and votes
   proposals: [GeneProposal!]! @derivedFrom(field: "auction")
   votes: [GeneVote!]! @derivedFrom(field: "auction")
-  
+
   # Timing
   blockNumber: BigInt!
   blockTimestamp: BigInt!
@@ -203,18 +197,18 @@ type GeneNFT @entity(immutable: false) {
   traitType: Int! # 0-7 for different trait categories
   owner: User!
   creator: User!
-  
+
   # Metadata
   svg: String
   name: String
   description: String
-  
+
   # Usage in Aminals - removed for performance as this can be expensive
   # aminalsUsingGene: [Aminal!]! # Aminals that have this gene
-  
+
   # Auction usage
   proposalsUsingGene: [GeneProposal!]! @derivedFrom(field: "geneNFT")
-  
+
   # Creation info
   blockNumber: BigInt!
   blockTimestamp: BigInt!
@@ -227,15 +221,15 @@ type GeneProposal @entity(immutable: false) {
   geneNFT: GeneNFT!
   traitType: Int! # 0-7 for different trait categories
   proposer: User!
-  
+
   # Voting stats
   loveVotes: BigInt!
   removeVotes: BigInt!
   removed: Boolean!
-  
+
   # Votes for this proposal
   votes: [GeneVote!]! @derivedFrom(field: "proposal")
-  
+
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -246,11 +240,11 @@ type GeneVote @entity(immutable: true) {
   auction: GeneAuction!
   proposal: GeneProposal!
   voter: User!
-  
+
   # Vote details
   isRemoveVote: Boolean!
   loveAmount: BigInt!
-  
+
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

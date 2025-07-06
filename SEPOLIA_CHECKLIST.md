@@ -1,23 +1,27 @@
 # ✅ Sepolia Deployment Checklist
 
 ## Status: Ready for Deployment
+
 The subgraph has been configured for Sepolia and builds successfully!
 
 ## ⚠️ Required Updates Before Deployment
 
 ### 1. Contract Addresses
+
 Update these addresses in `/workspace/graph/subgraph.yaml` with your actual Sepolia deployments:
 
 ```yaml
 # Current (Holesky addresses - NEED TO UPDATE):
 AminalFactory: "0x12ab74042d20e7f28b324d00055c239c740d4c3d"
-GeneAuction: "0x0b7d125d966f58115433574cf037611321d64a7f"  
-GenesNFT: "0x4c7fba8cc9555abb6f51b7da33c82c0eee8c6485"
-GeneNFTFactory: "0x41063967aa8337ab89a2f69ca8ff54ba13ce1f06"
+GeneAuction: "0x0b7d125d966f58115433574cf037611321d64a7f"
+Genes: "0x4c7fba8cc9555abb6f51b7da33c82c0eee8c6485"
+GeneRegistry: "0x41063967aa8337ab89a2f69ca8ff54ba13ce1f06"
 ```
 
 ### 2. Start Blocks
+
 Update to actual deployment blocks in `subgraph.yaml`:
+
 ```yaml
 # Current: startBlock: 5000000
 # Update to: startBlock: [ACTUAL_DEPLOYMENT_BLOCK]
@@ -26,9 +30,11 @@ Update to actual deployment blocks in `subgraph.yaml`:
 ## 🚀 Deployment Options
 
 ### Option A: Deploy Existing Contracts to Sepolia
+
 If you have contracts deployed on Sepolia, just update the addresses and start blocks above.
 
 ### Option B: Deploy New Contracts to Sepolia
+
 ```bash
 # Set environment variables
 export SEPOLIA_RPC_URL="https://ethereum-sepolia.publicnode.com"
@@ -64,7 +70,8 @@ npm run deploy:sepolia
 
 ## 📝 Post-Deployment Tasks
 
-1. **Update Frontend GraphQL URL**: 
+1. **Update Frontend GraphQL URL**:
+
    - In `frontend/src/resources/traits.ts`
    - Replace with new Sepolia subgraph endpoint
 

@@ -5,16 +5,19 @@
 The subgraph has been updated with the latest deployed contract addresses from the Holesky testnet:
 
 ### Main Contracts
+
 - **AminalFactory**: `0x421a9568b51aa4ca588e993fc2b482a24fd5354e`
 - **GeneAuction**: `0x58b2a2f0e2fb2b280325c8b58e3164c28768bb9c`
-- **GenesNFT**: `0xd5bb61310193a528e794c7302533df65283223b2`
+- **Genes**: `0xd5bb61310193a528e794c7302533df65283223b2`
 - **AminalProposals**: `0xce3eae1324a9970c776cd1c6dc501e6fa1e161a0`
 
 ### Skill Contracts (for reference)
+
 - **Move2D**: `0x96f1597fc84c69aef97a8af274b7709a0f38d84a`
 - **MoveTwice**: `0x7580880b51894f0f8c04143b551723793ea2a8c8`
 
 ### Network Configuration
+
 - **Chain ID**: 17000 (0x4268)
 - **Network**: Holesky Testnet
 - **Start Block**: 4111558 (0x3ebcc6)
@@ -22,16 +25,19 @@ The subgraph has been updated with the latest deployed contract addresses from t
 ## Files Updated
 
 ### 1. `subgraph.yaml`
+
 - Updated all contract addresses from placeholder values
 - Set correct start block (4111558) for all data sources
 - Configured for Holesky network
 
 ### 2. `src/constants.ts`
+
 - Added all deployed contract addresses
 - Included skill contract addresses for reference
 - Added network information in comments
 
 ### 3. `networks.json`
+
 - Updated configuration for Holesky network
 - Replaced old Aminals contract with new factory-based addresses
 - Set consistent start blocks for all contracts
@@ -41,7 +47,7 @@ The subgraph has been updated with the latest deployed contract addresses from t
 ✅ **Build Status**: Successfully compiled  
 ✅ **Contract Addresses**: Updated with latest deployment  
 ✅ **ABIs**: Generated from latest contracts  
-✅ **Event Handlers**: Configured for new architecture  
+✅ **Event Handlers**: Configured for new architecture
 
 ## Next Steps
 

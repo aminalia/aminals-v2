@@ -10,15 +10,15 @@ import {IAminalStructs} from "src/interfaces/IAminalStructs.sol";
 import {Move2D} from "src/skills/Move2D.sol";
 import {GeneAuction} from "src/genes/GeneAuction.sol";
 import {AminalProposals} from "src/proposals/AminalProposals.sol";
-import {GenesNFT} from "src/genes/GenesNFT.sol";
-import {GeneNFTFactory} from "src/genes/GeneNFTFactory.sol";
+import {Genes} from "src/genes/Genes.sol";
+import {GeneRegistry} from "src/genes/GeneRegistry.sol";
 
 contract IndividualAminalTest is Test, IAminalStructs {
     AminalFactory public factory;
     GeneAuction public geneAuction;
     AminalProposals public proposals;
-    GenesNFT public genesNFT;
-    GeneNFTFactory public geneFactory;
+    Genes public genes;
+    GeneRegistry public geneFactory;
     Move2D public move2DSkill;
 
     AminalContract public aminal;
@@ -29,18 +29,18 @@ contract IndividualAminalTest is Test, IAminalStructs {
 
     function setUp() public {
         // Deploy real dependencies
-        genesNFT = new GenesNFT();
-        geneFactory = new GeneNFTFactory(address(genesNFT));
-        geneAuction = new GeneAuction(address(genesNFT), address(geneFactory));
+        genes = new Genes();
+        geneFactory = new GeneRegistry(address(genes));
+        geneAuction = new GeneAuction(address(genes), address(geneFactory));
         proposals = new AminalProposals();
 
         // Deploy factory
         factory = new AminalFactory();
-        factory.initialize(address(geneAuction), address(proposals), address(genesNFT));
+        factory.initialize(address(geneAuction), address(proposals), address(genes));
 
         // Setup contracts properly
-        genesNFT.setup(address(factory));
-        genesNFT.setFactory(address(geneFactory));
+        genes.setup(address(factory));
+        genes.setFactory(address(geneFactory));
         geneAuction.setup(address(factory), address(factory));
         proposals.setup(address(factory));
         factory.setup();
@@ -192,7 +192,7 @@ contract IndividualAminalTest is Test, IAminalStructs {
         uint256 loveAmount = aminal.getLoveByUser(alice);
         console.log("Alice's love for aminal:", loveAmount);
         assertTrue(loveAmount < 10, "Alice should have less than 10 love");
-        
+
         // This test is correctly verifying that breeding fails without enough love
         // The actual breeding call would revert, so we don't need to call it
         console.log("Test verified: Alice doesn't have enough love to breed");

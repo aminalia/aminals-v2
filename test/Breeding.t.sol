@@ -6,8 +6,8 @@ import "forge-std/console.sol";
 
 import {AminalFactory} from "src/AminalFactory.sol";
 import {Aminal as AminalContract} from "src/Aminal.sol";
-import {GenesNFT} from "src/genes/GenesNFT.sol";
-import {GeneNFTFactory} from "src/genes/GeneNFTFactory.sol";
+import {Genes} from "src/genes/Genes.sol";
+import {GeneRegistry} from "src/genes/GeneRegistry.sol";
 import {GeneAuction} from "src/genes/GeneAuction.sol";
 import {AminalProposals} from "src/proposals/AminalProposals.sol";
 import {IAminalStructs} from "src/interfaces/IAminalStructs.sol";
@@ -25,8 +25,8 @@ import {IAminalStructs} from "src/interfaces/IAminalStructs.sol";
  */
 contract AminalBreedingIntegrationTest is Test, IAminalStructs {
     AminalFactory public factory;
-    GenesNFT public genesNFT;
-    GeneNFTFactory public geneFactory;
+    Genes public genes;
+    GeneRegistry public geneFactory;
     GeneAuction public geneAuction;
     AminalProposals public proposals;
 
@@ -67,18 +67,18 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
 
     function setUp() public {
         // Deploy all contracts - NO MOCKS
-        genesNFT = new GenesNFT();
-        geneFactory = new GeneNFTFactory(address(genesNFT));
-        geneAuction = new GeneAuction(address(genesNFT), address(geneFactory));
+        genes = new Genes();
+        geneFactory = new GeneRegistry(address(genes));
+        geneAuction = new GeneAuction(address(genes), address(geneFactory));
         proposals = new AminalProposals();
 
         // Deploy AminalFactory
         factory = new AminalFactory();
-        factory.initialize(address(geneAuction), address(proposals), address(genesNFT));
+        factory.initialize(address(geneAuction), address(proposals), address(genes));
 
         // Setup contracts
-        genesNFT.setup(address(factory));
-        genesNFT.setFactory(address(geneFactory));
+        genes.setup(address(factory));
+        genes.setFactory(address(geneFactory));
         geneAuction.setup(address(factory), address(factory)); // AminalFactory is the aminalsContract
         proposals.setup(address(factory));
         factory.setup();

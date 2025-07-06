@@ -8,7 +8,7 @@ import {ISkill} from "src/interfaces/ISkill.sol";
 import {AminalFactory} from "src/AminalFactory.sol";
 import {ERC721} from "oz/token/ERC721/ERC721.sol";
 import {ReentrancyGuard} from "oz/security/ReentrancyGuard.sol";
-import {GeneBasedDescriptor} from "src/genes/GeneBasedDescriptor.sol";
+import {GeneRenderer} from "src/genes/GeneRenderer.sol";
 import {AminalVRGDA} from "src/utils/AminalVRGDA.sol";
 
 /**
@@ -50,7 +50,7 @@ import {AminalVRGDA} from "src/utils/AminalVRGDA.sol";
  * @author The Aminals Collective
  * @custom:security-contact security@aminals.art
  */
-contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneBasedDescriptor {
+contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
     /// @notice The factory that birthed this Aminal into existence
     AminalFactory public immutable factory;
 
@@ -123,9 +123,9 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneBasedDescriptor 
         address _loveVRGDA
     )
         ERC721("Aminal", "AMINAL")
-        GeneBasedDescriptor(
-            address(AminalFactory(_factory).genesNFT()),
-            address(0) // TODO GeneNFTFactory to be added when implemented
+        GeneRenderer(
+            address(AminalFactory(_factory).genes()),
+            address(0) // TODO GeneRegistry to be added when implemented
         )
     {
         factory = AminalFactory(_factory);
@@ -377,7 +377,7 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneBasedDescriptor 
 
     event EnergyTransferred(address indexed recipient, uint256 amount, uint256 remainingEnergy);
 
-    // Implementation of abstract function from GeneBasedDescriptor
+    // Implementation of abstract function from GeneRenderer
     function getAminalVisualsByID(uint256 aminalID) public view virtual override returns (Visuals memory) {
         require(aminalID == aminalIndex, "Invalid aminal ID");
         return visuals;

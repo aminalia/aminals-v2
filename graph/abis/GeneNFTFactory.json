@@ -1,1 +1,785 @@
-{"abi":[{"type":"constructor","inputs":[{"name":"_geneNFT","type":"address","internalType":"address"}],"stateMutability":"nonpayable"},{"type":"function","name":"MAX_SVG_LENGTH","inputs":[],"outputs":[{"name":"","type":"uint256","internalType":"uint256"}],"stateMutability":"view"},{"type":"function","name":"MIN_CREATION_FEE","inputs":[],"outputs":[{"name":"","type":"uint256","internalType":"uint256"}],"stateMutability":"view"},{"type":"function","name":"createGene","inputs":[{"name":"svg","type":"string","internalType":"string"},{"name":"category","type":"uint8","internalType":"enum IAminalStructs.VisualsCat"}],"outputs":[{"name":"geneId","type":"uint256","internalType":"uint256"}],"stateMutability":"payable"},{"type":"function","name":"geneCategories","inputs":[{"name":"geneId","type":"uint256","internalType":"uint256"}],"outputs":[{"name":"category","type":"uint8","internalType":"enum IAminalStructs.VisualsCat"}],"stateMutability":"view"},{"type":"function","name":"geneCreators","inputs":[{"name":"geneId","type":"uint256","internalType":"uint256"}],"outputs":[{"name":"creator","type":"address","internalType":"address"}],"stateMutability":"view"},{"type":"function","name":"geneNFT","inputs":[],"outputs":[{"name":"","type":"address","internalType":"contract GenesNFT"}],"stateMutability":"view"},{"type":"function","name":"geneRegistry","inputs":[{"name":"geneId","type":"uint256","internalType":"uint256"}],"outputs":[{"name":"isFromFactory","type":"bool","internalType":"bool"}],"stateMutability":"view"},{"type":"function","name":"geneSVGs","inputs":[{"name":"geneId","type":"uint256","internalType":"uint256"}],"outputs":[{"name":"svg","type":"string","internalType":"string"}],"stateMutability":"view"},{"type":"function","name":"getGeneInfo","inputs":[{"name":"geneId","type":"uint256","internalType":"uint256"}],"outputs":[{"name":"creator","type":"address","internalType":"address"},{"name":"category","type":"uint8","internalType":"enum IAminalStructs.VisualsCat"},{"name":"svg","type":"string","internalType":"string"}],"stateMutability":"view"},{"type":"function","name":"getGenesByCategory","inputs":[{"name":"category","type":"uint8","internalType":"enum IAminalStructs.VisualsCat"}],"outputs":[{"name":"geneIds","type":"uint256[]","internalType":"uint256[]"}],"stateMutability":"view"},{"type":"function","name":"getGenesByCreator","inputs":[{"name":"creator","type":"address","internalType":"address"}],"outputs":[{"name":"geneIds","type":"uint256[]","internalType":"uint256[]"}],"stateMutability":"view"},{"type":"function","name":"isValidGene","inputs":[{"name":"geneId","type":"uint256","internalType":"uint256"}],"outputs":[{"name":"","type":"bool","internalType":"bool"}],"stateMutability":"view"},{"type":"function","name":"owner","inputs":[],"outputs":[{"name":"","type":"address","internalType":"address"}],"stateMutability":"view"},{"type":"function","name":"renounceOwnership","inputs":[],"outputs":[],"stateMutability":"nonpayable"},{"type":"function","name":"totalGenesCreated","inputs":[],"outputs":[{"name":"","type":"uint256","internalType":"uint256"}],"stateMutability":"view"},{"type":"function","name":"transferOwnership","inputs":[{"name":"newOwner","type":"address","internalType":"address"}],"outputs":[],"stateMutability":"nonpayable"},{"type":"function","name":"withdrawFees","inputs":[],"outputs":[],"stateMutability":"nonpayable"},{"type":"event","name":"GeneCreated","inputs":[{"name":"geneId","type":"uint256","indexed":true,"internalType":"uint256"},{"name":"creator","type":"address","indexed":true,"internalType":"address"},{"name":"category","type":"uint8","indexed":true,"internalType":"enum IAminalStructs.VisualsCat"},{"name":"svg","type":"string","indexed":false,"internalType":"string"}],"anonymous":false},{"type":"event","name":"OwnershipTransferred","inputs":[{"name":"previousOwner","type":"address","indexed":true,"internalType":"address"},{"name":"newOwner","type":"address","indexed":true,"internalType":"address"}],"anonymous":false},{"type":"error","name":"EmptySVG","inputs":[]},{"type":"error","name":"InsufficientFee","inputs":[]},{"type":"error","name":"InvalidSVG","inputs":[]},{"type":"error","name":"SVGTooLarge","inputs":[]}],"bytecode":{"object":"0x60a0346100ad57601f610f1138819003918201601f19168301916001600160401b038311848410176100b1578084926020946040528339810103126100ad57516001600160a01b0390818116908190036100ad575f543360018060a01b03198216175f55604051923391167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e05f80a3608052610e4b90816100c6823960805181818161035001526108350152f35b5f80fd5b634e487b7160e01b5f52604160045260245ffdfe60406080815260049081361015610014575f80fd5b5f91823560e01c90816303f0413014610a645781630b08ec19146106e15781630e2fa44c14610a31578163131c6b3514610a14578163252ccf57146108fc578163476343ee146108645781635231f627146108205781636a0c97fe146107fe578163715018a6146107a157816379b68ad3146107365781638da5cb5b1461070e578163940284b8146106e15781639dc35fc614610244578163cc66ddc814610204578163e5cb3725146101d2578163f2fde38b146100fc575063ff1d3b25146100db575f80fd5b346100f857816003193601126100f8576020906005549051908152f35b5080fd5b919050346101ce5760203660031901126101ce576001600160a01b038235818116939192908490036101ca57610130610cdd565b83156101785750505f54826bffffffffffffffffffffffff60a01b8216175f55167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e05f80a380f35b906020608492519162461bcd60e51b8352820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b6064820152fd5b8480fd5b8280fd5b9050346101ce5760203660031901126101ce5760ff82602094610202933581526003865220541691518092610b6f565bf35b9050346101ce5760203660031901126101ce5781610240938261022d9335825260205220610c3c565b9051918291602083526020830190610b90565b0390f35b9050816003193601126101ce5780359167ffffffffffffffff918284116101ca57366023850112156101ca57838101358381116106dd5760249485810190368784830101116106d95786359360088510156106d55766038d7ea4c6800034106106c85783156106ba5761c35084116106ad576102bf84610de8565b976102cc8751998a610c06565b84895260209985858c8c0137808b878c0101528099815b81515f19810190811161069a5781101561068a576001600160f81b0319600f60fa1b816103108486610e04565b5116149081610651575b5061032d5761032890610d54565b6102e3565b50509091929394959697985060015b1561064157875163e00dd16160e01b8152987f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168b8b8681845afa9a8b1561060857839b610612575b50803b156101ce579082606089938683898f8f906103cd8f6103d892519b8c998a988997636a4b888360e01b895233908901528701526064860191610d34565b916044840190610b6f565b03925af1801561060857918b97969593918995936105d7575b5050868152600192838d528c60038c84209160ff19928784825416179055600281528d8520336bffffffffffffffffffffffff60a01b825416179055528b83209081541660ff8c161790558782528c528981209461044f8654610bce565b601f811161057a575b5081601f86116001146104e257928593926104cc9795927f88106ea9f260e9b698c3ddfc183e10c59b5af6b5fb2766d47ce5b6107584c6dc999794956104d5575b5050501b905f198860031b1c19161790555b6104b6600554610d54565b60055586519182918a835233968b840191610d34565b0390a451908152f35b01013592505f8080610499565b8681528d812094959193929190601f198216908f5b82821061055d575050916104cc979593917f88106ea9f260e9b698c3ddfc183e10c59b5af6b5fb2766d47ce5b6107584c6dc9997959310610542575b5050505086811b0190556104ab565b5f1960f88c60031b161c19920101351690555f808080610533565b84870186013588558f9b5096880196938401938c9350018f6104f7565b918697985080949691939550528b8320601f890160051c8101918d8a106105cd575b9189959391601f8e9a999896940160051c01905b8181106105bd5750610458565b8381558d99508a965085016105b0565b909150819061059c565b91939596975080929450116105f75791899594939187938a525f806103f1565b50634e487b7160e01b815260418352fd5b8a513d85823e3d90fd5b909a508b81813d831161063a575b61062a8183610c06565b810103126101ce5751995f61038d565b503d610620565b87516330408e4560e21b81528390fd5b60018301915081831161067857602f60f81b9161066e9085610e04565b511614155f61031a565b634e487b7160e01b8552601187528585fd5b505090919293949596979861033c565b5050634e487b7160e01b82525060118352fd5b8551626f011960e11b8152fd5b855163204e1a0760e21b8152fd5b855162976f7560e21b8152fd5b8880fd5b8780fd5b8580fd5b9050346101ce5760203660031901126101ce578160209360ff923581526001855220541690519015158152f35b5050346100f857816003193601126100f857905490516001600160a01b039091168152602090f35b8383346100f85760203660031901126100f85761024090833583526002602052606061077f8260018060a01b03818720541695600360205260ff82822054169760205220610c3c565b91610794815196879687526020870190610b6f565b8401526060830190610b90565b83346107fb57806003193601126107fb576107ba610cdd565b80546001600160a01b03198116825581906001600160a01b03167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e08280a380f35b80fd5b5050346100f857816003193601126100f8576020905166038d7ea4c680008152f35b5050346100f857816003193601126100f857517f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168152602090f35b919050346101ce57826003193601126101ce5761087f610cdd565b828080804760018060a01b038254165af13d156108f7573d6108a081610de8565b906108ad84519283610c06565b81528460203d92013e5b156108c0578280f35b906020606492519162461bcd60e51b8352820152601160248201527015da5d1a191c985dd85b0819985a5b1959607a1b6044820152fd5b6108b7565b8383346100f857602091826003193601126107fb5760089284358481101580610a10576005549380805b8681106109b8575061093790610d8e565b968194825b878110610950578851806102408c82610b35565b808452600382528884205460ff16856109a557838110156109a557868b9114610983575b5061097e90610d54565b61093c565b878261099661097e949a61099c94610dc0565b52610d54565b96905089610974565b634e487b7160e01b855260218c52602485fd5b808352600386528783205460ff16846109fd57898110156109fd5785146109e8575b6109e390610d54565b610926565b906109f56109e391610d54565b9190506109da565b634e487b7160e01b845260218b52602484fd5b8380fd5b5050346100f857816003193601126100f8576020905161c3508152f35b9050346101ce5760203660031901126101ce5735825260026020908152918190205490516001600160a01b039091168152f35b839150346100f857602090816003193601126101ce576001600160a01b0391903582811690819003610a10576005549284805b858110610afe5750610aa890610d8e565b948093815b868110610ac1578851806102408a82610b35565b8083526002825284848a8520541614610ae3575b610ade90610d54565b610aad565b94610af68187610996610ade948c610dc0565b959050610ad5565b808752600285528383898920541614610b20575b610b1b90610d54565b610a97565b90610b2d610b1b91610d54565b919050610b12565b602090816040818301928281528551809452019301915f5b828110610b5b575050505090565b835185529381019392810192600101610b4d565b906008821015610b7c5752565b634e487b7160e01b5f52602160045260245ffd5b91908251928382525f5b848110610bba575050825f602080949584010152601f8019910116010190565b602081830181015184830182015201610b9a565b90600182811c92168015610bfc575b6020831014610be857565b634e487b7160e01b5f52602260045260245ffd5b91607f1691610bdd565b90601f8019910116810190811067ffffffffffffffff821117610c2857604052565b634e487b7160e01b5f52604160045260245ffd5b9060405191825f825492610c4f84610bce565b9081845260019485811690815f14610cba5750600114610c7a575b5050610c7892500383610c06565b565b909391505f52602090815f20935f915b818310610ca2575050610c7893508201015f80610c6a565b85548884018501529485019487945091830191610c8a565b915050610c7894506020925060ff191682840152151560051b8201015f80610c6a565b5f546001600160a01b03163303610cf057565b606460405162461bcd60e51b815260206004820152602060248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e65726044820152fd5b908060209392818452848401375f828201840152601f01601f1916010190565b5f198114610d625760010190565b634e487b7160e01b5f52601160045260245ffd5b67ffffffffffffffff8111610c285760051b60200190565b90610d9882610d76565b610da56040519182610c06565b8281528092610db6601f1991610d76565b0190602036910137565b8051821015610dd45760209160051b010190565b634e487b7160e01b5f52603260045260245ffd5b67ffffffffffffffff8111610c2857601f01601f191660200190565b908151811015610dd457016020019056fea2646970667358221220f438e5d1b80f4e890c3a76ade9f4a3c86cf17ef52467f7fc877663cbf5d5c31064736f6c63430008140033","sourceMap":"504:5889:54:-:0;;;;;;;;;;;;;-1:-1:-1;;504:5889:54;;;;-1:-1:-1;;;;;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;504:5889:54;;;;;;;;;;-1:-1:-1;504:5889:54;719:10:30;504:5889:54;;;;;;;;;-1:-1:-1;504:5889:54;;;719:10:30;;504:5889:54;;2566:40:22;-1:-1:-1;2566:40:22;;1775:28:54;;504:5889;;;;;;1775:28;504:5889;;;;;;;;;;;;-1:-1:-1;504:5889:54;;;;;;-1:-1:-1;504:5889:54;;;;;-1:-1:-1;504:5889:54","linkReferences":{}},"deployedBytecode":{"object":"0x60406080815260049081361015610014575f80fd5b5f91823560e01c90816303f0413014610a645781630b08ec19146106e15781630e2fa44c14610a31578163131c6b3514610a14578163252ccf57146108fc578163476343ee146108645781635231f627146108205781636a0c97fe146107fe578163715018a6146107a157816379b68ad3146107365781638da5cb5b1461070e578163940284b8146106e15781639dc35fc614610244578163cc66ddc814610204578163e5cb3725146101d2578163f2fde38b146100fc575063ff1d3b25146100db575f80fd5b346100f857816003193601126100f8576020906005549051908152f35b5080fd5b919050346101ce5760203660031901126101ce576001600160a01b038235818116939192908490036101ca57610130610cdd565b83156101785750505f54826bffffffffffffffffffffffff60a01b8216175f55167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e05f80a380f35b906020608492519162461bcd60e51b8352820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b6064820152fd5b8480fd5b8280fd5b9050346101ce5760203660031901126101ce5760ff82602094610202933581526003865220541691518092610b6f565bf35b9050346101ce5760203660031901126101ce5781610240938261022d9335825260205220610c3c565b9051918291602083526020830190610b90565b0390f35b9050816003193601126101ce5780359167ffffffffffffffff918284116101ca57366023850112156101ca57838101358381116106dd5760249485810190368784830101116106d95786359360088510156106d55766038d7ea4c6800034106106c85783156106ba5761c35084116106ad576102bf84610de8565b976102cc8751998a610c06565b84895260209985858c8c0137808b878c0101528099815b81515f19810190811161069a5781101561068a576001600160f81b0319600f60fa1b816103108486610e04565b5116149081610651575b5061032d5761032890610d54565b6102e3565b50509091929394959697985060015b1561064157875163e00dd16160e01b8152987f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168b8b8681845afa9a8b1561060857839b610612575b50803b156101ce579082606089938683898f8f906103cd8f6103d892519b8c998a988997636a4b888360e01b895233908901528701526064860191610d34565b916044840190610b6f565b03925af1801561060857918b97969593918995936105d7575b5050868152600192838d528c60038c84209160ff19928784825416179055600281528d8520336bffffffffffffffffffffffff60a01b825416179055528b83209081541660ff8c161790558782528c528981209461044f8654610bce565b601f811161057a575b5081601f86116001146104e257928593926104cc9795927f88106ea9f260e9b698c3ddfc183e10c59b5af6b5fb2766d47ce5b6107584c6dc999794956104d5575b5050501b905f198860031b1c19161790555b6104b6600554610d54565b60055586519182918a835233968b840191610d34565b0390a451908152f35b01013592505f8080610499565b8681528d812094959193929190601f198216908f5b82821061055d575050916104cc979593917f88106ea9f260e9b698c3ddfc183e10c59b5af6b5fb2766d47ce5b6107584c6dc9997959310610542575b5050505086811b0190556104ab565b5f1960f88c60031b161c19920101351690555f808080610533565b84870186013588558f9b5096880196938401938c9350018f6104f7565b918697985080949691939550528b8320601f890160051c8101918d8a106105cd575b9189959391601f8e9a999896940160051c01905b8181106105bd5750610458565b8381558d99508a965085016105b0565b909150819061059c565b91939596975080929450116105f75791899594939187938a525f806103f1565b50634e487b7160e01b815260418352fd5b8a513d85823e3d90fd5b909a508b81813d831161063a575b61062a8183610c06565b810103126101ce5751995f61038d565b503d610620565b87516330408e4560e21b81528390fd5b60018301915081831161067857602f60f81b9161066e9085610e04565b511614155f61031a565b634e487b7160e01b8552601187528585fd5b505090919293949596979861033c565b5050634e487b7160e01b82525060118352fd5b8551626f011960e11b8152fd5b855163204e1a0760e21b8152fd5b855162976f7560e21b8152fd5b8880fd5b8780fd5b8580fd5b9050346101ce5760203660031901126101ce578160209360ff923581526001855220541690519015158152f35b5050346100f857816003193601126100f857905490516001600160a01b039091168152602090f35b8383346100f85760203660031901126100f85761024090833583526002602052606061077f8260018060a01b03818720541695600360205260ff82822054169760205220610c3c565b91610794815196879687526020870190610b6f565b8401526060830190610b90565b83346107fb57806003193601126107fb576107ba610cdd565b80546001600160a01b03198116825581906001600160a01b03167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e08280a380f35b80fd5b5050346100f857816003193601126100f8576020905166038d7ea4c680008152f35b5050346100f857816003193601126100f857517f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168152602090f35b919050346101ce57826003193601126101ce5761087f610cdd565b828080804760018060a01b038254165af13d156108f7573d6108a081610de8565b906108ad84519283610c06565b81528460203d92013e5b156108c0578280f35b906020606492519162461bcd60e51b8352820152601160248201527015da5d1a191c985dd85b0819985a5b1959607a1b6044820152fd5b6108b7565b8383346100f857602091826003193601126107fb5760089284358481101580610a10576005549380805b8681106109b8575061093790610d8e565b968194825b878110610950578851806102408c82610b35565b808452600382528884205460ff16856109a557838110156109a557868b9114610983575b5061097e90610d54565b61093c565b878261099661097e949a61099c94610dc0565b52610d54565b96905089610974565b634e487b7160e01b855260218c52602485fd5b808352600386528783205460ff16846109fd57898110156109fd5785146109e8575b6109e390610d54565b610926565b906109f56109e391610d54565b9190506109da565b634e487b7160e01b845260218b52602484fd5b8380fd5b5050346100f857816003193601126100f8576020905161c3508152f35b9050346101ce5760203660031901126101ce5735825260026020908152918190205490516001600160a01b039091168152f35b839150346100f857602090816003193601126101ce576001600160a01b0391903582811690819003610a10576005549284805b858110610afe5750610aa890610d8e565b948093815b868110610ac1578851806102408a82610b35565b8083526002825284848a8520541614610ae3575b610ade90610d54565b610aad565b94610af68187610996610ade948c610dc0565b959050610ad5565b808752600285528383898920541614610b20575b610b1b90610d54565b610a97565b90610b2d610b1b91610d54565b919050610b12565b602090816040818301928281528551809452019301915f5b828110610b5b575050505090565b835185529381019392810192600101610b4d565b906008821015610b7c5752565b634e487b7160e01b5f52602160045260245ffd5b91908251928382525f5b848110610bba575050825f602080949584010152601f8019910116010190565b602081830181015184830182015201610b9a565b90600182811c92168015610bfc575b6020831014610be857565b634e487b7160e01b5f52602260045260245ffd5b91607f1691610bdd565b90601f8019910116810190811067ffffffffffffffff821117610c2857604052565b634e487b7160e01b5f52604160045260245ffd5b9060405191825f825492610c4f84610bce565b9081845260019485811690815f14610cba5750600114610c7a575b5050610c7892500383610c06565b565b909391505f52602090815f20935f915b818310610ca2575050610c7893508201015f80610c6a565b85548884018501529485019487945091830191610c8a565b915050610c7894506020925060ff191682840152151560051b8201015f80610c6a565b5f546001600160a01b03163303610cf057565b606460405162461bcd60e51b815260206004820152602060248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e65726044820152fd5b908060209392818452848401375f828201840152601f01601f1916010190565b5f198114610d625760010190565b634e487b7160e01b5f52601160045260245ffd5b67ffffffffffffffff8111610c285760051b60200190565b90610d9882610d76565b610da56040519182610c06565b8281528092610db6601f1991610d76565b0190602036910137565b8051821015610dd45760209160051b010190565b634e487b7160e01b5f52603260045260245ffd5b67ffffffffffffffff8111610c2857601f01601f191660200190565b908151811015610dd457016020019056fea2646970667358221220f438e5d1b80f4e890c3a76ade9f4a3c86cf17ef52467f7fc877663cbf5d5c31064736f6c63430008140033","sourceMap":"504:5889:54:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1216:32;504:5889;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;504:5889:54;;;;-1:-1:-1;;;;;504:5889:54;;;;;;;;;;;;;;1063:62:22;;:::i;:::-;2162:22;;504:5889:54;;;;;;;;;;;;;;;;2566:40:22;504:5889:54;2566:40:22;;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;504:5889:54;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;-1:-1:-1;;504:5889:54;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1372:11;2235:9;:28;2231:58;;2303:22;;2299:45;;1493:6;2358:34;;2354:60;;504:5889;;;:::i;:::-;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;6118:26;6159:13;;6199:3;504:5889;;-1:-1:-1;;504:5889:54;;;;;;;6174:23;;;;;-1:-1:-1;;;;;;;;;504:5889:54;6222:11;;;;:::i;:::-;504:5889;;6222:18;:44;;;;6199:3;6218:126;;;6199:3;;;:::i;:::-;6159:13;;6218:126;6286:20;;;;;;;;;;;;6196:1;6154:200;2498:17;2494:42;;504:5889;;-1:-1:-1;;;2627:19:54;;504:5889;2627:7;-1:-1:-1;;;;;504:5889:54;2627:19;504:5889;2627:19;504:5889;;2627:19;;;;;;;;;;;6154:200;2701:39;;;;;;504:5889;;;;;;;;;;;;;;;;;;;;;;;;;;2701:39;;2714:10;2701:39;;;504:5889;;;;;;;;;:::i;:::-;;;;;;;:::i;:::-;2701:39;;;;;;;;;;;;;;;;;;;;6154:200;504:5889;;;;;;;;;;;;;;;;;;;;;;;;;;;2845:12;504:5889;;;;;2714:10;504:5889;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;6154:200;504:5889;;;;;;;;;;;;;;;;;2999:46;504:5889;;;;;;;;;;;;;;;;;;;;;;;;2964:19;;504:5889;2964:19;:::i;:::-;;504:5889;;;;;;;;;2714:10;504:5889;;;;;;:::i;:::-;2999:46;;;504:5889;;;;;;;;;;-1:-1:-1;504:5889:54;;;;;;;;;;;;;;;;;;;-1:-1:-1;;504:5889:54;;;;;;;;;;;;;;;;;;2999:46;504:5889;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;504:5889:54;;;;;;;;;;-1:-1:-1;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;504:5889:54;;-1:-1:-1;504:5889:54;;;;;;;-1:-1:-1;504:5889:54;;;;2701:39;504:5889;;;;;;;;;;;;;;;;;;;;;;;2701:39;;;;504:5889;-1:-1:-1;;;;504:5889:54;;;;;;2701:39;504:5889;;;;;;;;;2627:19;;;;;;;;;;;;;;;;;:::i;:::-;;;504:5889;;;;;2627:19;;;;;;;;;2494:42;504:5889;;-1:-1:-1;;;2524:12:54;;504:5889;;2524:12;6222:44;6196:1;504:5889;;;-1:-1:-1;504:5889:54;;;;;-1:-1:-1;;;504:5889:54;6244:15;;;;:::i;:::-;504:5889;;6244:22;;6222:44;;;504:5889;-1:-1:-1;;;504:5889:54;;;;;;;;6174:23;;;;;;;;;;;;;;504:5889;-1:-1:-1;;;;;504:5889:54;;-1:-1:-1;504:5889:54;;;;2354:60;504:5889;;-1:-1:-1;;;2401:13:54;;;2299:45;504:5889;;-1:-1:-1;;;2334:10:54;;;2231:58;504:5889;;-1:-1:-1;;;2272:17:54;;;504:5889;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;504:5889:54;;;;;;;;;;;;;;;;-1:-1:-1;;504:5889:54;;;;;;;;;;3784:12;504:5889;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;:::i;:::-;;;;;;;;;;;;;1063:62:22;;:::i;:::-;504:5889:54;;-1:-1:-1;;;;;;504:5889:54;;;;;;-1:-1:-1;;;;;504:5889:54;2566:40:22;504:5889:54;;2566:40:22;504:5889:54;;;;;;;;;;;;;;;;;;;;;;1372:11;504:5889;;;;;;;;;;;;;;;;;;604:33;-1:-1:-1;;;;;504:5889:54;;;;;;;;;;;;;;;;;;;;;1063:62:22;;:::i;:::-;5506:21:54;;;;;504:5889;;;;;;;;5555:41;;504:5889;;;;;;;;:::i;:::-;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;4969:17;504:5889;;4918:17;;4965:21;;;;;;5115:20;;;;:::i;:::-;5145:17;;5177:13;;5192:21;;;;;;504:5889;;;;;;;:::i;5215:3::-;504:5889;;;;;;;;;;;;;;;;;;;;;5238:29;;;;5234:111;;5215:3;;;;;:::i;:::-;5177:13;;5234:111;5287:18;;;5215:3;5287:18;;5323:7;5287:18;;:::i;:::-;504:5889;5323:7;:::i;:::-;5234:111;;;;;;504:5889;-1:-1:-1;;;504:5889:54;;;;;;;;4988:3;504:5889;;;;;;;;;;;;;;;;;;;;;5011:29;;5007:42;;4988:3;;;;:::i;:::-;4950:13;;5007:42;5042:7;;4988:3;5042:7;;:::i;:::-;5007:42;;;;;504:5889;-1:-1:-1;;;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1493:6;504:5889;;;;;;;;;;;-1:-1:-1;;504:5889:54;;;;;;;848:62;504:5889;;;;;;;;;;;-1:-1:-1;;;;;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;504:5889:54;;;;;;;;;;;;4218:17;504:5889;;4167:17;;4214:21;;;;;;4361:20;;;;:::i;:::-;4391:17;;4423:13;;4438:21;;;;;;504:5889;;;;;;;:::i;4461:3::-;504:5889;;;4260:12;504:5889;;;;;;;;;4484:26;4480:108;;4461:3;;;;:::i;:::-;4423:13;;4480:108;4530:18;4566:7;4530:18;;;4461:3;4530:18;;;:::i;4566:7::-;4480:108;;;;;4237:3;504:5889;;;4260:12;504:5889;;;;;;;;;4260:26;4256:39;;4237:3;;;;:::i;:::-;4199:13;;4256:39;4288:7;;4237:3;4288:7;;:::i;:::-;4256:39;;;;;504:5889;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;-1:-1:-1;504:5889:54;;;;;-1:-1:-1;504:5889:54;;;;;;;;;;-1:-1:-1;504:5889:54;;;;;;;;;-1:-1:-1;504:5889:54;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;-1:-1:-1;504:5889:54;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;:::o;:::-;;;;;-1:-1:-1;504:5889:54;;;;-1:-1:-1;504:5889:54;;-1:-1:-1;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1359:130:22;1273:6;504:5889:54;-1:-1:-1;;;;;504:5889:54;719:10:30;1422:23:22;504:5889:54;;1359:130:22:o;504:5889:54:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;504:5889:54;;;;;;;;-1:-1:-1;;504:5889:54;;;;:::o;:::-;-1:-1:-1;;504:5889:54;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;;;;:::i;:::-;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;504:5889:54;;;;:::o;:::-;;;;;;;;;;;;;:::o","linkReferences":{},"immutableReferences":{"39277":[{"start":848,"length":32},{"start":2101,"length":32}]}},"methodIdentifiers":{"MAX_SVG_LENGTH()":"131c6b35","MIN_CREATION_FEE()":"6a0c97fe","createGene(string,uint8)":"9dc35fc6","geneCategories(uint256)":"e5cb3725","geneCreators(uint256)":"0e2fa44c","geneNFT()":"5231f627","geneRegistry(uint256)":"0b08ec19","geneSVGs(uint256)":"cc66ddc8","getGeneInfo(uint256)":"79b68ad3","getGenesByCategory(uint8)":"252ccf57","getGenesByCreator(address)":"03f04130","isValidGene(uint256)":"940284b8","owner()":"8da5cb5b","renounceOwnership()":"715018a6","totalGenesCreated()":"ff1d3b25","transferOwnership(address)":"f2fde38b","withdrawFees()":"476343ee"},"rawMetadata":"{\"compiler\":{\"version\":\"0.8.20+commit.a1b79de6\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_geneNFT\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"EmptySVG\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InsufficientFee\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidSVG\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"SVGTooLarge\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"geneId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"enum IAminalStructs.VisualsCat\",\"name\":\"category\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"svg\",\"type\":\"string\"}],\"name\":\"GeneCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"MAX_SVG_LENGTH\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"MIN_CREATION_FEE\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"svg\",\"type\":\"string\"},{\"internalType\":\"enum IAminalStructs.VisualsCat\",\"name\":\"category\",\"type\":\"uint8\"}],\"name\":\"createGene\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"geneId\",\"type\":\"uint256\"}],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"geneId\",\"type\":\"uint256\"}],\"name\":\"geneCategories\",\"outputs\":[{\"internalType\":\"enum IAminalStructs.VisualsCat\",\"name\":\"category\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"geneId\",\"type\":\"uint256\"}],\"name\":\"geneCreators\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"geneNFT\",\"outputs\":[{\"internalType\":\"contract GenesNFT\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"geneId\",\"type\":\"uint256\"}],\"name\":\"geneRegistry\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"isFromFactory\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"geneId\",\"type\":\"uint256\"}],\"name\":\"geneSVGs\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"svg\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"geneId\",\"type\":\"uint256\"}],\"name\":\"getGeneInfo\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"enum IAminalStructs.VisualsCat\",\"name\":\"category\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"svg\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"enum IAminalStructs.VisualsCat\",\"name\":\"category\",\"type\":\"uint8\"}],\"name\":\"getGenesByCategory\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"geneIds\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"}],\"name\":\"getGenesByCreator\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"geneIds\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"geneId\",\"type\":\"uint256\"}],\"name\":\"isValidGene\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalGenesCreated\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"withdrawFees\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Factory for creating Gene NFTs representing traits for Aminals, also serves as a registry for Gene NFTs\",\"kind\":\"dev\",\"methods\":{\"createGene(string,uint8)\":{\"details\":\"Anyone can call this function to create permissionless traits\",\"params\":{\"category\":\"The visual category for the trait\",\"svg\":\"The SVG content for the trait\"},\"returns\":{\"geneId\":\"The ID of the created Gene NFT\"}},\"getGeneInfo(uint256)\":{\"params\":{\"geneId\":\"The ID of the Gene NFT\"},\"returns\":{\"category\":\"The visual category\",\"creator\":\"The creator address\",\"svg\":\"The SVG content\"}},\"getGenesByCategory(uint8)\":{\"params\":{\"category\":\"The visual category\"},\"returns\":{\"geneIds\":\"Array of Gene NFT IDs in the category\"}},\"getGenesByCreator(address)\":{\"params\":{\"creator\":\"The creator address\"},\"returns\":{\"geneIds\":\"Array of Gene NFT IDs created by the address\"}},\"isValidGene(uint256)\":{\"params\":{\"geneId\":\"The ID of the Gene NFT to check\"},\"returns\":{\"_0\":\"bool True if the gene was created from this factory\"}},\"owner()\":{\"details\":\"Returns the address of the current owner.\"},\"renounceOwnership()\":{\"details\":\"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.\"},\"transferOwnership(address)\":{\"details\":\"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.\"}},\"title\":\"GeneNFTFactory\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"MAX_SVG_LENGTH()\":{\"notice\":\"Maximum SVG length to prevent bloated storage\"},\"MIN_CREATION_FEE()\":{\"notice\":\"Minimum ETH required to create a Gene NFT (prevents spam)\"},\"createGene(string,uint8)\":{\"notice\":\"Create a new Gene NFT with trait data\"},\"geneCategories(uint256)\":{\"notice\":\"Mapping from gene ID to trait category\"},\"geneCreators(uint256)\":{\"notice\":\"Mapping from gene ID to creator address\"},\"geneNFT()\":{\"notice\":\"The main Gene NFT contract\"},\"geneRegistry(uint256)\":{\"notice\":\"Registry mapping to verify Gene NFTs came from this factory\"},\"geneSVGs(uint256)\":{\"notice\":\"Mapping from gene ID to SVG content\"},\"getGeneInfo(uint256)\":{\"notice\":\"Get Gene NFT information\"},\"getGenesByCategory(uint8)\":{\"notice\":\"Get all Gene NFTs by category\"},\"getGenesByCreator(address)\":{\"notice\":\"Get all Gene NFTs by creator\"},\"isValidGene(uint256)\":{\"notice\":\"Check if a Gene NFT was created from this factory\"},\"totalGenesCreated()\":{\"notice\":\"Counter for tracking total genes created\"},\"withdrawFees()\":{\"notice\":\"Withdraw collected fees (only owner)\"}},\"notice\":\"Anyone can create Gene NFTs from this factory for permissionless trait creation\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/genes/GeneNFTFactory.sol\":\"GeneNFTFactory\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":VRGDAs/=lib/VRGDAs/src/\",\":abdk-libraries-solidity/=lib/abdk-libraries-solidity/\",\":ds-test/=lib/VRGDAs/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\",\":oz/=lib/openzeppelin-contracts/contracts/\",\":solmate/=lib/VRGDAs/lib/solmate/src/\"],\"viaIR\":true},\"sources\":{\"lib/openzeppelin-contracts/contracts/access/Ownable.sol\":{\"keccak256\":\"0xba43b97fba0d32eb4254f6a5a297b39a19a247082a02d6e69349e071e2946218\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://fc980984badf3984b6303b377711220e067722bbd6a135b24669ff5069ef9f32\",\"dweb:/ipfs/QmPHXMSXj99XjSVM21YsY6aNtLLjLVXDbyN76J5HQYvvrz\"]},\"lib/openzeppelin-contracts/contracts/proxy/utils/Initializable.sol\":{\"keccak256\":\"0x3d6069be9b4c01fb81840fb9c2c4dc58dd6a6a4aafaa2c6837de8699574d84c6\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://720d6bb56ea0c4ef781c0bd65c5bd0541f5a46100163b2587170f97658d2deed\",\"dweb:/ipfs/QmTS2biLVPrv8CeeXCaKmkFxonMiRvc1LxiYBRYDAJHQUS\"]},\"lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol\":{\"keccak256\":\"0x2c309e7df9e05e6ce15bedfe74f3c61b467fc37e0fae9eab496acf5ea0bbd7ff\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7063b5c98711a98018ba4635ac74cee1c1cfa2ea01099498e062699ed9530005\",\"dweb:/ipfs/QmeJ8rGXkcv7RrqLdAW8PCXPAykxVsddfYY6g5NaTwmRFE\"]},\"lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol\":{\"keccak256\":\"0x5bce51e11f7d194b79ea59fe00c9e8de9fa2c5530124960f29a24d4c740a3266\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7e66dfde185df46104c11bc89d08fa0760737aa59a2b8546a656473d810a8ea4\",\"dweb:/ipfs/QmXvyqtXPaPss2PD7eqPoSao5Szm2n6UMoiG8TZZDjmChR\"]},\"lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol\":{\"keccak256\":\"0xa82b58eca1ee256be466e536706850163d2ec7821945abd6b4778cfb3bee37da\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6e75cf83beb757b8855791088546b8337e9d4684e169400c20d44a515353b708\",\"dweb:/ipfs/QmYvPafLfoquiDMEj7CKHtvbgHu7TJNPSVPSCjrtjV8HjV\"]},\"lib/openzeppelin-contracts/contracts/token/ERC721/extensions/IERC721Metadata.sol\":{\"keccak256\":\"0x75b829ff2f26c14355d1cba20e16fe7b29ca58eb5fef665ede48bc0f9c6c74b9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a0a107160525724f9e1bbbab031defc2f298296dd9e331f16a6f7130cec32146\",\"dweb:/ipfs/QmemujxSd7gX8A9M8UwmNbz4Ms3U9FG9QfudUgxwvTmPWf\"]},\"lib/openzeppelin-contracts/contracts/utils/Address.sol\":{\"keccak256\":\"0x006dd67219697fe68d7fbfdea512e7c4cb64a43565ed86171d67e844982da6fa\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://2455248c8ddd9cc6a7af76a13973cddf222072427e7b0e2a7d1aff345145e931\",\"dweb:/ipfs/QmfYjnjRbWqYpuxurqveE6HtzsY1Xx323J428AKQgtBJZm\"]},\"lib/openzeppelin-contracts/contracts/utils/Context.sol\":{\"keccak256\":\"0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92\",\"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3\"]},\"lib/openzeppelin-contracts/contracts/utils/Strings.sol\":{\"keccak256\":\"0x3088eb2868e8d13d89d16670b5f8612c4ab9ff8956272837d8e90106c59c14a0\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://b81d9ff6559ea5c47fc573e17ece6d9ba5d6839e213e6ebc3b4c5c8fe4199d7f\",\"dweb:/ipfs/QmPCW1bFisUzJkyjroY3yipwfism9RRCigCcK1hbXtVM8n\"]},\"lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol\":{\"keccak256\":\"0xd10975de010d89fd1c78dc5e8a9a7e7f496198085c151648f20cba166b32582b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://fb0048dee081f6fffa5f74afc3fb328483c2a30504e94a0ddd2a5114d731ec4d\",\"dweb:/ipfs/QmZptt1nmYoA5SgjwnSgWqgUSDgm4q52Yos3xhnMv3MV43\"]},\"lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol\":{\"keccak256\":\"0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f\",\"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy\"]},\"lib/openzeppelin-contracts/contracts/utils/math/Math.sol\":{\"keccak256\":\"0xe4455ac1eb7fc497bb7402579e7b4d64d928b846fce7d2b6fde06d366f21c2b3\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://cc8841b3cd48ad125e2f46323c8bad3aa0e88e399ec62acb9e57efa7e7c8058c\",\"dweb:/ipfs/QmSqE4mXHA2BXW58deDbXE8MTcsL5JSKNDbm23sVQxRLPS\"]},\"lib/openzeppelin-contracts/contracts/utils/math/SignedMath.sol\":{\"keccak256\":\"0xf92515413956f529d95977adc9b0567d583c6203fc31ab1c23824c35187e3ddc\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://c50fcc459e49a9858b6d8ad5f911295cb7c9ab57567845a250bf0153f84a95c7\",\"dweb:/ipfs/QmcEW85JRzvDkQggxiBBLVAasXWdkhEysqypj9EaB6H2g6\"]},\"src/IAminalStructs.sol\":{\"keccak256\":\"0xc9c4ad77c82b49ba0e9c39dfe773b7f354d90e6c05cdd691a8e1e1c23e598220\",\"license\":\"GPL-3.0-only\",\"urls\":[\"bzz-raw://c8e5d53ba3433546074017b906e3b61f28992c826d733cfdcf45e5f0372b2405\",\"dweb:/ipfs/QmcHc3bXd5P9u3ckqAHwj1aY7CLMJJLLTedf3pgRhMTFiq\"]},\"src/genes/GeneNFTFactory.sol\":{\"keccak256\":\"0x2405c8cf6f45a165b0cbfbd677c66813750c0ba2d3563bd0641f99349b7b655a\",\"license\":\"GPL-3.0-only\",\"urls\":[\"bzz-raw://51eb114b74cf528274bb5921fd4e0cbc3bf15a4c007ec98956b052f217c70aaa\",\"dweb:/ipfs/Qma22gLPfzG1Rs1A834kSvCUjLdvH9MboFicuynK1JJhSQ\"]},\"src/genes/GenesNFT.sol\":{\"keccak256\":\"0x9b49111526ab34d425e321002e14c63e33639a3a68026e0e88dca156ce468f10\",\"license\":\"GPL-3.0-only\",\"urls\":[\"bzz-raw://49d5516b88dc5a0407d8b54df2c0ae5d3d1dbe3c85bab38d648bc936a0a59dc9\",\"dweb:/ipfs/QmVuQ934FQkjoneLLhDrBFmdy75jbPUmP9Misr2QUtxQhD\"]},\"src/utils/Base64.sol\":{\"keccak256\":\"0x740a295cb25c65ef757c5bbf3446a1829108a4b046bdac5f5a9d574ee08f8552\",\"urls\":[\"bzz-raw://839abaf77a145d94355cf20f001c76e061a3314e96f5bdb59c0708deeb7cb3d3\",\"dweb:/ipfs/QmTf5oJPaerhXhwSvbJBYSsoYZhaT9Zhq1CcDefv2yW9cJ\"]}},\"version\":1}","metadata":{"compiler":{"version":"0.8.20+commit.a1b79de6"},"language":"Solidity","output":{"abi":[{"inputs":[{"internalType":"address","name":"_geneNFT","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[],"type":"error","name":"EmptySVG"},{"inputs":[],"type":"error","name":"InsufficientFee"},{"inputs":[],"type":"error","name":"InvalidSVG"},{"inputs":[],"type":"error","name":"SVGTooLarge"},{"inputs":[{"internalType":"uint256","name":"geneId","type":"uint256","indexed":true},{"internalType":"address","name":"creator","type":"address","indexed":true},{"internalType":"enum IAminalStructs.VisualsCat","name":"category","type":"uint8","indexed":true},{"internalType":"string","name":"svg","type":"string","indexed":false}],"type":"event","name":"GeneCreated","anonymous":false},{"inputs":[{"internalType":"address","name":"previousOwner","type":"address","indexed":true},{"internalType":"address","name":"newOwner","type":"address","indexed":true}],"type":"event","name":"OwnershipTransferred","anonymous":false},{"inputs":[],"stateMutability":"view","type":"function","name":"MAX_SVG_LENGTH","outputs":[{"internalType":"uint256","name":"","type":"uint256"}]},{"inputs":[],"stateMutability":"view","type":"function","name":"MIN_CREATION_FEE","outputs":[{"internalType":"uint256","name":"","type":"uint256"}]},{"inputs":[{"internalType":"string","name":"svg","type":"string"},{"internalType":"enum IAminalStructs.VisualsCat","name":"category","type":"uint8"}],"stateMutability":"payable","type":"function","name":"createGene","outputs":[{"internalType":"uint256","name":"geneId","type":"uint256"}]},{"inputs":[{"internalType":"uint256","name":"geneId","type":"uint256"}],"stateMutability":"view","type":"function","name":"geneCategories","outputs":[{"internalType":"enum IAminalStructs.VisualsCat","name":"category","type":"uint8"}]},{"inputs":[{"internalType":"uint256","name":"geneId","type":"uint256"}],"stateMutability":"view","type":"function","name":"geneCreators","outputs":[{"internalType":"address","name":"creator","type":"address"}]},{"inputs":[],"stateMutability":"view","type":"function","name":"geneNFT","outputs":[{"internalType":"contract GenesNFT","name":"","type":"address"}]},{"inputs":[{"internalType":"uint256","name":"geneId","type":"uint256"}],"stateMutability":"view","type":"function","name":"geneRegistry","outputs":[{"internalType":"bool","name":"isFromFactory","type":"bool"}]},{"inputs":[{"internalType":"uint256","name":"geneId","type":"uint256"}],"stateMutability":"view","type":"function","name":"geneSVGs","outputs":[{"internalType":"string","name":"svg","type":"string"}]},{"inputs":[{"internalType":"uint256","name":"geneId","type":"uint256"}],"stateMutability":"view","type":"function","name":"getGeneInfo","outputs":[{"internalType":"address","name":"creator","type":"address"},{"internalType":"enum IAminalStructs.VisualsCat","name":"category","type":"uint8"},{"internalType":"string","name":"svg","type":"string"}]},{"inputs":[{"internalType":"enum IAminalStructs.VisualsCat","name":"category","type":"uint8"}],"stateMutability":"view","type":"function","name":"getGenesByCategory","outputs":[{"internalType":"uint256[]","name":"geneIds","type":"uint256[]"}]},{"inputs":[{"internalType":"address","name":"creator","type":"address"}],"stateMutability":"view","type":"function","name":"getGenesByCreator","outputs":[{"internalType":"uint256[]","name":"geneIds","type":"uint256[]"}]},{"inputs":[{"internalType":"uint256","name":"geneId","type":"uint256"}],"stateMutability":"view","type":"function","name":"isValidGene","outputs":[{"internalType":"bool","name":"","type":"bool"}]},{"inputs":[],"stateMutability":"view","type":"function","name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}]},{"inputs":[],"stateMutability":"nonpayable","type":"function","name":"renounceOwnership"},{"inputs":[],"stateMutability":"view","type":"function","name":"totalGenesCreated","outputs":[{"internalType":"uint256","name":"","type":"uint256"}]},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"stateMutability":"nonpayable","type":"function","name":"transferOwnership"},{"inputs":[],"stateMutability":"nonpayable","type":"function","name":"withdrawFees"}],"devdoc":{"kind":"dev","methods":{"createGene(string,uint8)":{"details":"Anyone can call this function to create permissionless traits","params":{"category":"The visual category for the trait","svg":"The SVG content for the trait"},"returns":{"geneId":"The ID of the created Gene NFT"}},"getGeneInfo(uint256)":{"params":{"geneId":"The ID of the Gene NFT"},"returns":{"category":"The visual category","creator":"The creator address","svg":"The SVG content"}},"getGenesByCategory(uint8)":{"params":{"category":"The visual category"},"returns":{"geneIds":"Array of Gene NFT IDs in the category"}},"getGenesByCreator(address)":{"params":{"creator":"The creator address"},"returns":{"geneIds":"Array of Gene NFT IDs created by the address"}},"isValidGene(uint256)":{"params":{"geneId":"The ID of the Gene NFT to check"},"returns":{"_0":"bool True if the gene was created from this factory"}},"owner()":{"details":"Returns the address of the current owner."},"renounceOwnership()":{"details":"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."},"transferOwnership(address)":{"details":"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."}},"version":1},"userdoc":{"kind":"user","methods":{"MAX_SVG_LENGTH()":{"notice":"Maximum SVG length to prevent bloated storage"},"MIN_CREATION_FEE()":{"notice":"Minimum ETH required to create a Gene NFT (prevents spam)"},"createGene(string,uint8)":{"notice":"Create a new Gene NFT with trait data"},"geneCategories(uint256)":{"notice":"Mapping from gene ID to trait category"},"geneCreators(uint256)":{"notice":"Mapping from gene ID to creator address"},"geneNFT()":{"notice":"The main Gene NFT contract"},"geneRegistry(uint256)":{"notice":"Registry mapping to verify Gene NFTs came from this factory"},"geneSVGs(uint256)":{"notice":"Mapping from gene ID to SVG content"},"getGeneInfo(uint256)":{"notice":"Get Gene NFT information"},"getGenesByCategory(uint8)":{"notice":"Get all Gene NFTs by category"},"getGenesByCreator(address)":{"notice":"Get all Gene NFTs by creator"},"isValidGene(uint256)":{"notice":"Check if a Gene NFT was created from this factory"},"totalGenesCreated()":{"notice":"Counter for tracking total genes created"},"withdrawFees()":{"notice":"Withdraw collected fees (only owner)"}},"version":1}},"settings":{"remappings":["VRGDAs/=lib/VRGDAs/src/","abdk-libraries-solidity/=lib/abdk-libraries-solidity/","ds-test/=lib/VRGDAs/lib/ds-test/src/","erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/","forge-std/=lib/forge-std/src/","openzeppelin-contracts/=lib/openzeppelin-contracts/","openzeppelin/=lib/openzeppelin-contracts/contracts/","oz/=lib/openzeppelin-contracts/contracts/","solmate/=lib/VRGDAs/lib/solmate/src/"],"optimizer":{"enabled":true,"runs":200},"metadata":{"bytecodeHash":"ipfs"},"compilationTarget":{"src/genes/GeneNFTFactory.sol":"GeneNFTFactory"},"evmVersion":"shanghai","libraries":{},"viaIR":true},"sources":{"lib/openzeppelin-contracts/contracts/access/Ownable.sol":{"keccak256":"0xba43b97fba0d32eb4254f6a5a297b39a19a247082a02d6e69349e071e2946218","urls":["bzz-raw://fc980984badf3984b6303b377711220e067722bbd6a135b24669ff5069ef9f32","dweb:/ipfs/QmPHXMSXj99XjSVM21YsY6aNtLLjLVXDbyN76J5HQYvvrz"],"license":"MIT"},"lib/openzeppelin-contracts/contracts/proxy/utils/Initializable.sol":{"keccak256":"0x3d6069be9b4c01fb81840fb9c2c4dc58dd6a6a4aafaa2c6837de8699574d84c6","urls":["bzz-raw://720d6bb56ea0c4ef781c0bd65c5bd0541f5a46100163b2587170f97658d2deed","dweb:/ipfs/QmTS2biLVPrv8CeeXCaKmkFxonMiRvc1LxiYBRYDAJHQUS"],"license":"MIT"},"lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol":{"keccak256":"0x2c309e7df9e05e6ce15bedfe74f3c61b467fc37e0fae9eab496acf5ea0bbd7ff","urls":["bzz-raw://7063b5c98711a98018ba4635ac74cee1c1cfa2ea01099498e062699ed9530005","dweb:/ipfs/QmeJ8rGXkcv7RrqLdAW8PCXPAykxVsddfYY6g5NaTwmRFE"],"license":"MIT"},"lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol":{"keccak256":"0x5bce51e11f7d194b79ea59fe00c9e8de9fa2c5530124960f29a24d4c740a3266","urls":["bzz-raw://7e66dfde185df46104c11bc89d08fa0760737aa59a2b8546a656473d810a8ea4","dweb:/ipfs/QmXvyqtXPaPss2PD7eqPoSao5Szm2n6UMoiG8TZZDjmChR"],"license":"MIT"},"lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol":{"keccak256":"0xa82b58eca1ee256be466e536706850163d2ec7821945abd6b4778cfb3bee37da","urls":["bzz-raw://6e75cf83beb757b8855791088546b8337e9d4684e169400c20d44a515353b708","dweb:/ipfs/QmYvPafLfoquiDMEj7CKHtvbgHu7TJNPSVPSCjrtjV8HjV"],"license":"MIT"},"lib/openzeppelin-contracts/contracts/token/ERC721/extensions/IERC721Metadata.sol":{"keccak256":"0x75b829ff2f26c14355d1cba20e16fe7b29ca58eb5fef665ede48bc0f9c6c74b9","urls":["bzz-raw://a0a107160525724f9e1bbbab031defc2f298296dd9e331f16a6f7130cec32146","dweb:/ipfs/QmemujxSd7gX8A9M8UwmNbz4Ms3U9FG9QfudUgxwvTmPWf"],"license":"MIT"},"lib/openzeppelin-contracts/contracts/utils/Address.sol":{"keccak256":"0x006dd67219697fe68d7fbfdea512e7c4cb64a43565ed86171d67e844982da6fa","urls":["bzz-raw://2455248c8ddd9cc6a7af76a13973cddf222072427e7b0e2a7d1aff345145e931","dweb:/ipfs/QmfYjnjRbWqYpuxurqveE6HtzsY1Xx323J428AKQgtBJZm"],"license":"MIT"},"lib/openzeppelin-contracts/contracts/utils/Context.sol":{"keccak256":"0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7","urls":["bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92","dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3"],"license":"MIT"},"lib/openzeppelin-contracts/contracts/utils/Strings.sol":{"keccak256":"0x3088eb2868e8d13d89d16670b5f8612c4ab9ff8956272837d8e90106c59c14a0","urls":["bzz-raw://b81d9ff6559ea5c47fc573e17ece6d9ba5d6839e213e6ebc3b4c5c8fe4199d7f","dweb:/ipfs/QmPCW1bFisUzJkyjroY3yipwfism9RRCigCcK1hbXtVM8n"],"license":"MIT"},"lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol":{"keccak256":"0xd10975de010d89fd1c78dc5e8a9a7e7f496198085c151648f20cba166b32582b","urls":["bzz-raw://fb0048dee081f6fffa5f74afc3fb328483c2a30504e94a0ddd2a5114d731ec4d","dweb:/ipfs/QmZptt1nmYoA5SgjwnSgWqgUSDgm4q52Yos3xhnMv3MV43"],"license":"MIT"},"lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol":{"keccak256":"0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1","urls":["bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f","dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy"],"license":"MIT"},"lib/openzeppelin-contracts/contracts/utils/math/Math.sol":{"keccak256":"0xe4455ac1eb7fc497bb7402579e7b4d64d928b846fce7d2b6fde06d366f21c2b3","urls":["bzz-raw://cc8841b3cd48ad125e2f46323c8bad3aa0e88e399ec62acb9e57efa7e7c8058c","dweb:/ipfs/QmSqE4mXHA2BXW58deDbXE8MTcsL5JSKNDbm23sVQxRLPS"],"license":"MIT"},"lib/openzeppelin-contracts/contracts/utils/math/SignedMath.sol":{"keccak256":"0xf92515413956f529d95977adc9b0567d583c6203fc31ab1c23824c35187e3ddc","urls":["bzz-raw://c50fcc459e49a9858b6d8ad5f911295cb7c9ab57567845a250bf0153f84a95c7","dweb:/ipfs/QmcEW85JRzvDkQggxiBBLVAasXWdkhEysqypj9EaB6H2g6"],"license":"MIT"},"src/IAminalStructs.sol":{"keccak256":"0xc9c4ad77c82b49ba0e9c39dfe773b7f354d90e6c05cdd691a8e1e1c23e598220","urls":["bzz-raw://c8e5d53ba3433546074017b906e3b61f28992c826d733cfdcf45e5f0372b2405","dweb:/ipfs/QmcHc3bXd5P9u3ckqAHwj1aY7CLMJJLLTedf3pgRhMTFiq"],"license":"GPL-3.0-only"},"src/genes/GeneNFTFactory.sol":{"keccak256":"0x2405c8cf6f45a165b0cbfbd677c66813750c0ba2d3563bd0641f99349b7b655a","urls":["bzz-raw://51eb114b74cf528274bb5921fd4e0cbc3bf15a4c007ec98956b052f217c70aaa","dweb:/ipfs/Qma22gLPfzG1Rs1A834kSvCUjLdvH9MboFicuynK1JJhSQ"],"license":"GPL-3.0-only"},"src/genes/GenesNFT.sol":{"keccak256":"0x9b49111526ab34d425e321002e14c63e33639a3a68026e0e88dca156ce468f10","urls":["bzz-raw://49d5516b88dc5a0407d8b54df2c0ae5d3d1dbe3c85bab38d648bc936a0a59dc9","dweb:/ipfs/QmVuQ934FQkjoneLLhDrBFmdy75jbPUmP9Misr2QUtxQhD"],"license":"GPL-3.0-only"},"src/utils/Base64.sol":{"keccak256":"0x740a295cb25c65ef757c5bbf3446a1829108a4b046bdac5f5a9d574ee08f8552","urls":["bzz-raw://839abaf77a145d94355cf20f001c76e061a3314e96f5bdb59c0708deeb7cb3d3","dweb:/ipfs/QmTf5oJPaerhXhwSvbJBYSsoYZhaT9Zhq1CcDefv2yW9cJ"],"license":null}},"version":1},"id":54}
+{
+  "abi": [
+    {
+      "type": "constructor",
+      "inputs": [
+        { "name": "_geneNFT", "type": "address", "internalType": "address" }
+      ],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "MAX_SVG_LENGTH",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "MIN_CREATION_FEE",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "createGene",
+      "inputs": [
+        { "name": "svg", "type": "string", "internalType": "string" },
+        {
+          "name": "category",
+          "type": "uint8",
+          "internalType": "enum IAminalStructs.VisualsCat"
+        }
+      ],
+      "outputs": [
+        { "name": "geneId", "type": "uint256", "internalType": "uint256" }
+      ],
+      "stateMutability": "payable"
+    },
+    {
+      "type": "function",
+      "name": "geneCategories",
+      "inputs": [
+        { "name": "geneId", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [
+        {
+          "name": "category",
+          "type": "uint8",
+          "internalType": "enum IAminalStructs.VisualsCat"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "geneCreators",
+      "inputs": [
+        { "name": "geneId", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [
+        { "name": "creator", "type": "address", "internalType": "address" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "geneNFT",
+      "inputs": [],
+      "outputs": [
+        { "name": "", "type": "address", "internalType": "contract Genes" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "geneRegistry",
+      "inputs": [
+        { "name": "geneId", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [
+        { "name": "isFromFactory", "type": "bool", "internalType": "bool" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "geneSVGs",
+      "inputs": [
+        { "name": "geneId", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [
+        { "name": "svg", "type": "string", "internalType": "string" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getGeneInfo",
+      "inputs": [
+        { "name": "geneId", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [
+        { "name": "creator", "type": "address", "internalType": "address" },
+        {
+          "name": "category",
+          "type": "uint8",
+          "internalType": "enum IAminalStructs.VisualsCat"
+        },
+        { "name": "svg", "type": "string", "internalType": "string" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getGenesByCategory",
+      "inputs": [
+        {
+          "name": "category",
+          "type": "uint8",
+          "internalType": "enum IAminalStructs.VisualsCat"
+        }
+      ],
+      "outputs": [
+        { "name": "geneIds", "type": "uint256[]", "internalType": "uint256[]" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getGenesByCreator",
+      "inputs": [
+        { "name": "creator", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [
+        { "name": "geneIds", "type": "uint256[]", "internalType": "uint256[]" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "isValidGene",
+      "inputs": [
+        { "name": "geneId", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "owner",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "renounceOwnership",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "totalGenesCreated",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "transferOwnership",
+      "inputs": [
+        { "name": "newOwner", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "withdrawFees",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "event",
+      "name": "GeneCreated",
+      "inputs": [
+        {
+          "name": "geneId",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "creator",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "category",
+          "type": "uint8",
+          "indexed": true,
+          "internalType": "enum IAminalStructs.VisualsCat"
+        },
+        {
+          "name": "svg",
+          "type": "string",
+          "indexed": false,
+          "internalType": "string"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "OwnershipTransferred",
+      "inputs": [
+        {
+          "name": "previousOwner",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "newOwner",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    { "type": "error", "name": "EmptySVG", "inputs": [] },
+    { "type": "error", "name": "InsufficientFee", "inputs": [] },
+    { "type": "error", "name": "InvalidSVG", "inputs": [] },
+    { "type": "error", "name": "SVGTooLarge", "inputs": [] }
+  ],
+  "bytecode": {
+    "object": "0x60a0346100ad57601f610f1138819003918201601f19168301916001600160401b038311848410176100b1578084926020946040528339810103126100ad57516001600160a01b0390818116908190036100ad575f543360018060a01b03198216175f55604051923391167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e05f80a3608052610e4b90816100c6823960805181818161035001526108350152f35b5f80fd5b634e487b7160e01b5f52604160045260245ffdfe60406080815260049081361015610014575f80fd5b5f91823560e01c90816303f0413014610a645781630b08ec19146106e15781630e2fa44c14610a31578163131c6b3514610a14578163252ccf57146108fc578163476343ee146108645781635231f627146108205781636a0c97fe146107fe578163715018a6146107a157816379b68ad3146107365781638da5cb5b1461070e578163940284b8146106e15781639dc35fc614610244578163cc66ddc814610204578163e5cb3725146101d2578163f2fde38b146100fc575063ff1d3b25146100db575f80fd5b346100f857816003193601126100f8576020906005549051908152f35b5080fd5b919050346101ce5760203660031901126101ce576001600160a01b038235818116939192908490036101ca57610130610cdd565b83156101785750505f54826bffffffffffffffffffffffff60a01b8216175f55167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e05f80a380f35b906020608492519162461bcd60e51b8352820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b6064820152fd5b8480fd5b8280fd5b9050346101ce5760203660031901126101ce5760ff82602094610202933581526003865220541691518092610b6f565bf35b9050346101ce5760203660031901126101ce5781610240938261022d9335825260205220610c3c565b9051918291602083526020830190610b90565b0390f35b9050816003193601126101ce5780359167ffffffffffffffff918284116101ca57366023850112156101ca57838101358381116106dd5760249485810190368784830101116106d95786359360088510156106d55766038d7ea4c6800034106106c85783156106ba5761c35084116106ad576102bf84610de8565b976102cc8751998a610c06565b84895260209985858c8c0137808b878c0101528099815b81515f19810190811161069a5781101561068a576001600160f81b0319600f60fa1b816103108486610e04565b5116149081610651575b5061032d5761032890610d54565b6102e3565b50509091929394959697985060015b1561064157875163e00dd16160e01b8152987f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168b8b8681845afa9a8b1561060857839b610612575b50803b156101ce579082606089938683898f8f906103cd8f6103d892519b8c998a988997636a4b888360e01b895233908901528701526064860191610d34565b916044840190610b6f565b03925af1801561060857918b97969593918995936105d7575b5050868152600192838d528c60038c84209160ff19928784825416179055600281528d8520336bffffffffffffffffffffffff60a01b825416179055528b83209081541660ff8c161790558782528c528981209461044f8654610bce565b601f811161057a575b5081601f86116001146104e257928593926104cc9795927f88106ea9f260e9b698c3ddfc183e10c59b5af6b5fb2766d47ce5b6107584c6dc999794956104d5575b5050501b905f198860031b1c19161790555b6104b6600554610d54565b60055586519182918a835233968b840191610d34565b0390a451908152f35b01013592505f8080610499565b8681528d812094959193929190601f198216908f5b82821061055d575050916104cc979593917f88106ea9f260e9b698c3ddfc183e10c59b5af6b5fb2766d47ce5b6107584c6dc9997959310610542575b5050505086811b0190556104ab565b5f1960f88c60031b161c19920101351690555f808080610533565b84870186013588558f9b5096880196938401938c9350018f6104f7565b918697985080949691939550528b8320601f890160051c8101918d8a106105cd575b9189959391601f8e9a999896940160051c01905b8181106105bd5750610458565b8381558d99508a965085016105b0565b909150819061059c565b91939596975080929450116105f75791899594939187938a525f806103f1565b50634e487b7160e01b815260418352fd5b8a513d85823e3d90fd5b909a508b81813d831161063a575b61062a8183610c06565b810103126101ce5751995f61038d565b503d610620565b87516330408e4560e21b81528390fd5b60018301915081831161067857602f60f81b9161066e9085610e04565b511614155f61031a565b634e487b7160e01b8552601187528585fd5b505090919293949596979861033c565b5050634e487b7160e01b82525060118352fd5b8551626f011960e11b8152fd5b855163204e1a0760e21b8152fd5b855162976f7560e21b8152fd5b8880fd5b8780fd5b8580fd5b9050346101ce5760203660031901126101ce578160209360ff923581526001855220541690519015158152f35b5050346100f857816003193601126100f857905490516001600160a01b039091168152602090f35b8383346100f85760203660031901126100f85761024090833583526002602052606061077f8260018060a01b03818720541695600360205260ff82822054169760205220610c3c565b91610794815196879687526020870190610b6f565b8401526060830190610b90565b83346107fb57806003193601126107fb576107ba610cdd565b80546001600160a01b03198116825581906001600160a01b03167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e08280a380f35b80fd5b5050346100f857816003193601126100f8576020905166038d7ea4c680008152f35b5050346100f857816003193601126100f857517f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168152602090f35b919050346101ce57826003193601126101ce5761087f610cdd565b828080804760018060a01b038254165af13d156108f7573d6108a081610de8565b906108ad84519283610c06565b81528460203d92013e5b156108c0578280f35b906020606492519162461bcd60e51b8352820152601160248201527015da5d1a191c985dd85b0819985a5b1959607a1b6044820152fd5b6108b7565b8383346100f857602091826003193601126107fb5760089284358481101580610a10576005549380805b8681106109b8575061093790610d8e565b968194825b878110610950578851806102408c82610b35565b808452600382528884205460ff16856109a557838110156109a557868b9114610983575b5061097e90610d54565b61093c565b878261099661097e949a61099c94610dc0565b52610d54565b96905089610974565b634e487b7160e01b855260218c52602485fd5b808352600386528783205460ff16846109fd57898110156109fd5785146109e8575b6109e390610d54565b610926565b906109f56109e391610d54565b9190506109da565b634e487b7160e01b845260218b52602484fd5b8380fd5b5050346100f857816003193601126100f8576020905161c3508152f35b9050346101ce5760203660031901126101ce5735825260026020908152918190205490516001600160a01b039091168152f35b839150346100f857602090816003193601126101ce576001600160a01b0391903582811690819003610a10576005549284805b858110610afe5750610aa890610d8e565b948093815b868110610ac1578851806102408a82610b35565b8083526002825284848a8520541614610ae3575b610ade90610d54565b610aad565b94610af68187610996610ade948c610dc0565b959050610ad5565b808752600285528383898920541614610b20575b610b1b90610d54565b610a97565b90610b2d610b1b91610d54565b919050610b12565b602090816040818301928281528551809452019301915f5b828110610b5b575050505090565b835185529381019392810192600101610b4d565b906008821015610b7c5752565b634e487b7160e01b5f52602160045260245ffd5b91908251928382525f5b848110610bba575050825f602080949584010152601f8019910116010190565b602081830181015184830182015201610b9a565b90600182811c92168015610bfc575b6020831014610be857565b634e487b7160e01b5f52602260045260245ffd5b91607f1691610bdd565b90601f8019910116810190811067ffffffffffffffff821117610c2857604052565b634e487b7160e01b5f52604160045260245ffd5b9060405191825f825492610c4f84610bce565b9081845260019485811690815f14610cba5750600114610c7a575b5050610c7892500383610c06565b565b909391505f52602090815f20935f915b818310610ca2575050610c7893508201015f80610c6a565b85548884018501529485019487945091830191610c8a565b915050610c7894506020925060ff191682840152151560051b8201015f80610c6a565b5f546001600160a01b03163303610cf057565b606460405162461bcd60e51b815260206004820152602060248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e65726044820152fd5b908060209392818452848401375f828201840152601f01601f1916010190565b5f198114610d625760010190565b634e487b7160e01b5f52601160045260245ffd5b67ffffffffffffffff8111610c285760051b60200190565b90610d9882610d76565b610da56040519182610c06565b8281528092610db6601f1991610d76565b0190602036910137565b8051821015610dd45760209160051b010190565b634e487b7160e01b5f52603260045260245ffd5b67ffffffffffffffff8111610c2857601f01601f191660200190565b908151811015610dd457016020019056fea2646970667358221220f438e5d1b80f4e890c3a76ade9f4a3c86cf17ef52467f7fc877663cbf5d5c31064736f6c63430008140033",
+    "sourceMap": "504:5889:54:-:0;;;;;;;;;;;;;-1:-1:-1;;504:5889:54;;;;-1:-1:-1;;;;;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;504:5889:54;;;;;;;;;;-1:-1:-1;504:5889:54;719:10:30;504:5889:54;;;;;;;;;-1:-1:-1;504:5889:54;;;719:10:30;;504:5889:54;;2566:40:22;-1:-1:-1;2566:40:22;;1775:28:54;;504:5889;;;;;;1775:28;504:5889;;;;;;;;;;;;-1:-1:-1;504:5889:54;;;;;;-1:-1:-1;504:5889:54;;;;;-1:-1:-1;504:5889:54",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x60406080815260049081361015610014575f80fd5b5f91823560e01c90816303f0413014610a645781630b08ec19146106e15781630e2fa44c14610a31578163131c6b3514610a14578163252ccf57146108fc578163476343ee146108645781635231f627146108205781636a0c97fe146107fe578163715018a6146107a157816379b68ad3146107365781638da5cb5b1461070e578163940284b8146106e15781639dc35fc614610244578163cc66ddc814610204578163e5cb3725146101d2578163f2fde38b146100fc575063ff1d3b25146100db575f80fd5b346100f857816003193601126100f8576020906005549051908152f35b5080fd5b919050346101ce5760203660031901126101ce576001600160a01b038235818116939192908490036101ca57610130610cdd565b83156101785750505f54826bffffffffffffffffffffffff60a01b8216175f55167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e05f80a380f35b906020608492519162461bcd60e51b8352820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b6064820152fd5b8480fd5b8280fd5b9050346101ce5760203660031901126101ce5760ff82602094610202933581526003865220541691518092610b6f565bf35b9050346101ce5760203660031901126101ce5781610240938261022d9335825260205220610c3c565b9051918291602083526020830190610b90565b0390f35b9050816003193601126101ce5780359167ffffffffffffffff918284116101ca57366023850112156101ca57838101358381116106dd5760249485810190368784830101116106d95786359360088510156106d55766038d7ea4c6800034106106c85783156106ba5761c35084116106ad576102bf84610de8565b976102cc8751998a610c06565b84895260209985858c8c0137808b878c0101528099815b81515f19810190811161069a5781101561068a576001600160f81b0319600f60fa1b816103108486610e04565b5116149081610651575b5061032d5761032890610d54565b6102e3565b50509091929394959697985060015b1561064157875163e00dd16160e01b8152987f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168b8b8681845afa9a8b1561060857839b610612575b50803b156101ce579082606089938683898f8f906103cd8f6103d892519b8c998a988997636a4b888360e01b895233908901528701526064860191610d34565b916044840190610b6f565b03925af1801561060857918b97969593918995936105d7575b5050868152600192838d528c60038c84209160ff19928784825416179055600281528d8520336bffffffffffffffffffffffff60a01b825416179055528b83209081541660ff8c161790558782528c528981209461044f8654610bce565b601f811161057a575b5081601f86116001146104e257928593926104cc9795927f88106ea9f260e9b698c3ddfc183e10c59b5af6b5fb2766d47ce5b6107584c6dc999794956104d5575b5050501b905f198860031b1c19161790555b6104b6600554610d54565b60055586519182918a835233968b840191610d34565b0390a451908152f35b01013592505f8080610499565b8681528d812094959193929190601f198216908f5b82821061055d575050916104cc979593917f88106ea9f260e9b698c3ddfc183e10c59b5af6b5fb2766d47ce5b6107584c6dc9997959310610542575b5050505086811b0190556104ab565b5f1960f88c60031b161c19920101351690555f808080610533565b84870186013588558f9b5096880196938401938c9350018f6104f7565b918697985080949691939550528b8320601f890160051c8101918d8a106105cd575b9189959391601f8e9a999896940160051c01905b8181106105bd5750610458565b8381558d99508a965085016105b0565b909150819061059c565b91939596975080929450116105f75791899594939187938a525f806103f1565b50634e487b7160e01b815260418352fd5b8a513d85823e3d90fd5b909a508b81813d831161063a575b61062a8183610c06565b810103126101ce5751995f61038d565b503d610620565b87516330408e4560e21b81528390fd5b60018301915081831161067857602f60f81b9161066e9085610e04565b511614155f61031a565b634e487b7160e01b8552601187528585fd5b505090919293949596979861033c565b5050634e487b7160e01b82525060118352fd5b8551626f011960e11b8152fd5b855163204e1a0760e21b8152fd5b855162976f7560e21b8152fd5b8880fd5b8780fd5b8580fd5b9050346101ce5760203660031901126101ce578160209360ff923581526001855220541690519015158152f35b5050346100f857816003193601126100f857905490516001600160a01b039091168152602090f35b8383346100f85760203660031901126100f85761024090833583526002602052606061077f8260018060a01b03818720541695600360205260ff82822054169760205220610c3c565b91610794815196879687526020870190610b6f565b8401526060830190610b90565b83346107fb57806003193601126107fb576107ba610cdd565b80546001600160a01b03198116825581906001600160a01b03167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e08280a380f35b80fd5b5050346100f857816003193601126100f8576020905166038d7ea4c680008152f35b5050346100f857816003193601126100f857517f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168152602090f35b919050346101ce57826003193601126101ce5761087f610cdd565b828080804760018060a01b038254165af13d156108f7573d6108a081610de8565b906108ad84519283610c06565b81528460203d92013e5b156108c0578280f35b906020606492519162461bcd60e51b8352820152601160248201527015da5d1a191c985dd85b0819985a5b1959607a1b6044820152fd5b6108b7565b8383346100f857602091826003193601126107fb5760089284358481101580610a10576005549380805b8681106109b8575061093790610d8e565b968194825b878110610950578851806102408c82610b35565b808452600382528884205460ff16856109a557838110156109a557868b9114610983575b5061097e90610d54565b61093c565b878261099661097e949a61099c94610dc0565b52610d54565b96905089610974565b634e487b7160e01b855260218c52602485fd5b808352600386528783205460ff16846109fd57898110156109fd5785146109e8575b6109e390610d54565b610926565b906109f56109e391610d54565b9190506109da565b634e487b7160e01b845260218b52602484fd5b8380fd5b5050346100f857816003193601126100f8576020905161c3508152f35b9050346101ce5760203660031901126101ce5735825260026020908152918190205490516001600160a01b039091168152f35b839150346100f857602090816003193601126101ce576001600160a01b0391903582811690819003610a10576005549284805b858110610afe5750610aa890610d8e565b948093815b868110610ac1578851806102408a82610b35565b8083526002825284848a8520541614610ae3575b610ade90610d54565b610aad565b94610af68187610996610ade948c610dc0565b959050610ad5565b808752600285528383898920541614610b20575b610b1b90610d54565b610a97565b90610b2d610b1b91610d54565b919050610b12565b602090816040818301928281528551809452019301915f5b828110610b5b575050505090565b835185529381019392810192600101610b4d565b906008821015610b7c5752565b634e487b7160e01b5f52602160045260245ffd5b91908251928382525f5b848110610bba575050825f602080949584010152601f8019910116010190565b602081830181015184830182015201610b9a565b90600182811c92168015610bfc575b6020831014610be857565b634e487b7160e01b5f52602260045260245ffd5b91607f1691610bdd565b90601f8019910116810190811067ffffffffffffffff821117610c2857604052565b634e487b7160e01b5f52604160045260245ffd5b9060405191825f825492610c4f84610bce565b9081845260019485811690815f14610cba5750600114610c7a575b5050610c7892500383610c06565b565b909391505f52602090815f20935f915b818310610ca2575050610c7893508201015f80610c6a565b85548884018501529485019487945091830191610c8a565b915050610c7894506020925060ff191682840152151560051b8201015f80610c6a565b5f546001600160a01b03163303610cf057565b606460405162461bcd60e51b815260206004820152602060248201527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e65726044820152fd5b908060209392818452848401375f828201840152601f01601f1916010190565b5f198114610d625760010190565b634e487b7160e01b5f52601160045260245ffd5b67ffffffffffffffff8111610c285760051b60200190565b90610d9882610d76565b610da56040519182610c06565b8281528092610db6601f1991610d76565b0190602036910137565b8051821015610dd45760209160051b010190565b634e487b7160e01b5f52603260045260245ffd5b67ffffffffffffffff8111610c2857601f01601f191660200190565b908151811015610dd457016020019056fea2646970667358221220f438e5d1b80f4e890c3a76ade9f4a3c86cf17ef52467f7fc877663cbf5d5c31064736f6c63430008140033",
+    "sourceMap": "504:5889:54:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1216:32;504:5889;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;504:5889:54;;;;-1:-1:-1;;;;;504:5889:54;;;;;;;;;;;;;;1063:62:22;;:::i;:::-;2162:22;;504:5889:54;;;;;;;;;;;;;;;;2566:40:22;504:5889:54;2566:40:22;;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;504:5889:54;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;-1:-1:-1;;504:5889:54;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1372:11;2235:9;:28;2231:58;;2303:22;;2299:45;;1493:6;2358:34;;2354:60;;504:5889;;;:::i;:::-;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;6118:26;6159:13;;6199:3;504:5889;;-1:-1:-1;;504:5889:54;;;;;;;6174:23;;;;;-1:-1:-1;;;;;;;;;504:5889:54;6222:11;;;;:::i;:::-;504:5889;;6222:18;:44;;;;6199:3;6218:126;;;6199:3;;;:::i;:::-;6159:13;;6218:126;6286:20;;;;;;;;;;;;6196:1;6154:200;2498:17;2494:42;;504:5889;;-1:-1:-1;;;2627:19:54;;504:5889;2627:7;-1:-1:-1;;;;;504:5889:54;2627:19;504:5889;2627:19;504:5889;;2627:19;;;;;;;;;;;6154:200;2701:39;;;;;;504:5889;;;;;;;;;;;;;;;;;;;;;;;;;;2701:39;;2714:10;2701:39;;;504:5889;;;;;;;;;:::i;:::-;;;;;;;:::i;:::-;2701:39;;;;;;;;;;;;;;;;;;;;6154:200;504:5889;;;;;;;;;;;;;;;;;;;;;;;;;;;2845:12;504:5889;;;;;2714:10;504:5889;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;6154:200;504:5889;;;;;;;;;;;;;;;;;2999:46;504:5889;;;;;;;;;;;;;;;;;;;;;;;;2964:19;;504:5889;2964:19;:::i;:::-;;504:5889;;;;;;;;;2714:10;504:5889;;;;;;:::i;:::-;2999:46;;;504:5889;;;;;;;;;;-1:-1:-1;504:5889:54;;;;;;;;;;;;;;;;;;;-1:-1:-1;;504:5889:54;;;;;;;;;;;;;;;;;;2999:46;504:5889;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;504:5889:54;;;;;;;;;;-1:-1:-1;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;504:5889:54;;-1:-1:-1;504:5889:54;;;;;;;-1:-1:-1;504:5889:54;;;;2701:39;504:5889;;;;;;;;;;;;;;;;;;;;;;;2701:39;;;;504:5889;-1:-1:-1;;;;504:5889:54;;;;;;2701:39;504:5889;;;;;;;;;2627:19;;;;;;;;;;;;;;;;;:::i;:::-;;;504:5889;;;;;2627:19;;;;;;;;;2494:42;504:5889;;-1:-1:-1;;;2524:12:54;;504:5889;;2524:12;6222:44;6196:1;504:5889;;;-1:-1:-1;504:5889:54;;;;;-1:-1:-1;;;504:5889:54;6244:15;;;;:::i;:::-;504:5889;;6244:22;;6222:44;;;504:5889;-1:-1:-1;;;504:5889:54;;;;;;;;6174:23;;;;;;;;;;;;;;504:5889;-1:-1:-1;;;;;504:5889:54;;-1:-1:-1;504:5889:54;;;;2354:60;504:5889;;-1:-1:-1;;;2401:13:54;;;2299:45;504:5889;;-1:-1:-1;;;2334:10:54;;;2231:58;504:5889;;-1:-1:-1;;;2272:17:54;;;504:5889;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;504:5889:54;;;;;;;;;;;;;;;;-1:-1:-1;;504:5889:54;;;;;;;;;;3784:12;504:5889;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;:::i;:::-;;;;;;;;;;;;;1063:62:22;;:::i;:::-;504:5889:54;;-1:-1:-1;;;;;;504:5889:54;;;;;;-1:-1:-1;;;;;504:5889:54;2566:40:22;504:5889:54;;2566:40:22;504:5889:54;;;;;;;;;;;;;;;;;;;;;;1372:11;504:5889;;;;;;;;;;;;;;;;;;604:33;-1:-1:-1;;;;;504:5889:54;;;;;;;;;;;;;;;;;;;;;1063:62:22;;:::i;:::-;5506:21:54;;;;;504:5889;;;;;;;;5555:41;;504:5889;;;;;;;;:::i;:::-;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;4969:17;504:5889;;4918:17;;4965:21;;;;;;5115:20;;;;:::i;:::-;5145:17;;5177:13;;5192:21;;;;;;504:5889;;;;;;;:::i;5215:3::-;504:5889;;;;;;;;;;;;;;;;;;;;;5238:29;;;;5234:111;;5215:3;;;;;:::i;:::-;5177:13;;5234:111;5287:18;;;5215:3;5287:18;;5323:7;5287:18;;:::i;:::-;504:5889;5323:7;:::i;:::-;5234:111;;;;;;504:5889;-1:-1:-1;;;504:5889:54;;;;;;;;4988:3;504:5889;;;;;;;;;;;;;;;;;;;;;5011:29;;5007:42;;4988:3;;;;:::i;:::-;4950:13;;5007:42;5042:7;;4988:3;5042:7;;:::i;:::-;5007:42;;;;;504:5889;-1:-1:-1;;;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1493:6;504:5889;;;;;;;;;;;-1:-1:-1;;504:5889:54;;;;;;;848:62;504:5889;;;;;;;;;;;-1:-1:-1;;;;;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;504:5889:54;;;;;;;;;;;;4218:17;504:5889;;4167:17;;4214:21;;;;;;4361:20;;;;:::i;:::-;4391:17;;4423:13;;4438:21;;;;;;504:5889;;;;;;;:::i;4461:3::-;504:5889;;;4260:12;504:5889;;;;;;;;;4484:26;4480:108;;4461:3;;;;:::i;:::-;4423:13;;4480:108;4530:18;4566:7;4530:18;;;4461:3;4530:18;;;:::i;4566:7::-;4480:108;;;;;4237:3;504:5889;;;4260:12;504:5889;;;;;;;;;4260:26;4256:39;;4237:3;;;;:::i;:::-;4199:13;;4256:39;4288:7;;4237:3;4288:7;;:::i;:::-;4256:39;;;;;504:5889;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;-1:-1:-1;504:5889:54;;;;;-1:-1:-1;504:5889:54;;;;;;;;;;-1:-1:-1;504:5889:54;;;;;;;;;-1:-1:-1;504:5889:54;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;-1:-1:-1;504:5889:54;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;:::o;:::-;;;;;-1:-1:-1;504:5889:54;;;;-1:-1:-1;504:5889:54;;-1:-1:-1;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;504:5889:54;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1359:130:22;1273:6;504:5889:54;-1:-1:-1;;;;;504:5889:54;719:10:30;1422:23:22;504:5889:54;;1359:130:22:o;504:5889:54:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;504:5889:54;;;;;;;;-1:-1:-1;;504:5889:54;;;;:::o;:::-;-1:-1:-1;;504:5889:54;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;:::i;:::-;;;;;;;:::i;:::-;;;;;;;;;;;:::i;:::-;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;504:5889:54;;;;:::o;:::-;;;;;;;;;;;;;:::o",
+    "linkReferences": {},
+    "immutableReferences": {
+      "39277": [
+        { "start": 848, "length": 32 },
+        { "start": 2101, "length": 32 }
+      ]
+    }
+  },
+  "methodIdentifiers": {
+    "MAX_SVG_LENGTH()": "131c6b35",
+    "MIN_CREATION_FEE()": "6a0c97fe",
+    "createGene(string,uint8)": "9dc35fc6",
+    "geneCategories(uint256)": "e5cb3725",
+    "geneCreators(uint256)": "0e2fa44c",
+    "geneNFT()": "5231f627",
+    "geneRegistry(uint256)": "0b08ec19",
+    "geneSVGs(uint256)": "cc66ddc8",
+    "getGeneInfo(uint256)": "79b68ad3",
+    "getGenesByCategory(uint8)": "252ccf57",
+    "getGenesByCreator(address)": "03f04130",
+    "isValidGene(uint256)": "940284b8",
+    "owner()": "8da5cb5b",
+    "renounceOwnership()": "715018a6",
+    "totalGenesCreated()": "ff1d3b25",
+    "transferOwnership(address)": "f2fde38b",
+    "withdrawFees()": "476343ee"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.20+commit.a1b79de6\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_geneNFT\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"EmptySVG\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InsufficientFee\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidSVG\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"SVGTooLarge\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"geneId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"enum IAminalStructs.VisualsCat\",\"name\":\"category\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"svg\",\"type\":\"string\"}],\"name\":\"GeneCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"MAX_SVG_LENGTH\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"MIN_CREATION_FEE\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"svg\",\"type\":\"string\"},{\"internalType\":\"enum IAminalStructs.VisualsCat\",\"name\":\"category\",\"type\":\"uint8\"}],\"name\":\"createGene\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"geneId\",\"type\":\"uint256\"}],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"geneId\",\"type\":\"uint256\"}],\"name\":\"geneCategories\",\"outputs\":[{\"internalType\":\"enum IAminalStructs.VisualsCat\",\"name\":\"category\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"geneId\",\"type\":\"uint256\"}],\"name\":\"geneCreators\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"geneNFT\",\"outputs\":[{\"internalType\":\"contract Genes\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"geneId\",\"type\":\"uint256\"}],\"name\":\"geneRegistry\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"isFromFactory\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"geneId\",\"type\":\"uint256\"}],\"name\":\"geneSVGs\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"svg\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"geneId\",\"type\":\"uint256\"}],\"name\":\"getGeneInfo\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"},{\"internalType\":\"enum IAminalStructs.VisualsCat\",\"name\":\"category\",\"type\":\"uint8\"},{\"internalType\":\"string\",\"name\":\"svg\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"enum IAminalStructs.VisualsCat\",\"name\":\"category\",\"type\":\"uint8\"}],\"name\":\"getGenesByCategory\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"geneIds\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"creator\",\"type\":\"address\"}],\"name\":\"getGenesByCreator\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"geneIds\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"geneId\",\"type\":\"uint256\"}],\"name\":\"isValidGene\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalGenesCreated\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"withdrawFees\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Factory for creating Gene NFTs representing traits for Aminals, also serves as a registry for Gene NFTs\",\"kind\":\"dev\",\"methods\":{\"createGene(string,uint8)\":{\"details\":\"Anyone can call this function to create permissionless traits\",\"params\":{\"category\":\"The visual category for the trait\",\"svg\":\"The SVG content for the trait\"},\"returns\":{\"geneId\":\"The ID of the created Gene NFT\"}},\"getGeneInfo(uint256)\":{\"params\":{\"geneId\":\"The ID of the Gene NFT\"},\"returns\":{\"category\":\"The visual category\",\"creator\":\"The creator address\",\"svg\":\"The SVG content\"}},\"getGenesByCategory(uint8)\":{\"params\":{\"category\":\"The visual category\"},\"returns\":{\"geneIds\":\"Array of Gene NFT IDs in the category\"}},\"getGenesByCreator(address)\":{\"params\":{\"creator\":\"The creator address\"},\"returns\":{\"geneIds\":\"Array of Gene NFT IDs created by the address\"}},\"isValidGene(uint256)\":{\"params\":{\"geneId\":\"The ID of the Gene NFT to check\"},\"returns\":{\"_0\":\"bool True if the gene was created from this factory\"}},\"owner()\":{\"details\":\"Returns the address of the current owner.\"},\"renounceOwnership()\":{\"details\":\"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.\"},\"transferOwnership(address)\":{\"details\":\"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.\"}},\"title\":\"GeneRegistry\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"MAX_SVG_LENGTH()\":{\"notice\":\"Maximum SVG length to prevent bloated storage\"},\"MIN_CREATION_FEE()\":{\"notice\":\"Minimum ETH required to create a Gene NFT (prevents spam)\"},\"createGene(string,uint8)\":{\"notice\":\"Create a new Gene NFT with trait data\"},\"geneCategories(uint256)\":{\"notice\":\"Mapping from gene ID to trait category\"},\"geneCreators(uint256)\":{\"notice\":\"Mapping from gene ID to creator address\"},\"geneNFT()\":{\"notice\":\"The main Gene NFT contract\"},\"geneRegistry(uint256)\":{\"notice\":\"Registry mapping to verify Gene NFTs came from this factory\"},\"geneSVGs(uint256)\":{\"notice\":\"Mapping from gene ID to SVG content\"},\"getGeneInfo(uint256)\":{\"notice\":\"Get Gene NFT information\"},\"getGenesByCategory(uint8)\":{\"notice\":\"Get all Gene NFTs by category\"},\"getGenesByCreator(address)\":{\"notice\":\"Get all Gene NFTs by creator\"},\"isValidGene(uint256)\":{\"notice\":\"Check if a Gene NFT was created from this factory\"},\"totalGenesCreated()\":{\"notice\":\"Counter for tracking total genes created\"},\"withdrawFees()\":{\"notice\":\"Withdraw collected fees (only owner)\"}},\"notice\":\"Anyone can create Gene NFTs from this factory for permissionless trait creation\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/genes/GeneRegistry.sol\":\"GeneRegistry\"},\"evmVersion\":\"shanghai\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":VRGDAs/=lib/VRGDAs/src/\",\":abdk-libraries-solidity/=lib/abdk-libraries-solidity/\",\":ds-test/=lib/VRGDAs/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\",\":oz/=lib/openzeppelin-contracts/contracts/\",\":solmate/=lib/VRGDAs/lib/solmate/src/\"],\"viaIR\":true},\"sources\":{\"lib/openzeppelin-contracts/contracts/access/Ownable.sol\":{\"keccak256\":\"0xba43b97fba0d32eb4254f6a5a297b39a19a247082a02d6e69349e071e2946218\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://fc980984badf3984b6303b377711220e067722bbd6a135b24669ff5069ef9f32\",\"dweb:/ipfs/QmPHXMSXj99XjSVM21YsY6aNtLLjLVXDbyN76J5HQYvvrz\"]},\"lib/openzeppelin-contracts/contracts/proxy/utils/Initializable.sol\":{\"keccak256\":\"0x3d6069be9b4c01fb81840fb9c2c4dc58dd6a6a4aafaa2c6837de8699574d84c6\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://720d6bb56ea0c4ef781c0bd65c5bd0541f5a46100163b2587170f97658d2deed\",\"dweb:/ipfs/QmTS2biLVPrv8CeeXCaKmkFxonMiRvc1LxiYBRYDAJHQUS\"]},\"lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol\":{\"keccak256\":\"0x2c309e7df9e05e6ce15bedfe74f3c61b467fc37e0fae9eab496acf5ea0bbd7ff\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7063b5c98711a98018ba4635ac74cee1c1cfa2ea01099498e062699ed9530005\",\"dweb:/ipfs/QmeJ8rGXkcv7RrqLdAW8PCXPAykxVsddfYY6g5NaTwmRFE\"]},\"lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol\":{\"keccak256\":\"0x5bce51e11f7d194b79ea59fe00c9e8de9fa2c5530124960f29a24d4c740a3266\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7e66dfde185df46104c11bc89d08fa0760737aa59a2b8546a656473d810a8ea4\",\"dweb:/ipfs/QmXvyqtXPaPss2PD7eqPoSao5Szm2n6UMoiG8TZZDjmChR\"]},\"lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol\":{\"keccak256\":\"0xa82b58eca1ee256be466e536706850163d2ec7821945abd6b4778cfb3bee37da\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6e75cf83beb757b8855791088546b8337e9d4684e169400c20d44a515353b708\",\"dweb:/ipfs/QmYvPafLfoquiDMEj7CKHtvbgHu7TJNPSVPSCjrtjV8HjV\"]},\"lib/openzeppelin-contracts/contracts/token/ERC721/extensions/IERC721Metadata.sol\":{\"keccak256\":\"0x75b829ff2f26c14355d1cba20e16fe7b29ca58eb5fef665ede48bc0f9c6c74b9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a0a107160525724f9e1bbbab031defc2f298296dd9e331f16a6f7130cec32146\",\"dweb:/ipfs/QmemujxSd7gX8A9M8UwmNbz4Ms3U9FG9QfudUgxwvTmPWf\"]},\"lib/openzeppelin-contracts/contracts/utils/Address.sol\":{\"keccak256\":\"0x006dd67219697fe68d7fbfdea512e7c4cb64a43565ed86171d67e844982da6fa\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://2455248c8ddd9cc6a7af76a13973cddf222072427e7b0e2a7d1aff345145e931\",\"dweb:/ipfs/QmfYjnjRbWqYpuxurqveE6HtzsY1Xx323J428AKQgtBJZm\"]},\"lib/openzeppelin-contracts/contracts/utils/Context.sol\":{\"keccak256\":\"0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92\",\"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3\"]},\"lib/openzeppelin-contracts/contracts/utils/Strings.sol\":{\"keccak256\":\"0x3088eb2868e8d13d89d16670b5f8612c4ab9ff8956272837d8e90106c59c14a0\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://b81d9ff6559ea5c47fc573e17ece6d9ba5d6839e213e6ebc3b4c5c8fe4199d7f\",\"dweb:/ipfs/QmPCW1bFisUzJkyjroY3yipwfism9RRCigCcK1hbXtVM8n\"]},\"lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol\":{\"keccak256\":\"0xd10975de010d89fd1c78dc5e8a9a7e7f496198085c151648f20cba166b32582b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://fb0048dee081f6fffa5f74afc3fb328483c2a30504e94a0ddd2a5114d731ec4d\",\"dweb:/ipfs/QmZptt1nmYoA5SgjwnSgWqgUSDgm4q52Yos3xhnMv3MV43\"]},\"lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol\":{\"keccak256\":\"0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f\",\"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy\"]},\"lib/openzeppelin-contracts/contracts/utils/math/Math.sol\":{\"keccak256\":\"0xe4455ac1eb7fc497bb7402579e7b4d64d928b846fce7d2b6fde06d366f21c2b3\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://cc8841b3cd48ad125e2f46323c8bad3aa0e88e399ec62acb9e57efa7e7c8058c\",\"dweb:/ipfs/QmSqE4mXHA2BXW58deDbXE8MTcsL5JSKNDbm23sVQxRLPS\"]},\"lib/openzeppelin-contracts/contracts/utils/math/SignedMath.sol\":{\"keccak256\":\"0xf92515413956f529d95977adc9b0567d583c6203fc31ab1c23824c35187e3ddc\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://c50fcc459e49a9858b6d8ad5f911295cb7c9ab57567845a250bf0153f84a95c7\",\"dweb:/ipfs/QmcEW85JRzvDkQggxiBBLVAasXWdkhEysqypj9EaB6H2g6\"]},\"src/IAminalStructs.sol\":{\"keccak256\":\"0xc9c4ad77c82b49ba0e9c39dfe773b7f354d90e6c05cdd691a8e1e1c23e598220\",\"license\":\"GPL-3.0-only\",\"urls\":[\"bzz-raw://c8e5d53ba3433546074017b906e3b61f28992c826d733cfdcf45e5f0372b2405\",\"dweb:/ipfs/QmcHc3bXd5P9u3ckqAHwj1aY7CLMJJLLTedf3pgRhMTFiq\"]},\"src/genes/GeneRegistry.sol\":{\"keccak256\":\"0x2405c8cf6f45a165b0cbfbd677c66813750c0ba2d3563bd0641f99349b7b655a\",\"license\":\"GPL-3.0-only\",\"urls\":[\"bzz-raw://51eb114b74cf528274bb5921fd4e0cbc3bf15a4c007ec98956b052f217c70aaa\",\"dweb:/ipfs/Qma22gLPfzG1Rs1A834kSvCUjLdvH9MboFicuynK1JJhSQ\"]},\"src/genes/Genes.sol\":{\"keccak256\":\"0x9b49111526ab34d425e321002e14c63e33639a3a68026e0e88dca156ce468f10\",\"license\":\"GPL-3.0-only\",\"urls\":[\"bzz-raw://49d5516b88dc5a0407d8b54df2c0ae5d3d1dbe3c85bab38d648bc936a0a59dc9\",\"dweb:/ipfs/QmVuQ934FQkjoneLLhDrBFmdy75jbPUmP9Misr2QUtxQhD\"]},\"src/utils/Base64.sol\":{\"keccak256\":\"0x740a295cb25c65ef757c5bbf3446a1829108a4b046bdac5f5a9d574ee08f8552\",\"urls\":[\"bzz-raw://839abaf77a145d94355cf20f001c76e061a3314e96f5bdb59c0708deeb7cb3d3\",\"dweb:/ipfs/QmTf5oJPaerhXhwSvbJBYSsoYZhaT9Zhq1CcDefv2yW9cJ\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": { "version": "0.8.20+commit.a1b79de6" },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            { "internalType": "address", "name": "_geneNFT", "type": "address" }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "constructor"
+        },
+        { "inputs": [], "type": "error", "name": "EmptySVG" },
+        { "inputs": [], "type": "error", "name": "InsufficientFee" },
+        { "inputs": [], "type": "error", "name": "InvalidSVG" },
+        { "inputs": [], "type": "error", "name": "SVGTooLarge" },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "geneId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "creator",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "enum IAminalStructs.VisualsCat",
+              "name": "category",
+              "type": "uint8",
+              "indexed": true
+            },
+            {
+              "internalType": "string",
+              "name": "svg",
+              "type": "string",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "GeneCreated",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "previousOwner",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "OwnershipTransferred",
+          "anonymous": false
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "MAX_SVG_LENGTH",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "MIN_CREATION_FEE",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ]
+        },
+        {
+          "inputs": [
+            { "internalType": "string", "name": "svg", "type": "string" },
+            {
+              "internalType": "enum IAminalStructs.VisualsCat",
+              "name": "category",
+              "type": "uint8"
+            }
+          ],
+          "stateMutability": "payable",
+          "type": "function",
+          "name": "createGene",
+          "outputs": [
+            { "internalType": "uint256", "name": "geneId", "type": "uint256" }
+          ]
+        },
+        {
+          "inputs": [
+            { "internalType": "uint256", "name": "geneId", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "geneCategories",
+          "outputs": [
+            {
+              "internalType": "enum IAminalStructs.VisualsCat",
+              "name": "category",
+              "type": "uint8"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            { "internalType": "uint256", "name": "geneId", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "geneCreators",
+          "outputs": [
+            { "internalType": "address", "name": "creator", "type": "address" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "geneNFT",
+          "outputs": [
+            {
+              "internalType": "contract Genes",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            { "internalType": "uint256", "name": "geneId", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "geneRegistry",
+          "outputs": [
+            { "internalType": "bool", "name": "isFromFactory", "type": "bool" }
+          ]
+        },
+        {
+          "inputs": [
+            { "internalType": "uint256", "name": "geneId", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "geneSVGs",
+          "outputs": [
+            { "internalType": "string", "name": "svg", "type": "string" }
+          ]
+        },
+        {
+          "inputs": [
+            { "internalType": "uint256", "name": "geneId", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getGeneInfo",
+          "outputs": [
+            { "internalType": "address", "name": "creator", "type": "address" },
+            {
+              "internalType": "enum IAminalStructs.VisualsCat",
+              "name": "category",
+              "type": "uint8"
+            },
+            { "internalType": "string", "name": "svg", "type": "string" }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "enum IAminalStructs.VisualsCat",
+              "name": "category",
+              "type": "uint8"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getGenesByCategory",
+          "outputs": [
+            {
+              "internalType": "uint256[]",
+              "name": "geneIds",
+              "type": "uint256[]"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "creator", "type": "address" }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getGenesByCreator",
+          "outputs": [
+            {
+              "internalType": "uint256[]",
+              "name": "geneIds",
+              "type": "uint256[]"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            { "internalType": "uint256", "name": "geneId", "type": "uint256" }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "isValidGene",
+          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "owner",
+          "outputs": [
+            { "internalType": "address", "name": "", "type": "address" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "renounceOwnership"
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "totalGenesCreated",
+          "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+          ]
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "newOwner", "type": "address" }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "transferOwnership"
+        },
+        {
+          "inputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "withdrawFees"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "createGene(string,uint8)": {
+            "details": "Anyone can call this function to create permissionless traits",
+            "params": {
+              "category": "The visual category for the trait",
+              "svg": "The SVG content for the trait"
+            },
+            "returns": { "geneId": "The ID of the created Gene NFT" }
+          },
+          "getGeneInfo(uint256)": {
+            "params": { "geneId": "The ID of the Gene NFT" },
+            "returns": {
+              "category": "The visual category",
+              "creator": "The creator address",
+              "svg": "The SVG content"
+            }
+          },
+          "getGenesByCategory(uint8)": {
+            "params": { "category": "The visual category" },
+            "returns": { "geneIds": "Array of Gene NFT IDs in the category" }
+          },
+          "getGenesByCreator(address)": {
+            "params": { "creator": "The creator address" },
+            "returns": {
+              "geneIds": "Array of Gene NFT IDs created by the address"
+            }
+          },
+          "isValidGene(uint256)": {
+            "params": { "geneId": "The ID of the Gene NFT to check" },
+            "returns": {
+              "_0": "bool True if the gene was created from this factory"
+            }
+          },
+          "owner()": { "details": "Returns the address of the current owner." },
+          "renounceOwnership()": {
+            "details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
+          },
+          "transferOwnership(address)": {
+            "details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "MAX_SVG_LENGTH()": {
+            "notice": "Maximum SVG length to prevent bloated storage"
+          },
+          "MIN_CREATION_FEE()": {
+            "notice": "Minimum ETH required to create a Gene NFT (prevents spam)"
+          },
+          "createGene(string,uint8)": {
+            "notice": "Create a new Gene NFT with trait data"
+          },
+          "geneCategories(uint256)": {
+            "notice": "Mapping from gene ID to trait category"
+          },
+          "geneCreators(uint256)": {
+            "notice": "Mapping from gene ID to creator address"
+          },
+          "geneNFT()": { "notice": "The main Gene NFT contract" },
+          "geneRegistry(uint256)": {
+            "notice": "Registry mapping to verify Gene NFTs came from this factory"
+          },
+          "geneSVGs(uint256)": {
+            "notice": "Mapping from gene ID to SVG content"
+          },
+          "getGeneInfo(uint256)": { "notice": "Get Gene NFT information" },
+          "getGenesByCategory(uint8)": {
+            "notice": "Get all Gene NFTs by category"
+          },
+          "getGenesByCreator(address)": {
+            "notice": "Get all Gene NFTs by creator"
+          },
+          "isValidGene(uint256)": {
+            "notice": "Check if a Gene NFT was created from this factory"
+          },
+          "totalGenesCreated()": {
+            "notice": "Counter for tracking total genes created"
+          },
+          "withdrawFees()": { "notice": "Withdraw collected fees (only owner)" }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "VRGDAs/=lib/VRGDAs/src/",
+        "abdk-libraries-solidity/=lib/abdk-libraries-solidity/",
+        "ds-test/=lib/VRGDAs/lib/ds-test/src/",
+        "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+        "forge-std/=lib/forge-std/src/",
+        "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+        "openzeppelin/=lib/openzeppelin-contracts/contracts/",
+        "oz/=lib/openzeppelin-contracts/contracts/",
+        "solmate/=lib/VRGDAs/lib/solmate/src/"
+      ],
+      "optimizer": { "enabled": true, "runs": 200 },
+      "metadata": { "bytecodeHash": "ipfs" },
+      "compilationTarget": { "src/genes/GeneRegistry.sol": "GeneRegistry" },
+      "evmVersion": "shanghai",
+      "libraries": {},
+      "viaIR": true
+    },
+    "sources": {
+      "lib/openzeppelin-contracts/contracts/access/Ownable.sol": {
+        "keccak256": "0xba43b97fba0d32eb4254f6a5a297b39a19a247082a02d6e69349e071e2946218",
+        "urls": [
+          "bzz-raw://fc980984badf3984b6303b377711220e067722bbd6a135b24669ff5069ef9f32",
+          "dweb:/ipfs/QmPHXMSXj99XjSVM21YsY6aNtLLjLVXDbyN76J5HQYvvrz"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/proxy/utils/Initializable.sol": {
+        "keccak256": "0x3d6069be9b4c01fb81840fb9c2c4dc58dd6a6a4aafaa2c6837de8699574d84c6",
+        "urls": [
+          "bzz-raw://720d6bb56ea0c4ef781c0bd65c5bd0541f5a46100163b2587170f97658d2deed",
+          "dweb:/ipfs/QmTS2biLVPrv8CeeXCaKmkFxonMiRvc1LxiYBRYDAJHQUS"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol": {
+        "keccak256": "0x2c309e7df9e05e6ce15bedfe74f3c61b467fc37e0fae9eab496acf5ea0bbd7ff",
+        "urls": [
+          "bzz-raw://7063b5c98711a98018ba4635ac74cee1c1cfa2ea01099498e062699ed9530005",
+          "dweb:/ipfs/QmeJ8rGXkcv7RrqLdAW8PCXPAykxVsddfYY6g5NaTwmRFE"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol": {
+        "keccak256": "0x5bce51e11f7d194b79ea59fe00c9e8de9fa2c5530124960f29a24d4c740a3266",
+        "urls": [
+          "bzz-raw://7e66dfde185df46104c11bc89d08fa0760737aa59a2b8546a656473d810a8ea4",
+          "dweb:/ipfs/QmXvyqtXPaPss2PD7eqPoSao5Szm2n6UMoiG8TZZDjmChR"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol": {
+        "keccak256": "0xa82b58eca1ee256be466e536706850163d2ec7821945abd6b4778cfb3bee37da",
+        "urls": [
+          "bzz-raw://6e75cf83beb757b8855791088546b8337e9d4684e169400c20d44a515353b708",
+          "dweb:/ipfs/QmYvPafLfoquiDMEj7CKHtvbgHu7TJNPSVPSCjrtjV8HjV"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/token/ERC721/extensions/IERC721Metadata.sol": {
+        "keccak256": "0x75b829ff2f26c14355d1cba20e16fe7b29ca58eb5fef665ede48bc0f9c6c74b9",
+        "urls": [
+          "bzz-raw://a0a107160525724f9e1bbbab031defc2f298296dd9e331f16a6f7130cec32146",
+          "dweb:/ipfs/QmemujxSd7gX8A9M8UwmNbz4Ms3U9FG9QfudUgxwvTmPWf"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/utils/Address.sol": {
+        "keccak256": "0x006dd67219697fe68d7fbfdea512e7c4cb64a43565ed86171d67e844982da6fa",
+        "urls": [
+          "bzz-raw://2455248c8ddd9cc6a7af76a13973cddf222072427e7b0e2a7d1aff345145e931",
+          "dweb:/ipfs/QmfYjnjRbWqYpuxurqveE6HtzsY1Xx323J428AKQgtBJZm"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/utils/Context.sol": {
+        "keccak256": "0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7",
+        "urls": [
+          "bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92",
+          "dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/utils/Strings.sol": {
+        "keccak256": "0x3088eb2868e8d13d89d16670b5f8612c4ab9ff8956272837d8e90106c59c14a0",
+        "urls": [
+          "bzz-raw://b81d9ff6559ea5c47fc573e17ece6d9ba5d6839e213e6ebc3b4c5c8fe4199d7f",
+          "dweb:/ipfs/QmPCW1bFisUzJkyjroY3yipwfism9RRCigCcK1hbXtVM8n"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol": {
+        "keccak256": "0xd10975de010d89fd1c78dc5e8a9a7e7f496198085c151648f20cba166b32582b",
+        "urls": [
+          "bzz-raw://fb0048dee081f6fffa5f74afc3fb328483c2a30504e94a0ddd2a5114d731ec4d",
+          "dweb:/ipfs/QmZptt1nmYoA5SgjwnSgWqgUSDgm4q52Yos3xhnMv3MV43"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol": {
+        "keccak256": "0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1",
+        "urls": [
+          "bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f",
+          "dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/utils/math/Math.sol": {
+        "keccak256": "0xe4455ac1eb7fc497bb7402579e7b4d64d928b846fce7d2b6fde06d366f21c2b3",
+        "urls": [
+          "bzz-raw://cc8841b3cd48ad125e2f46323c8bad3aa0e88e399ec62acb9e57efa7e7c8058c",
+          "dweb:/ipfs/QmSqE4mXHA2BXW58deDbXE8MTcsL5JSKNDbm23sVQxRLPS"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts/contracts/utils/math/SignedMath.sol": {
+        "keccak256": "0xf92515413956f529d95977adc9b0567d583c6203fc31ab1c23824c35187e3ddc",
+        "urls": [
+          "bzz-raw://c50fcc459e49a9858b6d8ad5f911295cb7c9ab57567845a250bf0153f84a95c7",
+          "dweb:/ipfs/QmcEW85JRzvDkQggxiBBLVAasXWdkhEysqypj9EaB6H2g6"
+        ],
+        "license": "MIT"
+      },
+      "src/IAminalStructs.sol": {
+        "keccak256": "0xc9c4ad77c82b49ba0e9c39dfe773b7f354d90e6c05cdd691a8e1e1c23e598220",
+        "urls": [
+          "bzz-raw://c8e5d53ba3433546074017b906e3b61f28992c826d733cfdcf45e5f0372b2405",
+          "dweb:/ipfs/QmcHc3bXd5P9u3ckqAHwj1aY7CLMJJLLTedf3pgRhMTFiq"
+        ],
+        "license": "GPL-3.0-only"
+      },
+      "src/genes/GeneRegistry.sol": {
+        "keccak256": "0x2405c8cf6f45a165b0cbfbd677c66813750c0ba2d3563bd0641f99349b7b655a",
+        "urls": [
+          "bzz-raw://51eb114b74cf528274bb5921fd4e0cbc3bf15a4c007ec98956b052f217c70aaa",
+          "dweb:/ipfs/Qma22gLPfzG1Rs1A834kSvCUjLdvH9MboFicuynK1JJhSQ"
+        ],
+        "license": "GPL-3.0-only"
+      },
+      "src/genes/Genes.sol": {
+        "keccak256": "0x9b49111526ab34d425e321002e14c63e33639a3a68026e0e88dca156ce468f10",
+        "urls": [
+          "bzz-raw://49d5516b88dc5a0407d8b54df2c0ae5d3d1dbe3c85bab38d648bc936a0a59dc9",
+          "dweb:/ipfs/QmVuQ934FQkjoneLLhDrBFmdy75jbPUmP9Misr2QUtxQhD"
+        ],
+        "license": "GPL-3.0-only"
+      },
+      "src/utils/Base64.sol": {
+        "keccak256": "0x740a295cb25c65ef757c5bbf3446a1829108a4b046bdac5f5a9d574ee08f8552",
+        "urls": [
+          "bzz-raw://839abaf77a145d94355cf20f001c76e061a3314e96f5bdb59c0708deeb7cb3d3",
+          "dweb:/ipfs/QmTf5oJPaerhXhwSvbJBYSsoYZhaT9Zhq1CcDefv2yW9cJ"
+        ],
+        "license": null
+      }
+    },
+    "version": 1
+  },
+  "id": 54
+}

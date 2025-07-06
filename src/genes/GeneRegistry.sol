@@ -1,19 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.20;
 
-import {GenesNFT} from "src/genes/GenesNFT.sol";
+import {Genes} from "src/genes/Genes.sol";
 import {IAminalStructs} from "src/interfaces/IAminalStructs.sol";
 import {Ownable} from "oz/access/Ownable.sol";
 
-// TODO rename to registry? Merge with GenesNFT?
+// TODO rename to registry? Merge with Genes?
 /**
- * @title GeneNFTFactory
+ * @title GeneRegistry
  * @dev Factory for creating Gene NFTs representing traits for Aminals, also serves as a registry for Gene NFTs
  * @notice Anyone can create Gene NFTs from this factory for permissionless trait creation
  */
-contract GeneNFTFactory is IAminalStructs, Ownable {
+contract GeneRegistry is IAminalStructs, Ownable {
     /// @notice The main Gene NFT contract
-    GenesNFT public immutable geneNFT;
+    Genes public immutable geneNFT;
 
     /// @notice Registry mapping to verify Gene NFTs came from this factory
     mapping(uint256 geneId => bool isFromFactory) public geneRegistry;
@@ -44,7 +44,7 @@ contract GeneNFTFactory is IAminalStructs, Ownable {
     event GeneCreated(uint256 indexed geneId, address indexed creator, VisualsCat indexed category, string svg);
 
     constructor(address _geneNFT) {
-        geneNFT = GenesNFT(_geneNFT);
+        geneNFT = Genes(_geneNFT);
     }
 
     /**

@@ -62,7 +62,7 @@ export class OwnershipTransferred__Params {
   }
 }
 
-export class GeneNFTFactory__getGeneInfoResult {
+export class GeneRegistry__getGeneInfoResult {
   value0: Address;
   value1: i32;
   value2: string;
@@ -78,7 +78,7 @@ export class GeneNFTFactory__getGeneInfoResult {
     map.set("value0", ethereum.Value.fromAddress(this.value0));
     map.set(
       "value1",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value1)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value1))
     );
     map.set("value2", ethereum.Value.fromString(this.value2));
     return map;
@@ -97,9 +97,9 @@ export class GeneNFTFactory__getGeneInfoResult {
   }
 }
 
-export class GeneNFTFactory extends ethereum.SmartContract {
-  static bind(address: Address): GeneNFTFactory {
-    return new GeneNFTFactory("GeneNFTFactory", address);
+export class GeneRegistry extends ethereum.SmartContract {
+  static bind(address: Address): GeneRegistry {
+    return new GeneRegistry("GeneRegistry", address);
   }
 
   MAX_SVG_LENGTH(): BigInt {
@@ -112,7 +112,7 @@ export class GeneNFTFactory extends ethereum.SmartContract {
     let result = super.tryCall(
       "MAX_SVG_LENGTH",
       "MAX_SVG_LENGTH():(uint256)",
-      [],
+      []
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -125,7 +125,7 @@ export class GeneNFTFactory extends ethereum.SmartContract {
     let result = super.call(
       "MIN_CREATION_FEE",
       "MIN_CREATION_FEE():(uint256)",
-      [],
+      []
     );
 
     return result[0].toBigInt();
@@ -135,7 +135,7 @@ export class GeneNFTFactory extends ethereum.SmartContract {
     let result = super.tryCall(
       "MIN_CREATION_FEE",
       "MIN_CREATION_FEE():(uint256)",
-      [],
+      []
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -148,7 +148,7 @@ export class GeneNFTFactory extends ethereum.SmartContract {
     let result = super.call(
       "geneCategories",
       "geneCategories(uint256):(uint8)",
-      [ethereum.Value.fromUnsignedBigInt(geneId)],
+      [ethereum.Value.fromUnsignedBigInt(geneId)]
     );
 
     return result[0].toI32();
@@ -158,7 +158,7 @@ export class GeneNFTFactory extends ethereum.SmartContract {
     let result = super.tryCall(
       "geneCategories",
       "geneCategories(uint256):(uint8)",
-      [ethereum.Value.fromUnsignedBigInt(geneId)],
+      [ethereum.Value.fromUnsignedBigInt(geneId)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -179,7 +179,7 @@ export class GeneNFTFactory extends ethereum.SmartContract {
     let result = super.tryCall(
       "geneCreators",
       "geneCreators(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(geneId)],
+      [ethereum.Value.fromUnsignedBigInt(geneId)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -241,38 +241,38 @@ export class GeneNFTFactory extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
-  getGeneInfo(geneId: BigInt): GeneNFTFactory__getGeneInfoResult {
+  getGeneInfo(geneId: BigInt): GeneRegistry__getGeneInfoResult {
     let result = super.call(
       "getGeneInfo",
       "getGeneInfo(uint256):(address,uint8,string)",
-      [ethereum.Value.fromUnsignedBigInt(geneId)],
+      [ethereum.Value.fromUnsignedBigInt(geneId)]
     );
 
-    return new GeneNFTFactory__getGeneInfoResult(
+    return new GeneRegistry__getGeneInfoResult(
       result[0].toAddress(),
       result[1].toI32(),
-      result[2].toString(),
+      result[2].toString()
     );
   }
 
   try_getGeneInfo(
-    geneId: BigInt,
-  ): ethereum.CallResult<GeneNFTFactory__getGeneInfoResult> {
+    geneId: BigInt
+  ): ethereum.CallResult<GeneRegistry__getGeneInfoResult> {
     let result = super.tryCall(
       "getGeneInfo",
       "getGeneInfo(uint256):(address,uint8,string)",
-      [ethereum.Value.fromUnsignedBigInt(geneId)],
+      [ethereum.Value.fromUnsignedBigInt(geneId)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new GeneNFTFactory__getGeneInfoResult(
+      new GeneRegistry__getGeneInfoResult(
         value[0].toAddress(),
         value[1].toI32(),
-        value[2].toString(),
-      ),
+        value[2].toString()
+      )
     );
   }
 
@@ -280,7 +280,7 @@ export class GeneNFTFactory extends ethereum.SmartContract {
     let result = super.call(
       "getGenesByCategory",
       "getGenesByCategory(uint8):(uint256[])",
-      [ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(category))],
+      [ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(category))]
     );
 
     return result[0].toBigIntArray();
@@ -290,7 +290,7 @@ export class GeneNFTFactory extends ethereum.SmartContract {
     let result = super.tryCall(
       "getGenesByCategory",
       "getGenesByCategory(uint8):(uint256[])",
-      [ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(category))],
+      [ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(category))]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -303,7 +303,7 @@ export class GeneNFTFactory extends ethereum.SmartContract {
     let result = super.call(
       "getGenesByCreator",
       "getGenesByCreator(address):(uint256[])",
-      [ethereum.Value.fromAddress(creator)],
+      [ethereum.Value.fromAddress(creator)]
     );
 
     return result[0].toBigIntArray();
@@ -313,7 +313,7 @@ export class GeneNFTFactory extends ethereum.SmartContract {
     let result = super.tryCall(
       "getGenesByCreator",
       "getGenesByCreator(address):(uint256[])",
-      [ethereum.Value.fromAddress(creator)],
+      [ethereum.Value.fromAddress(creator)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -360,7 +360,7 @@ export class GeneNFTFactory extends ethereum.SmartContract {
     let result = super.call(
       "totalGenesCreated",
       "totalGenesCreated():(uint256)",
-      [],
+      []
     );
 
     return result[0].toBigInt();
@@ -370,7 +370,7 @@ export class GeneNFTFactory extends ethereum.SmartContract {
     let result = super.tryCall(
       "totalGenesCreated",
       "totalGenesCreated():(uint256)",
-      [],
+      []
     );
     if (result.reverted) {
       return new ethereum.CallResult();

@@ -6,7 +6,7 @@ import {IAminal} from "src/interfaces/IAminal.sol";
 import {IAminalStructs} from "src/interfaces/IAminalStructs.sol";
 import {GeneAuction} from "src/genes/GeneAuction.sol";
 import {AminalProposals} from "src/proposals/AminalProposals.sol";
-import {GenesNFT} from "src/genes/GenesNFT.sol";
+import {Genes} from "src/genes/Genes.sol";
 import {Move2D} from "src/skills/Move2D.sol";
 import {FightSkill} from "src/skills/FightSkill.sol";
 import {InitialGenesMinter} from "script/InitialGenesMinter.sol";
@@ -50,12 +50,12 @@ contract AminalScript is Script {
 
     function deployAminalFactory() public returns (address) {
         // Deploy contracts in correct order
-        GenesNFT _genesNFT = new GenesNFT();
-        // TODO: Deploy GeneNFTFactory when needed for full Gene NFT system
+        Genes _Genes = new Genes();
+        // TODO: Deploy GeneRegistry when needed for full Gene NFT system
         // For now, we use a placeholder address for the factory
         GeneAuction _geneAuction = new GeneAuction(
-            address(_genesNFT),
-            address(0x0) // Placeholder for GeneNFTFactory
+            address(_Genes),
+            address(0x0) // Placeholder for GeneRegistry
         );
         AminalProposals _proposals = new AminalProposals();
 
@@ -65,15 +65,15 @@ contract AminalScript is Script {
         vm.setEnv("AMINAL_FACTORY_CONTRACT", vm.toString(address(_factory)));
         vm.setEnv("AMINAL_PROPOSALS_CONTRACT", vm.toString(address(_proposals)));
         vm.setEnv("GENE_AUCTION_CONTRACT", vm.toString(address(_geneAuction)));
-        vm.setEnv("GENES_NFT_CONTRACT", vm.toString(address(_genesNFT)));
+        vm.setEnv("GENES_NFT_CONTRACT", vm.toString(address(_Genes)));
 
         // Initialize the factory
-        _factory.initialize(address(_geneAuction), address(_proposals), address(_genesNFT));
+        _factory.initialize(address(_geneAuction), address(_proposals), address(_Genes));
 
         // Setup dependencies
         _geneAuction.setup(address(_factory), address(_factory));
         _proposals.setup(address(_factory));
-        _genesNFT.setup(address(_factory));
+        _Genes.setup(address(_factory));
 
         return address(_factory);
     }
@@ -109,7 +109,7 @@ contract AminalScript is Script {
     }
 
     function deployInitialGenes() public {
-        GenesNFT genesNFT = GenesNFT(vm.envAddress("GENES_NFT_CONTRACT"));
+        Genes genes = Genes(vm.envAddress("GENES_NFT_CONTRACT"));
 
         // Deploy temporary minter contracts
         InitialGenesMinter minter = new InitialGenesMinter();
@@ -118,22 +118,22 @@ contract AminalScript is Script {
         console.log("InitialGenesMinter2 deployed to:", address(minter2));
 
         // Set minter as temporary gene factory
-        genesNFT.setFactory(address(minter));
+        genes.setFactory(address(minter));
         console.log("Set minter as temporary gene factory");
 
         // Mint initial genes
-        minter.mintInitialGenesAnimated(genesNFT, msg.sender);
+        minter.mintInitialGenesAnimated(genes, msg.sender);
         console.log("Initial genes minted to:", msg.sender);
 
         // Set minter as temporary gene factory
-        genesNFT.setFactory(address(minter2));
+        genes.setFactory(address(minter2));
         console.log("Set minter2 as temporary gene factory");
 
-        minter2.mintInitialGenesAnimated(genesNFT, msg.sender);
+        minter2.mintInitialGenesAnimated(genes, msg.sender);
         console.log("Initial genes minted to:", msg.sender);
 
         // Reset gene factory to address(0) for security
-        genesNFT.setFactory(address(0));
+        genes.setFactory(address(0));
         console.log("Gene factory reset to address(0)");
     }
 

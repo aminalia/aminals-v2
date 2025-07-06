@@ -10,7 +10,7 @@ import {AminalProposals} from "src/proposals/AminalProposals.sol";
 import {IAminalStructs} from "src/interfaces/IAminalStructs.sol";
 import {IProposals} from "src/interfaces/IProposals.sol";
 import {GeneAuction} from "src/genes/GeneAuction.sol";
-import {GenesNFT} from "src/genes/GenesNFT.sol";
+import {Genes} from "src/genes/Genes.sol";
 import {Aminal as AminalContract} from "src/Aminal.sol";
 import {AminalVRGDA} from "src/utils/AminalVRGDA.sol";
 
@@ -72,7 +72,7 @@ contract AminalFactory is IAminalStructs, Initializable, Ownable {
     AminalProposals public proposals;
 
     /// @notice Gene NFT system for trait management 🎨
-    GenesNFT public genesNFT;
+    Genes public genes;
 
     /// @notice VRGDA for calculating love based on energy levels 📈
     AminalVRGDA public loveVRGDA;
@@ -113,13 +113,13 @@ contract AminalFactory is IAminalStructs, Initializable, Ownable {
         _transferOwnership(msg.sender);
     }
 
-    function initialize(address _geneAuction, address _aminalProposals, address _genesNFT)
+    function initialize(address _geneAuction, address _aminalProposals, address _Genes)
         external
         initializer
         onlyOwner
     {
         geneAuction = GeneAuction(_geneAuction);
-        genesNFT = GenesNFT(_genesNFT);
+        genes = Genes(_Genes);
         proposals = AminalProposals(_aminalProposals);
     }
 

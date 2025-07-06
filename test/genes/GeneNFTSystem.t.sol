@@ -4,8 +4,8 @@ pragma solidity ^0.8.20;
 import "forge-std/Test.sol";
 import "forge-std/console.sol";
 
-import {GenesNFT} from "src/genes/GenesNFT.sol";
-import {GeneNFTFactory} from "src/genes/GeneNFTFactory.sol";
+import {Genes} from "src/genes/Genes.sol";
+import {GeneRegistry} from "src/genes/GeneRegistry.sol";
 import {GeneAuction} from "src/genes/GeneAuction.sol";
 import {IAminalStructs} from "src/interfaces/IAminalStructs.sol";
 import {AminalFactory} from "src/AminalFactory.sol";
@@ -14,8 +14,8 @@ import {AminalProposals} from "src/proposals/AminalProposals.sol";
 import {Aminal as AminalContract} from "src/Aminal.sol";
 
 contract GeneNFTSystemTest is Test, IAminalStructs {
-    GenesNFT public genesNFT;
-    GeneNFTFactory public geneFactory;
+    Genes public genes;
+    GeneRegistry public geneFactory;
     GeneAuction public geneAuction;
     AminalFactory public aminalFactory;
     AminalProposals public proposals;
@@ -31,18 +31,18 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
 
     function setUp() public {
         // Deploy contracts
-        genesNFT = new GenesNFT();
-        geneFactory = new GeneNFTFactory(address(genesNFT));
-        geneAuction = new GeneAuction(address(genesNFT), address(geneFactory));
+        genes = new Genes();
+        geneFactory = new GeneRegistry(address(genes));
+        geneAuction = new GeneAuction(address(genes), address(geneFactory));
         proposals = new AminalProposals();
 
         // Deploy AminalFactory
         aminalFactory = new AminalFactory();
-        aminalFactory.initialize(address(geneAuction), address(proposals), address(genesNFT));
+        aminalFactory.initialize(address(geneAuction), address(proposals), address(genes));
 
         // Setup contracts
-        genesNFT.setup(address(aminalFactory)); // AminalFactory acts as Aminals contract
-        genesNFT.setFactory(address(geneFactory));
+        genes.setup(address(aminalFactory)); // AminalFactory acts as Aminals contract
+        genes.setFactory(address(geneFactory));
         geneAuction.setup(address(this), address(aminalFactory)); // This contract acts as Aminals contract for testing
         proposals.setup(address(aminalFactory));
         aminalFactory.setup();
@@ -63,7 +63,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
 
         // Verify gene was created correctly
         assertEq(geneId, 0, "First gene should have ID 0");
-        assertEq(genesNFT.ownerOf(geneId), alice, "Alice should own the gene");
+        assertEq(genes.ownerOf(geneId), alice, "Alice should own the gene");
 
         // Verify gene info
         (address creator, VisualsCat category, string memory svg) = geneFactory.getGeneInfo(geneId);
@@ -92,9 +92,9 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
         uint256 bodyGene = geneFactory.createGene{value: 0.001 ether}(SAMPLE_BODY, VisualsCat.BODY);
 
         // Verify ownership
-        assertEq(genesNFT.ownerOf(backgroundGene), alice);
-        assertEq(genesNFT.ownerOf(faceGene), bob);
-        assertEq(genesNFT.ownerOf(bodyGene), charlie);
+        assertEq(genes.ownerOf(backgroundGene), alice);
+        assertEq(genes.ownerOf(faceGene), bob);
+        assertEq(genes.ownerOf(bodyGene), charlie);
 
         // Verify categories
         (, VisualsCat bgCat,) = geneFactory.getGeneInfo(backgroundGene);
@@ -114,9 +114,9 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
 
         // Alice transfers gene to Bob
         vm.prank(alice);
-        genesNFT.transferFrom(alice, bob, geneId);
+        genes.transferFrom(alice, bob, geneId);
 
-        assertEq(genesNFT.ownerOf(geneId), bob, "Bob should now own the gene");
+        assertEq(genes.ownerOf(geneId), bob, "Bob should now own the gene");
     }
 
     function testAuctionCreation() public {
@@ -289,14 +289,14 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
 
     function testInsufficientCreationFeeFails() public {
         vm.prank(alice);
-        vm.expectRevert(GeneNFTFactory.InsufficientFee.selector);
+        vm.expectRevert(GeneRegistry.InsufficientFee.selector);
         geneFactory.createGene{value: 0.0005 ether}( // Below minimum
         SAMPLE_BACKGROUND, VisualsCat.BACK);
     }
 
     function testEmptySVGFails() public {
         vm.prank(alice);
-        vm.expectRevert(GeneNFTFactory.EmptySVG.selector);
+        vm.expectRevert(GeneRegistry.EmptySVG.selector);
         geneFactory.createGene{value: 0.001 ether}("", VisualsCat.BACK);
     }
 
