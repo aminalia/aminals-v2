@@ -92,11 +92,11 @@ export default function Header() {
             <span className="text-xs mt-1">Leaderboard</span>
           </Link>
           <Link
-            href="/traits"
+            href="/genes"
             className="flex flex-col items-center justify-center p-2 hover:bg-accent rounded-lg"
           >
             <span className="text-2xl">🧬</span>
-            <span className="text-xs mt-1">Traits</span>
+            <span className="text-xs mt-1">Genes</span>
           </Link>
         </div>
       </nav>

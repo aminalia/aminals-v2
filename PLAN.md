@@ -21,6 +21,7 @@ Contracts:
 - Do we need setBreedableWith?
 - Investigate if we should use VRGDA with loveDrivenPrice instead
 - Rename geneFactory -> geneRegistry
+- Shouldn't be able to breed an Aminal if already breeding? (needs test)
 
 Indexer:
 

@@ -12,13 +12,64 @@ import {
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
 import { GeneAuction } from '../../.graphclient';
 import ProposeButton from './actions/propose-button';
 
 import '../../styles/index.module.css';
 
+// VOTING_DURATION from the contract (1 hour = 3600 seconds)
+const VOTING_DURATION = 3600;
+
 export default function AuctionCard({ auction }: { auction: GeneAuction }) {
   const { aminalOne, aminalTwo } = auction;
+  const [timeLeft, setTimeLeft] = useState<number>(0);
+
+  // Calculate auction end time
+  const auctionEndTime = useMemo(() => {
+    if (!auction?.blockTimestamp) return 0;
+    // Convert BigInt to number and add voting duration
+    return Number(auction.blockTimestamp) + VOTING_DURATION;
+  }, [auction?.blockTimestamp]);
+
+  // Check if auction has ended
+  const isAuctionEnded = useMemo(() => {
+    if (!auction) return false;
+    const now = Math.floor(Date.now() / 1000);
+    return auction.finished || now >= auctionEndTime;
+  }, [auction, auctionEndTime]);
+
+  // Update countdown timer
+  useEffect(() => {
+    if (auction.finished || isAuctionEnded) return;
+
+    const calculateTimeLeft = () => {
+      const now = Math.floor(Date.now() / 1000);
+      const difference = auctionEndTime - now;
+      setTimeLeft(Math.max(0, difference));
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+    return () => clearInterval(timer);
+  }, [auctionEndTime, auction.finished, isAuctionEnded]);
+
+  // Format time for display
+  const formatTime = (seconds: number) => {
+    if (seconds <= 0) return 'Ended';
+
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+
+    if (hours > 0) {
+      return `${hours}h ${minutes}m`;
+    } else if (minutes > 0) {
+      return `${minutes}m ${secs}s`;
+    } else {
+      return `${secs}s`;
+    }
+  };
 
   return (
     <Card className="overflow-hidden bg-white hover:shadow-lg transition-all duration-300 group">
@@ -65,20 +116,43 @@ export default function AuctionCard({ auction }: { auction: GeneAuction }) {
                 'transition-all duration-300 px-3 py-1.5 font-medium',
                 auction.finished
                   ? 'bg-gray-100 text-gray-700 group-hover:bg-gray-200'
+                  : isAuctionEnded
+                  ? 'bg-red-100 text-red-700 group-hover:bg-red-200'
                   : 'bg-green-100 text-green-700 group-hover:bg-green-200'
               )}
             >
-              {auction.finished ? '🎉 Completed' : '🔥 Active'}
+              {auction.finished
+                ? '🎉 Completed'
+                : isAuctionEnded
+                ? '⏰ Ended'
+                : '🔥 Active'}
             </Badge>
           </div>
 
           <div className="space-y-3 bg-gray-50/80 rounded-xl p-4">
+            {/* Countdown Timer Row */}
+            {!auction.finished && (
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600 flex items-center gap-2.5">
+                  <span className="text-xl">⏰</span>
+                  Time Left
+                </span>
+                <span
+                  className={`font-semibold text-lg ${
+                    isAuctionEnded ? 'text-red-600' : 'text-gray-900'
+                  }`}
+                >
+                  {formatTime(timeLeft)}
+                </span>
+              </div>
+            )}
+
             <div className="flex items-center justify-between">
               <span className="text-gray-600 flex items-center gap-2.5">
                 <span className="text-xl">👶</span> Child
               </span>
               <span className="font-semibold text-lg">
-                #{auction.childAminal?.aminalIndex}
+                #{auction.childAminal?.aminalIndex || 'TBD'}
               </span>
             </div>
 
