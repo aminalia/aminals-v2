@@ -330,29 +330,6 @@ cast call $GENES_NFT_CONTRACT "tokenURI(uint256)" 0 --rpc-url sepolia
 3. **Monitor Contracts**: Set up monitoring for unusual activity
 4. **Regular Updates**: Keep deployment scripts updated with latest contract versions
 
-## Advanced Gene NFT System
-
-The current deployment uses `InitialGenesMinter` for initial Gene NFTs. For a full permissionless trait system, you can deploy the `GeneRegistry`:
-
-```bash
-# Deploy GeneRegistry (optional - for permissionless trait creation)
-forge script script/DeployGeneFactory.s.sol:DeployGeneFactory --rpc-url sepolia --broadcast
-```
-
-Once deployed, users can create their own Gene NFTs:
-
-```bash
-# Create a custom gene NFT (requires 0.001 ETH fee)
-cast send $GENE_FACTORY_ADDRESS "createGene(string,uint8)" "<svg>...</svg>" 5 --value 0.001ether --rpc-url sepolia --private-key $PRIVATE_KEY
-```
-
-The GeneRegistry provides:
-
-- **Permissionless Trait Creation**: Anyone can create Gene NFTs for traits
-- **Registry System**: Tracks which Gene NFTs came from the factory
-- **Fee Protection**: Prevents spam with minimum creation fee
-- **SVG Validation**: Basic validation of trait SVG content
-
 ## Next Steps
 
 After successful testnet deployment:

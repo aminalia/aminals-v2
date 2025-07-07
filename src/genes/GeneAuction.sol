@@ -120,6 +120,7 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         _;
     }
 
+    // TODO rename geneFactory to geneRegistry
     constructor(address _Genes, address _geneFactory) {
         genes = Genes(_Genes);
         geneFactory = GeneRegistry(_geneFactory);
