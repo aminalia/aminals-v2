@@ -13,12 +13,12 @@ contract FightSkill is Skill {
     mapping(address aminalContract => FightProperties props) public Fighters;
 
     struct FightProperties {
-        address fighting;
+        bool fighting;
         uint256 health;
         uint256 mastery;
     }
 
-    event FightEnded(address indexed winner, address indexed looser);
+    event AminalFightWin(address indexed winner, address indexed looser);
 
     constructor(address _factory) {
         factory = AminalFactory(_factory);
@@ -26,19 +26,31 @@ contract FightSkill is Skill {
 
     /**
      * @dev Attack an opponent with a specific attack type
-     * @param opponent The address of the Aminal to attack
+     * @param victim The address of the Aminal to attack
      * @param attackType The type of attack (1 = hit, others not implemented)
      */
-    function attack(address opponent, uint256 attackType) external {
+    function attack(address victim, uint256 attackType) external {
         require(factory.isAminal(msg.sender), "Only Aminal contracts can call this");
-        
-        console.log("aminal fighting: ", address(opponent), " with attack-mode = ", uint256(attackType));
+        // require(Fighters[victim].fighting == 0, "Cannot attack an Aminal that is already enrolled in a fight");
 
-        if (attackType == 1) {
-            _hit(msg.sender, opponent);
-        } else {
-            revert("Requested attack modes not implemented yet");
+        if (!Fighters[msg.sender].fighting) {
+            Fighters[msg.sender].health =
+                IAminal(msg.sender).getEnergy() + (IAminal(msg.sender).getEnergy() * Fighters[msg.sender].mastery) / 100;
+            Fighters[msg.sender].fighting = true;
         }
+        if (!Fighters[victim].fighting) {
+            Fighters[victim].health =
+                IAminal(victim).getEnergy() + (IAminal(victim).getEnergy() * Fighters[victim].mastery) / 100;
+            Fighters[victim].fighting = true;
+        }
+
+        require(Fighters[victim].health > 0, "Cannot attack a weak or defeated Aminal, feed it to restore its health");
+
+        console.log("Aminal attacked: ", victim);
+        console.log("with attack-mode = ", uint16(attackType));
+
+        if (attackType == 1) _hit(msg.sender, victim);
+        else revert("Requested attack modes not implemented yet");
     }
 
     /**
@@ -48,10 +60,10 @@ contract FightSkill is Skill {
      */
     function skillCost(bytes calldata data) external pure override returns (uint256) {
         bytes4 selector = bytes4(data);
-        
+
         if (selector == this.attack.selector) {
             (, uint256 attackType) = abi.decode(data[4:], (address, uint256));
-            
+
             if (attackType == 1) {
                 // Hit attack costs 10 energy
                 return 10;
@@ -59,7 +71,7 @@ contract FightSkill is Skill {
             // Other attack types could have different costs
             return 5;
         }
-        
+
         // Default cost for unknown actions
         return 1;
     }
@@ -74,47 +86,38 @@ contract FightSkill is Skill {
     }
 
     // Internal functions
-    function _hit(address aminalAttacker, address aminalVictim) internal {
-        require(IAminal(aminalAttacker).getEnergy() >= 10, "Not enough energy");
+    function _hit(address attacker, address victim) internal {
+        require(IAminal(attacker).getEnergy() >= 10, "Not enough energy to hit !");
 
-        require(
-            Fighters[aminalAttacker].fighting == address(0) || Fighters[aminalAttacker].fighting == aminalVictim,
-            "already fighting with someone else"
-        );
+        bool win = _success(Fighters[attacker].mastery, Fighters[victim].mastery);
 
-        if (Fighters[aminalVictim].fighting == address(0)) {
-            Fighters[aminalVictim].fighting = aminalAttacker;
-            Fighters[aminalAttacker].fighting = aminalVictim;
-            Fighters[aminalVictim].health = 15;
-            Fighters[aminalAttacker].health = 15;
-        }
-
-        bool win = _successfulHit();
         if (win) {
-            if (Fighters[aminalVictim].health > 2) {
-                Fighters[aminalVictim].health -= 1;
-            } else {
-                emit FightEnded(aminalAttacker, aminalVictim);
-                Fighters[aminalVictim].fighting = address(0);
-                Fighters[aminalAttacker].fighting = address(0);
-            }
-
             console.log("successful hit");
-        } else {
-            if (Fighters[aminalAttacker].health > 2) {
-                Fighters[aminalAttacker].health -= 1;
-            } else {
-                emit FightEnded(aminalVictim, aminalAttacker);
-                Fighters[aminalVictim].fighting = address(0);
-                Fighters[aminalAttacker].fighting = address(0);
 
-                console.log("unsuccessful hit");
+            // check if victim is still alive
+            if (Fighters[victim].health >= 10) {
+                Fighters[victim].health -= 10;
+            } else {
+                // declare victory and end the fight for both Aminals
+                emit AminalFightWin(attacker, victim);
+                Fighters[victim].fighting = false;
+                Fighters[victim].mastery -= 1;
+                Fighters[attacker].fighting = false;
+                Fighters[attacker].mastery += 1;
             }
+        } else {
+            console.log("unsuccessful hit");
         }
     }
 
-    function _successfulHit() internal view returns (bool) {
-        // Simple pseudo-randomness using block properties
-        return uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao))) % 2 == 0;
+    function _success(uint256 attackerMastery, uint256 victimMastery) internal view returns (bool) {
+        // Calculate the weighted probability
+        uint256 totalMastery = attackerMastery + victimMastery;
+        uint256 attackerProbability = (attackerMastery * 100) / totalMastery;
+
+        // Simple pseudo-randomness using block properties - number between 0 and 99
+        uint256 randomV = uint256(keccak256(abi.encodePacked(block.timestamp, block.prevrandao))) % 100;
+
+        return randomV < attackerProbability;
     }
 }
