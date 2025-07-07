@@ -5,10 +5,13 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
+import { useHasMounted } from '@/hooks/useHasMounted';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Link from 'next/link';
 
 export default function Header() {
+  const hasMounted = useHasMounted();
+
   return (
     <>
       {/* Desktop Header */}
@@ -42,7 +45,11 @@ export default function Header() {
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <ConnectButton />
+              {hasMounted ? (
+                <ConnectButton />
+              ) : (
+                <div className="h-10 w-32 bg-gray-200 rounded-lg animate-pulse" />
+              )}
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
@@ -53,7 +60,11 @@ export default function Header() {
         <Link href="/">
           <h1 className="text-xl font-bold">👾 Aminals</h1>
         </Link>
-        <ConnectButton />
+        {hasMounted ? (
+          <ConnectButton />
+        ) : (
+          <div className="h-10 w-32 bg-gray-200 rounded-lg animate-pulse" />
+        )}
       </header>
 
       {/* Mobile Bottom Navigation */}

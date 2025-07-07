@@ -1,4 +1,6 @@
+import { Button } from '@/components/ui/button';
 import { TRAIT_CATEGORIES } from '@/constants/trait-categories';
+import { useHasMounted } from '@/hooks/useHasMounted';
 import { cn } from '@/lib/utils';
 import {
   CategoryFilter,
@@ -10,7 +12,6 @@ import type { NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { useAccount } from 'wagmi';
-import { Button } from '@/components/ui/button';
 import Layout from '../_layout';
 
 // Import dynamically to avoid module resolution issues
@@ -18,22 +19,30 @@ const TraitCard = dynamic(() => import('../../src/components/trait-card'), {
   ssr: false,
 });
 
-const CreateGeneModal = dynamic(() => import('../../src/components/create-gene-modal').then(mod => ({ default: mod.default })), {
-  ssr: false,
-});
+const CreateGeneModal = dynamic(
+  () =>
+    import('../../src/components/create-gene-modal').then((mod) => ({
+      default: mod.default,
+    })),
+  {
+    ssr: false,
+  }
+);
 
 const TraitsPage: NextPage = () => {
+  const hasMounted = useHasMounted();
   const { address } = useAccount();
   const [filter, setFilter] = useState<GeneFilter>('all');
   const [sort, setSort] = useState<GeneSort>('aminals-count');
   const [category, setCategory] = useState<CategoryFilter>('all');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  const { data: genes, isLoading: isLoadingGenes, error: genesError, isError: isGenesError } = useGenes(
-    filter,
-    sort,
-    category
-  );
+  const {
+    data: genes,
+    isLoading: isLoadingGenes,
+    error: genesError,
+    isError: isGenesError,
+  } = useGenes(filter, sort, category);
 
   console.log('Genes data:', genes);
   console.log('Genes loading:', isLoadingGenes);
@@ -87,10 +96,12 @@ const TraitsPage: NextPage = () => {
                       'px-3 py-1.5 text-sm rounded-full font-medium transition-colors',
                       filter === 'yours'
                         ? 'bg-gray-900 text-white hover:bg-gray-800'
-                        : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-100'
+                        : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-100',
+                      // Only apply disabled styles after mount to prevent hydration mismatch
+                      hasMounted && !address && 'opacity-50 cursor-not-allowed'
                     )}
                     onClick={() => setFilter('yours')}
-                    disabled={!address}
+                    disabled={hasMounted && !address}
                   >
                     Your Genes
                   </button>
@@ -174,12 +185,18 @@ const TraitsPage: NextPage = () => {
                 <TraitCard
                   key={gene.id}
                   trait={gene}
-                  aminalCount={gene.proposalsUsingGene ? 
-                    // Extract unique Aminals from proposals (each proposal has 2 Aminals)
-                    new Set([
-                      ...gene.proposalsUsingGene.map((p: any) => p.auction.aminalOne.id),
-                      ...gene.proposalsUsingGene.map((p: any) => p.auction.aminalTwo.id)
-                    ]).size : 0
+                  aminalCount={
+                    gene.proposalsUsingGene
+                      ? // Extract unique Aminals from proposals (each proposal has 2 Aminals)
+                        new Set([
+                          ...gene.proposalsUsingGene.map(
+                            (p: any) => p.auction.aminalOne.id
+                          ),
+                          ...gene.proposalsUsingGene.map(
+                            (p: any) => p.auction.aminalTwo.id
+                          ),
+                        ]).size
+                      : 0
                   }
                 />
               ))}

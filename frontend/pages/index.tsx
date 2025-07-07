@@ -1,4 +1,5 @@
 import AminalGrid from '@/components/aminal-grid';
+import { useHasMounted } from '@/hooks/useHasMounted';
 import { cn } from '@/lib/utils';
 import { AminalFilter, AminalSort } from '@/resources/aminals';
 import { useAminalsDirect } from '@/resources/aminals-direct';
@@ -9,6 +10,7 @@ import { useAccount } from 'wagmi';
 import Layout from './_layout';
 
 const HomePage: NextPage = () => {
+  const hasMounted = useHasMounted();
   const { address } = useAccount();
   const [filter, setFilter] = useState<AminalFilter>('all');
   const [sort, setSort] = useState<AminalSort>('most-loved');
@@ -83,7 +85,8 @@ const HomePage: NextPage = () => {
                 </div>
               </div>
 
-              {!address && (
+              {/* Only show wallet connection hint after component has mounted */}
+              {hasMounted && !address && (
                 <div className="text-sm text-blue-600 bg-blue-50 px-3 py-2 rounded-full">
                   💡 Connect your wallet to interact with Aminals
                 </div>
