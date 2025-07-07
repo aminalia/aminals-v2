@@ -15,7 +15,7 @@ interface AminalWithDetails {
   energy: string;
 }
 
-const TraitDetailPage: NextPage = () => {
+const GeneDetailPage: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const { data: gene, isLoading } = useGene(id as string);
@@ -47,14 +47,21 @@ const TraitDetailPage: NextPage = () => {
   const category =
     TRAIT_CATEGORIES[gene.traitType as keyof typeof TRAIT_CATEGORIES];
   // Extract unique Aminals from proposals (each proposal has 2 Aminals)
-  const uniqueAminals = gene.proposalsUsingGene ? 
-    Array.from(new Set([
-      ...gene.proposalsUsingGene.map((p: any) => p.auction.aminalOne),
-      ...gene.proposalsUsingGene.map((p: any) => p.auction.aminalTwo)
-    ].map(a => a.id))).map(id => 
-      [...gene.proposalsUsingGene.map((p: any) => p.auction.aminalOne), ...gene.proposalsUsingGene.map((p: any) => p.auction.aminalTwo)]
-        .find(a => a.id === id)
-    ) : [];
+  const uniqueAminals = gene.proposalsUsingGene
+    ? Array.from(
+        new Set(
+          [
+            ...gene.proposalsUsingGene.map((p: any) => p.auction.aminalOne),
+            ...gene.proposalsUsingGene.map((p: any) => p.auction.aminalTwo),
+          ].map((a) => a.id)
+        )
+      ).map((id) =>
+        [
+          ...gene.proposalsUsingGene.map((p: any) => p.auction.aminalOne),
+          ...gene.proposalsUsingGene.map((p: any) => p.auction.aminalTwo),
+        ].find((a) => a.id === id)
+      )
+    : [];
   const aminalCount = uniqueAminals.length;
 
   return (
@@ -160,7 +167,10 @@ const TraitDetailPage: NextPage = () => {
                       </div>
                       <div className="p-4">
                         <Link
-                          href={`/aminals/${aminalWithDetails.contractAddress || aminalWithDetails.aminalIndex}`}
+                          href={`/aminals/${
+                            aminalWithDetails.contractAddress ||
+                            aminalWithDetails.aminalIndex
+                          }`}
                           className="text-xl font-bold hover:text-blue-600 transition-colors"
                         >
                           Aminal #{aminalWithDetails.aminalIndex}
@@ -208,4 +218,4 @@ const TraitDetailPage: NextPage = () => {
   );
 };
 
-export default TraitDetailPage;
+export default GeneDetailPage;

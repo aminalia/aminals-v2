@@ -35,13 +35,13 @@ export default function Header() {
                 asChild
                 className={navigationMenuTriggerStyle()}
               >
-                <Link href="/leaderboard">🏆 Leaderboard</Link>
+                <Link href="/genes">🧬 Genes</Link>
               </NavigationMenuLink>
               <NavigationMenuLink
                 asChild
                 className={navigationMenuTriggerStyle()}
               >
-                <Link href="/traits">🧬 Traits</Link>
+                <Link href="/leaderboard">🏆 Leaderboard</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
