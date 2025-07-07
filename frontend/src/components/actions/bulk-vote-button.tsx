@@ -44,6 +44,8 @@ export default function BulkVoteButton({
   const enabled = isConnected && chain;
   const { writeContract, isPending, data: hash, error } = useWriteContract();
 
+  const someGenesSelected = traitIds.some((id) => id && id !== '0');
+
   const {
     isLoading: isConfirming,
     isSuccess: isConfirmed,
@@ -176,6 +178,11 @@ export default function BulkVoteButton({
 
   const action = () => {
     if (enabled) {
+      if (!someGenesSelected) {
+        toast.error('Please select at least one gene to vote on');
+        return;
+      }
+
       // Convert trait IDs to BigInt array (8 elements for all categories)
       const geneIds = traitIds.map((id) => BigInt(id)) as [
         bigint,
@@ -218,13 +225,23 @@ export default function BulkVoteButton({
   };
 
   return (
-    <Button
-      type="button"
-      onClick={action}
-      disabled={!enabled || isPending || isConfirming}
-      className={enabled ? 'w-full' : 'w-full text-neutral-400'}
-    >
-      {isPending || isConfirming ? 'Voting...' : 'Vote on Selected Traits'}
-    </Button>
+    <div className="space-y-2">
+      <Button
+        type="button"
+        onClick={action}
+        disabled={!enabled || !someGenesSelected || isPending || isConfirming}
+        className={
+          enabled && someGenesSelected ? 'w-full' : 'w-full text-neutral-400'
+        }
+      >
+        {isPending || isConfirming
+          ? 'Voting...'
+          : !enabled
+          ? 'Connect Wallet'
+          : !someGenesSelected
+          ? 'Select Genes to Vote'
+          : 'Vote on Selected Traits'}
+      </Button>
+    </div>
   );
 }

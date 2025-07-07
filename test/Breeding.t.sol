@@ -282,11 +282,11 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
         assertTrue(totalLove > 0, "Total love should be positive");
         assertFalse(settled, "Auction should not be settled yet");
         assertEq(startTime, block.timestamp, "Start time should be current timestamp");
-        assertEq(endTime, block.timestamp + 7 days, "End time should be 7 days from start");
+        assertEq(endTime, block.timestamp + 1 hours, "End time should be 1 hour from start");
 
         console.log("Auction info verified - Parent indices:", aminalOne, aminalTwo);
         console.log("Total love:", totalLove);
-        console.log("Auction duration: 7 days");
+        console.log("Auction duration: 1 hour");
 
         return auctionId;
     }
@@ -384,8 +384,8 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
     function _settleAuction(uint256 auctionId) internal {
         console.log("Fast forwarding time and settling auction...");
 
-        // Fast forward past auction end (7 days + 1 hour)
-        vm.warp(block.timestamp + 7 days + 1 hours);
+        // Fast forward past auction end (1 hour + 1 minute)
+        vm.warp(block.timestamp + 1 hours + 1 minutes);
 
         // Verify voting is ready to settle
         assertFalse(geneAuction.isVotingActive(auctionId), "Voting should be inactive after time passes");
@@ -510,7 +510,7 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
         // Don't propose any genes - let it use defaults
 
         // Fast forward and settle
-        vm.warp(block.timestamp + 7 days + 1 hours);
+        vm.warp(block.timestamp + 1 hours + 1 minutes);
         geneAuction.settleAuction(auctionId);
 
         // Verify child was created
@@ -582,5 +582,112 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
         assertEq(updatedVotes, aliceVotingPower, "Vote should be updated");
 
         console.log("Vote updating system working correctly");
+    }
+
+    /**
+     * @dev Test that parent genes can be voted on without explicit proposal
+     */
+    function testParentGeneVotingWithoutProposal() public {
+        console.log("=== TESTING PARENT GENE VOTING WITHOUT PROPOSAL ===");
+
+        // For this test, we'll create a simplified scenario using the existing infrastructure
+        // Create a voting scenario where we manually create an auction with known parent traits
+
+        // First, let's create parent Aminals with specific non-zero trait IDs
+        // We'll call createAuction directly and then manually set up the parent traits
+        Visuals[] memory testParents = new Visuals[](2);
+        testParents[0] = Visuals({
+            backId: 100,
+            armId: 101,
+            tailId: 102,
+            earsId: 103,
+            bodyId: 104,
+            faceId: 105,
+            mouthId: 106,
+            miscId: 107
+        });
+        testParents[1] = Visuals({
+            backId: 200,
+            armId: 201,
+            tailId: 202,
+            earsId: 203,
+            bodyId: 204,
+            faceId: 205,
+            mouthId: 206,
+            miscId: 207
+        });
+
+        // Spawn these as new initial aminals (create a separate factory for this test)
+        AminalFactory testFactory = new AminalFactory();
+
+        // Create a separate gene auction for this test
+        GeneAuction testGeneAuction = new GeneAuction(address(genes), address(geneRegistry));
+
+        testFactory.initialize(address(testGeneAuction), address(proposals), address(genes));
+        testFactory.setup();
+
+        // Set up the test gene auction to accept calls from our test factory
+        testGeneAuction.setup(address(testFactory), address(testFactory));
+
+        testFactory.spawnInitialAminals(testParents);
+
+        // Get the parent addresses
+        address parent1Address = testFactory.getAminalByIndex(0);
+        address parent2Address = testFactory.getAminalByIndex(1);
+        AminalContract parent1 = AminalContract(payable(parent1Address));
+        AminalContract parent2 = AminalContract(payable(parent2Address));
+
+        console.log("Created test parents with non-zero trait IDs");
+
+        // Feed the parents to establish love for Alice
+        vm.prank(alice);
+        parent1.feed{value: 1 ether}();
+        vm.prank(alice);
+        parent2.feed{value: 1 ether}();
+
+        // Create auction manually (as if called by the factory)
+        vm.prank(address(testFactory));
+        uint256 auctionId = testGeneAuction.createAuction(0, 1, 100 ether);
+
+        console.log("Created auction with parent traits automatically available");
+
+        // Get alice's voting power (should be > 0 from feeding)
+        uint256 aliceVotingPower = testGeneAuction.getUserVotingPower(auctionId, alice);
+        console.log("Alice's voting power:", aliceVotingPower);
+
+        // Now try to vote on parent gene WITHOUT proposing it first
+        // This should work because parent genes are automatically available
+        console.log("Voting on parent 1 background gene (ID 100) without proposing...");
+
+        // Alice should be able to vote on the parent gene directly
+        vm.prank(alice);
+        testGeneAuction.voteOnGene(auctionId, VisualsCat.BACK, 100); // Parent 1's background gene
+
+        // Verify the vote was recorded
+        uint256 votes = testGeneAuction.getUserVote(auctionId, VisualsCat.BACK, 100, alice);
+        assertTrue(votes > 0, "Vote on parent gene should be recorded");
+
+        console.log("SUCCESS: Successfully voted on parent gene without proposing!");
+
+        // Try voting on parent 2's arm gene
+        console.log("Voting on parent 2 arm gene (ID 201) without proposing...");
+        vm.prank(alice);
+        testGeneAuction.voteOnGene(auctionId, VisualsCat.ARM, 201); // Parent 2's arm gene
+
+        // Verify the vote was recorded
+        uint256 armVotes = testGeneAuction.getUserVote(auctionId, VisualsCat.ARM, 201, alice);
+        assertTrue(armVotes > 0, "Vote on parent 2 gene should be recorded");
+
+        console.log("SUCCESS: Successfully voted on second parent gene without proposing!");
+
+        // Try voting on a gene that is NOT a parent gene - this should fail
+        console.log("Trying to vote on non-parent gene (ID 999) - should fail...");
+        vm.prank(alice);
+        vm.expectRevert(); // Should revert because 999 is not a parent gene and wasn't proposed
+        testGeneAuction.voteOnGene(auctionId, VisualsCat.BACK, 999);
+
+        console.log("SUCCESS: Correctly rejected vote on non-parent, non-proposed gene");
+
+        console.log("=== PARENT GENE VOTING TEST COMPLETED SUCCESSFULLY ===");
     }
 }

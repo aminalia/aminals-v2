@@ -233,17 +233,10 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         uint256 userVotingPower = _calculateVotingPower(auction, msg.sender);
         if (userVotingPower == 0) revert NoVotingPower();
 
-        CategoryVoting storage categoryVoting = auction.categoryVotes[category];
+        // Verify gene is valid for voting (either proposed or parent trait)
+        if (!_isGeneValidForVoting(auction, category, geneId)) revert InvalidGene();
 
-        // Verify gene is proposed for this category
-        bool isProposed = false;
-        for (uint256 i = 0; i < categoryVoting.proposedGenes.length; i++) {
-            if (categoryVoting.proposedGenes[i] == geneId) {
-                isProposed = true;
-                break;
-            }
-        }
-        if (!isProposed) revert InvalidGene();
+        CategoryVoting storage categoryVoting = auction.categoryVotes[category];
 
         // Remove previous vote if exists
         uint256 previousGeneId = categoryVoting.userVotedGene[msg.sender];
@@ -295,17 +288,10 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
     function _processSingleVote(Auction storage auction, VisualsCat category, uint256 geneId, uint256 userVotingPower)
         internal
     {
-        CategoryVoting storage categoryVoting = auction.categoryVotes[category];
+        // Verify gene is valid for voting (either proposed or parent trait)
+        if (!_isGeneValidForVoting(auction, category, geneId)) revert InvalidGene();
 
-        // Verify gene is proposed for this category
-        bool isProposed = false;
-        for (uint256 j = 0; j < categoryVoting.proposedGenes.length; j++) {
-            if (categoryVoting.proposedGenes[j] == geneId) {
-                isProposed = true;
-                break;
-            }
-        }
-        if (!isProposed) revert InvalidGene();
+        CategoryVoting storage categoryVoting = auction.categoryVotes[category];
 
         // Remove previous vote if exists
         uint256 previousGeneId = categoryVoting.userVotedGene[msg.sender];
@@ -342,17 +328,10 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         uint256 userVotingPower = _calculateVotingPower(auction, msg.sender);
         if (voteWeight > userVotingPower) revert InsufficientLove();
 
-        CategoryVoting storage categoryVoting = auction.categoryVotes[category];
+        // Verify gene is valid for voting (either proposed or parent trait)
+        if (!_isGeneValidForVoting(auction, category, geneId)) revert InvalidGene();
 
-        // Verify gene is proposed for this category
-        bool isProposed = false;
-        for (uint256 i = 0; i < categoryVoting.proposedGenes.length; i++) {
-            if (categoryVoting.proposedGenes[i] == geneId) {
-                isProposed = true;
-                break;
-            }
-        }
-        if (!isProposed) revert InvalidGene();
+        CategoryVoting storage categoryVoting = auction.categoryVotes[category];
 
         // Add removal vote
         categoryVoting.geneRemovalVotes[geneId] += voteWeight;
@@ -433,6 +412,31 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
                 if (!alreadyTied) categoryVoting.tiedGenes.push(geneId);
             }
         }
+    }
+
+    /**
+     * @notice Internal helper to check if a gene is valid for voting
+     * @dev A gene is valid if it's either proposed for the category OR is a parent trait
+     * @param auction The auction storage reference
+     * @param category The trait category
+     * @param geneId The gene ID to validate
+     * @return isValid True if the gene can be voted on
+     */
+    function _isGeneValidForVoting(Auction storage auction, VisualsCat category, uint256 geneId)
+        internal
+        view
+        returns (bool isValid)
+    {
+        CategoryVoting storage categoryVoting = auction.categoryVotes[category];
+
+        // Check if it's a proposed gene
+        for (uint256 i = 0; i < categoryVoting.proposedGenes.length; i++) {
+            if (categoryVoting.proposedGenes[i] == geneId) return true;
+        }
+
+        // If not proposed, check if it's a parent trait
+        uint256 categoryIndex = uint256(category);
+        return (auction.parentOneTraits[categoryIndex] == geneId || auction.parentTwoTraits[categoryIndex] == geneId);
     }
 
     /**

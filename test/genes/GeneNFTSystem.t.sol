@@ -144,7 +144,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
         assertEq(aminalTwo, 1);
         assertEq(totalLove, 100 ether);
         assertEq(startTime, block.timestamp);
-        assertEq(endTime, block.timestamp + 7 days);
+        assertEq(endTime, block.timestamp + 1 hours);
         assertFalse(settled);
         assertEq(childAminalId, auctionId);
 
@@ -262,8 +262,8 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
         vm.prank(alice);
         geneAuction.proposeGene(auctionId, VisualsCat.BACK, geneId);
 
-        // Fast forward past voting end
-        vm.warp(block.timestamp + 8 days);
+        // Fast forward past voting end (1 hour + 1 minute)
+        vm.warp(block.timestamp + 1 hours + 1 minutes);
 
         // Record parent energies before settlement
         address aminal0 = aminalFactory.getAminalByIndex(0);

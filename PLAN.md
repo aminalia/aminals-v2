@@ -2,10 +2,10 @@
 
 UI:
 
+- Trait links don't work on aminal detail page
 - Show auction end time and countdown
 - Link to parents (kill buttons)
-- Propose visuals does not seem to be working
-- Votes are not shown (maybe fixed now)
+- Child preview on breeding, see what the Aminal looks like based on most popular votes
 
 Contracts:
 
@@ -13,6 +13,7 @@ Contracts:
 - Sync env variables between graph, frontend, and contracts (less to replace on new deployments)
 - More genes test coverage (renderer, auction, registry, NFT contract)
 - Genes implement ERC721URIStorage, ERC721Enumerable?
+- Rename "Visuals" to "GeneIds"
 - childAminalId is no longer relevant as it is always 1
 - Clean up and document scripts
 - More docs in general

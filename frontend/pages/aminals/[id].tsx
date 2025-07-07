@@ -234,29 +234,35 @@ const AminalPage: NextPage = () => {
                 <FeedButton
                   contractAddress={aminal.contractAddress as `0x${string}`}
                 />
-                
+
                 {/* End Auction Button - show if there's an active auction that has ended */}
-                {aminal.auctions && aminal.auctions.length > 0 && (() => {
-                  const auction = aminal.auctions[0]; // Get the most recent active auction
-                  const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
-                  const auctionEndTime = auction.endBlockTimestamp ? Number(auction.endBlockTimestamp) : 0;
-                  const hasEnded = auctionEndTime > 0 && currentTime > auctionEndTime;
-                  
-                  if (hasEnded && !auction.finished) {
-                    return (
-                      <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                        <div className="text-sm text-yellow-700 mb-2">
-                          🔔 Auction #{auction.auctionId.toString()} has ended and can be settled
+                {aminal.auctions &&
+                  aminal.auctions.length > 0 &&
+                  (() => {
+                    const auction = aminal.auctions[0]; // Get the most recent active auction
+                    const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+                    const auctionEndTime = auction.endBlockTimestamp
+                      ? Number(auction.endBlockTimestamp)
+                      : 0;
+                    const hasEnded =
+                      auctionEndTime > 0 && currentTime > auctionEndTime;
+
+                    if (hasEnded && !auction.finished) {
+                      return (
+                        <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                          <div className="text-sm text-yellow-700 mb-2">
+                            🔔 Auction #{auction.auctionId.toString()} has ended
+                            and can be settled
+                          </div>
+                          <EndAuctionButton
+                            auctionId={auction.auctionId.toString()}
+                            className="w-full"
+                          />
                         </div>
-                        <EndAuctionButton 
-                          auctionId={auction.auctionId.toString()}
-                          className="w-full"
-                        />
-                      </div>
-                    );
-                  }
-                  return null;
-                })()}
+                      );
+                    }
+                    return null;
+                  })()}
               </div>
             </div>
           </div>
@@ -318,16 +324,18 @@ const AminalPage: NextPage = () => {
                     <span className="text-blue-600 text-lg">🧬</span>
                     Breeding
                   </h3>
-                  
+
                   {/* Breeding Status */}
                   <div className="px-3">
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-sm text-gray-500">Status:</span>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        aminal.breeding 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-gray-100 text-gray-800'
-                      }`}>
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          aminal.breeding
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-gray-100 text-gray-800'
+                        }`}
+                      >
                         {aminal.breeding ? '✅ Available' : '❌ Not Available'}
                       </span>
                     </div>
@@ -336,10 +344,15 @@ const AminalPage: NextPage = () => {
                   {/* Breeding Partners */}
                   {aminal.breedableWith && aminal.breedableWith.length > 0 && (
                     <div className="px-3">
-                      <div className="text-sm text-gray-500 mb-2">Can breed with:</div>
+                      <div className="text-sm text-gray-500 mb-2">
+                        Can breed with:
+                      </div>
                       <div className="space-y-2">
                         {aminal.breedableWith.map((consent: any) => (
-                          <div key={consent.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg border border-gray-100">
+                          <div
+                            key={consent.id}
+                            className="flex items-center justify-between p-2 bg-gray-50 rounded-lg border border-gray-100"
+                          >
                             <Link
                               href={`/aminals/${consent.partner.contractAddress}`}
                               className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
@@ -351,12 +364,16 @@ const AminalPage: NextPage = () => {
                                 {consent.partner.contractAddress.slice(0, 8)}...
                               </span>
                             </Link>
-                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                              consent.consented 
-                                ? 'bg-green-100 text-green-700' 
-                                : 'bg-yellow-100 text-yellow-700'
-                            }`}>
-                              {consent.consented ? '✅ Consented' : '⏳ Pending'}
+                            <span
+                              className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                consent.consented
+                                  ? 'bg-green-100 text-green-700'
+                                  : 'bg-yellow-100 text-yellow-700'
+                              }`}
+                            >
+                              {consent.consented
+                                ? '✅ Consented'
+                                : '⏳ Pending'}
                             </span>
                           </div>
                         ))}
@@ -366,7 +383,8 @@ const AminalPage: NextPage = () => {
 
                   <div className="px-3">
                     <p className="text-xs text-gray-500 mb-3">
-                      Breeding requires mutual consent and community voting via Gene Auctions.
+                      Breeding requires mutual consent and community voting via
+                      Gene Auctions.
                     </p>
                     <BreedButton
                       contractAddress={aminal.contractAddress as `0x${string}`}
@@ -384,18 +402,58 @@ const AminalPage: NextPage = () => {
                   </h3>
                   <div className="grid grid-cols-2 gap-3">
                     {[
-                      { name: 'Back', emoji: '🎒', id: aminal.backId, traitType: 0 },
-                      { name: 'Arms', emoji: '💪', id: aminal.armId, traitType: 1 },
-                      { name: 'Tail', emoji: '🐾', id: aminal.tailId, traitType: 2 },
-                      { name: 'Ears', emoji: '👂', id: aminal.earsId, traitType: 3 },
-                      { name: 'Body', emoji: '👤', id: aminal.bodyId, traitType: 4 },
-                      { name: 'Face', emoji: '😊', id: aminal.faceId, traitType: 5 },
-                      { name: 'Mouth', emoji: '👄', id: aminal.mouthId, traitType: 6 },
-                      { name: 'Misc', emoji: '✨', id: aminal.miscId, traitType: 7 },
+                      {
+                        name: 'Back',
+                        emoji: '🎒',
+                        id: aminal.backId,
+                        traitType: 0,
+                      },
+                      {
+                        name: 'Arms',
+                        emoji: '💪',
+                        id: aminal.armId,
+                        traitType: 1,
+                      },
+                      {
+                        name: 'Tail',
+                        emoji: '🐾',
+                        id: aminal.tailId,
+                        traitType: 2,
+                      },
+                      {
+                        name: 'Ears',
+                        emoji: '👂',
+                        id: aminal.earsId,
+                        traitType: 3,
+                      },
+                      {
+                        name: 'Body',
+                        emoji: '👤',
+                        id: aminal.bodyId,
+                        traitType: 4,
+                      },
+                      {
+                        name: 'Face',
+                        emoji: '😊',
+                        id: aminal.faceId,
+                        traitType: 5,
+                      },
+                      {
+                        name: 'Mouth',
+                        emoji: '👄',
+                        id: aminal.mouthId,
+                        traitType: 6,
+                      },
+                      {
+                        name: 'Misc',
+                        emoji: '✨',
+                        id: aminal.miscId,
+                        traitType: 7,
+                      },
                     ].map((gene, i) => (
                       <Link
                         key={i}
-                        href={`/traits?category=${gene.traitType}&search=${gene.id}`}
+                        href={`/genes/${gene.id}`}
                         className="p-3 rounded-lg border bg-blue-50 border-blue-100 hover:bg-blue-100 transition-colors"
                       >
                         <div className="flex items-center gap-2">
