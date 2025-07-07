@@ -5,6 +5,7 @@ import {AminalFactory} from "src/AminalFactory.sol";
 import {IAminal} from "src/interfaces/IAminal.sol";
 import {IAminalStructs} from "src/interfaces/IAminalStructs.sol";
 import {GeneAuction} from "src/genes/GeneAuction.sol";
+import {GeneRegistry} from "src/genes/GeneRegistry.sol";
 import {AminalProposals} from "src/proposals/AminalProposals.sol";
 import {Genes} from "src/genes/Genes.sol";
 import {Move2D} from "src/skills/Move2D.sol";
@@ -31,6 +32,7 @@ forge script  script/DeployAminals.s.sol:DeployAminals --chain-id 17000 --rpc-ur
 When updating the smart contract:
 - replace address of the aminal contract (everywhere) + address of the Visuals in subgraph.yaml
 - copy  the ABI in both frontend and graph folder:   out/ContractName.sol/ContractName.json --> frontend/deployments/ + graph/abis/
+- update GeneRegistry contract address if changed
 
 reload the graph:
 graph auth --studio 06bd7ece44455bca6730ca207e1f7606
@@ -46,17 +48,17 @@ npm run graphclient:build
 
 contract DeployAminals is Script {
     AminalFactory public factory;
+    GeneRegistry public geneRegistry;
     IAminalStructs.Visuals[] public initialVisuals;
 
     function deployAminalFactory() public returns (address) {
         // Deploy contracts in correct order
         Genes _Genes = new Genes();
-        // TODO: Deploy GeneRegistry when needed for full Gene NFT system
-        // For now, we use a placeholder address for the factory
-        GeneAuction _geneAuction = new GeneAuction(
-            address(_Genes),
-            address(0x0) // Placeholder for GeneRegistry
-        );
+
+        // Deploy GeneRegistry with the Genes contract address
+        geneRegistry = new GeneRegistry(address(_Genes));
+
+        GeneAuction _geneAuction = new GeneAuction(address(_Genes), address(geneRegistry));
         AminalProposals _proposals = new AminalProposals();
 
         AminalFactory _factory = new AminalFactory();
@@ -65,6 +67,7 @@ contract DeployAminals is Script {
         vm.setEnv("AMINAL_FACTORY_CONTRACT", vm.toString(address(_factory)));
         vm.setEnv("AMINAL_PROPOSALS_CONTRACT", vm.toString(address(_proposals)));
         vm.setEnv("GENE_AUCTION_CONTRACT", vm.toString(address(_geneAuction)));
+        vm.setEnv("GENE_REGISTRY_CONTRACT", vm.toString(address(geneRegistry)));
         vm.setEnv("GENES_NFT_CONTRACT", vm.toString(address(_Genes)));
 
         // Initialize the factory
@@ -74,8 +77,6 @@ contract DeployAminals is Script {
         _geneAuction.setup(address(_factory), address(_factory));
         _proposals.setup(address(_factory));
         _Genes.setup(address(_factory));
-
-        // TODO: _Genes.setRegistry to GeneRegistry contract
 
         return address(_factory);
     }
@@ -134,7 +135,9 @@ contract DeployAminals is Script {
         minter2.mintInitialGenesAnimated(genes, msg.sender);
         console.log("Initial genes minted to:", msg.sender);
 
-        // TODO: reset gene factory to Gene Registry
+        // Set the proper GeneRegistry as the registry
+        genes.setRegistry(address(geneRegistry));
+        console.log("Set GeneRegistry as the gene factory:", address(geneRegistry));
     }
 
     function run() external {

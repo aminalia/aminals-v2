@@ -9,6 +9,7 @@ import {IAminalStructs} from "src/interfaces/IAminalStructs.sol";
 import {Base64} from "src/utils/Base64.sol";
 
 error OnlyAminalsFactory();
+error OnlyAminalsFactoryOrRegistry();
 error OnlyNFTOwner();
 error OnlyRegistry();
 error AlreadySetup();
@@ -31,8 +32,7 @@ contract Genes is ERC721("Aminal Genes", "GENES"), Initializable, Ownable {
     }
 
     modifier onlyAminalsFactoryOrRegistry() {
-        // TODO maybe this needs its own error?
-        if (msg.sender != aminalFactory && msg.sender != geneRegistry) revert OnlyRegistry();
+        if (msg.sender != aminalFactory && msg.sender != geneRegistry) revert OnlyAminalsFactoryOrRegistry();
         _;
     }
 

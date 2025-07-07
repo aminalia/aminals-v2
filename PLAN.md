@@ -19,7 +19,6 @@ Contracts:
 - Do we need setBreedableWith?
 - Investigate if we should use VRGDA with loveDrivenPrice instead
 - Rename geneFactory -> geneRegistry
-- Reduce auction time to 1 hour for testing
 
 Indexer:
 
