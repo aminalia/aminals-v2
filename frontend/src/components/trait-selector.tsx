@@ -47,12 +47,14 @@ export interface TraitSelectorProps {
   parts: TraitParts;
   selectedParts: SelectedParts;
   onPartSelection: (part: string, index: number) => void;
+  disabled?: boolean;
 }
 
 const TraitSelector: React.FC<TraitSelectorProps> = ({
   parts,
   selectedParts,
   onPartSelection,
+  disabled = false,
 }) => {
   const [activeCategory, setActiveCategory] =
     useState<TraitCategory>('background');
@@ -70,7 +72,11 @@ const TraitSelector: React.FC<TraitSelectorProps> = ({
   };
 
   return (
-    <div className="flex flex-col gap-5">
+    <div
+      className={`flex flex-col gap-5 ${
+        disabled ? 'opacity-60 pointer-events-none' : ''
+      }`}
+    >
       <h2 className="text-xl font-bold">Trait Selection</h2>
 
       {/* Category Tabs */}
@@ -82,9 +88,12 @@ const TraitSelector: React.FC<TraitSelectorProps> = ({
             <Button
               key={category}
               variant={activeCategory === category ? 'default' : 'outline'}
-              onClick={() => setActiveCategory(category as TraitCategory)}
+              onClick={() =>
+                !disabled && setActiveCategory(category as TraitCategory)
+              }
               className="rounded-full flex items-center gap-2"
               size="sm"
+              disabled={disabled}
             >
               <span>{emoji}</span>
               <span>{name}</span>
@@ -110,13 +119,18 @@ const TraitSelector: React.FC<TraitSelectorProps> = ({
         <div className="grid grid-cols-2 gap-3">
           {/* Empty Gene Option - Always show as first option */}
           <div
-            className={`relative aspect-square rounded-xl overflow-hidden border-2 cursor-pointer transition-all
+            className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all
+              ${
+                disabled
+                  ? 'border-gray-200 cursor-not-allowed'
+                  : 'cursor-pointer hover:border-gray-300 hover:shadow-sm'
+              }
               ${
                 selectedParts[activeCategory] === -1
                   ? 'border-blue-500 shadow-md'
-                  : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
+                  : 'border-gray-200'
               }`}
-            onClick={() => onPartSelection(activeCategory, -1)}
+            onClick={() => !disabled && onPartSelection(activeCategory, -1)}
           >
             <div className="w-full h-full flex flex-col items-center justify-center bg-gray-50 text-gray-500">
               <div className="text-2xl mb-1">∅</div>
@@ -127,13 +141,20 @@ const TraitSelector: React.FC<TraitSelectorProps> = ({
           {parts[activeCategory]?.map((trait: Trait, index: number) => (
             <div
               key={index}
-              className={`relative aspect-square rounded-xl overflow-hidden border-2 cursor-pointer transition-all
+              className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all
+                ${
+                  disabled
+                    ? 'border-gray-200 cursor-not-allowed'
+                    : 'cursor-pointer hover:border-gray-300 hover:shadow-sm'
+                }
                 ${
                   selectedParts[activeCategory] === index
                     ? 'border-blue-500 shadow-md'
-                    : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'
+                    : 'border-gray-200'
                 }`}
-              onClick={() => onPartSelection(activeCategory, index)}
+              onClick={() =>
+                !disabled && onPartSelection(activeCategory, index)
+              }
             >
               {trait?.svg ? (
                 <svg

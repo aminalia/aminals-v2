@@ -6,6 +6,7 @@ UI:
 - Show auction end time and countdown
 - Link to parents (kill buttons)
 - Child preview on breeding, see what the Aminal looks like based on most popular votes
+- breeding UX sucks
 
 Contracts:
 

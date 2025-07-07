@@ -1,11 +1,13 @@
 import BulkVoteButton from '@/components/actions/bulk-vote-button';
+import EndAuctionButton from '@/components/actions/endauction-button';
+import CountdownTimer from '@/components/countdown-timer';
+import GenesList from '@/components/genes-list';
 import ProposeGeneModal from '@/components/propose-gene-modal';
 import TraitSelector, {
   SelectedParts,
   TraitParts,
 } from '@/components/trait-selector';
 import { Button } from '@/components/ui/button';
-import GenesList from '@/components/genes-list';
 import VoteStats from '@/components/vote-stats';
 import { useAuction, useAuctionProposeGenes } from '@/resources/auctions';
 import { useGenesByIds } from '@/resources/genes';
@@ -14,6 +16,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import Layout from '../_layout';
+
+// VOTING_DURATION from the contract (1 hour = 3600 seconds)
+const VOTING_DURATION = 3600;
 
 const AuctionPage: NextPage = () => {
   const router = useRouter();
@@ -32,6 +37,20 @@ const AuctionPage: NextPage = () => {
 
   console.log('auction data:', auction, error);
   console.log('propose genes:', proposeGenes, proposeGenesError);
+
+  // Calculate auction end time
+  const auctionEndTime = useMemo(() => {
+    if (!auction?.blockTimestamp) return 0;
+    // Convert BigInt to number and add voting duration
+    return Number(auction.blockTimestamp) + VOTING_DURATION;
+  }, [auction?.blockTimestamp]);
+
+  // Check if auction has ended
+  const isAuctionEnded = useMemo(() => {
+    if (!auction) return false;
+    const now = Math.floor(Date.now() / 1000);
+    return auction.finished || now >= auctionEndTime;
+  }, [auction, auctionEndTime]);
 
   // Get all gene IDs from parent Aminals
   const geneIds = useMemo(() => {
@@ -64,8 +83,7 @@ const AuctionPage: NextPage = () => {
   }, [auction]);
 
   // Fetch gene NFT data for the gene IDs
-  const { data: geneData, isLoading: isLoadingGenes } =
-    useGenesByIds(geneIds);
+  const { data: geneData, isLoading: isLoadingGenes } = useGenesByIds(geneIds);
 
   // State for selected gene parts
   const [selectedParts, setSelectedParts] = useState<SelectedParts>({
@@ -203,7 +221,7 @@ const AuctionPage: NextPage = () => {
             </div>
           ) : (
             <>
-              {/* Parents Info */}
+              {/* Parents Info with Countdown Timer */}
               <div className="bg-gray-50 rounded-xl px-6 py-5 flex flex-col md:flex-row justify-between items-center gap-5">
                 <div className="flex items-center gap-4">
                   <div className="text-xl">👪</div>
@@ -215,25 +233,23 @@ const AuctionPage: NextPage = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex gap-3">
-                  <Link href={`/aminals/${parentOne}`}>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="rounded-full"
-                    >
-                      View Parent #1
-                    </Button>
-                  </Link>
-                  <Link href={`/aminals/${parentTwo}`}>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="rounded-full"
-                    >
-                      View Parent #2
-                    </Button>
-                  </Link>
+                <div className="flex gap-3 items-center">
+                  {/* Countdown Timer or End Auction Button */}
+                  {auction?.finished ? (
+                    <div className="flex items-center gap-2">
+                      <div className="text-xl">✅</div>
+                      <div className="flex flex-col">
+                        <div className="text-sm text-gray-500">Status</div>
+                        <div className="font-medium text-green-600">
+                          Auction Completed
+                        </div>
+                      </div>
+                    </div>
+                  ) : isAuctionEnded ? (
+                    <EndAuctionButton auctionId={auctionId} />
+                  ) : (
+                    <CountdownTimer endTime={auctionEndTime} />
+                  )}
                 </div>
               </div>
 
@@ -266,56 +282,73 @@ const AuctionPage: NextPage = () => {
                       />
                     </div>
                     <div className="mt-6 space-y-4">
-                      <BulkVoteButton
-                        auctionId={auctionId}
-                        backId={
-                          selectedParts.background === -1
-                            ? '0'
-                            : parts.background[selectedParts.background]
-                                ?.visualId || '0'
-                        }
-                        armId={
-                          selectedParts.arm === -1
-                            ? '0'
-                            : parts.arm[selectedParts.arm]?.visualId || '0'
-                        }
-                        tailId={
-                          selectedParts.tail === -1
-                            ? '0'
-                            : parts.tail[selectedParts.tail]?.visualId || '0'
-                        }
-                        earsId={
-                          selectedParts.ears === -1
-                            ? '0'
-                            : parts.ears[selectedParts.ears]?.visualId || '0'
-                        }
-                        bodyId={
-                          selectedParts.body === -1
-                            ? '0'
-                            : parts.body[selectedParts.body]?.visualId || '0'
-                        }
-                        faceId={
-                          selectedParts.face === -1
-                            ? '0'
-                            : parts.face[selectedParts.face]?.visualId || '0'
-                        }
-                        mouthId={
-                          selectedParts.mouth === -1
-                            ? '0'
-                            : parts.mouth[selectedParts.mouth]?.visualId || '0'
-                        }
-                        miscId={
-                          selectedParts.misc === -1
-                            ? '0'
-                            : parts.misc[selectedParts.misc]?.visualId || '0'
-                        }
-                      />
-                      <Button
-                        onClick={() => setIsProposalModalOpen(true)}
-                        className="w-full bg-green-600 hover:bg-green-700 text-white"
-                      >
-                        ✨ Propose New Gene
-                      </Button>
+                      {!auction?.finished && !isAuctionEnded && (
+                        <>
+                          <BulkVoteButton
+                            auctionId={auctionId}
+                            backId={
+                              selectedParts.background === -1
+                                ? '0'
+                                : parts.background[selectedParts.background]
+                                    ?.visualId || '0'
+                            }
+                            armId={
+                              selectedParts.arm === -1
+                                ? '0'
+                                : parts.arm[selectedParts.arm]?.visualId || '0'
+                            }
+                            tailId={
+                              selectedParts.tail === -1
+                                ? '0'
+                                : parts.tail[selectedParts.tail]?.visualId ||
+                                  '0'
+                            }
+                            earsId={
+                              selectedParts.ears === -1
+                                ? '0'
+                                : parts.ears[selectedParts.ears]?.visualId ||
+                                  '0'
+                            }
+                            bodyId={
+                              selectedParts.body === -1
+                                ? '0'
+                                : parts.body[selectedParts.body]?.visualId ||
+                                  '0'
+                            }
+                            faceId={
+                              selectedParts.face === -1
+                                ? '0'
+                                : parts.face[selectedParts.face]?.visualId ||
+                                  '0'
+                            }
+                            mouthId={
+                              selectedParts.mouth === -1
+                                ? '0'
+                                : parts.mouth[selectedParts.mouth]?.visualId ||
+                                  '0'
+                            }
+                            miscId={
+                              selectedParts.misc === -1
+                                ? '0'
+                                : parts.misc[selectedParts.misc]?.visualId ||
+                                  '0'
+                            }
+                          />
+                          <Button
+                            onClick={() => setIsProposalModalOpen(true)}
+                            className="w-full bg-green-600 hover:bg-green-700 text-white"
+                          >
+                            ✨ Propose New Gene
+                          </Button>
+                        </>
+                      )}
+                      {auction?.finished && (
+                        <div className="text-center py-4">
+                          <div className="text-green-600 font-medium">
+                            🎉 Auction Complete! New Aminal has been created.
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -325,6 +358,7 @@ const AuctionPage: NextPage = () => {
                       parts={parts}
                       selectedParts={selectedParts}
                       onPartSelection={handlePartSelection}
+                      disabled={auction?.finished || isAuctionEnded}
                     />
                   </div>
                 </div>
@@ -346,11 +380,13 @@ const AuctionPage: NextPage = () => {
       </div>
 
       {/* Propose Gene Modal */}
-      <ProposeGeneModal
-        auctionId={auctionId}
-        isOpen={isProposalModalOpen}
-        onClose={() => setIsProposalModalOpen(false)}
-      />
+      {!auction?.finished && !isAuctionEnded && (
+        <ProposeGeneModal
+          auctionId={auctionId}
+          isOpen={isProposalModalOpen}
+          onClose={() => setIsProposalModalOpen(false)}
+        />
+      )}
     </Layout>
   );
 };
