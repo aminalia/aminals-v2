@@ -73,14 +73,14 @@ const TraitSelector: React.FC<TraitSelectorProps> = ({
 
   return (
     <div
-      className={`flex flex-col gap-5 ${
+      className={`flex flex-col gap-4 ${
         disabled ? 'opacity-60 pointer-events-none' : ''
       }`}
     >
-      <h2 className="text-xl font-bold">Trait Selection</h2>
+      <h3 className="text-lg font-semibold text-gray-800">Gene Selection</h3>
 
       {/* Category Tabs */}
-      <div className="flex flex-wrap gap-2 overflow-x-auto pb-2">
+      <div className="flex flex-wrap gap-1 overflow-x-auto">
         {Object.entries(categoryMap).map(([category, { index, name }]) => {
           const emoji =
             TRAIT_CATEGORIES[index as keyof typeof TRAIT_CATEGORIES].emoji;
@@ -91,11 +91,11 @@ const TraitSelector: React.FC<TraitSelectorProps> = ({
               onClick={() =>
                 !disabled && setActiveCategory(category as TraitCategory)
               }
-              className="rounded-full flex items-center gap-2"
+              className="rounded-md flex items-center gap-1 text-xs px-2 py-1"
               size="sm"
               disabled={disabled}
             >
-              <span>{emoji}</span>
+              <span className="text-sm">{emoji}</span>
               <span>{name}</span>
             </Button>
           );
@@ -103,74 +103,94 @@ const TraitSelector: React.FC<TraitSelectorProps> = ({
       </div>
 
       {/* Options Grid */}
-      <div className="space-y-3">
-        <h3 className="text-sm font-medium flex items-center gap-1.5">
-          <span className="text-blue-600">
-            {
-              TRAIT_CATEGORIES[
-                categoryMap[activeCategory]
-                  .index as keyof typeof TRAIT_CATEGORIES
-              ].emoji
-            }
-          </span>
-          <span>{categoryMap[activeCategory].name} Options</span>
-        </h3>
+      <div className="space-y-2">
+        <div>
+          <h4 className="text-sm font-medium text-gray-700">
+            {categoryMap[activeCategory].name} Options
+          </h4>
+          <p className="text-xs text-gray-500 mt-1">
+            P1/P2 = Parent genes, C = Community proposals
+          </p>
+        </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          {/* Empty Gene Option - Always show as first option */}
+        <div className="grid grid-cols-3 gap-2">
+          {/* Parent and Community Genes First */}
+          {parts[activeCategory]?.map((trait: Trait, index: number) => {
+            const isParent = (trait as any)?.isParentGene;
+            const isCommunity = (trait as any)?.isCommunityGene;
+            const parentIndex = (trait as any)?.parentIndex;
+            
+            return (
+              <div
+                key={index}
+                className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all
+                  ${
+                    disabled
+                      ? 'border-gray-200 cursor-not-allowed'
+                      : 'cursor-pointer hover:border-gray-400'
+                  }
+                  ${
+                    selectedParts[activeCategory] === index
+                      ? 'border-blue-500 ring-2 ring-blue-200'
+                      : isParent
+                      ? 'border-blue-300'
+                      : isCommunity
+                      ? 'border-purple-300'
+                      : 'border-gray-200'
+                  }`}
+                onClick={() =>
+                  !disabled && onPartSelection(activeCategory, index)
+                }
+              >
+                {/* Source indicator */}
+                {isParent && (
+                  <div className="absolute top-1 left-1 bg-blue-500 text-white text-xs rounded px-1 py-0.5 font-medium">
+                    P{parentIndex}
+                  </div>
+                )}
+                {isCommunity && (
+                  <div className="absolute top-1 left-1 bg-purple-500 text-white text-xs rounded px-1 py-0.5 font-medium">
+                    C
+                  </div>
+                )}
+                
+                {trait?.svg ? (
+                  <svg
+                    viewBox="0 0 1000 1000"
+                    className="w-full h-full bg-gray-50"
+                    dangerouslySetInnerHTML={{
+                      __html: trait.svg,
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-50 text-gray-400">
+                    No trait available
+                  </div>
+                )}
+              </div>
+            );
+          })}
+          
+          {/* Empty Gene Option - Always show as last option */}
           <div
-            className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all
+            className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all
               ${
                 disabled
                   ? 'border-gray-200 cursor-not-allowed'
-                  : 'cursor-pointer hover:border-gray-300 hover:shadow-sm'
+                  : 'cursor-pointer hover:border-gray-400'
               }
               ${
                 selectedParts[activeCategory] === -1
-                  ? 'border-blue-500 shadow-md'
-                  : 'border-gray-200'
+                  ? 'border-blue-500 ring-2 ring-blue-200'
+                  : 'border-gray-300'
               }`}
             onClick={() => !disabled && onPartSelection(activeCategory, -1)}
           >
-            <div className="w-full h-full flex flex-col items-center justify-center bg-gray-50 text-gray-500">
-              <div className="text-2xl mb-1">∅</div>
-              <div className="text-xs font-medium">Empty</div>
+            <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100 text-gray-600">
+              <div className="text-xl mb-1">∅</div>
+              <div className="text-xs font-medium">None</div>
             </div>
           </div>
-
-          {parts[activeCategory]?.map((trait: Trait, index: number) => (
-            <div
-              key={index}
-              className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all
-                ${
-                  disabled
-                    ? 'border-gray-200 cursor-not-allowed'
-                    : 'cursor-pointer hover:border-gray-300 hover:shadow-sm'
-                }
-                ${
-                  selectedParts[activeCategory] === index
-                    ? 'border-blue-500 shadow-md'
-                    : 'border-gray-200'
-                }`}
-              onClick={() =>
-                !disabled && onPartSelection(activeCategory, index)
-              }
-            >
-              {trait?.svg ? (
-                <svg
-                  viewBox="0 0 1000 1000"
-                  className="w-full h-full bg-indigo-50"
-                  dangerouslySetInnerHTML={{
-                    __html: trait.svg,
-                  }}
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gray-50 text-gray-400">
-                  No trait available
-                </div>
-              )}
-            </div>
-          ))}
         </div>
       </div>
     </div>

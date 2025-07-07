@@ -8,13 +8,14 @@ import TraitSelector, {
   TraitParts,
 } from '@/components/trait-selector';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import VoteStats from '@/components/vote-stats';
 import { useAuction, useAuctionProposeGenes } from '@/resources/auctions';
 import { useGenesByIds } from '@/resources/genes';
 import type { NextPage } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Layout from '../_layout';
 
 // VOTING_DURATION from the contract (1 hour = 3600 seconds)
@@ -97,6 +98,9 @@ const AuctionPage: NextPage = () => {
     misc: 0,
   });
 
+  // State for randomized preview
+  const [hasRandomized, setHasRandomized] = useState(false);
+
   // State for propose gene modal
   const [isProposalModalOpen, setIsProposalModalOpen] = useState(false);
 
@@ -113,7 +117,7 @@ const AuctionPage: NextPage = () => {
     return map;
   }, [geneData]);
 
-  // Define the gene parts from the auction data
+  // Define the gene parts from the auction data with community proposals
   const parts: TraitParts = useMemo(() => {
     if (!auction) {
       return {
@@ -136,7 +140,143 @@ const AuctionPage: NextPage = () => {
       return gene ? { ...gene, visualId: gene.tokenId } : null;
     };
 
+    // Mark parent genes with source metadata
+    const markAsParentGene = (gene: any, parentIndex: number) => {
+      return gene ? { ...gene, isParentGene: true, parentIndex } : null;
+    };
+
+    const parentGenes = {
+      background: [
+        markAsParentGene(getGeneForId(auction.aminalOne.backId), 1),
+        markAsParentGene(getGeneForId(auction.aminalTwo.backId), 2),
+      ].filter(Boolean),
+      body: [
+        markAsParentGene(getGeneForId(auction.aminalOne.bodyId), 1),
+        markAsParentGene(getGeneForId(auction.aminalTwo.bodyId), 2),
+      ].filter(Boolean),
+      face: [
+        markAsParentGene(getGeneForId(auction.aminalOne.faceId), 1),
+        markAsParentGene(getGeneForId(auction.aminalTwo.faceId), 2),
+      ].filter(Boolean),
+      mouth: [
+        markAsParentGene(getGeneForId(auction.aminalOne.mouthId), 1),
+        markAsParentGene(getGeneForId(auction.aminalTwo.mouthId), 2),
+      ].filter(Boolean),
+      ears: [
+        markAsParentGene(getGeneForId(auction.aminalOne.earsId), 1),
+        markAsParentGene(getGeneForId(auction.aminalTwo.earsId), 2),
+      ].filter(Boolean),
+      arm: [
+        markAsParentGene(getGeneForId(auction.aminalOne.armId), 1),
+        markAsParentGene(getGeneForId(auction.aminalTwo.armId), 2),
+      ].filter(Boolean),
+      tail: [
+        markAsParentGene(getGeneForId(auction.aminalOne.tailId), 1),
+        markAsParentGene(getGeneForId(auction.aminalTwo.tailId), 2),
+      ].filter(Boolean),
+      misc: [
+        markAsParentGene(getGeneForId(auction.aminalOne.miscId), 1),
+        markAsParentGene(getGeneForId(auction.aminalTwo.miscId), 2),
+      ].filter(Boolean),
+    };
+
+    // Add community proposals to each trait category
+    const traitMapping = {
+      0: 'background',
+      1: 'arm',
+      2: 'tail',
+      3: 'ears',
+      4: 'body',
+      5: 'face',
+      6: 'mouth',
+      7: 'misc',
+    };
+
+    const communityGenes = {
+      background: [],
+      body: [],
+      face: [],
+      mouth: [],
+      ears: [],
+      arm: [],
+      tail: [],
+      misc: [],
+    };
+
+    // Group proposals by trait type and mark as community genes
+    if (proposeGenes) {
+      proposeGenes.forEach((proposal) => {
+        const traitKey =
+          traitMapping[proposal.traitType as keyof typeof traitMapping];
+        if (traitKey && proposal.geneNFT) {
+          (communityGenes as any)[traitKey].push({
+            ...proposal.geneNFT,
+            visualId: proposal.geneNFT.tokenId,
+            svg: proposal.geneNFT.svg,
+            isCommunityGene: true,
+          });
+        }
+      });
+    }
+
+    // Combine parent genes first, then community proposals (remove duplicates)
+    const combineUnique = (parentArray: any[], communityArray: any[]) => {
+      const combined = [...parentArray];
+      const existingIds = new Set(
+        parentArray.map((gene) => gene?.visualId || gene?.tokenId)
+      );
+
+      communityArray.forEach((gene) => {
+        if (gene && !existingIds.has(gene.visualId || gene.tokenId)) {
+          combined.push(gene);
+          existingIds.add(gene.visualId || gene.tokenId);
+        }
+      });
+
+      return combined;
+    };
+
     const result = {
+      background: combineUnique(
+        parentGenes.background,
+        communityGenes.background
+      ),
+      body: combineUnique(parentGenes.body, communityGenes.body),
+      face: combineUnique(parentGenes.face, communityGenes.face),
+      mouth: combineUnique(parentGenes.mouth, communityGenes.mouth),
+      ears: combineUnique(parentGenes.ears, communityGenes.ears),
+      arm: combineUnique(parentGenes.arm, communityGenes.arm),
+      tail: combineUnique(parentGenes.tail, communityGenes.tail),
+      misc: combineUnique(parentGenes.misc, communityGenes.misc),
+    };
+
+    return result;
+  }, [auction, geneMap, proposeGenes]);
+
+  // Parent genes only (for randomization)
+  const parentParts: TraitParts = useMemo(() => {
+    if (!auction) {
+      return {
+        background: [],
+        body: [],
+        face: [],
+        mouth: [],
+        ears: [],
+        arm: [],
+        tail: [],
+        misc: [],
+      };
+    }
+
+    const getGeneForId = (id: any) => {
+      if (!id || id.toString() === '0') {
+        return null;
+      }
+      const gene = geneMap[id.toString()];
+      return gene ? { ...gene, visualId: gene.tokenId } : null;
+    };
+
+    return {
       background: [
         getGeneForId(auction.aminalOne.backId),
         getGeneForId(auction.aminalTwo.backId),
@@ -170,9 +310,37 @@ const AuctionPage: NextPage = () => {
         getGeneForId(auction.aminalTwo.miscId),
       ].filter(Boolean),
     };
-
-    return result;
   }, [auction, geneMap]);
+
+  // Randomize preview on page load using only parent genes
+  useEffect(() => {
+    if (!hasRandomized && parentParts && auction && geneData) {
+      // Wait for all data to be loaded
+      const hasData = Object.values(parentParts).some(
+        (genes) => genes.length > 0
+      );
+
+      if (hasData) {
+        const randomizedParts = Object.keys(parentParts).reduce((acc, key) => {
+          const availableGenes = parentParts[key as keyof typeof parentParts];
+          if (availableGenes.length > 0) {
+            const randomIndex = Math.floor(
+              Math.random() * availableGenes.length
+            );
+            acc[key] = randomIndex;
+          } else {
+            acc[key] = -1; // Empty if no genes available
+          }
+          return acc;
+        }, {} as SelectedParts);
+
+        console.log('Randomizing with parent parts:', parentParts);
+        console.log('Setting randomized parts:', randomizedParts);
+        setSelectedParts(randomizedParts);
+        setHasRandomized(true);
+      }
+    }
+  }, [parentParts, hasRandomized, auction, geneData]);
 
   // Handler for gene selection
   const handlePartSelection = (part: string, index: number) => {
@@ -197,182 +365,240 @@ const AuctionPage: NextPage = () => {
 
   return (
     <Layout>
-      <div className="container max-w-5xl mx-auto px-4 py-8">
-        <div className="flex flex-col gap-8">
+      <div className="container max-w-7xl mx-auto px-4 py-8">
+        <div className="space-y-8">
           {/* Header Section */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <h1 className="text-3xl font-bold">Breeding</h1>
-              <span className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-full font-medium">
-                #{auctionId}
-              </span>
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <Link
+                  href="/breeding"
+                  className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                >
+                  ← Back to Breeding
+                </Link>
+                <span className="px-2 py-1 text-sm bg-gray-100 text-gray-700 rounded font-medium">
+                  #{auctionId}
+                </span>
+              </div>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+                Gene Selection
+              </h1>
+              <p className="text-gray-600 mt-1">
+                Select genes for each trait category
+              </p>
             </div>
-            <Link
-              href="/auctions"
-              className="text-blue-600 hover:text-blue-700 text-sm font-medium"
-            >
-              ← Back to all Auctions
-            </Link>
           </div>
 
           {isLoadingAuction || isLoadingGenes ? (
             <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+              <div className="flex flex-col items-center gap-4">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+                <div className="text-gray-600">Loading breeding data...</div>
+              </div>
             </div>
           ) : (
             <>
-              {/* Parents Info with Countdown Timer */}
-              <div className="bg-gray-50 rounded-xl px-6 py-5 flex flex-col md:flex-row justify-between items-center gap-5">
-                <div className="flex items-center gap-4">
-                  <div className="text-xl">👪</div>
-                  <div>
-                    <div className="text-sm text-gray-500">Parents</div>
-                    <div className="font-medium">
-                      Aminal #{auction?.aminalOne?.aminalIndex || '?'} + Aminal
-                      #{auction?.aminalTwo?.aminalIndex || '?'}
+              {/* Main Content */}
+              <div className="bg-white rounded-lg border border-gray-200 overflow-hidden -mt-8">
+                {/* Parents Info with Countdown Timer */}
+                <div className="bg-gray-50 border border-gray-200 rounded-lg px-6 py-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-6">
+                      <Link
+                        href={`/aminals/${
+                          auction?.aminalOne?.contractAddress ||
+                          auction?.aminalOne?.aminalIndex
+                        }`}
+                        className="font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                      >
+                        Aminal #{auction?.aminalOne?.aminalIndex || '?'}
+                      </Link>
+                      <div className="text-gray-400">×</div>
+                      <Link
+                        href={`/aminals/${
+                          auction?.aminalTwo?.contractAddress ||
+                          auction?.aminalTwo?.aminalIndex
+                        }`}
+                        className="font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                      >
+                        Aminal #{auction?.aminalTwo?.aminalIndex || '?'}
+                      </Link>
+                    </div>
+
+                    <div>
+                      {/* Countdown Timer or End Auction Button */}
+                      {auction?.finished ? (
+                        <div className="flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1 rounded text-sm">
+                          <div>✓</div>
+                          <div className="font-medium">Completed</div>
+                        </div>
+                      ) : isAuctionEnded ? (
+                        <EndAuctionButton auctionId={auctionId} />
+                      ) : (
+                        <CountdownTimer endTime={auctionEndTime} />
+                      )}
                     </div>
                   </div>
                 </div>
-                <div className="flex gap-3 items-center">
-                  {/* Countdown Timer or End Auction Button */}
-                  {auction?.finished ? (
-                    <div className="flex items-center gap-2">
-                      <div className="text-xl">✅</div>
-                      <div className="flex flex-col">
-                        <div className="text-sm text-gray-500">Status</div>
-                        <div className="font-medium text-green-600">
-                          Auction Completed
-                        </div>
-                      </div>
-                    </div>
-                  ) : isAuctionEnded ? (
-                    <EndAuctionButton auctionId={auctionId} />
-                  ) : (
-                    <CountdownTimer endTime={auctionEndTime} />
-                  )}
-                </div>
-              </div>
 
-              {/* Main Content */}
-              <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                <div className="p-6 border-b border-gray-200">
-                  <h2 className="text-2xl font-bold">Design Your Offspring</h2>
-                  <p className="text-gray-600 mt-1">
-                    Choose which genes to inherit from each parent, or insert a
-                    new gene.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 p-4">
                   {/* Left Column - Preview */}
-                  <div className="lg:col-span-2">
-                    <div className="aspect-square rounded-xl overflow-hidden bg-indigo-50 border border-gray-200 p-4">
-                      <svg
-                        viewBox="0 0 1000 1000"
-                        className="w-full h-full"
-                        dangerouslySetInnerHTML={{
-                          __html: Object.entries(selectedParts)
-                            .map(([part, index]) => {
-                              // Handle empty gene selection (index -1)
-                              if (index === -1) return '';
-                              return parts[part][index]?.svg || '';
-                            })
-                            .join(''),
-                        }}
-                      />
-                    </div>
-                    <div className="mt-6 space-y-4">
-                      {!auction?.finished && !isAuctionEnded && (
-                        <>
-                          <BulkVoteButton
-                            auctionId={auctionId}
-                            backId={
-                              selectedParts.background === -1
-                                ? '0'
-                                : parts.background[selectedParts.background]
-                                    ?.visualId || '0'
-                            }
-                            armId={
-                              selectedParts.arm === -1
-                                ? '0'
-                                : parts.arm[selectedParts.arm]?.visualId || '0'
-                            }
-                            tailId={
-                              selectedParts.tail === -1
-                                ? '0'
-                                : parts.tail[selectedParts.tail]?.visualId ||
-                                  '0'
-                            }
-                            earsId={
-                              selectedParts.ears === -1
-                                ? '0'
-                                : parts.ears[selectedParts.ears]?.visualId ||
-                                  '0'
-                            }
-                            bodyId={
-                              selectedParts.body === -1
-                                ? '0'
-                                : parts.body[selectedParts.body]?.visualId ||
-                                  '0'
-                            }
-                            faceId={
-                              selectedParts.face === -1
-                                ? '0'
-                                : parts.face[selectedParts.face]?.visualId ||
-                                  '0'
-                            }
-                            mouthId={
-                              selectedParts.mouth === -1
-                                ? '0'
-                                : parts.mouth[selectedParts.mouth]?.visualId ||
-                                  '0'
-                            }
-                            miscId={
-                              selectedParts.misc === -1
-                                ? '0'
-                                : parts.misc[selectedParts.misc]?.visualId ||
-                                  '0'
-                            }
-                          />
-                          <Button
-                            onClick={() => setIsProposalModalOpen(true)}
-                            className="w-full bg-green-600 hover:bg-green-700 text-white"
-                          >
-                            ✨ Propose New Gene
-                          </Button>
-                        </>
-                      )}
-                      {auction?.finished && (
-                        <div className="text-center py-4">
-                          <div className="text-green-600 font-medium">
-                            🎉 Auction Complete! New Aminal has been created.
-                          </div>
-                        </div>
-                      )}
+                  <div className="xl:col-span-2">
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <h3 className="text-sm font-medium text-gray-700 mb-3">
+                        Preview
+                      </h3>
+                      <div className="aspect-square rounded-lg overflow-hidden bg-white border border-gray-300">
+                        <svg
+                          viewBox="0 0 1000 1000"
+                          className="w-full h-full"
+                          dangerouslySetInnerHTML={{
+                            __html: [
+                              // Correct rendering order: backId, armId, tailId, earsId, bodyId, faceId, mouthId, miscId
+                              'background',
+                              'arm',
+                              'tail',
+                              'ears',
+                              'body',
+                              'face',
+                              'mouth',
+                              'misc',
+                            ]
+                              .map((part) => {
+                                const index = selectedParts[part];
+                                // Handle empty gene selection (index -1)
+                                if (index === -1) return '';
+                                return parts[part][index]?.svg || '';
+                              })
+                              .join(''),
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
 
                   {/* Right Column - Gene Selector */}
-                  <div>
+                  <div className="space-y-4">
                     <TraitSelector
                       parts={parts}
                       selectedParts={selectedParts}
                       onPartSelection={handlePartSelection}
                       disabled={auction?.finished || isAuctionEnded}
                     />
+
+                    {/* Vote Button - Right next to gene selection */}
+                    {!auction?.finished && !isAuctionEnded && (
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <h4 className="text-sm font-medium text-blue-900">
+                            Vote on Your Selection
+                          </h4>
+                          {!auction?.finished && !isAuctionEnded && (
+                            <Button
+                              onClick={() => setIsProposalModalOpen(true)}
+                              size="sm"
+                              className="bg-green-600 hover:bg-green-700 text-white text-xs px-2 py-1 h-auto"
+                            >
+                              + Propose Gene
+                            </Button>
+                          )}
+                        </div>
+                        <BulkVoteButton
+                          auctionId={auctionId}
+                          backId={
+                            selectedParts.background === -1
+                              ? '0'
+                              : parts.background[selectedParts.background]
+                                  ?.visualId || '0'
+                          }
+                          armId={
+                            selectedParts.arm === -1
+                              ? '0'
+                              : parts.arm[selectedParts.arm]?.visualId || '0'
+                          }
+                          tailId={
+                            selectedParts.tail === -1
+                              ? '0'
+                              : parts.tail[selectedParts.tail]?.visualId || '0'
+                          }
+                          earsId={
+                            selectedParts.ears === -1
+                              ? '0'
+                              : parts.ears[selectedParts.ears]?.visualId || '0'
+                          }
+                          bodyId={
+                            selectedParts.body === -1
+                              ? '0'
+                              : parts.body[selectedParts.body]?.visualId || '0'
+                          }
+                          faceId={
+                            selectedParts.face === -1
+                              ? '0'
+                              : parts.face[selectedParts.face]?.visualId || '0'
+                          }
+                          mouthId={
+                            selectedParts.mouth === -1
+                              ? '0'
+                              : parts.mouth[selectedParts.mouth]?.visualId ||
+                                '0'
+                          }
+                          miscId={
+                            selectedParts.misc === -1
+                              ? '0'
+                              : parts.misc[selectedParts.misc]?.visualId || '0'
+                          }
+                        />
+                      </div>
+                    )}
+
+                    {auction?.finished && (
+                      <div className="text-center py-4 bg-green-50 rounded-lg border border-green-200">
+                        <div className="text-green-600 font-medium">
+                          Auction Complete - New Aminal Created
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
 
-              {/* Genes List Section */}
-              <div className="mt-4 space-y-6">
-                <h2 className="text-2xl font-bold">Community Proposals</h2>
-                <GenesList auctionId={auctionId} />
-              </div>
+              {/* Tabs for Community Content */}
+              <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                <Tabs defaultValue="votes" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2 bg-gray-50 p-1 rounded-none">
+                    <TabsTrigger
+                      value="votes"
+                      className="flex items-center gap-2 text-sm font-medium"
+                    >
+                      Vote Statistics
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="proposals"
+                      className="flex items-center gap-2 text-sm font-medium"
+                    >
+                      Community Proposals
+                    </TabsTrigger>
+                  </TabsList>
 
-              {/* Vote Statistics Section */}
-              <div className="mt-4 space-y-6">
-                <VoteStats auctionId={auctionId} />
+                  <TabsContent value="votes" className="m-0 p-4">
+                    <VoteStats auctionId={auctionId} />
+                  </TabsContent>
+
+                  <TabsContent value="proposals" className="m-0 p-4">
+                    <div className="space-y-3">
+                      <div>
+                        <h3 className="text-lg font-semibold">
+                          Community Proposals
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          Additional genes proposed by the community
+                        </p>
+                      </div>
+                      <GenesList auctionId={auctionId} />
+                    </div>
+                  </TabsContent>
+                </Tabs>
               </div>
             </>
           )}

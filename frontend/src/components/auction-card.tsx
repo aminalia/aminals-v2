@@ -72,53 +72,59 @@ export default function AuctionCard({ auction }: { auction: GeneAuction }) {
   };
 
   return (
-    <Card className="overflow-hidden bg-white hover:shadow-lg transition-all duration-300 group">
+    <Card className="overflow-hidden bg-white hover:shadow-xl transition-all duration-300 group border-2 hover:border-pink-200">
       {/* Main container - stack on mobile, row on desktop */}
       <div className="flex w-full">
         {/* Images Section - Always side by side */}
-        <div className="flex w-full md:w-1/2">
+        <div className="flex w-full md:w-1/2 relative">
+          {/* Heart connector between images */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 shadow-lg border-2 border-pink-200 group-hover:border-pink-300 transition-all">
+            <div className="text-lg text-pink-500 group-hover:scale-110 transition-transform">💕</div>
+          </div>
+          
           <div className="w-1/2 relative group/image aspect-square">
             <div className="h-full">
               <TokenUriImage tokenUri={aminalOne.tokenURI} />
             </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover/image:opacity-100 transition-opacity" />
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 text-sm bg-white/95 backdrop-blur-sm shadow-lg px-4 py-1.5 rounded-full font-medium">
-              <span className="hidden md:inline">✨ </span>#
-              {aminalOne.aminalIndex}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover/image:opacity-100 transition-opacity" />
+            <div className="absolute top-3 left-3 text-sm bg-white/95 backdrop-blur-sm shadow-lg px-3 py-1.5 rounded-full font-medium border border-gray-200">
+              <span className="text-blue-600">🐈</span> #{aminalOne.aminalIndex}
             </div>
           </div>
           <div className="w-1/2 relative group/image aspect-square">
             <div className="h-full">
               <TokenUriImage tokenUri={aminalTwo.tokenURI} />
             </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover/image:opacity-100 transition-opacity" />
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 text-sm bg-white/95 backdrop-blur-sm shadow-lg px-4 py-1.5 rounded-full font-medium">
-              <span className="hidden md:inline">✨ </span>#
-              {aminalTwo.aminalIndex}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover/image:opacity-100 transition-opacity" />
+            <div className="absolute top-3 right-3 text-sm bg-white/95 backdrop-blur-sm shadow-lg px-3 py-1.5 rounded-full font-medium border border-gray-200">
+              <span className="text-purple-600">🐈</span> #{aminalTwo.aminalIndex}
             </div>
           </div>
         </div>
 
         {/* Info Section - Full width on mobile, 50% on desktop */}
-        <div className="w-full md:w-1/2 p-5">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-3">
+        <div className="w-full md:w-1/2 p-6">
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex-1">
               <Link href={`/breeding/${auction.auctionId}`}>
-                <h2 className="text-xl font-bold hover:text-primary transition-colors">
-                  <span className="text-xl">💕</span> #{aminalOne.aminalIndex} ×
-                  #{aminalTwo.aminalIndex}
+                <h2 className="text-2xl font-bold hover:text-pink-600 transition-colors group/title">
+                  <span className="text-2xl group-hover/title:scale-110 transition-transform inline-block">🐶</span>
+                  <span className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+                    #{aminalOne.aminalIndex} × #{aminalTwo.aminalIndex}
+                  </span>
                 </h2>
               </Link>
+              <div className="text-sm text-gray-500 mt-1">Breeding Auction #{auction.auctionId}</div>
             </div>
             <Badge
               variant={auction.finished ? 'secondary' : 'default'}
               className={cn(
-                'transition-all duration-300 px-3 py-1.5 font-medium',
+                'transition-all duration-300 px-3 py-2 font-medium text-sm',
                 auction.finished
-                  ? 'bg-gray-100 text-gray-700 group-hover:bg-gray-200'
+                  ? 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 border-green-200'
                   : isAuctionEnded
-                  ? 'bg-red-100 text-red-700 group-hover:bg-red-200'
-                  : 'bg-green-100 text-green-700 group-hover:bg-green-200'
+                  ? 'bg-gradient-to-r from-red-100 to-orange-100 text-red-700 border-red-200'
+                  : 'bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 border-blue-200'
               )}
             >
               {auction.finished
@@ -129,41 +135,50 @@ export default function AuctionCard({ auction }: { auction: GeneAuction }) {
             </Badge>
           </div>
 
-          <div className="space-y-3 bg-gray-50/80 rounded-xl p-4">
+          <div className="space-y-4">
             {/* Countdown Timer Row */}
             {!auction.finished && (
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600 flex items-center gap-2.5">
-                  <span className="text-xl">⏰</span>
-                  Time Left
-                </span>
-                <span
-                  className={`font-semibold text-lg ${
-                    isAuctionEnded ? 'text-red-600' : 'text-gray-900'
-                  }`}
-                >
-                  {formatTime(timeLeft)}
-                </span>
+              <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-xl p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-700 flex items-center gap-2.5 font-medium">
+                    <span className="text-xl">⏰</span>
+                    Time Left
+                  </span>
+                  <span
+                    className={`font-bold text-xl ${
+                      isAuctionEnded ? 'text-red-600' : 'text-orange-600'
+                    }`}
+                  >
+                    {formatTime(timeLeft)}
+                  </span>
+                </div>
               </div>
             )}
 
-            <div className="flex items-center justify-between">
-              <span className="text-gray-600 flex items-center gap-2.5">
-                <span className="text-xl">👶</span> Child
-              </span>
-              <span className="font-semibold text-lg">
-                #{auction.childAminal?.aminalIndex || 'TBD'}
-              </span>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-4 text-center">
+                <div className="text-2xl mb-1">👶</div>
+                <div className="text-sm text-gray-600 mb-1">Child</div>
+                <div className="font-bold text-purple-700">
+                  #{auction.childAminal?.aminalIndex || 'TBD'}
+                </div>
+              </div>
+              
+              <div className="bg-gradient-to-r from-pink-50 to-red-50 border border-pink-200 rounded-xl p-4 text-center">
+                <div className="text-2xl mb-1">❤️</div>
+                <div className="text-sm text-gray-600 mb-1">Total Love</div>
+                <div className="font-bold text-pink-700">
+                  {auction.totalLove ? auction.totalLove.toString() : '0'}
+                </div>
+              </div>
             </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-gray-600 flex items-center gap-2.5">
-                <span className="text-xl">❤️</span> Total Love Vote
-              </span>
-              <span className="font-semibold text-lg">
-                {auction.totalLove ? auction.totalLove.toString() : '0'}
-              </span>
-            </div>
+            
+            {/* Call to Action */}
+            <Link href={`/breeding/${auction.auctionId}`}>
+              <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl p-3 text-center font-medium hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105 cursor-pointer">
+                {auction.finished ? 'View Results' : 'Join Breeding'} →
+              </div>
+            </Link>
           </div>
         </div>
       </div>
@@ -268,8 +283,11 @@ function TokenUriImage({ tokenUri }: { tokenUri?: string | null }) {
 
   if (error || !image) {
     return (
-      <div className="flex items-center justify-center w-full h-full text-gray-400 text-sm">
-        Unable to load image
+      <div className="flex items-center justify-center w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 text-gray-400 text-sm">
+        <div className="text-center">
+          <div className="text-2xl mb-2">🐈</div>
+          <div>Unable to load image</div>
+        </div>
       </div>
     );
   }
@@ -280,7 +298,7 @@ function TokenUriImage({ tokenUri }: { tokenUri?: string | null }) {
         src={image}
         alt="Aminal"
         fill
-        className="object-cover"
+        className="object-cover group-hover:scale-105 transition-transform duration-300"
         sizes="(max-width: 768px) 100vw, 250px"
       />
     </div>
