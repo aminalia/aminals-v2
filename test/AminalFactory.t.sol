@@ -18,7 +18,7 @@ contract AminalFactoryTest is Test, IAminalStructs {
     GeneAuction public geneAuction;
     AminalProposals public proposals;
     Genes public genes;
-    GeneRegistry public geneFactory;
+    GeneRegistry public geneRegistry;
     Move2D public move2DSkill;
 
     address public alice = address(0x1);
@@ -27,8 +27,8 @@ contract AminalFactoryTest is Test, IAminalStructs {
     function setUp() public {
         // Deploy real dependencies
         genes = new Genes();
-        geneFactory = new GeneRegistry(address(genes));
-        geneAuction = new GeneAuction(address(genes), address(geneFactory));
+        geneRegistry = new GeneRegistry(address(genes));
+        geneAuction = new GeneAuction(address(genes), address(geneRegistry));
         proposals = new AminalProposals();
 
         // Deploy factory
@@ -37,7 +37,7 @@ contract AminalFactoryTest is Test, IAminalStructs {
 
         // Setup contracts properly
         genes.setup(address(factory));
-        genes.setFactory(address(geneFactory));
+        genes.setRegistry(address(geneRegistry));
         geneAuction.setup(address(factory), address(factory));
         proposals.setup(address(factory));
         factory.setup();

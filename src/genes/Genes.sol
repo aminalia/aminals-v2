@@ -8,53 +8,54 @@ import {Ownable} from "oz/access/Ownable.sol";
 import {IAminalStructs} from "src/interfaces/IAminalStructs.sol";
 import {Base64} from "src/utils/Base64.sol";
 
-error OnlyAminalsNFT();
+error OnlyAminalsFactory();
 error OnlyNFTOwner();
-error OnlyFactory();
+error OnlyRegistry();
 error AlreadySetup();
 
 contract Genes is ERC721("Aminal Genes", "GENES"), Initializable, Ownable {
-    address public aminalsNFT;
-    address public geneFactory;
+    address public aminalFactory;
+    address public geneRegistry;
     uint256 public currentId;
     mapping(uint256 id => string) public geneSVGs;
     mapping(uint256 id => IAminalStructs.VisualsCat) public geneVisualsCat;
 
-    modifier onlyAminalsNFT() {
-        if (msg.sender != aminalsNFT) revert OnlyAminalsNFT();
+    modifier onlyAminalsFactory() {
+        if (msg.sender != aminalFactory) revert OnlyAminalsFactory();
         _;
     }
 
-    modifier onlyFactory() {
-        if (msg.sender != geneFactory) revert OnlyFactory();
+    modifier onlyRegistry() {
+        if (msg.sender != geneRegistry) revert OnlyRegistry();
         _;
     }
 
-    modifier onlyAminalsNFTOrFactory() {
-        if (msg.sender != aminalsNFT && msg.sender != geneFactory) revert OnlyFactory();
+    modifier onlyAminalsFactoryOrRegistry() {
+        // TODO maybe this needs its own error?
+        if (msg.sender != aminalFactory && msg.sender != geneRegistry) revert OnlyRegistry();
         _;
     }
 
-    event Setup(address aminalsNFT);
-    event FactorySet(address geneFactory);
+    event Setup(address aminalFactory);
+    event RegistrySet(address geneRegistry);
 
     constructor() Initializable() Ownable() {}
 
-    function setup(address aminalsNFT_) external initializer onlyOwner {
-        aminalsNFT = aminalsNFT_;
+    function setup(address aminalFactory_) external initializer onlyOwner {
+        aminalFactory = aminalFactory_;
 
-        emit Setup(aminalsNFT_);
+        emit Setup(aminalFactory_);
     }
 
-    // TODO not good, maybe use an initializer pattern?
-    function setFactory(address geneFactory_) external onlyOwner {
-        geneFactory = geneFactory_;
-        emit FactorySet(geneFactory_);
+    // TODO not good, too much power to the owner
+    function setRegistry(address geneRegistry_) external onlyOwner {
+        geneRegistry = geneRegistry_;
+        emit RegistrySet(geneRegistry_);
     }
 
     function mint(address to, string calldata geneSVG, IAminalStructs.VisualsCat visualsCategory)
         external
-        onlyAminalsNFTOrFactory
+        onlyAminalsFactoryOrRegistry
     {
         uint256 tokenId = currentId;
         geneSVGs[tokenId] = geneSVG;

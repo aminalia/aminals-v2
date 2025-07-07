@@ -18,7 +18,7 @@ contract AminalVRGDATest is Test, IAminalStructs {
     GeneAuction public geneAuction;
     AminalProposals public proposals;
     Genes public genes;
-    GeneRegistry public geneFactory;
+    GeneRegistry public geneRegistry;
 
     address public user1 = makeAddr("user1");
     address public user2 = makeAddr("user2");
@@ -26,8 +26,8 @@ contract AminalVRGDATest is Test, IAminalStructs {
     function setUp() public {
         // Deploy real dependencies
         genes = new Genes();
-        geneFactory = new GeneRegistry(address(genes));
-        geneAuction = new GeneAuction(address(genes), address(geneFactory));
+        geneRegistry = new GeneRegistry(address(genes));
+        geneAuction = new GeneAuction(address(genes), address(geneRegistry));
         proposals = new AminalProposals();
 
         // Deploy factory
@@ -36,7 +36,7 @@ contract AminalVRGDATest is Test, IAminalStructs {
 
         // Setup contracts properly
         genes.setup(address(factory));
-        genes.setFactory(address(geneFactory));
+        genes.setRegistry(address(geneRegistry));
         geneAuction.setup(address(factory), address(factory));
         proposals.setup(address(factory));
         factory.setup(); // This deploys the VRGDA

@@ -75,6 +75,8 @@ contract DeployAminals is Script {
         _proposals.setup(address(_factory));
         _Genes.setup(address(_factory));
 
+        // TODO: _Genes.setRegistry to GeneRegistry contract
+
         return address(_factory);
     }
 
@@ -118,7 +120,7 @@ contract DeployAminals is Script {
         console.log("InitialGenesMinter2 deployed to:", address(minter2));
 
         // Set minter as temporary gene factory
-        genes.setFactory(address(minter));
+        genes.setRegistry(address(minter));
         console.log("Set minter as temporary gene factory");
 
         // Mint initial genes
@@ -126,15 +128,13 @@ contract DeployAminals is Script {
         console.log("Initial genes minted to:", msg.sender);
 
         // Set minter as temporary gene factory
-        genes.setFactory(address(minter2));
+        genes.setRegistry(address(minter2));
         console.log("Set minter2 as temporary gene factory");
 
         minter2.mintInitialGenesAnimated(genes, msg.sender);
         console.log("Initial genes minted to:", msg.sender);
 
-        // Reset gene factory to address(0) for security
-        genes.setFactory(address(0));
-        console.log("Gene factory reset to address(0)");
+        // TODO: reset gene factory to Gene Registry
     }
 
     function run() external {

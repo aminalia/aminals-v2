@@ -20,7 +20,7 @@ contract AddNewGenes is Script {
         InitialGenesMinter minter = new InitialGenesMinter();
 
         // Set minter as temporary gene factory
-        genes.setFactory(address(minter));
+        genes.setRegistry(address(minter));
         console.log("Set minter as temporary gene factory");
 
         minter.mintInitialGenesAnimated(genes, msg.sender);

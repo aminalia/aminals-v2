@@ -26,7 +26,7 @@ import {IAminalStructs} from "src/interfaces/IAminalStructs.sol";
 contract AminalBreedingIntegrationTest is Test, IAminalStructs {
     AminalFactory public factory;
     Genes public genes;
-    GeneRegistry public geneFactory;
+    GeneRegistry public geneRegistry;
     GeneAuction public geneAuction;
     AminalProposals public proposals;
 
@@ -68,8 +68,8 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
     function setUp() public {
         // Deploy all contracts - NO MOCKS
         genes = new Genes();
-        geneFactory = new GeneRegistry(address(genes));
-        geneAuction = new GeneAuction(address(genes), address(geneFactory));
+        geneRegistry = new GeneRegistry(address(genes));
+        geneAuction = new GeneAuction(address(genes), address(geneRegistry));
         proposals = new AminalProposals();
 
         // Deploy AminalFactory
@@ -78,7 +78,7 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
 
         // Setup contracts
         genes.setup(address(factory));
-        genes.setFactory(address(geneFactory));
+        genes.setRegistry(address(geneRegistry));
         geneAuction.setup(address(factory), address(factory)); // AminalFactory is the aminalsContract
         proposals.setup(address(factory));
         factory.setup();
@@ -114,35 +114,35 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
     function _createGeneNFTs() internal {
         // Alice creates background gene
         vm.prank(alice);
-        backgroundGeneId = geneFactory.createGene{value: 0.001 ether}(SAMPLE_BACKGROUND, VisualsCat.BACK);
+        backgroundGeneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_BACKGROUND, VisualsCat.BACK);
 
         // Bob creates arms gene
         vm.prank(bob);
-        armsGeneId = geneFactory.createGene{value: 0.001 ether}(SAMPLE_ARMS, VisualsCat.ARM);
+        armsGeneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_ARMS, VisualsCat.ARM);
 
         // Charlie creates tail gene
         vm.prank(charlie);
-        tailGeneId = geneFactory.createGene{value: 0.001 ether}(SAMPLE_TAIL, VisualsCat.TAIL);
+        tailGeneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_TAIL, VisualsCat.TAIL);
 
         // David creates ears gene
         vm.prank(david);
-        earsGeneId = geneFactory.createGene{value: 0.001 ether}(SAMPLE_EARS, VisualsCat.EARS);
+        earsGeneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_EARS, VisualsCat.EARS);
 
         // Eve creates body gene
         vm.prank(eve);
-        bodyGeneId = geneFactory.createGene{value: 0.001 ether}(SAMPLE_BODY, VisualsCat.BODY);
+        bodyGeneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_BODY, VisualsCat.BODY);
 
         // Alice creates face gene
         vm.prank(alice);
-        faceGeneId = geneFactory.createGene{value: 0.001 ether}(SAMPLE_FACE, VisualsCat.FACE);
+        faceGeneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_FACE, VisualsCat.FACE);
 
         // Bob creates mouth gene
         vm.prank(bob);
-        mouthGeneId = geneFactory.createGene{value: 0.001 ether}(SAMPLE_MOUTH, VisualsCat.MOUTH);
+        mouthGeneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_MOUTH, VisualsCat.MOUTH);
 
         // Charlie creates misc gene
         vm.prank(charlie);
-        miscGeneId = geneFactory.createGene{value: 0.001 ether}(SAMPLE_MISC, VisualsCat.MISC);
+        miscGeneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_MISC, VisualsCat.MISC);
     }
 
     /**

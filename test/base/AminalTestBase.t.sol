@@ -21,7 +21,7 @@ abstract contract AminalTestBase is Test, IAminalStructs {
     GeneAuction public geneAuction;
     AminalProposals public proposals;
     Genes public genes;
-    GeneRegistry public geneFactory;
+    GeneRegistry public geneRegistry;
 
     address public alice = address(0x1);
     address public bob = address(0x2);
@@ -32,8 +32,8 @@ abstract contract AminalTestBase is Test, IAminalStructs {
     function setUp() public virtual {
         // Deploy all contracts - NO MOCKS
         genes = new Genes();
-        geneFactory = new GeneRegistry(address(genes));
-        geneAuction = new GeneAuction(address(genes), address(geneFactory));
+        geneRegistry = new GeneRegistry(address(genes));
+        geneAuction = new GeneAuction(address(genes), address(geneRegistry));
         proposals = new AminalProposals();
 
         // Deploy AminalFactory
@@ -42,7 +42,7 @@ abstract contract AminalTestBase is Test, IAminalStructs {
 
         // Setup contracts
         genes.setup(address(factory));
-        genes.setFactory(address(geneFactory));
+        genes.setRegistry(address(geneRegistry));
         geneAuction.setup(address(factory), address(factory)); // AminalFactory is the aminalsContract
         proposals.setup(address(factory));
         factory.setup();

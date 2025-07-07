@@ -18,12 +18,14 @@ import {GeneRegistry} from "src/genes/GeneRegistry.sol";
  */
 contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard {
     Genes public genes;
-    GeneRegistry public geneFactory;
+    GeneRegistry public geneRegistry;
+    // TODO rename to aminalsFactoryContract, is this needed? Do we need to store both this and aminalFactory?
     address public aminalsContract;
     IAminalFactory public aminalFactory;
 
+    // TODO: change to 7 days, set to 1 hour for testing
     /// @notice Duration of voting in seconds
-    uint256 public constant VOTING_DURATION = 7 days;
+    uint256 public constant VOTING_DURATION = 1 hours;
 
     /// @notice Percentage of parent energy transferred to gene owners (10%)
     uint256 public constant ENERGY_TRANSFER_PERCENTAGE = 10;
@@ -120,12 +122,12 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         _;
     }
 
-    // TODO rename geneFactory to geneRegistry
-    constructor(address _Genes, address _geneFactory) {
+    constructor(address _Genes, address _geneRegistry) {
         genes = Genes(_Genes);
-        geneFactory = GeneRegistry(_geneFactory);
+        geneRegistry = GeneRegistry(_geneRegistry);
     }
 
+    // TODO do we need this setup function? Maybe just do everything in constructor? Also, doesn't need two variables.
     function setup(address _aminalsContract, address _aminalFactory) external initializer onlyOwner {
         aminalsContract = _aminalsContract;
         aminalFactory = IAminalFactory(_aminalFactory);
@@ -193,10 +195,10 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         if (uint256(category) >= 8) revert InvalidCategory();
 
         // Verify gene exists and is from the factory
-        if (!geneFactory.isValidGene(geneId)) revert InvalidGene();
+        if (!geneRegistry.isValidGene(geneId)) revert InvalidGene();
 
         // Verify gene is in the correct category
-        (, VisualsCat geneCategory,) = geneFactory.getGeneInfo(geneId);
+        (, VisualsCat geneCategory,) = geneRegistry.getGeneInfo(geneId);
         if (geneCategory != category) revert InvalidCategory();
 
         CategoryVoting storage categoryVoting = auction.categoryVotes[category];
@@ -529,7 +531,7 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
             // Transfer energy to gene owner if gene was selected and it's a valid Gene NFT
             if (selectedGeneId != 0) {
                 // Check if this is a Gene NFT (not just a parent trait ID)
-                if (geneFactory.isValidGene(selectedGeneId)) {
+                if (geneRegistry.isValidGene(selectedGeneId)) {
                     uint256 energyPerGene = (energyFromAminalOne + energyFromAminalTwo) / 8;
 
                     if (energyPerGene > 0) {
