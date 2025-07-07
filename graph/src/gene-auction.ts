@@ -18,26 +18,46 @@ import {
   Aminal,
   User,
 } from "../generated/schema";
+import { AMINAL_FACTORY_ADDRESS, GENES_NFT_ADDRESS } from "./constants";
 
 // Helper function to create consistent auction ID format
 function createAuctionId(auctionId: BigInt): Bytes {
-  return Bytes.fromHexString("0x" + (auctionId.toI32() * 0x1000000).toString(16).padStart(8, '0'));
+  return Bytes.fromHexString(
+    "0x" + (auctionId.toI32() * 0x1000000).toString(16).padStart(8, "0")
+  );
 }
 
 // Helper function to create consistent proposal ID format
-function createProposalId(auctionId: BigInt, category: i32, geneId: BigInt): Bytes {
+function createProposalId(
+  auctionId: BigInt,
+  category: BigInt,
+  geneId: BigInt
+): Bytes {
   let auctionIdHex = createAuctionId(auctionId);
   return auctionIdHex
-    .concatI32(category)
+    .concatI32(category.toI32())
     .concat(Bytes.fromI32(geneId.toI32()));
 }
 
+// Helper function to get the Genes contract address from the auction contract
+function getGenesContractAddress(auctionContractAddress: Address): Address {
+  let auctionContract = GeneAuctionContract.bind(auctionContractAddress);
+  let genesResult = auctionContract.try_genes();
+  if (!genesResult.reverted) {
+    return genesResult.value;
+  }
+  // Fallback to constants address if call fails
+  return Address.fromString(GENES_NFT_ADDRESS);
+}
+
+// Helper function to create gene NFT entity ID (matches genes-nft.ts format)
+function createGeneNFTId(genesContractAddress: Address, geneId: BigInt): Bytes {
+  return genesContractAddress.concat(Bytes.fromI32(geneId.toI32()));
+}
+
 export function handleVotingCreated(event: VotingCreatedEvent): void {
-  // Get factory address from event address (the gene auction contract knows the factory)
-  // For now, we'll use a known factory address - in production this should be configurable
-  let factoryAddress = Address.fromString(
-    "0x5dcda867599155a796ff92b39b07fc9f6febe208"
-  );
+  // Get factory address from constants
+  let factoryAddress = Address.fromString(AMINAL_FACTORY_ADDRESS);
 
   // Load parent Aminals by index using factory contract
   let aminalOneIndex = event.params.aminalOne;
@@ -138,15 +158,21 @@ export function handleGeneProposed(event: GeneProposedEvent): void {
     user.save();
   }
 
+  // Get the actual Genes contract address from the auction contract
+  let genesContractAddress = getGenesContractAddress(event.address);
+
   // Create gene proposal entity with proper ID format
-  let proposalId = createProposalId(event.params.auctionId, event.params.category, event.params.geneId);
+  let proposalId = createProposalId(
+    event.params.auctionId,
+    BigInt.fromI32(event.params.category),
+    event.params.geneId
+  );
   let proposal = new GeneProposal(proposalId);
   proposal.auction = auction.id;
-  // Store gene NFT reference properly - using the Genes contract address from the auction
-  let genesContract = Address.fromString("0x463ea6dcbc54c5ed7d704332562187a30276e9b7");
-  proposal.geneNFT = genesContract.concat(
-    Bytes.fromI32(event.params.geneId.toI32())
-  );
+
+  // Store gene NFT reference using the same format as genes-nft.ts
+  proposal.geneNFT = createGeneNFTId(genesContractAddress, event.params.geneId);
+
   proposal.traitType = event.params.category;
   proposal.proposer = user.id;
   proposal.loveVotes = BigInt.fromI32(0);
@@ -157,12 +183,16 @@ export function handleGeneProposed(event: GeneProposedEvent): void {
   proposal.transactionHash = event.transaction.hash;
   proposal.save();
 
-  log.info("Gene proposed for auction {}: gene ID {} trait type {} by {}", [
-    event.params.auctionId.toString(),
-    event.params.geneId.toString(),
-    event.params.category.toString(),
-    event.params.proposer.toHexString(),
-  ]);
+  log.info(
+    "Gene proposed for auction {}: gene ID {} trait type {} by {} with gene NFT ID {}",
+    [
+      event.params.auctionId.toString(),
+      event.params.geneId.toString(),
+      event.params.category.toString(),
+      event.params.proposer.toHexString(),
+      proposal.geneNFT.toHexString(),
+    ]
+  );
 }
 
 export function handleGeneVoteCast(event: GeneVoteCastEvent): void {
@@ -177,7 +207,11 @@ export function handleGeneVoteCast(event: GeneVoteCastEvent): void {
   }
 
   // Load gene proposal with proper ID format
-  let proposalId = createProposalId(event.params.auctionId, event.params.category, event.params.geneId);
+  let proposalId = createProposalId(
+    event.params.auctionId,
+    BigInt.fromI32(event.params.category),
+    event.params.geneId
+  );
   let proposal = GeneProposal.load(proposalId);
   if (!proposal) {
     log.error("Gene proposal not found for vote: auction {} gene {} trait {}", [
@@ -246,7 +280,11 @@ export function handleGeneRemovalVote(event: GeneRemovalVoteEvent): void {
   }
 
   // Load gene proposal with proper ID format
-  let proposalId = createProposalId(event.params.auctionId, event.params.category, event.params.geneId);
+  let proposalId = createProposalId(
+    event.params.auctionId,
+    BigInt.fromI32(event.params.category),
+    event.params.geneId
+  );
   let proposal = GeneProposal.load(proposalId);
   if (!proposal) {
     log.error(
@@ -299,7 +337,11 @@ export function handleGeneRemovalVote(event: GeneRemovalVoteEvent): void {
 
 export function handleGeneRemoved(event: GeneRemovedEvent): void {
   // Load gene proposal with proper ID format
-  let proposalId = createProposalId(event.params.auctionId, event.params.category, event.params.geneId);
+  let proposalId = createProposalId(
+    event.params.auctionId,
+    BigInt.fromI32(event.params.category),
+    event.params.geneId
+  );
   let proposal = GeneProposal.load(proposalId);
   if (!proposal) {
     log.error(
@@ -366,16 +408,38 @@ export function handleBulkVoteCast(event: BulkVoteCastEvent): void {
     let geneId = geneIds[i];
     if (!geneId.isZero()) {
       // Create proposal ID for this gene/category combination
-      let proposalId = createProposalId(event.params.auctionId, i, geneId);
+      let proposalId = createProposalId(
+        event.params.auctionId,
+        BigInt.fromI32(i),
+        geneId
+      );
       let proposal = GeneProposal.load(proposalId);
-      
+
       if (!proposal) {
-        log.warning("Gene proposal not found for bulk vote: auction {} gene {} trait {} - skipping", [
-          event.params.auctionId.toString(),
-          geneId.toString(),
-          i.toString(),
-        ]);
-        continue;
+        log.warning(
+          "Gene proposal not found for bulk vote: auction {} gene {} trait {} - creating proposal automatically",
+          [event.params.auctionId.toString(), geneId.toString(), i.toString()]
+        );
+
+        // Auto-create the proposal if it doesn't exist
+        let genesContractAddress = getGenesContractAddress(event.address);
+        proposal = new GeneProposal(proposalId);
+        proposal.auction = auction.id;
+        proposal.geneNFT = createGeneNFTId(genesContractAddress, geneId);
+        proposal.traitType = i;
+        proposal.proposer = user.id; // The voter becomes the proposer
+        proposal.loveVotes = BigInt.fromI32(0);
+        proposal.removeVotes = BigInt.fromI32(0);
+        proposal.removed = false;
+        proposal.blockNumber = event.block.number;
+        proposal.blockTimestamp = event.block.timestamp;
+        proposal.transactionHash = event.transaction.hash;
+        proposal.save();
+
+        log.info(
+          "Auto-created gene proposal for bulk vote: auction {} gene {} trait {}",
+          [event.params.auctionId.toString(), geneId.toString(), i.toString()]
+        );
       }
 
       // Create gene vote entity for this individual vote
