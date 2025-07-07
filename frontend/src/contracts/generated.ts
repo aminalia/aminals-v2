@@ -1034,7 +1034,7 @@ export const aminalFactoryAbi = [
 ] as const
 
 export const aminalFactoryAddress =
-  '0x5dcDA867599155a796Ff92b39B07fc9f6fEBe208' as const
+  '0x797564393e357BAE3DD4edBf4d38aF242E3fd7fe' as const
 
 export const aminalFactoryConfig = {
   address: aminalFactoryAddress,
@@ -1050,7 +1050,7 @@ export const geneAuctionAbi = [
     type: 'constructor',
     inputs: [
       { name: '_Genes', internalType: 'address', type: 'address' },
-      { name: '_geneFactory', internalType: 'address', type: 'address' },
+      { name: '_geneRegistry', internalType: 'address', type: 'address' },
     ],
     stateMutability: 'nonpayable',
   },
@@ -1137,7 +1137,7 @@ export const geneAuctionAbi = [
   {
     type: 'function',
     inputs: [],
-    name: 'geneFactory',
+    name: 'geneRegistry',
     outputs: [
       { name: '', internalType: 'contract GeneRegistry', type: 'address' },
     ],
@@ -1640,11 +1640,230 @@ export const geneAuctionAbi = [
 ] as const
 
 export const geneAuctionAddress =
-  '0x3730bE2175f4E9CACe752305B37891ec8cca5734' as const
+  '0xaF3E8E413DF045f495C98Ad4CA0a8969fCb14592' as const
 
 export const geneAuctionConfig = {
   address: geneAuctionAddress,
   abi: geneAuctionAbi,
+} as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// GeneRegistry
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const geneRegistryAbi = [
+  {
+    type: 'constructor',
+    inputs: [{ name: '_geneNFT', internalType: 'address', type: 'address' }],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'MAX_SVG_LENGTH',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'MIN_CREATION_FEE',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'svg', internalType: 'string', type: 'string' },
+      {
+        name: 'category',
+        internalType: 'enum IAminalStructs.VisualsCat',
+        type: 'uint8',
+      },
+    ],
+    name: 'createGene',
+    outputs: [{ name: 'geneId', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'payable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'geneId', internalType: 'uint256', type: 'uint256' }],
+    name: 'geneCategories',
+    outputs: [
+      {
+        name: 'category',
+        internalType: 'enum IAminalStructs.VisualsCat',
+        type: 'uint8',
+      },
+    ],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'geneId', internalType: 'uint256', type: 'uint256' }],
+    name: 'geneCreators',
+    outputs: [{ name: 'creator', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'geneNFT',
+    outputs: [{ name: '', internalType: 'contract Genes', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'geneId', internalType: 'uint256', type: 'uint256' }],
+    name: 'geneRegistry',
+    outputs: [{ name: 'isFromFactory', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'geneId', internalType: 'uint256', type: 'uint256' }],
+    name: 'geneSVGs',
+    outputs: [{ name: 'svg', internalType: 'string', type: 'string' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'geneId', internalType: 'uint256', type: 'uint256' }],
+    name: 'getGeneInfo',
+    outputs: [
+      { name: 'creator', internalType: 'address', type: 'address' },
+      {
+        name: 'category',
+        internalType: 'enum IAminalStructs.VisualsCat',
+        type: 'uint8',
+      },
+      { name: 'svg', internalType: 'string', type: 'string' },
+    ],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      {
+        name: 'category',
+        internalType: 'enum IAminalStructs.VisualsCat',
+        type: 'uint8',
+      },
+    ],
+    name: 'getGenesByCategory',
+    outputs: [
+      { name: 'geneIds', internalType: 'uint256[]', type: 'uint256[]' },
+    ],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'creator', internalType: 'address', type: 'address' }],
+    name: 'getGenesByCreator',
+    outputs: [
+      { name: 'geneIds', internalType: 'uint256[]', type: 'uint256[]' },
+    ],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'geneId', internalType: 'uint256', type: 'uint256' }],
+    name: 'isValidGene',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'owner',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'renounceOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'totalGenesCreated',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'newOwner', internalType: 'address', type: 'address' }],
+    name: 'transferOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'withdrawFees',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'geneId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: 'creator',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'category',
+        internalType: 'enum IAminalStructs.VisualsCat',
+        type: 'uint8',
+        indexed: true,
+      },
+      { name: 'svg', internalType: 'string', type: 'string', indexed: false },
+    ],
+    name: 'GeneCreated',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'previousOwner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'newOwner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'OwnershipTransferred',
+  },
+  { type: 'error', inputs: [], name: 'EmptySVG' },
+  { type: 'error', inputs: [], name: 'InsufficientFee' },
+  { type: 'error', inputs: [], name: 'InvalidSVG' },
+  { type: 'error', inputs: [], name: 'SVGTooLarge' },
+] as const
+
+export const geneRegistryAddress =
+  '0xa9dD7702E425f61c72Ae143a4301C58947b6C0Ec' as const
+
+export const geneRegistryConfig = {
+  address: geneRegistryAddress,
+  abi: geneRegistryAbi,
 } as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1656,7 +1875,7 @@ export const genesAbi = [
   {
     type: 'function',
     inputs: [],
-    name: 'aminalsNFT',
+    name: 'aminalFactory',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
     stateMutability: 'view',
   },
@@ -1694,7 +1913,7 @@ export const genesAbi = [
   {
     type: 'function',
     inputs: [],
-    name: 'geneFactory',
+    name: 'geneRegistry',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
     stateMutability: 'view',
   },
@@ -1828,15 +2047,17 @@ export const genesAbi = [
   {
     type: 'function',
     inputs: [
-      { name: 'geneFactory_', internalType: 'address', type: 'address' },
+      { name: 'geneRegistry_', internalType: 'address', type: 'address' },
     ],
-    name: 'setFactory',
+    name: 'setRegistry',
     outputs: [],
     stateMutability: 'nonpayable',
   },
   {
     type: 'function',
-    inputs: [{ name: 'aminalsNFT_', internalType: 'address', type: 'address' }],
+    inputs: [
+      { name: 'aminalFactory_', internalType: 'address', type: 'address' },
+    ],
     name: 'setup',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -1929,19 +2150,6 @@ export const genesAbi = [
     type: 'event',
     anonymous: false,
     inputs: [
-      {
-        name: 'geneFactory',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-    ],
-    name: 'FactorySet',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
       { name: 'version', internalType: 'uint8', type: 'uint8', indexed: false },
     ],
     name: 'Initialized',
@@ -1970,7 +2178,20 @@ export const genesAbi = [
     anonymous: false,
     inputs: [
       {
-        name: 'aminalsNFT',
+        name: 'geneRegistry',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+    ],
+    name: 'RegistrySet',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'aminalFactory',
         internalType: 'address',
         type: 'address',
         indexed: false,
@@ -1993,11 +2214,11 @@ export const genesAbi = [
     ],
     name: 'Transfer',
   },
-  { type: 'error', inputs: [], name: 'OnlyFactory' },
+  { type: 'error', inputs: [], name: 'OnlyAminalsFactoryOrRegistry' },
   { type: 'error', inputs: [], name: 'OnlyNFTOwner' },
 ] as const
 
 export const genesAddress =
-  '0x463EA6DCbC54C5Ed7d704332562187A30276e9b7' as const
+  '0x41004e0bABD0161378C746e7C2d870f951aE555d' as const
 
 export const genesConfig = { address: genesAddress, abi: genesAbi } as const

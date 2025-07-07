@@ -62,24 +62,6 @@ export class ApprovalForAll__Params {
   }
 }
 
-export class FactorySet extends ethereum.Event {
-  get params(): FactorySet__Params {
-    return new FactorySet__Params(this);
-  }
-}
-
-export class FactorySet__Params {
-  _event: FactorySet;
-
-  constructor(event: FactorySet) {
-    this._event = event;
-  }
-
-  get geneFactory(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-}
-
 export class Initialized extends ethereum.Event {
   get params(): Initialized__Params {
     return new Initialized__Params(this);
@@ -120,6 +102,24 @@ export class OwnershipTransferred__Params {
   }
 }
 
+export class RegistrySet extends ethereum.Event {
+  get params(): RegistrySet__Params {
+    return new RegistrySet__Params(this);
+  }
+}
+
+export class RegistrySet__Params {
+  _event: RegistrySet;
+
+  constructor(event: RegistrySet) {
+    this._event = event;
+  }
+
+  get geneRegistry(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+}
+
 export class Setup extends ethereum.Event {
   get params(): Setup__Params {
     return new Setup__Params(this);
@@ -133,7 +133,7 @@ export class Setup__Params {
     this._event = event;
   }
 
-  get aminalsNFT(): Address {
+  get aminalFactory(): Address {
     return this._event.parameters[0].value.toAddress();
   }
 }
@@ -197,14 +197,18 @@ export class Genes extends ethereum.SmartContract {
     return new Genes("Genes", address);
   }
 
-  aminalsNFT(): Address {
-    let result = super.call("aminalsNFT", "aminalsNFT():(address)", []);
+  aminalFactory(): Address {
+    let result = super.call("aminalFactory", "aminalFactory():(address)", []);
 
     return result[0].toAddress();
   }
 
-  try_aminalsNFT(): ethereum.CallResult<Address> {
-    let result = super.tryCall("aminalsNFT", "aminalsNFT():(address)", []);
+  try_aminalFactory(): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "aminalFactory",
+      "aminalFactory():(address)",
+      [],
+    );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -246,14 +250,14 @@ export class Genes extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  geneFactory(): Address {
-    let result = super.call("geneFactory", "geneFactory():(address)", []);
+  geneRegistry(): Address {
+    let result = super.call("geneRegistry", "geneRegistry():(address)", []);
 
     return result[0].toAddress();
   }
 
-  try_geneFactory(): ethereum.CallResult<Address> {
-    let result = super.tryCall("geneFactory", "geneFactory():(address)", []);
+  try_geneRegistry(): ethereum.CallResult<Address> {
+    let result = super.tryCall("geneRegistry", "geneRegistry():(address)", []);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -753,32 +757,32 @@ export class SetApprovalForAllCall__Outputs {
   }
 }
 
-export class SetFactoryCall extends ethereum.Call {
-  get inputs(): SetFactoryCall__Inputs {
-    return new SetFactoryCall__Inputs(this);
+export class SetRegistryCall extends ethereum.Call {
+  get inputs(): SetRegistryCall__Inputs {
+    return new SetRegistryCall__Inputs(this);
   }
 
-  get outputs(): SetFactoryCall__Outputs {
-    return new SetFactoryCall__Outputs(this);
+  get outputs(): SetRegistryCall__Outputs {
+    return new SetRegistryCall__Outputs(this);
   }
 }
 
-export class SetFactoryCall__Inputs {
-  _call: SetFactoryCall;
+export class SetRegistryCall__Inputs {
+  _call: SetRegistryCall;
 
-  constructor(call: SetFactoryCall) {
+  constructor(call: SetRegistryCall) {
     this._call = call;
   }
 
-  get geneFactory_(): Address {
+  get geneRegistry_(): Address {
     return this._call.inputValues[0].value.toAddress();
   }
 }
 
-export class SetFactoryCall__Outputs {
-  _call: SetFactoryCall;
+export class SetRegistryCall__Outputs {
+  _call: SetRegistryCall;
 
-  constructor(call: SetFactoryCall) {
+  constructor(call: SetRegistryCall) {
     this._call = call;
   }
 }
@@ -800,7 +804,7 @@ export class SetupCall__Inputs {
     this._call = call;
   }
 
-  get aminalsNFT_(): Address {
+  get aminalFactory_(): Address {
     return this._call.inputValues[0].value.toAddress();
   }
 }

@@ -9,11 +9,14 @@
     "create-local": "graph create --node http://localhost:8020/ aminals",
     "remove-local": "graph remove --node http://localhost:8020/ aminals",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 aminals",
-    "test": "graph test"
+    "test": "graph test",
+    "generate-constants": "node scripts/extract-from-subgraph.js",
+    "prebuild": "npm run generate-constants"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.89.0",
-    "@graphprotocol/graph-ts": "0.35.1"
+    "@graphprotocol/graph-ts": "0.35.1",
+    "js-yaml": "^4.1.0"
   },
   "devDependencies": {
     "matchstick-as": "0.6.0"

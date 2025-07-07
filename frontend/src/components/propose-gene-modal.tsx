@@ -1,14 +1,17 @@
-import { useState, useMemo, useEffect } from 'react';
-import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { TRAIT_CATEGORIES } from '@/constants/trait-categories';
+import { cn } from '@/lib/utils';
+import { CategoryFilter, useGenes } from '@/resources/genes';
+import { X } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
+import {
+  useAccount,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from 'wagmi';
+import { geneAuctionAbi, geneAuctionAddress } from '../contracts/generated';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { TRAIT_CATEGORIES } from '@/constants/trait-categories';
-import { useGenes, CategoryFilter } from '@/resources/genes';
-import { cn } from '@/lib/utils';
-import { X } from 'lucide-react';
-
-const geneAuctionAbi = require('../../deployments/GeneAuction.json').abi;
 
 interface ProposeGeneModalProps {
   auctionId: bigint | string;
@@ -24,12 +27,14 @@ const CATEGORIES = [
   { id: 4, label: 'Body' },
   { id: 5, label: 'Face' },
   { id: 6, label: 'Mouth' },
-  { id: 7, label: 'Misc' }
+  { id: 7, label: 'Misc' },
 ];
 
-const GENE_AUCTION_ADDRESS = '0x30484F8a6CEC8Fc02EFEA2320e3E3A5f710B7605' as const;
-
-export default function ProposeGeneModal({ auctionId, isOpen, onClose }: ProposeGeneModalProps) {
+export default function ProposeGeneModal({
+  auctionId,
+  isOpen,
+  onClose,
+}: ProposeGeneModalProps) {
   const [selectedCategory, setSelectedCategory] = useState<number>(0);
   const [selectedGeneId, setSelectedGeneId] = useState<string>('');
   const [manualGeneId, setManualGeneId] = useState<string>('');
@@ -52,15 +57,22 @@ export default function ProposeGeneModal({ auctionId, isOpen, onClose }: Propose
   }, [selectedCategory]);
 
   // Fetch genes for the selected category
-  const { data: genes, isLoading: isLoadingGenes } = useGenes('all', 'aminals-count', categoryKey);
+  const { data: genes, isLoading: isLoadingGenes } = useGenes(
+    'all',
+    'aminals-count',
+    categoryKey
+  );
 
   // Handle transaction success
   useEffect(() => {
     if (isConfirmed) {
-      toast.success('🧬 Gene proposed successfully! The community can now vote on it.', {
-        id: 'propose-gene-tx',
-        duration: 5000,
-      });
+      toast.success(
+        '🧬 Gene proposed successfully! The community can now vote on it.',
+        {
+          id: 'propose-gene-tx',
+          duration: 5000,
+        }
+      );
       onClose();
       // Reset form
       setSelectedGeneId('');
@@ -74,7 +86,9 @@ export default function ProposeGeneModal({ auctionId, isOpen, onClose }: Propose
   useEffect(() => {
     if (error) {
       console.error('Propose gene transaction failed:', error);
-      toast.error('Failed to propose gene. Please try again.', { id: 'propose-gene-tx' });
+      toast.error('Failed to propose gene. Please try again.', {
+        id: 'propose-gene-tx',
+      });
     }
   }, [error]);
 
@@ -82,7 +96,9 @@ export default function ProposeGeneModal({ auctionId, isOpen, onClose }: Propose
   useEffect(() => {
     if (receiptError) {
       console.error('Transaction receipt error:', receiptError);
-      toast.error('Transaction failed. Please try again.', { id: 'propose-gene-tx' });
+      toast.error('Transaction failed. Please try again.', {
+        id: 'propose-gene-tx',
+      });
     }
   }, [receiptError]);
 
@@ -102,13 +118,13 @@ export default function ProposeGeneModal({ auctionId, isOpen, onClose }: Propose
 
   const handlePropose = () => {
     if (!enabled) return;
-    
+
     const geneId = useManualId ? manualGeneId : selectedGeneId;
     if (!geneId) return;
 
     writeContract({
       abi: geneAuctionAbi,
-      address: GENE_AUCTION_ADDRESS,
+      address: geneAuctionAddress,
       functionName: 'proposeGene',
       args: [BigInt(auctionId), selectedCategory, BigInt(geneId)],
     });
@@ -142,7 +158,9 @@ export default function ProposeGeneModal({ auctionId, isOpen, onClose }: Propose
             <h3 className="text-lg font-semibold mb-3">Select Category</h3>
             <div className="flex flex-wrap gap-2">
               {CATEGORIES.map((category) => {
-                const emoji = TRAIT_CATEGORIES[category.id as keyof typeof TRAIT_CATEGORIES]?.emoji || '🎨';
+                const emoji =
+                  TRAIT_CATEGORIES[category.id as keyof typeof TRAIT_CATEGORIES]
+                    ?.emoji || '🎨';
                 return (
                   <button
                     key={category.id}
@@ -250,28 +268,31 @@ export default function ProposeGeneModal({ auctionId, isOpen, onClose }: Propose
         {/* Footer */}
         <div className="border-t border-gray-200 p-6 flex items-center justify-between">
           <div className="text-sm text-gray-600">
-            {useManualId 
+            {useManualId
               ? `Manual ID: ${manualGeneId || 'Not entered'}`
-              : `Selected: ${selectedGeneId ? `Gene #${selectedGeneId}` : 'None'}`}
+              : `Selected: ${
+                  selectedGeneId ? `Gene #${selectedGeneId}` : 'None'
+                }`}
           </div>
           <div className="flex gap-3">
-            <Button
-              variant="outline"
-              onClick={onClose}
-            >
+            <Button variant="outline" onClick={onClose}>
               Cancel
             </Button>
             <Button
               onClick={handlePropose}
-              disabled={!enabled || (!selectedGeneId && !manualGeneId) || isPending || isConfirming}
+              disabled={
+                !enabled ||
+                (!selectedGeneId && !manualGeneId) ||
+                isPending ||
+                isConfirming
+              }
               className="bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50"
             >
-              {!enabled 
-                ? 'Connect Wallet' 
-                : isPending || isConfirming 
-                  ? 'Proposing...' 
-                  : 'Propose Gene'
-              }
+              {!enabled
+                ? 'Connect Wallet'
+                : isPending || isConfirming
+                ? 'Proposing...'
+                : 'Propose Gene'}
             </Button>
           </div>
         </div>

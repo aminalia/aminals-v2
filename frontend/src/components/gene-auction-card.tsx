@@ -1,17 +1,9 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
-import { parseEther } from 'viem';
 import { useAccount, useWriteContract } from 'wagmi';
-const geneAuctionAbi = require('../../deployments/GeneAuction.json').abi;
-
-const GENE_AUCTION_ADDRESS = '0x30484F8a6CEC8Fc02EFEA2320e3E3A5f710B7605' as const;
+import { geneAuctionAbi, geneAuctionAddress } from '../contracts/generated';
 
 interface GeneAuction {
   id: string;
@@ -26,7 +18,7 @@ export default function GeneAuctionCard({ auction }: { auction: GeneAuction }) {
   const { isConnected, chain } = useAccount();
   const enabled = isConnected && chain;
   const { writeContractAsync, isPending } = useWriteContract();
-  
+
   const [geneId, setGeneId] = useState<string>('');
   const [category, setCategory] = useState<string>('0'); // 0 = BACK, 1 = ARM, etc.
 
@@ -34,10 +26,9 @@ export default function GeneAuctionCard({ auction }: { auction: GeneAuction }) {
     if (enabled && geneId && category) {
       await writeContractAsync({
         abi: geneAuctionAbi,
-        address: GENE_AUCTION_ADDRESS,
+        address: geneAuctionAddress,
         functionName: 'proposeGene',
-        args: [auction.id, BigInt(geneId), BigInt(category)],
-        value: parseEther('0.001'),
+        args: [BigInt(auction.id), Number(category), BigInt(geneId)],
       });
     }
   }
@@ -46,10 +37,9 @@ export default function GeneAuctionCard({ auction }: { auction: GeneAuction }) {
     if (enabled && geneId && category) {
       await writeContractAsync({
         abi: geneAuctionAbi,
-        address: GENE_AUCTION_ADDRESS,
-        functionName: 'voteGene',
-        args: [auction.id, BigInt(geneId), BigInt(category)],
-        value: parseEther('0.001'),
+        address: geneAuctionAddress,
+        functionName: 'voteOnGene',
+        args: [BigInt(auction.id), Number(category), BigInt(geneId)],
       });
     }
   }
@@ -58,9 +48,9 @@ export default function GeneAuctionCard({ auction }: { auction: GeneAuction }) {
     if (enabled) {
       await writeContractAsync({
         abi: geneAuctionAbi,
-        address: GENE_AUCTION_ADDRESS,
-        functionName: 'settleVoting',
-        args: [auction.id],
+        address: geneAuctionAddress,
+        functionName: 'settleAuction',
+        args: [BigInt(auction.id)],
       });
     }
   }
@@ -101,8 +91,10 @@ export default function GeneAuctionCard({ auction }: { auction: GeneAuction }) {
               onChange={(e) => setCategory(e.target.value)}
               className="w-full p-2 border rounded-md"
             >
-              {categories.map(cat => (
-                <option key={cat.value} value={cat.value}>{cat.label}</option>
+              {categories.map((cat) => (
+                <option key={cat.value} value={cat.value}>
+                  {cat.label}
+                </option>
               ))}
             </select>
           </div>

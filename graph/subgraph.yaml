@@ -41,9 +41,9 @@ dataSources:
     name: AminalFactory
     network: sepolia
     source:
-      address: "0x5dcda867599155a796ff92b39b07fc9f6febe208"
+      address: "0x797564393e357bae3dd4edbf4d38af242e3fd7fe"
       abi: AminalFactory
-      startBlock: 8705720
+      startBlock: 8713495
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -68,9 +68,9 @@ dataSources:
     name: GeneAuction
     network: sepolia
     source:
-      address: "0x3730be2175f4e9cace752305b37891ec8cca5734"
+      address: "0xaf3e8e413df045f495c98ad4ca0a8969fcb14592"
       abi: GeneAuction
-      startBlock: 8705720
+      startBlock: 8713495
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -108,9 +108,9 @@ dataSources:
     name: Genes
     network: sepolia
     source:
-      address: "0x463ea6dcbc54c5ed7d704332562187a30276e9b7"
+      address: "0x41004e0babd0161378c746e7c2d870f951ae555d"
       abi: Genes
-      startBlock: 8705720
+      startBlock: 8713495
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -125,27 +125,26 @@ dataSources:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
       file: ./src/genes-nft.ts
-# GeneRegistry not deployed yet - uncomment when available
-#  - kind: ethereum
-#    name: GeneRegistry
-#    network: sepolia
-#    source:
-#      address: "0x41063967aa8337ab89a2f69ca8ff54ba13ce1f06"
-#      abi: GeneRegistry
-#      startBlock: 8700538
-#    mapping:
-#      kind: ethereum/events
-#      apiVersion: 0.0.9
-#      language: wasm/assemblyscript
-#      entities:
-#        - GeneNFT
-#        - User
-#      abis:
-#        - name: GeneRegistry
-#          file: ../out/GeneRegistry.sol/GeneRegistry.json
-#        - name: Genes
-#          file: ../out/Genes.sol/Genes.json
-#      eventHandlers:
-#        - event: GeneCreated(indexed uint256,indexed address,indexed uint8,string)
-#          handler: handleGeneCreated
-#      file: ./src/gene-nft-factory.ts
+  - kind: ethereum
+    name: GeneRegistry
+    network: sepolia
+    source:
+      address: "0xa9dd7702e425f61c72ae143a4301c58947b6c0ec"
+      abi: GeneRegistry
+      startBlock: 8713495
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - GeneNFT
+        - User
+      abis:
+        - name: GeneRegistry
+          file: ../out/GeneRegistry.sol/GeneRegistry.json
+        - name: Genes
+          file: ../out/Genes.sol/Genes.json
+      eventHandlers:
+        - event: GeneCreated(indexed uint256,indexed address,indexed uint8,string)
+          handler: handleGeneCreated
+      file: ./src/gene-nft-factory.ts

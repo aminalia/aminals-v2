@@ -637,14 +637,14 @@ export class GeneAuction extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  geneFactory(): Address {
-    let result = super.call("geneFactory", "geneFactory():(address)", []);
+  geneRegistry(): Address {
+    let result = super.call("geneRegistry", "geneRegistry():(address)", []);
 
     return result[0].toAddress();
   }
 
-  try_geneFactory(): ethereum.CallResult<Address> {
-    let result = super.tryCall("geneFactory", "geneFactory():(address)", []);
+  try_geneRegistry(): ethereum.CallResult<Address> {
+    let result = super.tryCall("geneRegistry", "geneRegistry():(address)", []);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -1028,7 +1028,7 @@ export class ConstructorCall__Inputs {
     return this._call.inputValues[0].value.toAddress();
   }
 
-  get _geneFactory(): Address {
+  get _geneRegistry(): Address {
     return this._call.inputValues[1].value.toAddress();
   }
 }

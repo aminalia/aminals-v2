@@ -2,18 +2,18 @@
 
 import { TRAIT_CATEGORIES } from '@/constants/trait-categories';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import {
   useAccount,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from 'wagmi';
+import { geneRegistryAbi, geneRegistryAddress } from '../contracts/generated';
 import { SimpleSVGBuilder } from './simple-svg-builder';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-// import { GeneRegistryAbi, GeneRegistryAddress } from '@/contracts/generated'; // Commented out - GeneRegistry not deployed to Sepolia
-import toast from 'react-hot-toast';
 
 interface CreateGeneModalProps {
   isOpen: boolean;
@@ -101,40 +101,33 @@ function CreateGeneModal({ isOpen, onClose, onSuccess }: CreateGeneModalProps) {
   }, [isPending, isConfirming, hash]);
 
   const handleCreate = () => {
-    // GeneRegistry not deployed to Sepolia yet
-    toast.error(
-      'Gene creation is not available yet on Sepolia. GeneRegistry contract needs to be deployed.'
-    );
-    setIsCreating(false);
+    if (!address) {
+      toast.error('Please connect your wallet first');
+      return;
+    }
 
-    // TODO: Uncomment when GeneRegistry is deployed to Sepolia
-    // if (!address) {
-    //   toast.error('Please connect your wallet first');
-    //   return;
-    // }
-    //
-    // if (!name.trim()) {
-    //   toast.error('Please enter a name for your gene');
-    //   return;
-    // }
-    //
-    // if (!svg.trim() || svg.includes('<!-- Your SVG content here -->')) {
-    //   toast.error('Please create or paste an SVG design');
-    //   return;
-    // }
-    //
-    // setIsCreating(true);
-    //
-    // writeContract({
-    //   address: GeneRegistryAddress,
-    //   abi: GeneRegistryAbi,
-    //   functionName: 'createGene',
-    //   args: [
-    //     svg, // svg
-    //     category, // category (0-7)
-    //   ],
-    //   value: BigInt('1000000000000000'), // 0.001 ETH in wei
-    // });
+    if (!name.trim()) {
+      toast.error('Please enter a name for your gene');
+      return;
+    }
+
+    if (!svg.trim() || svg.includes('<!-- Your SVG content here -->')) {
+      toast.error('Please create or paste an SVG design');
+      return;
+    }
+
+    setIsCreating(true);
+
+    writeContract({
+      address: geneRegistryAddress,
+      abi: geneRegistryAbi,
+      functionName: 'createGene',
+      args: [
+        svg, // svg
+        category, // category (0-7)
+      ],
+      value: BigInt('1000000000000000'), // 0.001 ETH in wei
+    });
   };
 
   if (!isOpen) return null;

@@ -1,11 +1,11 @@
-// Deployed contract addresses on Sepolia testnet
-export const AMINAL_FACTORY_ADDRESS =
-  "0x5dcda867599155a796ff92b39b07fc9f6febe208";
-export const GENE_AUCTION_ADDRESS =
-  "0x3730be2175f4e9cace752305b37891ec8cca5734";
-export const GENES_NFT_ADDRESS = "0x463ea6dcbc54c5ed7d704332562187a30276e9b7";
-export const GENE_NFT_FACTORY_ADDRESS =
-  "0x41063967aa8337ab89a2f69ca8ff54ba13ce1f06";
+// Auto-generated from subgraph.yaml
+// DO NOT EDIT MANUALLY - run 'npm run generate-constants' to regenerate
+
+export const AMINAL_FACTORY_ADDRESS = "0x797564393e357bae3dd4edbf4d38af242e3fd7fe";
+export const GENE_AUCTION_ADDRESS = "0xaf3e8e413df045f495c98ad4ca0a8969fcb14592";
+export const GENES_NFT_ADDRESS = "0x41004e0babd0161378c746e7c2d870f951ae555d";
+export const GENE_REGISTRY_ADDRESS = "0xa9dd7702e425f61c72ae143a4301c58947b6c0ec";
+
 export const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
 
 // Deployed skill contract addresses (for reference)
