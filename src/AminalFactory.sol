@@ -68,16 +68,16 @@ contract AminalFactory is IAminalFactory, Initializable, Ownable {
     uint256 public constant MIN_ENERGY_REQUIRED = 10;
 
     /// @notice Base price for VRGDA love calculation (1 ETH)
-    uint256 public constant VRGDA_BASE_PRICE = 1 ether;
+    int256 public constant VRGDA_BASE_PRICE = 1 ether;
 
     /// @notice Price decay percentage for VRGDA (10%)
-    uint256 public constant VRGDA_PRICE_DECAY = 0.1 ether;
+    int256 public constant VRGDA_PRICE_DECAY = 0.1 ether;
 
     /// @notice Logistic asymptote for VRGDA curve (100 units)
-    uint256 public constant VRGDA_LOGISTIC_ASYMPTOTE = 100 ether;
+    int256 public constant VRGDA_LOGISTIC_ASYMPTOTE = 100 ether;
 
     /// @notice Time scale for VRGDA curve smoothness
-    uint256 public constant VRGDA_TIME_SCALE = 20 ether;
+    int256 public constant VRGDA_TIME_SCALE = 20 ether;
 
     /// @notice Number of trait categories in the visual system
     uint256 public constant TRAIT_CATEGORIES = 8;
