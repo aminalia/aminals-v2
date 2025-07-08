@@ -23,8 +23,10 @@ type Aminal @entity(immutable: false) {
   # Parent relationships (addresses, not indices)
   momAddress: Bytes # Mother Aminal contract address (null for genesis)
   dadAddress: Bytes # Father Aminal contract address (null for genesis)
+  # TODO no "mother" and "father" language
   mother: Aminal # Mother Aminal entity
   father: Aminal # Father Aminal entity
+  # TODO this is not 100% correct, we should be using the parentOne *and* parentTwo fields
   children: [Aminal!]! @derivedFrom(field: "mother")
 
   # Visual traits (Gene NFT IDs)
@@ -181,7 +183,7 @@ type GeneAuction @entity(immutable: false) {
   # Gene proposals and votes
   proposals: [GeneProposal!]! @derivedFrom(field: "auction")
   votes: [GeneVote!]! @derivedFrom(field: "auction")
-  
+
   # Creator payouts
   payouts: [GeneCreatorPayout!]! @derivedFrom(field: "auction")
 
@@ -211,7 +213,7 @@ type GeneNFT @entity(immutable: false) {
 
   # Auction usage
   proposalsUsingGene: [GeneProposal!]! @derivedFrom(field: "geneNFT")
-  
+
   # Earnings tracking
   totalEarnings: BigInt! # Total amount earned from auction payouts
   payouts: [GeneCreatorPayout!]! @derivedFrom(field: "geneNFT")
@@ -263,11 +265,10 @@ type GeneCreatorPayout @entity(immutable: true) {
   geneNFT: GeneNFT!
   creator: User!
   amount: BigInt! # Payout amount in wei
-  
   # Metadata for dashboard display
   auctionId: BigInt!
   geneId: BigInt!
-  
+
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

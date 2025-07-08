@@ -41,6 +41,7 @@
 
 #### Indexer
 
+- Refine schema
 - Index Aminal ETH balance
 - When breeding is done, remove breedable with
 - Switch to ponder?
