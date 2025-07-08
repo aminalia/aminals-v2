@@ -3,6 +3,11 @@
   "version": "0.0.1",
   "description": "V2 iteraction of Aminals",
   "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "graph"
+  ],
   "directories": {
     "lib": "lib",
     "test": "test"
@@ -11,7 +16,18 @@
   "scripts": {
     "claude-code": "docker compose -f .claude/docker-compose.claude.yml run --rm --remove-orphans -it claude-code-sandbox bash -c 'claude; exec'",
     "claude-code:unrestricted": "docker compose -f .claude/docker-compose.claude.yml run --rm --remove-orphans -it claude-code-sandbox bash -c 'claude --dangerously-skip-permissions; exec'",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "yarn workspace aminals-frontend dev",
+    "build": "yarn workspaces run build",
+    "lint": "yarn workspaces run lint",
+    "clean": "yarn workspaces run clean && rm -rf node_modules",
+    "graph:codegen": "yarn workspace aminals codegen",
+    "graph:build": "yarn workspace aminals build",
+    "graph:deploy": "yarn workspace aminals deploy",
+    "graph:deploy:sepolia": "yarn workspace aminals deploy:sepolia",
+    "frontend:dev": "yarn workspace aminals-frontend dev",
+    "frontend:build": "yarn workspace aminals-frontend build",
+    "frontend:start": "yarn workspace aminals-frontend start"
   },
   "author": "",
   "license": "GPL-3.0"
