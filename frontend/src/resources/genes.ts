@@ -56,13 +56,13 @@ export const useGenes = (
                     id
                     address
                   }
+                  totalEarnings
                   proposalsUsingGene {
                     id
                     auction {
                       id
                       aminalOne {
                         id
-                        aminalIndex
                         contractAddress
                         tokenURI
                         energy
@@ -70,12 +70,21 @@ export const useGenes = (
                       }
                       aminalTwo {
                         id
-                        aminalIndex
                         contractAddress
                         tokenURI
                         energy
                         totalLove
                       }
+                    }
+                  }
+                  payouts {
+                    id
+                    amount
+                    auctionId
+                    blockTimestamp
+                    auction {
+                      id
+                      auctionId
                     }
                   }
                   blockTimestamp
@@ -193,13 +202,13 @@ export const useGene = (id: string) => {
                   id
                   address
                 }
+                totalEarnings
                 proposalsUsingGene {
                   id
                   auction {
                     id
                     aminalOne {
                       id
-                      aminalIndex
                       contractAddress
                       tokenURI
                       energy
@@ -207,12 +216,21 @@ export const useGene = (id: string) => {
                     }
                     aminalTwo {
                       id
-                      aminalIndex
                       contractAddress
                       tokenURI
                       energy
                       totalLove
                     }
+                  }
+                }
+                payouts {
+                  id
+                  amount
+                  auctionId
+                  blockTimestamp
+                  auction {
+                    id
+                    auctionId
                   }
                 }
                 blockTimestamp

@@ -15,7 +15,7 @@ export default defineConfig({
     {
       abi: ABI.AminalFactory.abi,
       name: 'AminalFactory',
-      address: '0x93ac7da955fe0180a87fa7a1197e572a3b0e7c82',
+      address: '0x1c709d848e1abf0eb5e738229646e1b90287c840',
     },
     {
       abi: ABI.Aminal.abi,
@@ -26,18 +26,18 @@ export default defineConfig({
     {
       abi: ABI.GeneAuction.abi,
       name: 'GeneAuction',
-      address: '0xf391678a18693ad00bd6d0151563b160c28f8657',
+      address: '0x7cbbc91326fdf023428c942d1027ff33b4239bf8',
     },
     {
       abi: ABI.Genes.abi,
       name: 'Genes',
-      address: '0x82d725b4809a9f7495318ef1395e0f8d27fce7a2',
+      address: '0x7d4672be8dfba2ee7c65e4494f00bbd2d997b157',
     },
     // GeneRegistry not deployed to Sepolia yet
     {
       abi: ABI.GeneRegistry.abi,
       name: 'GeneRegistry',
-      address: '0xab4f70c7d3dd3f34906592fe8096dbcd673fe65d',
+      address: '0x4c13d55407d60646bb46a7a144fa72219abf492c',
     },
   ],
 });

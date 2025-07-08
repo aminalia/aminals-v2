@@ -81,7 +81,6 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
 
   // Create new Aminal entity
   let aminal = new Aminal(event.params.child);
-  aminal.contractAddress = event.params.child;
   aminal.factory = factory.id;
 
   // Set parent addresses directly from event params
@@ -141,9 +140,7 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
   // Create a data source for this individual Aminal contract
   AminalTemplate.create(event.params.child);
 
-  log.info("New Aminal spawned: {}", [
-    event.params.child.toHexString(),
-  ]);
+  log.info("New Aminal spawned: {}", [event.params.child.toHexString()]);
 }
 
 export function handleBreedAminal(event: BreedAminalEvent): void {

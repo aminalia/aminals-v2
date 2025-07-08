@@ -1,3 +1,4 @@
+# Updated for new schema: skillCalls -> skillUsed, data -> selector, squeakCost -> newEnergy
 query AminalsList($first: Int = 100, $skip: Int = 0, $address: Bytes = "") {
   aminals(first: $first, skip: $skip) {
     id
@@ -85,15 +86,15 @@ query AminalById($contractAddress: Bytes, $address: Bytes = "") {
       energy
       blockTimestamp
     }
-    skillCalls {
+    skillUsed {
       id
       caller {
         id
         address
       }
       skillAddress
-      data
-      squeakCost
+      selector
+      newEnergy
       blockTimestamp
     }
   }

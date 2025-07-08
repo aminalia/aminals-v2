@@ -1,3 +1,4 @@
+# Updated for new schema: Added totalEarnings and payouts fields, removed aminalIndex
 query GeneNftsList {
   geneNFTs(orderBy: tokenId, orderDirection: asc) {
     id
@@ -14,13 +15,13 @@ query GeneNftsList {
       id
       address
     }
+    totalEarnings
     proposalsUsingGene {
       id
       auction {
         id
         aminalOne {
           id
-          aminalIndex
           contractAddress
           tokenURI
           energy
@@ -28,12 +29,21 @@ query GeneNftsList {
         }
         aminalTwo {
           id
-          aminalIndex
           contractAddress
           tokenURI
           energy
           totalLove
         }
+      }
+    }
+    payouts {
+      id
+      amount
+      auctionId
+      blockTimestamp
+      auction {
+        id
+        auctionId
       }
     }
     blockTimestamp
@@ -56,13 +66,13 @@ query GeneNftById($id: ID!) {
       id
       address
     }
+    totalEarnings
     proposalsUsingGene {
       id
       auction {
         id
         aminalOne {
           id
-          aminalIndex
           contractAddress
           tokenURI
           energy
@@ -70,12 +80,21 @@ query GeneNftById($id: ID!) {
         }
         aminalTwo {
           id
-          aminalIndex
           contractAddress
           tokenURI
           energy
           totalLove
         }
+      }
+    }
+    payouts {
+      id
+      amount
+      auctionId
+      blockTimestamp
+      auction {
+        id
+        auctionId
       }
     }
     blockTimestamp
@@ -98,13 +117,13 @@ query GenesByTraitType($traitType: Int!) {
       id
       address
     }
+    totalEarnings
     proposalsUsingGene {
       id
       auction {
         id
         aminalOne {
           id
-          aminalIndex
           contractAddress
           tokenURI
           energy
@@ -112,12 +131,21 @@ query GenesByTraitType($traitType: Int!) {
         }
         aminalTwo {
           id
-          aminalIndex
           contractAddress
           tokenURI
           energy
           totalLove
         }
+      }
+    }
+    payouts {
+      id
+      amount
+      auctionId
+      blockTimestamp
+      auction {
+        id
+        auctionId
       }
     }
     blockTimestamp
