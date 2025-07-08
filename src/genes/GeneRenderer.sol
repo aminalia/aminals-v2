@@ -7,6 +7,7 @@ import {Base64} from "src/utils/Base64.sol";
 import {IAminalStructs} from "src/interfaces/IAminalStructs.sol";
 import {Genes} from "src/genes/Genes.sol";
 import {GeneRegistry} from "src/genes/GeneRegistry.sol";
+import {Strings} from "oz/utils/Strings.sol";
 
 abstract contract GeneRenderer is IAminalStructs {
     uint8 private constant _ADDRESS_LENGTH = 20;
@@ -60,7 +61,7 @@ abstract contract GeneRenderer is IAminalStructs {
      * @notice Given a token ID and seed, construct a base64 encoded data URI for an NFT.
      */
     function dataURI(uint256 tokenId) public view returns (string memory) {
-        string memory name = string(abi.encodePacked("Aminal #", _toString(tokenId)));
+        string memory name = string(abi.encodePacked("Aminal #", Strings.toString(tokenId)));
 
         string memory image =
             string(abi.encodePacked("data:image/svg+xml;base64,", Base64.encode(bytes(_aminalImage(tokenId)))));
@@ -166,7 +167,7 @@ abstract contract GeneRenderer is IAminalStructs {
                         '{"trait_type":"',
                         categoryName,
                         '","value":"Gene #',
-                        _toString(geneId),
+                        Strings.toString(geneId),
                         '"}',
                         ',{"trait_type":"',
                         categoryName,
@@ -191,26 +192,6 @@ abstract contract GeneRenderer is IAminalStructs {
         if (category == VisualsCat.MOUTH) return "Mouth";
         if (category == VisualsCat.MISC) return "Miscellaneous";
         return "Unknown";
-    }
-
-    /**
-     * @notice Converts a uint256 to its ASCII string decimal representation.
-     */
-    function _toString(uint256 value) internal pure returns (string memory) {
-        if (value == 0) return "0";
-        uint256 temp = value;
-        uint256 digits;
-        while (temp != 0) {
-            digits++;
-            temp /= 10;
-        }
-        bytes memory buffer = new bytes(digits);
-        while (value != 0) {
-            digits -= 1;
-            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
-            value /= 10;
-        }
-        return string(buffer);
     }
 
     /**

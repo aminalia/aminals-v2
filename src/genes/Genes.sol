@@ -2,8 +2,10 @@
 pragma solidity ^0.8.20;
 
 import {ERC721} from "oz/token/ERC721/ERC721.sol";
+import {ERC721Enumerable} from "oz/token/ERC721/extensions/ERC721Enumerable.sol";
 import {Initializable} from "oz/proxy/utils/Initializable.sol";
 import {Ownable} from "oz/access/Ownable.sol";
+import {Strings} from "oz/utils/Strings.sol";
 
 import {IAminalStructs} from "src/interfaces/IAminalStructs.sol";
 import {Base64} from "src/utils/Base64.sol";
@@ -14,7 +16,7 @@ error OnlyNFTOwner();
 error OnlyRegistry();
 error AlreadySetup();
 
-contract Genes is ERC721("Aminal Genes", "GENES"), Initializable, Ownable {
+contract Genes is ERC721Enumerable, Initializable, Ownable {
     address public aminalFactory;
     address public geneRegistry;
     uint256 public currentId;
@@ -31,15 +33,10 @@ contract Genes is ERC721("Aminal Genes", "GENES"), Initializable, Ownable {
         _;
     }
 
-    modifier onlyAminalsFactoryOrRegistry() {
-        if (msg.sender != aminalFactory && msg.sender != geneRegistry) revert OnlyAminalsFactoryOrRegistry();
-        _;
-    }
-
     event Setup(address aminalFactory);
     event RegistrySet(address geneRegistry);
 
-    constructor() Initializable() Ownable() {}
+    constructor() ERC721("Aminal Genes", "GENES") Initializable() Ownable() {}
 
     function setup(address aminalFactory_) external initializer onlyOwner {
         aminalFactory = aminalFactory_;
@@ -55,7 +52,7 @@ contract Genes is ERC721("Aminal Genes", "GENES"), Initializable, Ownable {
 
     function mint(address to, string calldata geneSVG, IAminalStructs.VisualsCat visualsCategory)
         external
-        onlyAminalsFactoryOrRegistry
+        onlyRegistry
     {
         uint256 tokenId = currentId;
         geneSVGs[tokenId] = geneSVG;
@@ -81,7 +78,7 @@ contract Genes is ERC721("Aminal Genes", "GENES"), Initializable, Ownable {
         string memory json = string(
             abi.encodePacked(
                 '{"name": "Aminal Gene #',
-                _toString(tokenId),
+                Strings.toString(tokenId),
                 '", "description": "A gene NFT representing a trait for Aminals", "category": "',
                 _categoryToString(category),
                 '", "image": "data:image/svg+xml;base64,',
@@ -98,27 +95,6 @@ contract Genes is ERC721("Aminal Genes", "GENES"), Initializable, Ownable {
      */
     function getGeneInfo(uint256 id) external view returns (string memory svg, IAminalStructs.VisualsCat category) {
         return (geneSVGs[id], geneVisualsCat[id]);
-    }
-
-    // TODO Is there some open zepplin library we should use for this?
-    /**
-     * @dev Convert number to string
-     */
-    function _toString(uint256 value) internal pure returns (string memory) {
-        if (value == 0) return "0";
-        uint256 temp = value;
-        uint256 digits;
-        while (temp != 0) {
-            digits++;
-            temp /= 10;
-        }
-        bytes memory buffer = new bytes(digits);
-        while (value != 0) {
-            digits -= 1;
-            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
-            value /= 10;
-        }
-        return string(buffer);
     }
 
     /**

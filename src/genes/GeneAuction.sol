@@ -13,60 +13,117 @@ import {Genes} from "src/genes/Genes.sol";
 import {GeneRegistry} from "src/genes/GeneRegistry.sol";
 
 /**
- * @title GeneAuction
- * @dev Love-based voting system for Gene NFT trait selection with energy rewards to Gene NFT owners
+ * @title GeneAuction - Community-Driven Gene Selection for Aminal Breeding
+ * @notice Love-based voting system for Gene NFT trait selection with treasury payouts to gene creators
+ * @dev Manages breeding auctions where community votes determine child Aminal traits
+ *
+ * When two Aminals breed, a gene auction is created where:
+ * - Community members vote using their love given to parent Aminals
+ * - Winners are selected for each trait category (8 total)
+ * - 10% of each parent's treasury is distributed to winning gene creators
+ * - Child Aminal is spawned with the winning traits
+ *
+ * Key Features:
+ * - 🗳️ Love-weighted voting system
+ * - 💰 Treasury payouts to gene creators (10% from each parent)
+ * - 🎲 Tie-breaking with deterministic randomness
+ * - 🔄 Parent trait inheritance as fallback
+ * - ⏱️ Time-limited voting periods
+ * - 🛡️ Gene removal voting for quality control
+ *
+ * @author The Aminals Collective
+ * @custom:security-contact security@aminals.art
  */
 contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard {
-    Genes public genes;
-    GeneRegistry public geneRegistry;
-    // TODO rename to aminalsFactoryContract, is this needed? Do we need to store both this and aminalFactory?
-    address public aminalsContract;
-    IAminalFactory public aminalFactory;
+    /*//////////////////////////////////////////////////////////////
+                                CONSTANTS
+    //////////////////////////////////////////////////////////////*/
 
-    // TODO: change to 7 days, set to 1 hour for testing
-    /// @notice Duration of voting in seconds
+    /// @notice Duration of voting in seconds (1 hour for testing, will be 7 days in production)
     uint256 public constant VOTING_DURATION = 1 hours;
 
-    /// @notice Percentage of parent energy transferred to gene owners (10%)
-    uint256 public constant ENERGY_TRANSFER_PERCENTAGE = 10;
+    /// @notice Percentage of parent treasury transferred to gene creators (10%)
+    uint256 public constant TREASURY_TRANSFER_PERCENTAGE = 10;
 
+    /// @notice Number of trait categories per Aminal
+    uint256 public constant TRAIT_CATEGORIES = 8;
+
+    /// @notice Minimum fraction of total love required to remove a gene (1/3)
+    uint256 public constant GENE_REMOVAL_THRESHOLD = 3;
+
+    /*//////////////////////////////////////////////////////////////
+                            STATE VARIABLES
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Gene NFT contract for trait ownership
+    Genes public genes;
+
+    /// @notice Gene registry for validating and retrieving gene information
+    GeneRegistry public geneRegistry;
+
+    /// @notice Address of the Aminals contract (for access control)
+    address public aminalsContract;
+
+    /// @notice Factory contract for Aminal management
+    IAminalFactory public aminalFactory;
+
+    /// @notice Counter for unique auction IDs
+    uint256 public auctionCounter;
+
+    /// @notice Mapping from auction ID to auction data
+    mapping(uint256 => Auction) public auctions;
+
+    /*//////////////////////////////////////////////////////////////
+                               STRUCTURES
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Core auction data structure
     struct Auction {
-        uint256 aminalOne;
-        uint256 aminalTwo;
-        uint256 totalLove;
-        uint256 startTime;
-        uint256 endTime;
-        bool settled;
-        uint256 childAminalId;
-        // Parent traits for inheritance (indexed by category)
-        uint256[8] parentOneTraits;
-        uint256[8] parentTwoTraits;
-        // Votes for each trait category
-        mapping(VisualsCat => CategoryVoting) categoryVotes;
+        uint256 aminalOne; // Index of first parent Aminal
+        uint256 aminalTwo; // Index of second parent Aminal
+        uint256 totalLove; // Total love used for voting power calculation
+        uint256 startTime; // Auction start timestamp
+        uint256 endTime; // Auction end timestamp
+        bool settled; // Whether auction has been settled
+        // TODO should be an address, child ID will always be 1
+        uint256 childAminalId; // Index of resulting child Aminal
+        uint256[8] parentOneTraits; // Parent 1 traits by category
+        uint256[8] parentTwoTraits; // Parent 2 traits by category
+        mapping(VisualsCat => CategoryVoting) categoryVotes; // Voting data per category
     }
 
+    /// @notice Voting data for a specific trait category
     struct CategoryVoting {
-        uint256 highestVotes;
-        uint256 winningGeneId;
+        uint256 highestVotes; // Highest vote count achieved
+        uint256 winningGeneId; // Current winning gene ID
         mapping(uint256 => uint256) geneVotes; // geneId => total vote power
         mapping(address => uint256) userVotedGene; // user => geneId they voted for
         mapping(address => uint256) userVoteWeight; // user => vote weight they cast
         mapping(address => bool) userHasVoted; // user => whether they have voted
         mapping(uint256 => uint256) geneRemovalVotes; // geneId => removal vote weight
-        uint256[] proposedGenes; // Array of gene IDs proposed for this category
-        uint256[] tiedGenes; // Array of genes with highest votes (for tie-breaking)
+        uint256[] proposedGenes; // Array of proposed gene IDs
+        uint256[] tiedGenes; // Array of genes with highest votes
     }
 
+    /// @notice View structure for category voting information
     struct CategoryVoteInfo {
-        uint256 highestVotes;
-        uint256 winningGeneId;
-        uint256[] proposedGenes;
-        uint256[] tiedGenes;
+        uint256 highestVotes; // Highest vote count
+        uint256 winningGeneId; // Current winner
+        uint256[] proposedGenes; // All proposed genes
+        uint256[] tiedGenes; // Genes tied for highest votes
     }
 
-    mapping(uint256 => Auction) public auctions;
-    uint256 public auctionCounter;
+    /*//////////////////////////////////////////////////////////////
+                                EVENTS
+    //////////////////////////////////////////////////////////////*/
 
+    /// @notice Emitted when a new breeding auction is created
+    /// @param auctionId Unique identifier for the auction
+    /// @param aminalOne Index of the first parent Aminal
+    /// @param aminalTwo Index of the second parent Aminal
+    /// @param totalLove Total love available for voting power
+    /// @param startTime When voting begins
+    /// @param endTime When voting ends
     event VotingCreated(
         uint256 indexed auctionId,
         uint256 indexed aminalOne,
@@ -76,21 +133,53 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         uint256 endTime
     );
 
+    /// @notice Emitted when a user votes for a gene in a category
+    /// @param auctionId The auction being voted in
+    /// @param category The trait category being voted on
+    /// @param geneId The gene being voted for
+    /// @param voter Address of the voter
     event GeneVoteCast(uint256 indexed auctionId, VisualsCat indexed category, uint256 indexed geneId, address voter);
 
+    /// @notice Emitted when a user votes for multiple categories at once
+    /// @param auctionId The auction being voted in
+    /// @param voter Address of the voter
+    /// @param geneIds Array of gene IDs voted for (by category index)
     event BulkVoteCast(uint256 indexed auctionId, address indexed voter, uint256[8] geneIds);
 
+    /// @notice Emitted when an auction is settled and child is spawned
+    /// @param auctionId The settled auction
+    /// @param childAminalId Index of the newly created child Aminal
+    /// @param winningGeneIds Array of winning gene IDs by category
+    /// @param totalTreasuryTransferred Total ETH paid to gene creators
     event VotingSettled(
         uint256 indexed auctionId,
         uint256 indexed childAminalId,
         uint256[8] winningGeneIds,
-        uint256 totalEnergyTransferred
+        uint256 totalTreasuryTransferred
     );
 
+    /// @notice Emitted when a gene creator receives payment for their winning gene
+    /// @param auctionId The auction that generated the payout
+    /// @param geneId The winning gene that earned the payout
+    /// @param creator Address of the gene creator receiving payment
+    /// @param amount Amount of ETH transferred to the creator
+    event GeneCreatorPayout(uint256 indexed auctionId, uint256 indexed geneId, address indexed creator, uint256 amount);
+
+    /// @notice Emitted when a gene is proposed for voting in a category
+    /// @param auctionId The auction the gene is proposed for
+    /// @param category The trait category the gene belongs to
+    /// @param geneId The proposed gene ID
+    /// @param proposer Address of the proposer
     event GeneProposed(
         uint256 indexed auctionId, VisualsCat indexed category, uint256 indexed geneId, address proposer
     );
 
+    /// @notice Emitted when someone votes to remove a gene from consideration
+    /// @param auctionId The auction containing the gene
+    /// @param category The trait category of the gene
+    /// @param geneId The gene being voted for removal
+    /// @param voter Address voting for removal
+    /// @param voteWeight Weight of the removal vote
     event GeneRemovalVote(
         uint256 indexed auctionId,
         VisualsCat indexed category,
@@ -99,43 +188,93 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         uint256 voteWeight
     );
 
+    /// @notice Emitted when a gene is successfully removed from an auction
+    /// @param auctionId The auction the gene was removed from
+    /// @param category The trait category of the removed gene
+    /// @param geneId The removed gene ID
     event GeneRemoved(uint256 indexed auctionId, VisualsCat indexed category, uint256 indexed geneId);
 
+    /*//////////////////////////////////////////////////////////////
+                                ERRORS
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Thrown when trying to interact with an inactive auction
     error VotingNotActive();
+
+    /// @notice Thrown when trying to modify an already settled auction
     error VotingAlreadySettled();
+
+    /// @notice Thrown when referencing an invalid or non-existent gene
     error InvalidGene();
+
+    /// @notice Thrown when trying to settle an auction before it ends
     error VotingNotEnded();
+
+    /// @notice Thrown when non-Aminals contract tries to call restricted functions
     error OnlyAminals();
+
+    /// @notice Thrown when providing an invalid trait category
     error InvalidCategory();
+
+    /// @notice Thrown when user lacks sufficient love for an action
     error InsufficientLove();
-    error EnergyTransferFailed();
+
+    /// @notice Thrown when a gene has already been removed
     error GeneAlreadyRemoved();
+
+    /// @notice Thrown when user has no voting power in an auction
     error NoVotingPower();
 
+    /*//////////////////////////////////////////////////////////////
+                               MODIFIERS
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Restricts function access to the Aminals contract only
     modifier onlyAminals() {
         if (msg.sender != aminalsContract) revert OnlyAminals();
         _;
     }
 
+    /// @notice Validates that an auction exists
+    /// @param auctionId The auction ID to validate
     modifier validVoting(uint256 auctionId) {
         require(auctionId <= auctionCounter, "Voting does not exist");
         _;
     }
 
+    /*//////////////////////////////////////////////////////////////
+                              CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Initialize the GeneAuction with required contracts
+    /// @param _Genes Address of the Genes NFT contract
+    /// @param _geneRegistry Address of the GeneRegistry contract
     constructor(address _Genes, address _geneRegistry) {
         genes = Genes(_Genes);
         geneRegistry = GeneRegistry(_geneRegistry);
     }
 
-    // TODO do we need this setup function? Maybe just do everything in constructor? Also, doesn't need two variables.
+    // TODO only needs on argument _aminalsFactory
+    /// @notice Setup function to initialize factory and aminals contract addresses
+    /// @param _aminalsContract Address of the Aminals contract
+    /// @param _aminalFactory Address of the AminalFactory contract
+    /// @custom:access Only owner can call during initialization
     function setup(address _aminalsContract, address _aminalFactory) external initializer onlyOwner {
         aminalsContract = _aminalsContract;
         aminalFactory = IAminalFactory(_aminalFactory);
     }
 
+    /*//////////////////////////////////////////////////////////////
+                           AUCTION LIFECYCLE
+    //////////////////////////////////////////////////////////////*/
+
     /**
-     * @notice Create a new auction for breeding
-     * @dev Called by the Aminals contract when breeding is initiated
+     * @notice Create a new breeding auction for two parent Aminals
+     * @dev Called by the AminalFactory when breeding is initiated
+     * @param aminalOne Index of the first parent Aminal
+     * @param aminalTwo Index of the second parent Aminal
+     * @param totalLove Total love used for voting power calculations
+     * @return auctionId The unique identifier for the created auction
      */
     function createAuction(uint256 aminalOne, uint256 aminalTwo, uint256 totalLove)
         external
@@ -150,37 +289,64 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         auction.totalLove = totalLove;
         auction.startTime = block.timestamp;
         auction.endTime = block.timestamp + VOTING_DURATION;
-        auction.childAminalId = auctionId; // Use auction ID as child Aminal ID
+        auction.childAminalId = auctionId;
 
-        // Capture parent traits for inheritance
-        address aminalOneAddress = aminalFactory.getAminalByIndex(aminalOne);
-        address aminalTwoAddress = aminalFactory.getAminalByIndex(aminalTwo);
-
-        Visuals memory parentOneVisuals = IAminal(aminalOneAddress).getVisuals();
-        Visuals memory parentTwoVisuals = IAminal(aminalTwoAddress).getVisuals();
-
-        // Store parent traits in order of VisualsCat enum
-        auction.parentOneTraits[0] = parentOneVisuals.backId;
-        auction.parentOneTraits[1] = parentOneVisuals.armId;
-        auction.parentOneTraits[2] = parentOneVisuals.tailId;
-        auction.parentOneTraits[3] = parentOneVisuals.earsId;
-        auction.parentOneTraits[4] = parentOneVisuals.bodyId;
-        auction.parentOneTraits[5] = parentOneVisuals.faceId;
-        auction.parentOneTraits[6] = parentOneVisuals.mouthId;
-        auction.parentOneTraits[7] = parentOneVisuals.miscId;
-
-        auction.parentTwoTraits[0] = parentTwoVisuals.backId;
-        auction.parentTwoTraits[1] = parentTwoVisuals.armId;
-        auction.parentTwoTraits[2] = parentTwoVisuals.tailId;
-        auction.parentTwoTraits[3] = parentTwoVisuals.earsId;
-        auction.parentTwoTraits[4] = parentTwoVisuals.bodyId;
-        auction.parentTwoTraits[5] = parentTwoVisuals.faceId;
-        auction.parentTwoTraits[6] = parentTwoVisuals.mouthId;
-        auction.parentTwoTraits[7] = parentTwoVisuals.miscId;
+        // Store parent traits for inheritance fallback
+        _captureParentTraits(auction, aminalOne, aminalTwo);
 
         emit VotingCreated(auctionId, aminalOne, aminalTwo, totalLove, auction.startTime, auction.endTime);
-
         return auctionId;
+    }
+
+    /**
+     * @notice Settle a completed auction and spawn the child Aminal
+     * @dev Can be called by anyone after voting ends. Distributes treasury to gene creators.
+     * @param auctionId The auction to settle
+     */
+    function settleAuction(uint256 auctionId) external validVoting(auctionId) nonReentrant {
+        Auction storage auction = auctions[auctionId];
+
+        if (block.timestamp < auction.endTime) revert VotingNotEnded();
+        if (auction.settled) revert VotingAlreadySettled();
+
+        auction.settled = true;
+
+        uint256[8] memory winningGeneIds;
+        uint256 totalTreasuryTransferred = 0;
+
+        // Get parent addresses and treasury amounts
+        address aminalOneAddress = aminalFactory.getAminalByIndex(auction.aminalOne);
+        address aminalTwoAddress = aminalFactory.getAminalByIndex(auction.aminalTwo);
+
+        uint256 aminalOneTreasury = IAminal(aminalOneAddress).getTreasuryBalance();
+        uint256 aminalTwoTreasury = IAminal(aminalTwoAddress).getTreasuryBalance();
+        uint256 treasuryFromAminalOne = (aminalOneTreasury * TREASURY_TRANSFER_PERCENTAGE) / 100;
+        uint256 treasuryFromAminalTwo = (aminalTwoTreasury * TREASURY_TRANSFER_PERCENTAGE) / 100;
+
+        // Process each trait category
+        for (uint256 i = 0; i < TRAIT_CATEGORIES; i++) {
+            VisualsCat category = VisualsCat(i);
+            uint256 selectedGeneId = _selectWinningGene(auction, category, i);
+            winningGeneIds[i] = selectedGeneId;
+
+            // Transfer treasury to gene creator if applicable
+            if (selectedGeneId != 0 && geneRegistry.isValidGene(selectedGeneId)) {
+                totalTreasuryTransferred += _payoutGeneCreator(
+                    auctionId,
+                    selectedGeneId,
+                    treasuryFromAminalOne,
+                    treasuryFromAminalTwo,
+                    aminalOneAddress,
+                    aminalTwoAddress
+                );
+            }
+        }
+
+        emit VotingSettled(auctionId, auction.childAminalId, winningGeneIds, totalTreasuryTransferred);
+
+        // Spawn the child Aminal with winning traits
+        aminalFactory.spawnAminal(aminalOneAddress, aminalTwoAddress, winningGeneIds);
+        auction.childAminalId = aminalFactory.totalAminals() - 1;
     }
 
     /**
@@ -192,7 +358,7 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
 
         if (block.timestamp >= auction.endTime) revert VotingNotActive();
         if (auction.settled) revert VotingAlreadySettled();
-        if (uint256(category) >= 8) revert InvalidCategory();
+        if (uint256(category) >= TRAIT_CATEGORIES) revert InvalidCategory();
 
         // Verify gene exists and is from the factory
         if (!geneRegistry.isValidGene(geneId)) revert InvalidGene();
@@ -227,7 +393,7 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
 
         if (block.timestamp >= auction.endTime) revert VotingNotActive();
         if (auction.settled) revert VotingAlreadySettled();
-        if (uint256(category) >= 8) revert InvalidCategory();
+        if (uint256(category) >= TRAIT_CATEGORIES) revert InvalidCategory();
 
         // Calculate user's voting power based on love given to parent Aminals
         uint256 userVotingPower = _calculateVotingPower(auction, msg.sender);
@@ -272,7 +438,7 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         if (userVotingPower == 0) revert NoVotingPower();
 
         // Process votes for each category
-        for (uint256 i = 0; i < 8; i++) {
+        for (uint256 i = 0; i < TRAIT_CATEGORIES; i++) {
             if (geneIds[i] != 0) {
                 VisualsCat category = VisualsCat(i);
                 _processSingleVote(auction, category, geneIds[i], userVotingPower);
@@ -322,7 +488,7 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
 
         if (block.timestamp >= auction.endTime) revert VotingNotActive();
         if (auction.settled) revert VotingAlreadySettled();
-        if (uint256(category) >= 8) revert InvalidCategory();
+        if (uint256(category) >= TRAIT_CATEGORIES) revert InvalidCategory();
 
         // Calculate user's voting power
         uint256 userVotingPower = _calculateVotingPower(auction, msg.sender);
@@ -339,7 +505,7 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         emit GeneRemovalVote(auctionId, category, geneId, msg.sender, voteWeight);
 
         // Check if gene should be removed (1/3 of total love threshold)
-        if (categoryVoting.geneRemovalVotes[geneId] >= auction.totalLove / 3) {
+        if (categoryVoting.geneRemovalVotes[geneId] >= auction.totalLove / GENE_REMOVAL_THRESHOLD) {
             _removeGeneFromCategory(auctionId, category, geneId);
         }
     }
@@ -463,112 +629,6 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         uint256 loveToAminalTwo = IAminal(aminalTwoAddress).getLoveByUser(user);
 
         return loveToAminalOne + loveToAminalTwo;
-    }
-
-    /**
-     * @notice Settle voting and transfer energy from parents to Gene NFT owners
-     * @dev Can be called by anyone after voting ends
-     */
-    function settleAuction(uint256 auctionId) external validVoting(auctionId) nonReentrant {
-        Auction storage auction = auctions[auctionId];
-
-        if (block.timestamp < auction.endTime) revert VotingNotEnded();
-        if (auction.settled) revert VotingAlreadySettled();
-
-        auction.settled = true;
-
-        uint256[8] memory winningGeneIds;
-        uint256 totalEnergyTransferred = 0;
-
-        // Get parent Aminal addresses
-        address aminalOneAddress = aminalFactory.getAminalByIndex(auction.aminalOne);
-        address aminalTwoAddress = aminalFactory.getAminalByIndex(auction.aminalTwo);
-
-        // Calculate energy to transfer (10% from each parent)
-        uint256 aminalOneEnergy = IAminal(aminalOneAddress).getEnergy();
-        uint256 aminalTwoEnergy = IAminal(aminalTwoAddress).getEnergy();
-        uint256 energyFromAminalOne = (aminalOneEnergy * ENERGY_TRANSFER_PERCENTAGE) / 100;
-        uint256 energyFromAminalTwo = (aminalTwoEnergy * ENERGY_TRANSFER_PERCENTAGE) / 100;
-
-        // Process each trait category
-        for (uint256 i = 0; i < 8; i++) {
-            VisualsCat category = VisualsCat(i);
-            CategoryVoting storage categoryVoting = auction.categoryVotes[category];
-            uint256 selectedGeneId = 0;
-
-            // Step 1: Check if there are any votes
-            if (categoryVoting.highestVotes > 0 && categoryVoting.tiedGenes.length > 0) {
-                // Check for ties
-                if (categoryVoting.tiedGenes.length > 1) {
-                    // Handle tie with randomness
-                    uint256 randomIndex = _generateRandomness(i, categoryVoting.tiedGenes.length);
-                    selectedGeneId = categoryVoting.tiedGenes[randomIndex];
-                } else {
-                    // Clear winner - use the single tied gene (should be same as winningGeneId)
-                    selectedGeneId = categoryVoting.tiedGenes[0];
-                }
-            } else {
-                // Step 2: No votes cast, fall back to parent traits
-                // Create array of available parent traits (excluding 0 which means no trait)
-                uint256[] memory availableTraits = new uint256[](2);
-                uint256 availableCount = 0;
-
-                if (auction.parentOneTraits[i] != 0) {
-                    availableTraits[availableCount] = auction.parentOneTraits[i];
-                    availableCount++;
-                }
-                if (auction.parentTwoTraits[i] != 0 && auction.parentTwoTraits[i] != auction.parentOneTraits[i]) {
-                    availableTraits[availableCount] = auction.parentTwoTraits[i];
-                    availableCount++;
-                }
-
-                if (availableCount > 0) {
-                    // Randomly select from available parent traits
-                    uint256 randomIndex = _generateRandomness(i + 1000, availableCount);
-                    selectedGeneId = availableTraits[randomIndex];
-                }
-                // If availableCount == 0, selectedGeneId remains 0 (no trait)
-            }
-
-            winningGeneIds[i] = selectedGeneId;
-
-            // Transfer energy to gene owner if gene was selected and it's a valid Gene NFT
-            if (selectedGeneId != 0) {
-                // Check if this is a Gene NFT (not just a parent trait ID)
-                if (geneRegistry.isValidGene(selectedGeneId)) {
-                    uint256 energyPerGene = (energyFromAminalOne + energyFromAminalTwo) / 8;
-
-                    if (energyPerGene > 0) {
-                        address geneOwner = genes.ownerOf(selectedGeneId);
-
-                        // Deduct energy from parents (split equally)
-                        try IAminal(aminalOneAddress).transferEnergyToOwner(energyPerGene / 2, geneOwner) {
-                            totalEnergyTransferred += energyPerGene / 2;
-                        } catch {
-                            // Energy transfer failed - continue with other genes
-                        }
-
-                        try IAminal(aminalTwoAddress).transferEnergyToOwner(energyPerGene / 2, geneOwner) {
-                            totalEnergyTransferred += energyPerGene / 2;
-                        } catch {
-                            // Energy transfer failed - continue with other genes
-                        }
-                    }
-                }
-                // If it's a parent trait ID, no energy transfer occurs
-            }
-        }
-
-        emit VotingSettled(auctionId, auction.childAminalId, winningGeneIds, totalEnergyTransferred);
-
-        // Spawn the child Aminal with winning traits
-        address momAddress = aminalFactory.getAminalByIndex(auction.aminalOne);
-        address dadAddress = aminalFactory.getAminalByIndex(auction.aminalTwo);
-
-        aminalFactory.spawnAminal(momAddress, dadAddress, winningGeneIds);
-
-        // Update the child Aminal ID to the actual spawned Aminal index
-        auction.childAminalId = aminalFactory.totalAminals() - 1;
     }
 
     /**
@@ -711,11 +771,153 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         return categoryVoting.geneRemovalVotes[geneId];
     }
 
-    /**
-     * @notice Emergency function for owner (only if contract is broken)
-     */
-    function emergencyStop() external onlyOwner {
-        // Emergency stop functionality if needed
-        // No ETH to withdraw since we use energy transfers
+    /*//////////////////////////////////////////////////////////////
+                           INTERNAL HELPERS
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Capture parent traits for inheritance fallback
+    /// @param auction The auction storage reference
+    /// @param aminalOne Index of first parent
+    /// @param aminalTwo Index of second parent
+    function _captureParentTraits(Auction storage auction, uint256 aminalOne, uint256 aminalTwo) internal {
+        address aminalOneAddress = aminalFactory.getAminalByIndex(aminalOne);
+        address aminalTwoAddress = aminalFactory.getAminalByIndex(aminalTwo);
+
+        Visuals memory parentOneVisuals = IAminal(aminalOneAddress).getVisuals();
+        Visuals memory parentTwoVisuals = IAminal(aminalTwoAddress).getVisuals();
+
+        // Store parent traits in order of VisualsCat enum
+        auction.parentOneTraits[0] = parentOneVisuals.backId;
+        auction.parentOneTraits[1] = parentOneVisuals.armId;
+        auction.parentOneTraits[2] = parentOneVisuals.tailId;
+        auction.parentOneTraits[3] = parentOneVisuals.earsId;
+        auction.parentOneTraits[4] = parentOneVisuals.bodyId;
+        auction.parentOneTraits[5] = parentOneVisuals.faceId;
+        auction.parentOneTraits[6] = parentOneVisuals.mouthId;
+        auction.parentOneTraits[7] = parentOneVisuals.miscId;
+
+        auction.parentTwoTraits[0] = parentTwoVisuals.backId;
+        auction.parentTwoTraits[1] = parentTwoVisuals.armId;
+        auction.parentTwoTraits[2] = parentTwoVisuals.tailId;
+        auction.parentTwoTraits[3] = parentTwoVisuals.earsId;
+        auction.parentTwoTraits[4] = parentTwoVisuals.bodyId;
+        auction.parentTwoTraits[5] = parentTwoVisuals.faceId;
+        auction.parentTwoTraits[6] = parentTwoVisuals.mouthId;
+        auction.parentTwoTraits[7] = parentTwoVisuals.miscId;
+    }
+
+    /// @notice Select the winning gene for a trait category
+    /// @param auction The auction storage reference
+    /// @param category The trait category
+    /// @param categoryIndex Numeric index of the category (for randomness seed)
+    /// @return selectedGeneId The selected gene ID (0 if no trait)
+    function _selectWinningGene(Auction storage auction, VisualsCat category, uint256 categoryIndex)
+        internal
+        view
+        returns (uint256 selectedGeneId)
+    {
+        CategoryVoting storage categoryVoting = auction.categoryVotes[category];
+
+        // Step 1: Check if there are any votes
+        if (categoryVoting.highestVotes > 0 && categoryVoting.tiedGenes.length > 0) {
+            // Check for ties
+            if (categoryVoting.tiedGenes.length > 1) {
+                // Handle tie with randomness
+                uint256 randomIndex = _generateRandomness(categoryIndex, categoryVoting.tiedGenes.length);
+                selectedGeneId = categoryVoting.tiedGenes[randomIndex];
+            } else {
+                // Clear winner - use the single tied gene
+                selectedGeneId = categoryVoting.tiedGenes[0];
+            }
+        } else {
+            // Step 2: No votes cast, fall back to parent traits
+            selectedGeneId = _selectParentTrait(auction, categoryIndex);
+        }
+
+        return selectedGeneId;
+    }
+
+    /// @notice Select a parent trait when no votes are cast
+    /// @param auction The auction storage reference
+    /// @param categoryIndex The trait category index
+    /// @return selectedGeneId The selected parent trait ID (0 if none)
+    function _selectParentTrait(Auction storage auction, uint256 categoryIndex)
+        internal
+        view
+        returns (uint256 selectedGeneId)
+    {
+        // Create array of available parent traits (excluding 0 which means no trait)
+        uint256[] memory availableTraits = new uint256[](2);
+        uint256 availableCount = 0;
+
+        if (auction.parentOneTraits[categoryIndex] != 0) {
+            availableTraits[availableCount] = auction.parentOneTraits[categoryIndex];
+            availableCount++;
+        }
+        if (
+            auction.parentTwoTraits[categoryIndex] != 0
+                && auction.parentTwoTraits[categoryIndex] != auction.parentOneTraits[categoryIndex]
+        ) {
+            availableTraits[availableCount] = auction.parentTwoTraits[categoryIndex];
+            availableCount++;
+        }
+
+        if (availableCount > 0) {
+            // Randomly select from available parent traits
+            uint256 randomIndex = _generateRandomness(categoryIndex + 1000, availableCount);
+            selectedGeneId = availableTraits[randomIndex];
+        }
+        // If availableCount == 0, selectedGeneId remains 0 (no trait)
+
+        return selectedGeneId;
+    }
+
+    /// @notice Transfer treasury to gene creator and return amount transferred
+    /// @param auctionId The auction ID
+    /// @param selectedGeneId The winning gene ID
+    /// @param treasuryFromAminalOne Amount available from first parent
+    /// @param treasuryFromAminalTwo Amount available from second parent
+    /// @param aminalOneAddress Address of first parent
+    /// @param aminalTwoAddress Address of second parent
+    /// @return totalTransferred Total amount successfully transferred
+    function _payoutGeneCreator(
+        uint256 auctionId,
+        uint256 selectedGeneId,
+        uint256 treasuryFromAminalOne,
+        uint256 treasuryFromAminalTwo,
+        address aminalOneAddress,
+        address aminalTwoAddress
+    ) internal returns (uint256 totalTransferred) {
+        uint256 treasuryPerGene = (treasuryFromAminalOne + treasuryFromAminalTwo) / TRAIT_CATEGORIES;
+
+        if (treasuryPerGene > 0) {
+            // Get gene creator (not current owner)
+            (address geneCreator,,) = geneRegistry.getGeneInfo(selectedGeneId);
+
+            // Transfer treasury from parents to gene creator (split equally)
+            bool successOne = false;
+            bool successTwo = false;
+
+            try IAminal(aminalOneAddress).payout(treasuryPerGene / 2, geneCreator) returns (bool success) {
+                successOne = success;
+                if (success) totalTransferred += treasuryPerGene / 2;
+            } catch {
+                // Treasury transfer failed - continue with other genes
+            }
+
+            try IAminal(aminalTwoAddress).payout(treasuryPerGene / 2, geneCreator) returns (bool success) {
+                successTwo = success;
+                if (success) totalTransferred += treasuryPerGene / 2;
+            } catch {
+                // Treasury transfer failed - continue with other genes
+            }
+
+            // Emit payout event for successful transfers
+            if (successOne || successTwo) {
+                emit GeneCreatorPayout(auctionId, selectedGeneId, geneCreator, totalTransferred);
+            }
+        }
+
+        return totalTransferred;
     }
 }

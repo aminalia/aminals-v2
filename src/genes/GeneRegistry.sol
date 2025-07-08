@@ -151,6 +151,7 @@ contract GeneRegistry is IAminalStructs, Ownable {
         }
     }
 
+    // TODO we should remove this
     /**
      * @notice Withdraw collected fees (only owner)
      */

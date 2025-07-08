@@ -24,7 +24,6 @@
 
 #### Contracts
 
-- Make sure payouts are working correctly
 - setFactory in Genes is not good... maybe use an initializer? Owner can set factory whenever
 - More genes test coverage (renderer, auction, registry, NFT contract)
 - Genes implement ERC721URIStorage, ERC721Enumerable?
@@ -33,10 +32,6 @@
 - Do we need setBreedableWith?
 - Shouldn't be able to breed an Aminal if already breeding? (needs test)
 - Reset breedable with after breeding?
-
-We need to make sure that payouts work correctly. The current implementation is incorrect as it only transfers energy. The intended functionality is that when `settleAuction` is called on `GeneAuction.sol`, 10% of the treasury from each Aminal parent goes to those who created the winning genes for the child. Keep in mind that we will also be wanting to index this for a user dashboard so trait creators can keep track of what they earned.
-
-Start by proposing some architectural changes.
 
 #### Do last
 

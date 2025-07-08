@@ -274,7 +274,7 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
             uint256 startTime,
             uint256 endTime,
             bool settled,
-            uint256 childAminalId
+            /* uint256 childAminalId */
         ) = geneAuction.getAuctionInfo(auctionId);
 
         assertEq(aminalOne, aminal1.aminalIndex(), "Aminal 1 index should match");
@@ -333,8 +333,7 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
         console.log("Voting on genes through love-based voting...");
 
         // Alice should have love for both parent Aminals from feeding them
-        uint256 aliceVotingPower = geneAuction.getUserVotingPower(auctionId, alice);
-        console.log("Alice's voting power:", aliceVotingPower);
+        console.log("Alice's voting power:", geneAuction.getUserVotingPower(auctionId, alice));
 
         // Vote on genes using love-based voting power
         // Each voter uses their full voting power automatically - no need to specify amounts
@@ -390,9 +389,9 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
         // Verify voting is ready to settle
         assertFalse(geneAuction.isVotingActive(auctionId), "Voting should be inactive after time passes");
 
-        // Record parent energies before settlement
-        uint256 aminal1EnergyBefore = aminal1.getEnergy();
-        uint256 aminal2EnergyBefore = aminal2.getEnergy();
+        // Record parent treasury balances before settlement
+        uint256 aminal1TreasuryBefore = aminal1.getTreasuryBalance();
+        uint256 aminal2TreasuryBefore = aminal2.getTreasuryBalance();
 
         uint256 totalAminalsBefore = factory.totalAminals();
 
@@ -406,18 +405,18 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
         // Verify a new Aminal was created
         assertEq(factory.totalAminals(), totalAminalsBefore + 1, "A new Aminal should be created");
 
-        // Verify energy was transferred from parents (10% each)
-        uint256 aminal1EnergyAfter = aminal1.getEnergy();
-        uint256 aminal2EnergyAfter = aminal2.getEnergy();
+        // Verify treasury ETH was transferred from parents (10% each)
+        uint256 aminal1TreasuryAfter = aminal1.getTreasuryBalance();
+        uint256 aminal2TreasuryAfter = aminal2.getTreasuryBalance();
 
-        assertTrue(aminal1EnergyAfter < aminal1EnergyBefore, "Parent 1 should have lost energy");
-        assertTrue(aminal2EnergyAfter < aminal2EnergyBefore, "Parent 2 should have lost energy");
+        assertTrue(aminal1TreasuryAfter < aminal1TreasuryBefore, "Parent 1 should have lost treasury funds");
+        assertTrue(aminal2TreasuryAfter < aminal2TreasuryBefore, "Parent 2 should have lost treasury funds");
 
         console.log("Voting settled successfully");
         console.log("New Aminal created - Total Aminals:", factory.totalAminals());
     }
 
-    function _verifyChildBirthAndPayouts(uint256 auctionId) internal {
+    function _verifyChildBirthAndPayouts(uint256 /* auctionId */ ) internal {
         console.log("Verifying child birth and energy transfers...");
 
         // Get the child Aminal
@@ -451,11 +450,11 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
         console.log("Mouth gene ID:", childVisuals.mouthId);
         console.log("Misc gene ID:", childVisuals.miscId);
 
-        // Verify gene NFT owners received energy transfers
-        // Note: In the new system, gene owners receive energy transfers instead of ETH
-        // The settlement should transfer 10% of parent energy to gene NFT owners
+        // Verify gene NFT owners received ETH payouts
+        // Note: In the new system, gene creators receive ETH from parent treasuries
+        // The settlement transfers 10% of each parent's treasury balance to gene creators
 
-        console.log("Gene NFT owners should have received energy transfers");
+        console.log("Gene NFT creators should have received ETH payouts from parent treasuries");
         console.log("Alice owns background and face genes");
         console.log("Bob owns arms and mouth genes");
         console.log("Charlie owns tail and misc genes");

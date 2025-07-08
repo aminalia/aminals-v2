@@ -13,7 +13,7 @@ import {AminalVRGDA} from "src/utils/AminalVRGDA.sol";
 
 /**
  * ╔═══════════════════════════════════════════════════════════════════════════════════╗
- * ║                                 🎭   AMINAL   🎭                                  ║
+ * ║                                     AMINAL                                        ║
  * ║                           Autonomous Digital Companions                           ║
  * ╠═══════════════════════════════════════════════════════════════════════════════════╣
  * ║                                                                                   ║
@@ -51,6 +51,32 @@ import {AminalVRGDA} from "src/utils/AminalVRGDA.sol";
  * @custom:security-contact security@aminals.art
  */
 contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
+    /*//////////////////////////////////////////////////////////////
+                                CONSTANTS
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Minimum ETH required to feed an Aminal
+    uint256 public constant MIN_FEED_AMOUNT = 0.001 ether;
+
+    /// @notice Energy gained per ETH sent (10,000 energy = 1 ETH)
+    uint256 public constant ENERGY_PER_ETH = 10_000;
+
+    /// @notice Maximum energy an Aminal can hold (100 ETH worth)
+    uint256 public constant MAX_ENERGY = 1_000_000;
+
+    /// @notice Initial energy for new Aminals (0.005 ETH worth)
+    uint256 public constant INITIAL_ENERGY = 50;
+
+    /// @notice Minimum love required for breeding consent
+    uint256 public constant MIN_BREEDING_LOVE = 10;
+
+    /// @notice Maximum skill cost to prevent accidental huge costs
+    uint256 public constant MAX_SKILL_COST = 10_000;
+
+    /*//////////////////////////////////////////////////////////////
+                            STATE VARIABLES
+    //////////////////////////////////////////////////////////////*/
+
     /// @notice The factory that birthed this Aminal into existence
     AminalFactory public immutable factory;
 
@@ -81,39 +107,122 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
     /// @notice Addresses this Aminal has consented to breed with
     mapping(address => bool) public breedableWith;
 
-    /// @notice Love saldo (given - used) by each user to this Aminal
+    /// @notice Love balance (given - used) by each user to this Aminal
     mapping(address user => uint256 love) public lovePerUser;
 
-    /// @notice Skill-specific storage for each Aminal's learned abilities
-    mapping(address skill => mapping(string key => bytes32 value)) public skillProperties;
+    /*//////////////////////////////////////////////////////////////
+                                EVENTS
+    //////////////////////////////////////////////////////////////*/
 
-    // TODO indexes
+    /// @notice Emitted when an Aminal is fed with ETH
+    /// @param sender Address of the feeder
+    /// @param loveGained Amount of love gained
+    /// @param love Total love from sender after feeding
+    /// @param totalLove Total love this Aminal has received
+    /// @param energyGained Amount of energy gained
+    /// @param energy Total energy after feeding
     event FeedAminal(
-        address sender, uint256 loveGained, uint256 love, uint256 totalLove, uint256 energyGained, uint256 energy
+        address indexed sender,
+        uint256 loveGained,
+        uint256 love,
+        uint256 totalLove,
+        uint256 energyGained,
+        uint256 energy
     );
-    event Squeak(address sender, uint256 amount, uint256 love, uint256 totalLove, uint256 energy);
-    event SkillCall(address skillAddress, bytes data, uint256 squeakCost);
-    event BreedableSet(address partner, bool status);
 
-    error NotEnoughEther();
-    error NotEnoughLove();
-    error NotEnoughEnergy();
-    error NotRegisteredSkill();
-    error SkillNotSupported();
-    error InsufficientEnergy();
-    error InsufficientLove();
-    error SkillCallFailed();
+    /// @notice Emitted when an Aminal squeaks (expression mechanic)
+    /// @param sender Address of the squeaker
+    /// @param amount Amount of love/energy consumed
+    /// @param love Remaining love for sender
+    /// @param totalLove Total love remaining
+    /// @param energy Remaining energy
+    event Squeak(address indexed sender, uint256 amount, uint256 love, uint256 totalLove, uint256 energy);
 
-    // Additional events for skill usage
+    /// @notice Emitted when breeding consent is set with another Aminal
+    /// @param partner Address of the partner Aminal
+    /// @param status True if breeding is allowed, false otherwise
+    event BreedableSet(address indexed partner, bool status);
+
+    /// @notice Emitted when energy is consumed for skill usage
+    /// @param user Address of the skill user
+    /// @param amount Amount of energy consumed
+    /// @param remainingEnergy Energy remaining after consumption
     event EnergyLost(address indexed user, uint256 amount, uint256 remainingEnergy);
+
+    /// @notice Emitted when love is consumed for skill usage
+    /// @param user Address of the skill user
+    /// @param amount Amount of love consumed
+    /// @param remainingLove Love remaining for user after consumption
     event LoveConsumed(address indexed user, uint256 amount, uint256 remainingLove);
+
+    /// @notice Emitted when a skill is successfully used
+    /// @param user Address of the skill user
+    /// @param cost Total cost of the skill
+    /// @param target Contract address of the skill
+    /// @param selector Function selector that was called
     event SkillUsed(address indexed user, uint256 cost, address indexed target, bytes4 indexed selector);
 
+    /// @notice Emitted when treasury funds are transferred to a recipient
+    /// @param recipient Address receiving the funds
+    /// @param amount Amount transferred
+    /// @param remainingBalance Treasury balance after transfer
+    event TreasuryTransferred(address indexed recipient, uint256 amount, uint256 remainingBalance);
+
+    /*//////////////////////////////////////////////////////////////
+                                ERRORS
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Thrown when insufficient ETH is sent for feeding
+    error NotEnoughEther();
+
+    /// @notice Thrown when user doesn't have enough love for an action
+    error NotEnoughLove();
+
+    /// @notice Thrown when Aminal doesn't have enough energy for an action
+    error NotEnoughEnergy();
+
+    /// @notice Thrown when trying to use an unregistered skill (deprecated)
+    error NotRegisteredSkill();
+
+    /// @notice Thrown when target contract doesn't implement ISkill interface
+    error SkillNotSupported();
+
+    /// @notice Thrown when Aminal has insufficient energy for skill execution
+    error InsufficientEnergy();
+
+    /// @notice Thrown when user has insufficient love for skill execution
+    error InsufficientLove();
+
+    /// @notice Thrown when skill execution fails
+    error SkillCallFailed();
+
+    /// @notice Thrown when Aminal has insufficient treasury balance for payout
+    error InsufficientTreasury();
+
+    /// @notice Thrown when treasury transfer to recipient fails
+    error TreasuryTransferFailed();
+
+    /*//////////////////////////////////////////////////////////////
+                               MODIFIERS
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Restricts function access to the AminalFactory contract only
     modifier onlyFactory() {
         require(msg.sender == address(factory), "Only factory can call this");
         _;
     }
 
+    /*//////////////////////////////////////////////////////////////
+                              CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Creates a new Aminal with specified genetics and parentage
+    /// @param _factory Address of the AminalFactory that created this Aminal
+    /// @param _momAddress Address of the mother Aminal (0x0 for genesis)
+    /// @param _dadAddress Address of the father Aminal (0x0 for genesis)
+    /// @param _visuals Visual traits that define this Aminal's appearance
+    /// @param _aminalIndex Unique identifier within the Aminal ecosystem
+    /// @param _loveVRGDA Address of the VRGDA contract for love calculations
     constructor(
         address _factory,
         address _momAddress,
@@ -135,12 +244,16 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
         aminalIndex = _aminalIndex;
         loveVRGDA = AminalVRGDA(_loveVRGDA);
 
-        // Initial energy for new Aminal (equivalent to 0.005 ETH worth of energy)
-        energy = 50;
+        // Initialize with starter energy
+        energy = INITIAL_ENERGY;
 
         // Mint the NFT to the factory (which will transfer to the actual owner)
         _mint(address(_factory), 1);
     }
+
+    /*//////////////////////////////////////////////////////////////
+                            FEEDING MECHANICS
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Feed this Aminal with love and energy 🍯
@@ -154,26 +267,34 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
         return _feed(msg.sender, msg.value);
     }
 
+    /// @notice Internal feeding logic called by feed() and receive()
+    /// @param feeder Address of the entity providing ETH
+    /// @param amount Amount of ETH being fed
+    /// @return energyGained Amount of energy gained from feeding
     function _feed(address feeder, uint256 amount) internal returns (uint256) {
-        // NOTE moved here to catch also on receive()
-        if (amount < 0.001 ether) revert NotEnoughEther();
+        if (amount < MIN_FEED_AMOUNT) revert NotEnoughEther();
 
         // Calculate love using VRGDA based on current energy level
         uint256 loveGained = loveVRGDA.getLoveForETH(energy, amount);
-        _addLove(feeder, loveGained);
-        // Calculate energy increase using fixed rate (10,000 per ETH)
-        uint256 energyGained = (amount * 10_000) / 1 ether;
+        lovePerUser[feeder] += loveGained;
+        totalLove += loveGained;
+
+        // Calculate energy increase using fixed rate
+        uint256 energyGained = (amount * ENERGY_PER_ETH) / 1 ether;
 
         // Cap energy at maximum to prevent overflow
-        uint256 maxEnergy = 1_000_000; // 100 ETH worth of energy max (100 * 10,000)
-        if (energy + energyGained > maxEnergy) energyGained = maxEnergy - energy;
+        if (energy + energyGained > MAX_ENERGY) energyGained = MAX_ENERGY - energy;
         energy += energyGained;
 
         emit FeedAminal(feeder, loveGained, lovePerUser[feeder], totalLove, energyGained, energy);
         return energyGained;
     }
 
-    // TODO deprecate?
+    /*//////////////////////////////////////////////////////////////
+                           EXPRESSION MECHANICS
+    //////////////////////////////////////////////////////////////*/
+
+    // TODO maybe deprecate this :/
     /**
      * @notice Express yourself through this Aminal's voice 🗣️
      * @dev Uses love and energy to create a squeak - a digital cry of expression
@@ -181,17 +302,23 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
      *
      * "When an Aminal squeaks, it speaks with the voice of its community,
      *  channeling love into sound, energy into expression"
+     *
+     * @custom:deprecated This function may be deprecated in future versions
      */
     function squeak(uint256 amount) external payable {
-        // Users need sufficient love to squeak
         if (lovePerUser[msg.sender] < amount) revert NotEnoughLove();
         if (energy < amount) revert NotEnoughEnergy();
 
         energy -= amount;
-        _subtractLove(msg.sender, amount);
+        lovePerUser[msg.sender] -= amount;
+        totalLove -= amount;
 
         emit Squeak(msg.sender, amount, lovePerUser[msg.sender], totalLove, energy);
     }
+
+    /*//////////////////////////////////////////////////////////////
+                             SKILL SYSTEM
+    //////////////////////////////////////////////////////////////*/
 
     /**
      * @notice Use a skill by calling an external function and consuming energy/love
@@ -201,18 +328,18 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
      *      - Love: Deducted from caller's personal love balance (per user per Aminal)
      * @dev Protected against reentrancy attacks with nonReentrant modifier
      * @dev SECURITY: Always calls with 0 ETH value to prevent draining funds through skills
-     * @param target The contract address to call
-     * @param data The raw ABI-encoded calldata for the skill
+     * @param target The contract address implementing ISkill to call
+     * @param data The raw ABI-encoded calldata for the skill function
      */
     function useSkill(address target, bytes calldata data) external nonReentrant {
-        // Check if the target implements ISkill interface
+        // Verify target implements ISkill interface
         try ISkill(target).supportsInterface(type(ISkill).interfaceId) returns (bool supported) {
             if (!supported) revert SkillNotSupported();
         } catch {
             revert SkillNotSupported();
         }
 
-        // Extract function selector for event
+        // Extract function selector for event logging
         bytes4 selector = bytes4(data);
 
         // Get the cost from the skill contract
@@ -220,26 +347,23 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
         try ISkill(target).skillCost(data) returns (uint256 cost) {
             energyCost = cost;
         } catch {
-            // If cost query fails, default to 1
+            // If cost query fails, default to minimum cost
             energyCost = 1;
         }
 
-        // Cap at a reasonable maximum to prevent accidental huge costs
-        if (energyCost > 10_000) energyCost = energy > 10_000 ? 10_000 : energy;
-
-        // Ensure minimum cost of 1
+        // Apply cost limits and minimums
+        if (energyCost > MAX_SKILL_COST) energyCost = energy > MAX_SKILL_COST ? MAX_SKILL_COST : energy;
         if (energyCost == 0) energyCost = 1;
 
-        // Check resources before execution
+        // Verify sufficient resources before execution
         if (energy < energyCost) revert InsufficientEnergy();
         if (lovePerUser[msg.sender] < energyCost) revert InsufficientLove();
 
-        // Execute the skill first (before consuming resources)
-        // CRITICAL: Use call with 0 value to prevent spending ETH
+        // Execute the skill with zero ETH value for security
         (bool success,) = target.call{value: 0}(data);
         if (!success) revert SkillCallFailed();
 
-        // Only consume resources after successful execution
+        // Consume resources only after successful execution
         energy -= energyCost;
         lovePerUser[msg.sender] -= energyCost;
         totalLove -= energyCost;
@@ -249,154 +373,168 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
         emit SkillUsed(msg.sender, energyCost, target, selector);
     }
 
-    // TODO do we need this?
+    /*//////////////////////////////////////////////////////////////
+                           BREEDING MECHANICS
+    //////////////////////////////////////////////////////////////*/
+
     /**
      * @notice Set breeding consent with another Aminal 💕
      * @dev Requires sufficient love to establish breeding consent
-     * @param user The user address requesting breeding
+     * @param user The user address requesting breeding authorization
      * @param partner The Aminal address to set breeding consent with
      * @param status True to allow breeding, false to revoke consent
      *
      * "Love is the foundation of creation - only through mutual affection
      *  can new digital life be brought into existence"
+     *
+     * @custom:access Only callable by AminalFactory
      */
     function setBreedableWith(address user, address partner, bool status) public onlyFactory {
-        require(lovePerUser[user] >= 10, "Not enough love");
+        require(lovePerUser[user] >= MIN_BREEDING_LOVE, "Not enough love");
         breedableWith[partner] = status;
         emit BreedableSet(partner, status);
     }
 
+    /// @notice Set the global breeding status for this Aminal
+    /// @param _breeding True to enable breeding mode, false to disable
+    /// @custom:access Only callable by AminalFactory
     function setBreeding(bool _breeding) external onlyFactory {
         breeding = _breeding;
     }
 
-    function disableBreedableWith(address partner) external onlyFactory {
-        breedableWith[partner] = false;
+    /*//////////////////////////////////////////////////////////////
+                           TREASURY MANAGEMENT
+    //////////////////////////////////////////////////////////////*/
+
+    /**
+     * @notice Transfer ETH from this Aminal's treasury to a recipient
+     * @dev Only callable by GeneAuction contract during settlement
+     * @param amount Amount of ETH to transfer (in wei)
+     * @param recipient Address to receive the ETH
+     * @return success True if transfer was successful
+     *
+     * @custom:security Only GeneAuction can call this to pay gene creators
+     */
+    function payout(uint256 amount, address recipient) external returns (bool success) {
+        require(msg.sender == address(factory.geneAuction()), "Only gene auction can call payout");
+
+        if (address(this).balance < amount) revert InsufficientTreasury();
+
+        // Transfer ETH to recipient
+        (success,) = payable(recipient).call{value: amount}("");
+        if (!success) revert TreasuryTransferFailed();
+
+        emit TreasuryTransferred(recipient, amount, address(this).balance);
+        return success;
     }
 
-    // Note: Aminals are soulbound NFTs and cannot be transferred
-    // The NFT remains owned by the factory for identification purposes
+    /*//////////////////////////////////////////////////////////////
+                              VIEW FUNCTIONS
+    //////////////////////////////////////////////////////////////*/
 
-    // Override transfer functions to disable transfers (soulbound)
-    function transferFrom(address, address, uint256) public pure override {
-        revert("Aminals are soulbound and cannot be transferred");
-    }
-
-    function safeTransferFrom(address, address, uint256) public pure override {
-        revert("Aminals are soulbound and cannot be transferred");
-    }
-
-    function safeTransferFrom(address, address, uint256, bytes memory) public pure override {
-        revert("Aminals are soulbound and cannot be transferred");
-    }
-
-    function approve(address, uint256) public pure override {
-        revert("Aminals are soulbound and cannot be approved");
-    }
-
-    function setApprovalForAll(address, bool) public pure override {
-        revert("Aminals are soulbound and cannot be approved");
-    }
-
-    // TODO how often is this used? Should it just be inline?
-    function _addLove(address user, uint256 love) internal {
-        lovePerUser[user] += love;
-        totalLove += love;
-    }
-
-    // TODO how often is this used? Should it just be inline?
-    function _subtractLove(address user, uint256 love) internal {
-        lovePerUser[user] -= love;
-        totalLove -= love;
-    }
-
-    // TODO should this use VRGDA instead?
-    function loveDrivenPrice(address user) external view returns (uint128) {
-        uint256 love = lovePerUser[user];
-        uint256 totlove = totalLove;
-
-        if (totlove == 0) return 100 * 10 ** 15;
-
-        uint256 ratio = (love * 100) / totlove;
-        uint128 price = ratio == 0 ? 100 : uint128(100 / ratio);
-
-        price = price / 10;
-        if (price < 1) price = 1;
-
-        return price * 10 ** 15;
-    }
-
-    // TODO is this needed?
-    function setSkillProperty(string calldata key, bytes32 value) external {
-        // Skills are globally accessible - any address can set properties
-        // This allows for flexible skill system without registration
-        skillProperties[msg.sender][key] = value;
-    }
-
-    // TODO is this needed?
-    function getSkillProperty(address skill, string calldata key) external view returns (bytes32) {
-        return skillProperties[skill][key];
-    }
-
-    // View functions
+    /// @notice Get the visual traits of this Aminal
+    /// @return visuals The Visuals struct containing all trait IDs
     function getVisuals() external view returns (Visuals memory) {
         return visuals;
     }
 
+    /// @notice Get the love balance of a specific user for this Aminal
+    /// @param user Address to check love balance for
+    /// @return love The amount of love the user has given to this Aminal
     function getLoveByUser(address user) external view returns (uint256) {
         return lovePerUser[user];
     }
 
+    /// @notice Get the total love this Aminal has received from all users
+    /// @return totalLove The cumulative love from all interactions
     function getTotalLove() external view returns (uint256) {
         return totalLove;
     }
 
+    /// @notice Get the current energy level of this Aminal
+    /// @return energy The current energy available for actions
     function getEnergy() external view returns (uint256) {
         return energy;
     }
 
+    /// @notice Check if this Aminal has breeding consent with another
+    /// @param partner Address of the potential breeding partner
+    /// @return breedable True if breeding is allowed with the partner
     function isBreedableWith(address partner) external view returns (bool) {
         return breedableWith[partner];
     }
 
+    /// @notice Get the parent addresses of this Aminal
+    /// @return mom Address of the mother Aminal (0x0 for genesis)
+    /// @return dad Address of the father Aminal (0x0 for genesis)
     function getParents() external view returns (address mom, address dad) {
         return (momAddress, dadAddress);
     }
 
-    function transferEnergyToOwner(uint256 amount, address recipient) external {
-        // Only factory or gene auction can call this function
-        require(
-            msg.sender == address(factory) || msg.sender == address(factory.geneAuction()),
-            "Only factory or gene auction can transfer energy"
-        );
-        if (energy < amount) revert NotEnoughEnergy();
-
-        energy -= amount;
-
-        // In this simplified implementation, we just reduce the Aminal's energy
-        // In a more complex system, you might want to:
-        // 1. Create an energy token that can be transferred
-        // 2. Track energy balances per user
-        // 3. Allow users to deposit energy back to Aminals
-
-        emit EnergyTransferred(recipient, amount, energy);
+    /// @notice Get the current ETH balance of this Aminal's treasury
+    /// @return balance The ETH balance in wei
+    function getTreasuryBalance() external view returns (uint256 balance) {
+        return address(this).balance;
     }
 
-    event EnergyTransferred(address indexed recipient, uint256 amount, uint256 remainingEnergy);
+    /*//////////////////////////////////////////////////////////////
+                              NFT OVERRIDES
+    //////////////////////////////////////////////////////////////*/
 
-    // Implementation of abstract function from GeneRenderer
+    /// @notice Implementation of abstract function from GeneRenderer
+    /// @param aminalID The Aminal ID to get visuals for (must match this Aminal)
+    /// @return visuals The visual traits of this Aminal
     function getAminalVisualsByID(uint256 aminalID) public view virtual override returns (Visuals memory) {
         require(aminalID == aminalIndex, "Invalid aminal ID");
         return visuals;
     }
 
-    // Generate token URI using GeneRenderer
+    /// @notice Generate token URI using GeneRenderer
+    /// @param id Token ID (must be 1 since each Aminal has only one NFT)
+    /// @return uri The complete token URI with metadata and image
     function tokenURI(uint256 id) public view override returns (string memory) {
         require(id == 1, "Token does not exist");
         return dataURI(aminalIndex);
     }
 
-    // Receive function to accept ETH
+    /*//////////////////////////////////////////////////////////////
+                            SOULBOUND OVERRIDES
+    //////////////////////////////////////////////////////////////*/
+
+    // Note: Aminals are soulbound NFTs and cannot be transferred
+    // The NFT remains owned by the factory for identification purposes
+
+    /// @notice Disabled - Aminals are soulbound and cannot be transferred
+    function transferFrom(address, address, uint256) public pure override {
+        revert("Aminals are soulbound and cannot be transferred");
+    }
+
+    /// @notice Disabled - Aminals are soulbound and cannot be transferred
+    function safeTransferFrom(address, address, uint256) public pure override {
+        revert("Aminals are soulbound and cannot be transferred");
+    }
+
+    /// @notice Disabled - Aminals are soulbound and cannot be transferred
+    function safeTransferFrom(address, address, uint256, bytes memory) public pure override {
+        revert("Aminals are soulbound and cannot be transferred");
+    }
+
+    /// @notice Disabled - Aminals are soulbound and cannot be approved
+    function approve(address, uint256) public pure override {
+        revert("Aminals are soulbound and cannot be approved");
+    }
+
+    /// @notice Disabled - Aminals are soulbound and cannot be approved
+    function setApprovalForAll(address, bool) public pure override {
+        revert("Aminals are soulbound and cannot be approved");
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                             RECEIVE FUNCTION
+    //////////////////////////////////////////////////////////////*/
+
+    /// @notice Receive function to accept ETH and automatically feed the Aminal
+    /// @dev Any ETH sent directly to the contract will be treated as feeding
     receive() external payable {
         if (msg.value > 0) _feed(msg.sender, msg.value);
     }

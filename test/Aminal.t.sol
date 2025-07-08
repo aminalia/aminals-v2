@@ -242,22 +242,6 @@ contract IndividualAminalTest is Test, IAminalStructs {
         assertEq(y, 20);
     }
 
-    function testAminalLoveDrivenPrice() public {
-        vm.deal(alice, 1 ether);
-
-        // Test initial price (no love)
-        uint128 initialPrice = aminal.loveDrivenPrice(alice);
-        assertEq(initialPrice, 100 * 10 ** 15); // Should be 100 * 10**15 for no love
-
-        // Feed to add love
-        vm.prank(alice);
-        aminal.feed{value: 0.1 ether}();
-
-        // Price should be different now
-        uint128 newPrice = aminal.loveDrivenPrice(alice);
-        assertTrue(newPrice != initialPrice);
-    }
-
     function testAminalNFTFunctionality() public {
         // Test NFT ownership
         assertEq(aminal.ownerOf(1), address(factory));
@@ -273,30 +257,6 @@ contract IndividualAminalTest is Test, IAminalStructs {
 
         // Note: Aminals are soulbound NFTs and cannot be transferred
         // The NFT functionality is primarily for identification and metadata
-    }
-
-    function testAminalSkillPropertyStorage() public {
-        vm.deal(alice, 1 ether);
-
-        // Feed to get energy
-        vm.prank(alice);
-        aminal.feed{value: 0.1 ether}();
-
-        // Test skill property storage (this would be called by a skill)
-        vm.prank(address(move2DSkill));
-        aminal.setSkillProperty("test_key", bytes32("test_value"));
-
-        bytes32 value = aminal.getSkillProperty(address(move2DSkill), "test_key");
-        assertEq(value, bytes32("test_value"));
-    }
-
-    function testAminalSkillPropertyStorageUnauthorized() public {
-        // Skills are globally accessible - any address can set properties
-        vm.prank(alice);
-        aminal.setSkillProperty("test_key", bytes32("test_value"));
-
-        bytes32 value = aminal.getSkillProperty(alice, "test_key");
-        assertEq(value, bytes32("test_value"));
     }
 
     function testAminalReceiveFunction() public {
