@@ -85,8 +85,6 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         uint256 startTime; // Auction start timestamp
         uint256 endTime; // Auction end timestamp
         bool settled; // Whether auction has been settled
-        // TODO should be an address, child ID will always be 1
-        uint256 childAminalId; // Index of resulting child Aminal
         uint256[8] parentOneTraits; // Parent 1 traits by category
         uint256[8] parentTwoTraits; // Parent 2 traits by category
         mapping(VisualsCat => CategoryVoting) categoryVotes; // Voting data per category
@@ -148,15 +146,9 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
 
     /// @notice Emitted when an auction is settled and child is spawned
     /// @param auctionId The settled auction
-    /// @param childAminalId Index of the newly created child Aminal
     /// @param winningGeneIds Array of winning gene IDs by category
     /// @param totalTreasuryTransferred Total ETH paid to gene creators
-    event VotingSettled(
-        uint256 indexed auctionId,
-        uint256 indexed childAminalId,
-        uint256[8] winningGeneIds,
-        uint256 totalTreasuryTransferred
-    );
+    event VotingSettled(uint256 indexed auctionId, uint256[8] winningGeneIds, uint256 totalTreasuryTransferred);
 
     /// @notice Emitted when a gene creator receives payment for their winning gene
     /// @param auctionId The auction that generated the payout
@@ -289,7 +281,6 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         auction.totalLove = totalLove;
         auction.startTime = block.timestamp;
         auction.endTime = block.timestamp + VOTING_DURATION;
-        auction.childAminalId = auctionId;
 
         // Store parent traits for inheritance fallback
         _captureParentTraits(auction, aminalOne, aminalTwo);
@@ -342,11 +333,10 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
             }
         }
 
-        emit VotingSettled(auctionId, auction.childAminalId, winningGeneIds, totalTreasuryTransferred);
+        emit VotingSettled(auctionId, winningGeneIds, totalTreasuryTransferred);
 
         // Spawn the child Aminal with winning traits
         aminalFactory.spawnAminal(aminalOneAddress, aminalTwoAddress, winningGeneIds);
-        auction.childAminalId = aminalFactory.totalAminals() - 1;
     }
 
     /**
@@ -644,19 +634,12 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
             uint256 totalLove,
             uint256 startTime,
             uint256 endTime,
-            bool settled,
-            uint256 childAminalId
+            bool settled
         )
     {
         Auction storage auction = auctions[auctionId];
         return (
-            auction.aminalOne,
-            auction.aminalTwo,
-            auction.totalLove,
-            auction.startTime,
-            auction.endTime,
-            auction.settled,
-            auction.childAminalId
+            auction.aminalOne, auction.aminalTwo, auction.totalLove, auction.startTime, auction.endTime, auction.settled
         );
     }
 

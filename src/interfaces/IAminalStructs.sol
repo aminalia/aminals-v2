@@ -13,7 +13,6 @@ interface IAminalStructs {
         mapping(uint256 aminalTwoId => bool readyToBreed) breedableWith;
         mapping(address user => uint256 love) lovePerUser;
         Visuals visuals;
-        mapping(uint256 => Skills) skills;
     }
 
     // TODO rename to genes? Is this used much?
@@ -38,13 +37,5 @@ interface IAminalStructs {
         FACE,
         MOUTH,
         MISC
-    }
-
-    // TODO: Migrate to SkillsRegistry? Kill?
-    struct Skills {
-        string name;
-        address contractAddress;
-        // Human-readable ABI format
-        string functionSignature;
     }
 }

@@ -130,15 +130,8 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
 
         uint256 auctionId = geneAuction.createAuction(0, 1, 100 ether);
 
-        (
-            uint256 aminalOne,
-            uint256 aminalTwo,
-            uint256 totalLove,
-            uint256 startTime,
-            uint256 endTime,
-            bool settled,
-            uint256 childAminalId
-        ) = geneAuction.getAuctionInfo(auctionId);
+        (uint256 aminalOne, uint256 aminalTwo, uint256 totalLove, uint256 startTime, uint256 endTime, bool settled) =
+            geneAuction.getAuctionInfo(auctionId);
 
         assertEq(aminalOne, 0);
         assertEq(aminalTwo, 1);
@@ -146,7 +139,6 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
         assertEq(startTime, block.timestamp);
         assertEq(endTime, block.timestamp + 1 hours);
         assertFalse(settled);
-        assertEq(childAminalId, auctionId);
 
         assertTrue(geneAuction.isVotingActive(auctionId));
     }
@@ -276,7 +268,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
         geneAuction.settleAuction(auctionId);
 
         // Verify voting is settled
-        (,,,,, bool settled,) = geneAuction.getAuctionInfo(auctionId);
+        (,,,,, bool settled) = geneAuction.getAuctionInfo(auctionId);
         assertTrue(settled);
         assertFalse(geneAuction.isVotingActive(auctionId));
 

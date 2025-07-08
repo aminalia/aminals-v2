@@ -267,15 +267,8 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
         // Verify auction was created
         assertTrue(geneAuction.isVotingActive(auctionId), "Voting should be active");
 
-        (
-            uint256 aminalOne,
-            uint256 aminalTwo,
-            uint256 totalLove,
-            uint256 startTime,
-            uint256 endTime,
-            bool settled,
-            /* uint256 childAminalId */
-        ) = geneAuction.getAuctionInfo(auctionId);
+        (uint256 aminalOne, uint256 aminalTwo, uint256 totalLove, uint256 startTime, uint256 endTime, bool settled) =
+            geneAuction.getAuctionInfo(auctionId);
 
         assertEq(aminalOne, aminal1.aminalIndex(), "Aminal 1 index should match");
         assertEq(aminalTwo, aminal2.aminalIndex(), "Aminal 2 index should match");
@@ -399,7 +392,7 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
         geneAuction.settleAuction(auctionId);
 
         // Verify voting is settled
-        (,,,,, bool settled,) = geneAuction.getAuctionInfo(auctionId);
+        (,,,,, bool settled) = geneAuction.getAuctionInfo(auctionId);
         assertTrue(settled, "Voting should be settled");
 
         // Verify a new Aminal was created

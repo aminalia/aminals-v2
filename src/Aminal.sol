@@ -58,9 +58,6 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
     /// @notice Minimum ETH required to feed an Aminal
     uint256 public constant MIN_FEED_AMOUNT = 0.001 ether;
 
-    /// @notice Energy gained per ETH sent (10,000 energy = 1 ETH)
-    uint256 public constant ENERGY_PER_ETH = 10_000;
-
     /// @notice Maximum energy an Aminal can hold (100 ETH worth)
     uint256 public constant MAX_ENERGY = 1_000_000;
 
@@ -279,8 +276,8 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
         lovePerUser[feeder] += loveGained;
         totalLove += loveGained;
 
-        // Calculate energy increase using fixed rate
-        uint256 energyGained = (amount * ENERGY_PER_ETH) / 1 ether;
+        // Calculate energy increase using VRGDA
+        uint256 energyGained = loveVRGDA.getEnergyForETH(amount);
 
         // Cap energy at maximum to prevent overflow
         if (energy + energyGained > MAX_ENERGY) energyGained = MAX_ENERGY - energy;
