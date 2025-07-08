@@ -75,13 +75,15 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
     factory.transactionHash = event.transaction.hash;
   }
 
+  // Create new Aminal entity
+  let aminal = new Aminal(event.params.child);
+  aminal.contractAddress = event.params.child;
+  aminal.aminalIndex = factory.totalAminals; // Use current count as index before incrementing
+  aminal.factory = factory.id;
+
   // Update factory stats
   factory.totalAminals = factory.totalAminals.plus(BigInt.fromI32(1));
   factory.save();
-
-  // Create new Aminal entity
-  let aminal = new Aminal(event.params.child);
-  aminal.factory = factory.id;
 
   // Set parent addresses directly from event params
   if (event.params.parentOne != Address.zero()) {

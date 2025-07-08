@@ -17,6 +17,8 @@ type AminalFactory @entity(immutable: false) {
 
 type Aminal @entity(immutable: false) {
   id: Bytes! # Contract address
+  contractAddress: Bytes! # Contract address (same as id)
+  aminalIndex: BigInt! # Index in factory
   factory: AminalFactory! # Factory that created this Aminal
   # Parent relationships (addresses, not indices)
   momAddress: Bytes # Mother Aminal contract address (null for genesis)

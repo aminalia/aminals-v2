@@ -12,18 +12,12 @@ import { useAccount } from 'wagmi';
 import Layout from '../_layout';
 
 import { Button } from '@/components/ui/button';
+import { aminalFactoryAbi, aminalFactoryAddress } from '@/contracts/generated';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { parseEther } from 'viem';
-import {
-  useWaitForTransactionReceipt,
-  useWriteContract,
-} from 'wagmi';
-import {
-  aminalFactoryAbi,
-  aminalFactoryAddress,
-} from '@/contracts/generated';
+import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 
 // Direct fetch for individual Aminal by contract address
 const useAminalByAddress = (contractAddress: string, userAddress: string) => {
@@ -111,13 +105,12 @@ const useAminalByAddress = (contractAddress: string, userAddress: string) => {
               love
               blockTimestamp
             }
-            skillCalls(first: 10, orderBy: blockTimestamp, orderDirection: desc) {
+            skillUsed(first: 10, orderBy: blockTimestamp, orderDirection: desc) {
               id
               caller {
                 address
               }
               skillAddress
-              squeakCost
               blockTimestamp
             }
           }
@@ -166,8 +159,13 @@ const AminalPage: NextPage = () => {
   } = useAminalByAddress(contractAddress, address || '');
 
   // Breeding transaction hooks
-  const { writeContract: startBreeding, isPending: isBreedingPending, data: breedingHash, error: breedingError } = useWriteContract();
-  
+  const {
+    writeContract: startBreeding,
+    isPending: isBreedingPending,
+    data: breedingHash,
+    error: breedingError,
+  } = useWriteContract();
+
   const {
     isLoading: isBreedingConfirming,
     isSuccess: isBreedingConfirmed,
@@ -229,7 +227,8 @@ const AminalPage: NextPage = () => {
       console.error('Breeding transaction failed:', breedingError);
       let errorMessage = 'Transaction failed. Please try again.';
       if (breedingError.message.includes('insufficient funds')) {
-        errorMessage = 'Insufficient funds. You need at least 0.001 ETH plus gas fees.';
+        errorMessage =
+          'Insufficient funds. You need at least 0.001 ETH plus gas fees.';
       } else if (breedingError.message.includes('user rejected')) {
         errorMessage = 'Transaction was cancelled by user.';
       }
@@ -240,7 +239,10 @@ const AminalPage: NextPage = () => {
   // Handle breeding receipt errors
   useEffect(() => {
     if (breedingReceiptError) {
-      console.error('Breeding transaction receipt error:', breedingReceiptError);
+      console.error(
+        'Breeding transaction receipt error:',
+        breedingReceiptError
+      );
       toast.error('Transaction failed. Please try again.', { id: 'breed-tx' });
     }
   }, [breedingReceiptError]);
@@ -583,15 +585,20 @@ const AminalPage: NextPage = () => {
                                     : '❌ Not Consented'}
                                 </span>
                                 <Button
-                                  disabled={!mutualConsent || isBreedingPending || isBreedingConfirming}
+                                  disabled={
+                                    !mutualConsent ||
+                                    isBreedingPending ||
+                                    isBreedingConfirming
+                                  }
                                   size="sm"
-                                  onClick={() => handleStartAuction(partner.contractAddress)}
+                                  onClick={() =>
+                                    handleStartAuction(partner.contractAddress)
+                                  }
                                   className="bg-green-600 hover:bg-green-700 text-white text-xs px-2 py-1 h-auto disabled:opacity-50"
                                 >
-                                  {isBreedingPending || isBreedingConfirming 
-                                    ? 'Starting...' 
-                                    : 'Start Auction'
-                                  }
+                                  {isBreedingPending || isBreedingConfirming
+                                    ? 'Starting...'
+                                    : 'Start Auction'}
                                 </Button>
                               </div>
                             </div>

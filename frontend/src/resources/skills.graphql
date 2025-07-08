@@ -1,6 +1,6 @@
 # Updated for new schema: skillCalls -> skillUsed, data -> selector, squeakCost -> newEnergy
 query SkillUsedList($first: Int = 100, $skip: Int = 0) {
-  skillUsed(
+  skillUseds(
     first: $first
     skip: $skip
     orderBy: blockTimestamp
@@ -9,7 +9,6 @@ query SkillUsedList($first: Int = 100, $skip: Int = 0) {
     id
     aminal {
       id
-      contractAddress
     }
     caller {
       id
@@ -22,9 +21,9 @@ query SkillUsedList($first: Int = 100, $skip: Int = 0) {
   }
 }
 
-query SkillUsedByAminal($contractAddress: String!) {
-  skillUsed(
-    where: { aminal: $contractAddress }
+query SkillUsedByAminal($aminalId: String!) {
+  skillUseds(
+    where: { aminal: $aminalId }
     orderBy: blockTimestamp
     orderDirection: desc
   ) {
@@ -41,7 +40,7 @@ query SkillUsedByAminal($contractAddress: String!) {
 }
 
 query SkillUsedBySkill($skillAddress: Bytes!) {
-  skillUsed(
+  skillUseds(
     where: { skillAddress: $skillAddress }
     orderBy: blockTimestamp
     orderDirection: desc
@@ -49,7 +48,6 @@ query SkillUsedBySkill($skillAddress: Bytes!) {
     id
     aminal {
       id
-      contractAddress
     }
     caller {
       id
