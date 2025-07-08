@@ -31,6 +31,7 @@
 - setFactory in Genes is not good... maybe use an initializer? Owner can set factory whenever currently
 - More genes test coverage (renderer, auction, registry, NFT contract)
 - Clean up and document scripts
+- start optimizing for gas (payouts need most work)
 
 #### Do last
 

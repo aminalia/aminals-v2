@@ -23,52 +23,48 @@ export class AminalSpawned__Params {
     this._event = event;
   }
 
-  get aminalAddress(): Address {
+  get child(): Address {
     return this._event.parameters[0].value.toAddress();
   }
 
-  get aminalIndex(): BigInt {
-    return this._event.parameters[1].value.toBigInt();
+  get parentOne(): Address {
+    return this._event.parameters[1].value.toAddress();
   }
 
-  get mom(): BigInt {
-    return this._event.parameters[2].value.toBigInt();
-  }
-
-  get dad(): BigInt {
-    return this._event.parameters[3].value.toBigInt();
+  get parentTwo(): Address {
+    return this._event.parameters[2].value.toAddress();
   }
 
   get backId(): BigInt {
-    return this._event.parameters[4].value.toBigInt();
+    return this._event.parameters[3].value.toBigInt();
   }
 
   get armId(): BigInt {
-    return this._event.parameters[5].value.toBigInt();
+    return this._event.parameters[4].value.toBigInt();
   }
 
   get tailId(): BigInt {
-    return this._event.parameters[6].value.toBigInt();
+    return this._event.parameters[5].value.toBigInt();
   }
 
   get earsId(): BigInt {
-    return this._event.parameters[7].value.toBigInt();
+    return this._event.parameters[6].value.toBigInt();
   }
 
   get bodyId(): BigInt {
-    return this._event.parameters[8].value.toBigInt();
+    return this._event.parameters[7].value.toBigInt();
   }
 
   get faceId(): BigInt {
-    return this._event.parameters[9].value.toBigInt();
+    return this._event.parameters[8].value.toBigInt();
   }
 
   get mouthId(): BigInt {
-    return this._event.parameters[10].value.toBigInt();
+    return this._event.parameters[9].value.toBigInt();
   }
 
   get miscId(): BigInt {
-    return this._event.parameters[11].value.toBigInt();
+    return this._event.parameters[10].value.toBigInt();
   }
 }
 
@@ -138,7 +134,7 @@ export class OwnershipTransferred__Params {
   }
 }
 
-export class AminalFactory__getAminalVisualsByAddressResultValue0Struct extends ethereum.Tuple {
+export class AminalFactory__getAminalVisualsByAddressResultVisualsStruct extends ethereum.Tuple {
   get backId(): BigInt {
     return this[0].toBigInt();
   }
@@ -175,6 +171,190 @@ export class AminalFactory__getAminalVisualsByAddressResultValue0Struct extends 
 export class AminalFactory extends ethereum.SmartContract {
   static bind(address: Address): AminalFactory {
     return new AminalFactory("AminalFactory", address);
+  }
+
+  MIN_BREEDING_FEE(): BigInt {
+    let result = super.call(
+      "MIN_BREEDING_FEE",
+      "MIN_BREEDING_FEE():(uint256)",
+      [],
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_MIN_BREEDING_FEE(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "MIN_BREEDING_FEE",
+      "MIN_BREEDING_FEE():(uint256)",
+      [],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  MIN_ENERGY_REQUIRED(): BigInt {
+    let result = super.call(
+      "MIN_ENERGY_REQUIRED",
+      "MIN_ENERGY_REQUIRED():(uint256)",
+      [],
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_MIN_ENERGY_REQUIRED(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "MIN_ENERGY_REQUIRED",
+      "MIN_ENERGY_REQUIRED():(uint256)",
+      [],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  MIN_LOVE_REQUIRED(): BigInt {
+    let result = super.call(
+      "MIN_LOVE_REQUIRED",
+      "MIN_LOVE_REQUIRED():(uint256)",
+      [],
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_MIN_LOVE_REQUIRED(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "MIN_LOVE_REQUIRED",
+      "MIN_LOVE_REQUIRED():(uint256)",
+      [],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  TRAIT_CATEGORIES(): BigInt {
+    let result = super.call(
+      "TRAIT_CATEGORIES",
+      "TRAIT_CATEGORIES():(uint256)",
+      [],
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_TRAIT_CATEGORIES(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "TRAIT_CATEGORIES",
+      "TRAIT_CATEGORIES():(uint256)",
+      [],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  VRGDA_BASE_PRICE(): BigInt {
+    let result = super.call(
+      "VRGDA_BASE_PRICE",
+      "VRGDA_BASE_PRICE():(int256)",
+      [],
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_VRGDA_BASE_PRICE(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "VRGDA_BASE_PRICE",
+      "VRGDA_BASE_PRICE():(int256)",
+      [],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  VRGDA_LOGISTIC_ASYMPTOTE(): BigInt {
+    let result = super.call(
+      "VRGDA_LOGISTIC_ASYMPTOTE",
+      "VRGDA_LOGISTIC_ASYMPTOTE():(int256)",
+      [],
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_VRGDA_LOGISTIC_ASYMPTOTE(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "VRGDA_LOGISTIC_ASYMPTOTE",
+      "VRGDA_LOGISTIC_ASYMPTOTE():(int256)",
+      [],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  VRGDA_PRICE_DECAY(): BigInt {
+    let result = super.call(
+      "VRGDA_PRICE_DECAY",
+      "VRGDA_PRICE_DECAY():(int256)",
+      [],
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_VRGDA_PRICE_DECAY(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "VRGDA_PRICE_DECAY",
+      "VRGDA_PRICE_DECAY():(int256)",
+      [],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  VRGDA_TIME_SCALE(): BigInt {
+    let result = super.call(
+      "VRGDA_TIME_SCALE",
+      "VRGDA_TIME_SCALE():(int256)",
+      [],
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_VRGDA_TIME_SCALE(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "VRGDA_TIME_SCALE",
+      "VRGDA_TIME_SCALE():(int256)",
+      [],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
   aminalsByIndex(param0: BigInt): Address {
@@ -255,21 +435,21 @@ export class AminalFactory extends ethereum.SmartContract {
 
   getAminalVisualsByAddress(
     aminalAddress: Address,
-  ): AminalFactory__getAminalVisualsByAddressResultValue0Struct {
+  ): AminalFactory__getAminalVisualsByAddressResultVisualsStruct {
     let result = super.call(
       "getAminalVisualsByAddress",
       "getAminalVisualsByAddress(address):((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256))",
       [ethereum.Value.fromAddress(aminalAddress)],
     );
 
-    return changetype<AminalFactory__getAminalVisualsByAddressResultValue0Struct>(
+    return changetype<AminalFactory__getAminalVisualsByAddressResultVisualsStruct>(
       result[0].toTuple(),
     );
   }
 
   try_getAminalVisualsByAddress(
     aminalAddress: Address,
-  ): ethereum.CallResult<AminalFactory__getAminalVisualsByAddressResultValue0Struct> {
+  ): ethereum.CallResult<AminalFactory__getAminalVisualsByAddressResultVisualsStruct> {
     let result = super.tryCall(
       "getAminalVisualsByAddress",
       "getAminalVisualsByAddress(address):((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256))",
@@ -280,7 +460,7 @@ export class AminalFactory extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      changetype<AminalFactory__getAminalVisualsByAddressResultValue0Struct>(
+      changetype<AminalFactory__getAminalVisualsByAddressResultVisualsStruct>(
         value[0].toTuple(),
       ),
     );
@@ -374,16 +554,16 @@ export class AminalFactory extends ethereum.SmartContract {
   }
 
   spawnAminal(
-    momAddress: Address,
-    dadAddress: Address,
+    parentOne: Address,
+    parentTwo: Address,
     winningGeneIds: Array<BigInt>,
   ): Address {
     let result = super.call(
       "spawnAminal",
       "spawnAminal(address,address,uint256[8]):(address)",
       [
-        ethereum.Value.fromAddress(momAddress),
-        ethereum.Value.fromAddress(dadAddress),
+        ethereum.Value.fromAddress(parentOne),
+        ethereum.Value.fromAddress(parentTwo),
         ethereum.Value.fromUnsignedBigIntArray(winningGeneIds),
       ],
     );
@@ -392,16 +572,16 @@ export class AminalFactory extends ethereum.SmartContract {
   }
 
   try_spawnAminal(
-    momAddress: Address,
-    dadAddress: Address,
+    parentOne: Address,
+    parentTwo: Address,
     winningGeneIds: Array<BigInt>,
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "spawnAminal",
       "spawnAminal(address,address,uint256[8]):(address)",
       [
-        ethereum.Value.fromAddress(momAddress),
-        ethereum.Value.fromAddress(dadAddress),
+        ethereum.Value.fromAddress(parentOne),
+        ethereum.Value.fromAddress(parentTwo),
         ethereum.Value.fromUnsignedBigIntArray(winningGeneIds),
       ],
     );
@@ -517,7 +697,7 @@ export class InitializeCall__Inputs {
     return this._call.inputValues[1].value.toAddress();
   }
 
-  get _Genes(): Address {
+  get _genes(): Address {
     return this._call.inputValues[2].value.toAddress();
   }
 }
@@ -599,11 +779,11 @@ export class SpawnAminalCall__Inputs {
     this._call = call;
   }
 
-  get momAddress(): Address {
+  get parentOne(): Address {
     return this._call.inputValues[0].value.toAddress();
   }
 
-  get dadAddress(): Address {
+  get parentTwo(): Address {
     return this._call.inputValues[1].value.toAddress();
   }
 
@@ -619,7 +799,7 @@ export class SpawnAminalCall__Outputs {
     this._call = call;
   }
 
-  get value0(): Address {
+  get childAddress(): Address {
     return this._call.outputValues[0].value.toAddress();
   }
 }

@@ -3,15 +3,15 @@ import {
   Aminal as AminalContract,
   FeedAminal as FeedAminalEvent,
   Squeak as SqueakEvent,
-  SkillCall as SkillCallEvent,
+  SkillUsed as SkillUsedEvent,
   BreedableSet as BreedableSetEvent,
-  EnergyTransferred as EnergyTransferredEvent
+  EnergyLost as EnergyLostEvent
 } from "../generated/templates/Aminal/Aminal";
 import {
   Aminal,
   FeedAminalEvent as FeedAminal,
   Squeak,
-  SkillCall,
+  SkillUsed,
   BreedingConsent,
   GlobalSkill,
   User,
@@ -123,16 +123,16 @@ export function handleSqueak(event: SqueakEvent): void {
   ]);
 }
 
-export function handleSkillCall(event: SkillCallEvent): void {
+export function handleSkillUsed(event: SkillUsedEvent): void {
   // Load the Aminal entity
   let aminal = Aminal.load(event.address);
   if (!aminal) {
-    log.error("Aminal not found for skill call event: {}", [event.address.toHexString()]);
+    log.error("Aminal not found for skill used event: {}", [event.address.toHexString()]);
     return;
   }
   
   // Create or load user (caller)
-  let caller = event.transaction.from;
+  let caller = event.params.user;
   let user = User.load(caller);
   if (!user) {
     user = new User(caller);
@@ -140,25 +140,25 @@ export function handleSkillCall(event: SkillCallEvent): void {
     user.save();
   }
   
-  // Create skill call event entity
-  let skillCall = new SkillCall(
+  // Create skill used event entity
+  let skillUsed = new SkillUsed(
     event.transaction.hash.concat(event.address).concatI32(event.logIndex.toI32())
   );
-  skillCall.aminal = aminal.id;
-  skillCall.caller = user.id;
-  skillCall.skillAddress = event.params.skillAddress;
-  skillCall.data = event.params.data;
-  skillCall.squeakCost = event.params.squeakCost;
-  skillCall.blockNumber = event.block.number;
-  skillCall.blockTimestamp = event.block.timestamp;
-  skillCall.transactionHash = event.transaction.hash;
-  skillCall.save();
+  skillUsed.aminal = aminal.id;
+  skillUsed.caller = user.id;
+  skillUsed.skillAddress = event.params.target;
+  skillUsed.selector = event.params.selector;
+  skillUsed.newEnergy = BigInt.fromI32(0); // This event doesn't contain remaining energy
+  skillUsed.blockNumber = event.block.number;
+  skillUsed.blockTimestamp = event.block.timestamp;
+  skillUsed.transactionHash = event.transaction.hash;
+  skillUsed.save();
   
   // Update global skill statistics
-  let globalSkill = GlobalSkill.load(event.params.skillAddress);
+  let globalSkill = GlobalSkill.load(event.params.target);
   if (!globalSkill) {
-    globalSkill = new GlobalSkill(event.params.skillAddress);
-    globalSkill.skillAddress = event.params.skillAddress;
+    globalSkill = new GlobalSkill(event.params.target);
+    globalSkill.skillAddress = event.params.target;
     globalSkill.callCount = BigInt.fromI32(0);
     globalSkill.totalSqueakCost = BigInt.fromI32(0);
     globalSkill.blockNumber = event.block.number;
@@ -166,22 +166,13 @@ export function handleSkillCall(event: SkillCallEvent): void {
     globalSkill.transactionHash = event.transaction.hash;
   }
   globalSkill.callCount = globalSkill.callCount.plus(BigInt.fromI32(1));
-  globalSkill.totalSqueakCost = globalSkill.totalSqueakCost.plus(event.params.squeakCost);
+  globalSkill.totalSqueakCost = globalSkill.totalSqueakCost.plus(event.params.cost);
   globalSkill.save();
   
-  // Energy is likely updated by the skill call cost, avoid extra contract call
-  // The energy change will be reflected in subsequent Feed or Squeak events
-  // let aminalContract = AminalContract.bind(event.address);
-  // let energyResult = aminalContract.try_getEnergy();
-  // if (!energyResult.reverted) {
-  //   aminal.energy = energyResult.value;
-  //   aminal.save();
-  // }
-  
-  log.info("Skill call for Aminal {} using skill {} with cost {}", [
+  log.info("Skill used for Aminal {} using skill {} with selector {}", [
     event.address.toHexString(),
-    event.params.skillAddress.toHexString(),
-    event.params.squeakCost.toString()
+    event.params.target.toHexString(),
+    event.params.selector.toHexString()
   ]);
 }
 
@@ -221,11 +212,11 @@ export function handleBreedableSet(event: BreedableSetEvent): void {
   ]);
 }
 
-export function handleEnergyTransferred(event: EnergyTransferredEvent): void {
+export function handleEnergyLost(event: EnergyLostEvent): void {
   // Load the Aminal entity
   let aminal = Aminal.load(event.address);
   if (!aminal) {
-    log.error("Aminal not found for energy transfer event: {}", [event.address.toHexString()]);
+    log.error("Aminal not found for energy lost event: {}", [event.address.toHexString()]);
     return;
   }
   
@@ -233,9 +224,9 @@ export function handleEnergyTransferred(event: EnergyTransferredEvent): void {
   aminal.energy = event.params.remainingEnergy;
   aminal.save();
   
-  log.info("Energy transferred from Aminal {} to {} with amount {}", [
+  log.info("Energy lost from Aminal {} - amount {} remaining energy {}", [
     event.address.toHexString(),
-    event.params.recipient.toHexString(),
-    event.params.amount.toString()
+    event.params.amount.toString(),
+    event.params.remainingEnergy.toString()
   ]);
 }

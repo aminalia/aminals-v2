@@ -855,6 +855,7 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         return selectedGeneId;
     }
 
+    // TODO this is not gas efficient at all
     /// @notice Transfer treasury to gene creator and return amount transferred
     /// @param auctionId The auction ID
     /// @param selectedGeneId The winning gene ID

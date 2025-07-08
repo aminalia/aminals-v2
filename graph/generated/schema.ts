@@ -499,11 +499,11 @@ export class Aminal extends Entity {
     );
   }
 
-  get skillCalls(): SkillCallLoader {
-    return new SkillCallLoader(
+  get skillUsed(): SkillUsedLoader {
+    return new SkillUsedLoader(
       "Aminal",
       this.get("id")!.toBytes().toHexString(),
-      "skillCalls",
+      "skillUsed",
     );
   }
 
@@ -1187,7 +1187,7 @@ export class FeedAminalEvent extends Entity {
   }
 }
 
-export class SkillCall extends Entity {
+export class SkillUsed extends Entity {
   constructor(id: Bytes) {
     super();
     this.set("id", Value.fromBytes(id));
@@ -1195,25 +1195,25 @@ export class SkillCall extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save SkillCall entity without an ID");
+    assert(id != null, "Cannot save SkillUsed entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.BYTES,
-        `Entities of type SkillCall must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+        `Entities of type SkillUsed must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
-      store.set("SkillCall", id.toBytes().toHexString(), this);
+      store.set("SkillUsed", id.toBytes().toHexString(), this);
     }
   }
 
-  static loadInBlock(id: Bytes): SkillCall | null {
-    return changetype<SkillCall | null>(
-      store.get_in_block("SkillCall", id.toHexString()),
+  static loadInBlock(id: Bytes): SkillUsed | null {
+    return changetype<SkillUsed | null>(
+      store.get_in_block("SkillUsed", id.toHexString()),
     );
   }
 
-  static load(id: Bytes): SkillCall | null {
-    return changetype<SkillCall | null>(
-      store.get("SkillCall", id.toHexString()),
+  static load(id: Bytes): SkillUsed | null {
+    return changetype<SkillUsed | null>(
+      store.get("SkillUsed", id.toHexString()),
     );
   }
 
@@ -1269,8 +1269,8 @@ export class SkillCall extends Entity {
     this.set("skillAddress", Value.fromBytes(value));
   }
 
-  get data(): Bytes {
-    let value = this.get("data");
+  get selector(): Bytes {
+    let value = this.get("selector");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -1278,12 +1278,12 @@ export class SkillCall extends Entity {
     }
   }
 
-  set data(value: Bytes) {
-    this.set("data", Value.fromBytes(value));
+  set selector(value: Bytes) {
+    this.set("selector", Value.fromBytes(value));
   }
 
-  get squeakCost(): BigInt {
-    let value = this.get("squeakCost");
+  get newEnergy(): BigInt {
+    let value = this.get("newEnergy");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -1291,8 +1291,8 @@ export class SkillCall extends Entity {
     }
   }
 
-  set squeakCost(value: BigInt) {
-    this.set("squeakCost", Value.fromBigInt(value));
+  set newEnergy(value: BigInt) {
+    this.set("newEnergy", Value.fromBigInt(value));
   }
 
   get blockNumber(): BigInt {
@@ -1791,6 +1791,14 @@ export class GeneAuction extends Entity {
     );
   }
 
+  get payouts(): GeneCreatorPayoutLoader {
+    return new GeneCreatorPayoutLoader(
+      "GeneAuction",
+      this.get("id")!.toBytes().toHexString(),
+      "payouts",
+    );
+  }
+
   get blockNumber(): BigInt {
     let value = this.get("blockNumber");
     if (!value || value.kind == ValueKind.NULL) {
@@ -2031,6 +2039,27 @@ export class GeneNFT extends Entity {
       "GeneNFT",
       this.get("id")!.toBytes().toHexString(),
       "proposalsUsingGene",
+    );
+  }
+
+  get totalEarnings(): BigInt {
+    let value = this.get("totalEarnings");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set totalEarnings(value: BigInt) {
+    this.set("totalEarnings", Value.fromBigInt(value));
+  }
+
+  get payouts(): GeneCreatorPayoutLoader {
+    return new GeneCreatorPayoutLoader(
+      "GeneNFT",
+      this.get("id")!.toBytes().toHexString(),
+      "payouts",
     );
   }
 
@@ -2402,6 +2431,167 @@ export class GeneVote extends Entity {
   }
 }
 
+export class GeneCreatorPayout extends Entity {
+  constructor(id: Bytes) {
+    super();
+    this.set("id", Value.fromBytes(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save GeneCreatorPayout entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.BYTES,
+        `Entities of type GeneCreatorPayout must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("GeneCreatorPayout", id.toBytes().toHexString(), this);
+    }
+  }
+
+  static loadInBlock(id: Bytes): GeneCreatorPayout | null {
+    return changetype<GeneCreatorPayout | null>(
+      store.get_in_block("GeneCreatorPayout", id.toHexString()),
+    );
+  }
+
+  static load(id: Bytes): GeneCreatorPayout | null {
+    return changetype<GeneCreatorPayout | null>(
+      store.get("GeneCreatorPayout", id.toHexString()),
+    );
+  }
+
+  get id(): Bytes {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set id(value: Bytes) {
+    this.set("id", Value.fromBytes(value));
+  }
+
+  get auction(): Bytes {
+    let value = this.get("auction");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set auction(value: Bytes) {
+    this.set("auction", Value.fromBytes(value));
+  }
+
+  get geneNFT(): Bytes {
+    let value = this.get("geneNFT");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set geneNFT(value: Bytes) {
+    this.set("geneNFT", Value.fromBytes(value));
+  }
+
+  get creator(): Bytes {
+    let value = this.get("creator");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set creator(value: Bytes) {
+    this.set("creator", Value.fromBytes(value));
+  }
+
+  get amount(): BigInt {
+    let value = this.get("amount");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set amount(value: BigInt) {
+    this.set("amount", Value.fromBigInt(value));
+  }
+
+  get auctionId(): BigInt {
+    let value = this.get("auctionId");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set auctionId(value: BigInt) {
+    this.set("auctionId", Value.fromBigInt(value));
+  }
+
+  get geneId(): BigInt {
+    let value = this.get("geneId");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set geneId(value: BigInt) {
+    this.set("geneId", Value.fromBigInt(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
+  get blockTimestamp(): BigInt {
+    let value = this.get("blockTimestamp");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockTimestamp(value: BigInt) {
+    this.set("blockTimestamp", Value.fromBigInt(value));
+  }
+
+  get transactionHash(): Bytes {
+    let value = this.get("transactionHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set transactionHash(value: Bytes) {
+    this.set("transactionHash", Value.fromBytes(value));
+  }
+}
+
 export class AminalLoader extends Entity {
   _entity: string;
   _field: string;
@@ -2456,7 +2646,7 @@ export class RelationshipLoader extends Entity {
   }
 }
 
-export class SkillCallLoader extends Entity {
+export class SkillUsedLoader extends Entity {
   _entity: string;
   _field: string;
   _id: string;
@@ -2468,9 +2658,9 @@ export class SkillCallLoader extends Entity {
     this._field = field;
   }
 
-  load(): SkillCall[] {
+  load(): SkillUsed[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
-    return changetype<SkillCall[]>(value);
+    return changetype<SkillUsed[]>(value);
   }
 }
 
@@ -2597,5 +2787,23 @@ export class GeneVoteLoader extends Entity {
   load(): GeneVote[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<GeneVote[]>(value);
+  }
+}
+
+export class GeneCreatorPayoutLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): GeneCreatorPayout[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<GeneCreatorPayout[]>(value);
   }
 }

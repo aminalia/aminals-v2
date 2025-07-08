@@ -36,6 +36,36 @@ export class BulkVoteCast__Params {
   }
 }
 
+export class GeneCreatorPayout extends ethereum.Event {
+  get params(): GeneCreatorPayout__Params {
+    return new GeneCreatorPayout__Params(this);
+  }
+}
+
+export class GeneCreatorPayout__Params {
+  _event: GeneCreatorPayout;
+
+  constructor(event: GeneCreatorPayout) {
+    this._event = event;
+  }
+
+  get auctionId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get geneId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get creator(): Address {
+    return this._event.parameters[2].value.toAddress();
+  }
+
+  get amount(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
+  }
+}
+
 export class GeneProposed extends ethereum.Event {
   get params(): GeneProposed__Params {
     return new GeneProposed__Params(this);
@@ -251,16 +281,12 @@ export class VotingSettled__Params {
     return this._event.parameters[0].value.toBigInt();
   }
 
-  get childAminalId(): BigInt {
-    return this._event.parameters[1].value.toBigInt();
-  }
-
   get winningGeneIds(): Array<BigInt> {
-    return this._event.parameters[2].value.toBigIntArray();
+    return this._event.parameters[1].value.toBigIntArray();
   }
 
-  get totalEnergyTransferred(): BigInt {
-    return this._event.parameters[3].value.toBigInt();
+  get totalTreasuryTransferred(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
   }
 }
 
@@ -271,7 +297,6 @@ export class GeneAuction__auctionsResult {
   value3: BigInt;
   value4: BigInt;
   value5: boolean;
-  value6: BigInt;
 
   constructor(
     value0: BigInt,
@@ -280,7 +305,6 @@ export class GeneAuction__auctionsResult {
     value3: BigInt,
     value4: BigInt,
     value5: boolean,
-    value6: BigInt,
   ) {
     this.value0 = value0;
     this.value1 = value1;
@@ -288,7 +312,6 @@ export class GeneAuction__auctionsResult {
     this.value3 = value3;
     this.value4 = value4;
     this.value5 = value5;
-    this.value6 = value6;
   }
 
   toMap(): TypedMap<string, ethereum.Value> {
@@ -299,7 +322,6 @@ export class GeneAuction__auctionsResult {
     map.set("value3", ethereum.Value.fromUnsignedBigInt(this.value3));
     map.set("value4", ethereum.Value.fromUnsignedBigInt(this.value4));
     map.set("value5", ethereum.Value.fromBoolean(this.value5));
-    map.set("value6", ethereum.Value.fromUnsignedBigInt(this.value6));
     return map;
   }
 
@@ -325,10 +347,6 @@ export class GeneAuction__auctionsResult {
 
   getSettled(): boolean {
     return this.value5;
-  }
-
-  getChildAminalId(): BigInt {
-    return this.value6;
   }
 }
 
@@ -339,7 +357,6 @@ export class GeneAuction__getAuctionInfoResult {
   value3: BigInt;
   value4: BigInt;
   value5: boolean;
-  value6: BigInt;
 
   constructor(
     value0: BigInt,
@@ -348,7 +365,6 @@ export class GeneAuction__getAuctionInfoResult {
     value3: BigInt,
     value4: BigInt,
     value5: boolean,
-    value6: BigInt,
   ) {
     this.value0 = value0;
     this.value1 = value1;
@@ -356,7 +372,6 @@ export class GeneAuction__getAuctionInfoResult {
     this.value3 = value3;
     this.value4 = value4;
     this.value5 = value5;
-    this.value6 = value6;
   }
 
   toMap(): TypedMap<string, ethereum.Value> {
@@ -367,7 +382,6 @@ export class GeneAuction__getAuctionInfoResult {
     map.set("value3", ethereum.Value.fromUnsignedBigInt(this.value3));
     map.set("value4", ethereum.Value.fromUnsignedBigInt(this.value4));
     map.set("value5", ethereum.Value.fromBoolean(this.value5));
-    map.set("value6", ethereum.Value.fromUnsignedBigInt(this.value6));
     return map;
   }
 
@@ -393,10 +407,6 @@ export class GeneAuction__getAuctionInfoResult {
 
   getSettled(): boolean {
     return this.value5;
-  }
-
-  getChildAminalId(): BigInt {
-    return this.value6;
   }
 }
 
@@ -448,20 +458,66 @@ export class GeneAuction extends ethereum.SmartContract {
     return new GeneAuction("GeneAuction", address);
   }
 
-  ENERGY_TRANSFER_PERCENTAGE(): BigInt {
+  GENE_REMOVAL_THRESHOLD(): BigInt {
     let result = super.call(
-      "ENERGY_TRANSFER_PERCENTAGE",
-      "ENERGY_TRANSFER_PERCENTAGE():(uint256)",
+      "GENE_REMOVAL_THRESHOLD",
+      "GENE_REMOVAL_THRESHOLD():(uint256)",
       [],
     );
 
     return result[0].toBigInt();
   }
 
-  try_ENERGY_TRANSFER_PERCENTAGE(): ethereum.CallResult<BigInt> {
+  try_GENE_REMOVAL_THRESHOLD(): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
-      "ENERGY_TRANSFER_PERCENTAGE",
-      "ENERGY_TRANSFER_PERCENTAGE():(uint256)",
+      "GENE_REMOVAL_THRESHOLD",
+      "GENE_REMOVAL_THRESHOLD():(uint256)",
+      [],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  TRAIT_CATEGORIES(): BigInt {
+    let result = super.call(
+      "TRAIT_CATEGORIES",
+      "TRAIT_CATEGORIES():(uint256)",
+      [],
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_TRAIT_CATEGORIES(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "TRAIT_CATEGORIES",
+      "TRAIT_CATEGORIES():(uint256)",
+      [],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  TREASURY_TRANSFER_PERCENTAGE(): BigInt {
+    let result = super.call(
+      "TREASURY_TRANSFER_PERCENTAGE",
+      "TREASURY_TRANSFER_PERCENTAGE():(uint256)",
+      [],
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_TREASURY_TRANSFER_PERCENTAGE(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "TREASURY_TRANSFER_PERCENTAGE",
+      "TREASURY_TRANSFER_PERCENTAGE():(uint256)",
       [],
     );
     if (result.reverted) {
@@ -558,7 +614,7 @@ export class GeneAuction extends ethereum.SmartContract {
   auctions(param0: BigInt): GeneAuction__auctionsResult {
     let result = super.call(
       "auctions",
-      "auctions(uint256):(uint256,uint256,uint256,uint256,uint256,bool,uint256)",
+      "auctions(uint256):(uint256,uint256,uint256,uint256,uint256,bool)",
       [ethereum.Value.fromUnsignedBigInt(param0)],
     );
 
@@ -569,7 +625,6 @@ export class GeneAuction extends ethereum.SmartContract {
       result[3].toBigInt(),
       result[4].toBigInt(),
       result[5].toBoolean(),
-      result[6].toBigInt(),
     );
   }
 
@@ -578,7 +633,7 @@ export class GeneAuction extends ethereum.SmartContract {
   ): ethereum.CallResult<GeneAuction__auctionsResult> {
     let result = super.tryCall(
       "auctions",
-      "auctions(uint256):(uint256,uint256,uint256,uint256,uint256,bool,uint256)",
+      "auctions(uint256):(uint256,uint256,uint256,uint256,uint256,bool)",
       [ethereum.Value.fromUnsignedBigInt(param0)],
     );
     if (result.reverted) {
@@ -593,7 +648,6 @@ export class GeneAuction extends ethereum.SmartContract {
         value[3].toBigInt(),
         value[4].toBigInt(),
         value[5].toBoolean(),
-        value[6].toBigInt(),
       ),
     );
   }
@@ -670,7 +724,7 @@ export class GeneAuction extends ethereum.SmartContract {
   getAuctionInfo(auctionId: BigInt): GeneAuction__getAuctionInfoResult {
     let result = super.call(
       "getAuctionInfo",
-      "getAuctionInfo(uint256):(uint256,uint256,uint256,uint256,uint256,bool,uint256)",
+      "getAuctionInfo(uint256):(uint256,uint256,uint256,uint256,uint256,bool)",
       [ethereum.Value.fromUnsignedBigInt(auctionId)],
     );
 
@@ -681,7 +735,6 @@ export class GeneAuction extends ethereum.SmartContract {
       result[3].toBigInt(),
       result[4].toBigInt(),
       result[5].toBoolean(),
-      result[6].toBigInt(),
     );
   }
 
@@ -690,7 +743,7 @@ export class GeneAuction extends ethereum.SmartContract {
   ): ethereum.CallResult<GeneAuction__getAuctionInfoResult> {
     let result = super.tryCall(
       "getAuctionInfo",
-      "getAuctionInfo(uint256):(uint256,uint256,uint256,uint256,uint256,bool,uint256)",
+      "getAuctionInfo(uint256):(uint256,uint256,uint256,uint256,uint256,bool)",
       [ethereum.Value.fromUnsignedBigInt(auctionId)],
     );
     if (result.reverted) {
@@ -705,7 +758,6 @@ export class GeneAuction extends ethereum.SmartContract {
         value[3].toBigInt(),
         value[4].toBigInt(),
         value[5].toBoolean(),
-        value[6].toBigInt(),
       ),
     );
   }
@@ -1114,32 +1166,6 @@ export class CreateAuctionCall__Outputs {
 
   get auctionId(): BigInt {
     return this._call.outputValues[0].value.toBigInt();
-  }
-}
-
-export class EmergencyStopCall extends ethereum.Call {
-  get inputs(): EmergencyStopCall__Inputs {
-    return new EmergencyStopCall__Inputs(this);
-  }
-
-  get outputs(): EmergencyStopCall__Outputs {
-    return new EmergencyStopCall__Outputs(this);
-  }
-}
-
-export class EmergencyStopCall__Inputs {
-  _call: EmergencyStopCall;
-
-  constructor(call: EmergencyStopCall) {
-    this._call = call;
-  }
-}
-
-export class EmergencyStopCall__Outputs {
-  _call: EmergencyStopCall;
-
-  constructor(call: EmergencyStopCall) {
-    this._call = call;
   }
 }
 

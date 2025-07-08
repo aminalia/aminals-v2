@@ -51,7 +51,7 @@ type Aminal @entity(immutable: false) {
   lovers: [Relationship]! @derivedFrom(field: "aminal")
 
   # Skills and activities
-  skillCalls: [SkillCall!]! @derivedFrom(field: "aminal")
+  skillUsed: [SkillUsed!]! @derivedFrom(field: "aminal")
   squeaks: [Squeak!]! @derivedFrom(field: "aminal")
   feeds: [FeedAminalEvent!]! @derivedFrom(field: "aminal")
 
@@ -123,13 +123,13 @@ type FeedAminalEvent @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type SkillCall @entity(immutable: true) {
+type SkillUsed @entity(immutable: true) {
   id: Bytes!
-  aminal: Aminal! # Aminal contract that called skill
+  aminal: Aminal! # Aminal contract that used skill
   caller: User! # User who initiated the skill call
   skillAddress: Bytes! # Skill contract address
-  data: Bytes! # Encoded skill parameters
-  squeakCost: BigInt! # Energy cost for the skill
+  selector: Bytes! # Function selector that was called
+  newEnergy: BigInt! # Energy after skill use
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -181,6 +181,9 @@ type GeneAuction @entity(immutable: false) {
   # Gene proposals and votes
   proposals: [GeneProposal!]! @derivedFrom(field: "auction")
   votes: [GeneVote!]! @derivedFrom(field: "auction")
+  
+  # Creator payouts
+  payouts: [GeneCreatorPayout!]! @derivedFrom(field: "auction")
 
   # Timing
   blockNumber: BigInt!
@@ -208,6 +211,10 @@ type GeneNFT @entity(immutable: false) {
 
   # Auction usage
   proposalsUsingGene: [GeneProposal!]! @derivedFrom(field: "geneNFT")
+  
+  # Earnings tracking
+  totalEarnings: BigInt! # Total amount earned from auction payouts
+  payouts: [GeneCreatorPayout!]! @derivedFrom(field: "geneNFT")
 
   # Creation info
   blockNumber: BigInt!
@@ -245,6 +252,22 @@ type GeneVote @entity(immutable: true) {
   isRemoveVote: Boolean!
   loveAmount: BigInt!
 
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type GeneCreatorPayout @entity(immutable: true) {
+  id: Bytes! # tx hash + log index for uniqueness
+  auction: GeneAuction!
+  geneNFT: GeneNFT!
+  creator: User!
+  amount: BigInt! # Payout amount in wei
+  
+  # Metadata for dashboard display
+  auctionId: BigInt!
+  geneId: BigInt!
+  
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

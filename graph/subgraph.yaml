@@ -15,7 +15,7 @@ templates:
         - Aminal
         - FeedAminalEvent
         - Squeak
-        - SkillCall
+        - SkillUsed
         - BreedingConsent
         - User
         - Relationship
@@ -25,16 +25,16 @@ templates:
         - name: AminalFactory
           file: ../out/AminalFactory.sol/AminalFactory.json
       eventHandlers:
-        - event: FeedAminal(address,uint256,uint256,uint256,uint256,uint256)
+        - event: FeedAminal(indexed address,uint256,uint256,uint256,uint256,uint256)
           handler: handleFeedAminal
-        - event: Squeak(address,uint256,uint256,uint256,uint256)
+        - event: Squeak(indexed address,uint256,uint256,uint256,uint256)
           handler: handleSqueak
-        - event: SkillCall(address,bytes,uint256)
-          handler: handleSkillCall
-        - event: BreedableSet(address,bool)
+        - event: SkillUsed(indexed address,uint256,indexed address,indexed bytes4)
+          handler: handleSkillUsed
+        - event: BreedableSet(indexed address,bool)
           handler: handleBreedableSet
-        - event: EnergyTransferred(indexed address,uint256,uint256)
-          handler: handleEnergyTransferred
+        - event: EnergyLost(indexed address,uint256,uint256)
+          handler: handleEnergyLost
       file: ./src/aminal.ts
 dataSources:
   - kind: ethereum
@@ -59,7 +59,7 @@ dataSources:
         - name: Aminal
           file: ../out/Aminal.sol/Aminal.json
       eventHandlers:
-        - event: AminalSpawned(indexed address,indexed uint256,indexed uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+        - event: AminalSpawned(indexed address,indexed address,indexed address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
           handler: handleAminalSpawned
         - event: BreedAminal(indexed address,indexed address,uint256)
           handler: handleBreedAminal
@@ -79,6 +79,7 @@ dataSources:
         - GeneAuction
         - GeneProposal
         - GeneVote
+        - GeneCreatorPayout
         - User
         - Aminal
       abis:
@@ -91,7 +92,7 @@ dataSources:
       eventHandlers:
         - event: VotingCreated(indexed uint256,indexed uint256,indexed uint256,uint256,uint256,uint256)
           handler: handleVotingCreated
-        - event: VotingSettled(indexed uint256,indexed uint256,uint256[8],uint256)
+        - event: VotingSettled(indexed uint256,uint256[8],uint256)
           handler: handleVotingSettled
         - event: GeneProposed(indexed uint256,indexed uint8,indexed uint256,address)
           handler: handleGeneProposed
@@ -103,6 +104,8 @@ dataSources:
           handler: handleGeneRemoved
         - event: BulkVoteCast(indexed uint256,indexed address,uint256[8])
           handler: handleBulkVoteCast
+        - event: GeneCreatorPayout(indexed uint256,indexed uint256,indexed address,uint256)
+          handler: handleGeneCreatorPayout
       file: ./src/gene-auction.ts
   - kind: ethereum
     name: Genes

@@ -77,40 +77,22 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
 
   // Update factory stats
   factory.totalAminals = factory.totalAminals.plus(BigInt.fromI32(1));
-  if (event.params.aminalIndex.gt(BigInt.fromI32(0))) {
-    factory.initialAminalSpawned = true;
-  }
   factory.save();
 
   // Create new Aminal entity
-  let aminal = new Aminal(event.params.aminalAddress);
-  aminal.contractAddress = event.params.aminalAddress;
-  aminal.aminalIndex = event.params.aminalIndex;
+  let aminal = new Aminal(event.params.child);
+  aminal.contractAddress = event.params.child;
   aminal.factory = factory.id;
 
-  // Set parent addresses and relationships
-  if (event.params.mom != BigInt.fromI32(0)) {
-    // Load mother by index
-    let factoryContract = AminalFactoryContract.bind(event.address);
-    let motherAddressResult = factoryContract.try_aminalsByIndex(
-      event.params.mom
-    );
-    if (!motherAddressResult.reverted) {
-      aminal.momAddress = motherAddressResult.value;
-      aminal.mother = motherAddressResult.value;
-    }
+  // Set parent addresses directly from event params
+  if (event.params.parentOne != Address.zero()) {
+    aminal.momAddress = event.params.parentOne;
+    aminal.mother = event.params.parentOne;
   }
 
-  if (event.params.dad != BigInt.fromI32(0)) {
-    // Load father by index
-    let factoryContract = AminalFactoryContract.bind(event.address);
-    let fatherAddressResult = factoryContract.try_aminalsByIndex(
-      event.params.dad
-    );
-    if (!fatherAddressResult.reverted) {
-      aminal.dadAddress = fatherAddressResult.value;
-      aminal.father = fatherAddressResult.value;
-    }
+  if (event.params.parentTwo != Address.zero()) {
+    aminal.dadAddress = event.params.parentTwo;
+    aminal.father = event.params.parentTwo;
   }
 
   // Set visual traits (Gene NFT IDs)
@@ -136,10 +118,10 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
   //   event.params.mouthId,
   //   event.params.miscId
   // ];
-  // batchUpdateGeneNFTUsage(GenesAddress, allGeneIds, event.params.aminalAddress);
+  // batchUpdateGeneNFTUsage(GenesAddress, allGeneIds, event.params.child);
 
   // Fetch tokenURI for the Aminal
-  let tokenURI = fetchTokenURI(event.params.aminalAddress);
+  let tokenURI = fetchTokenURI(event.params.child);
   if (tokenURI) {
     aminal.tokenURI = tokenURI;
   }
@@ -157,11 +139,10 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
   aminal.save();
 
   // Create a data source for this individual Aminal contract
-  AminalTemplate.create(event.params.aminalAddress);
+  AminalTemplate.create(event.params.child);
 
-  log.info("New Aminal spawned: {} at index {}", [
-    event.params.aminalAddress.toHexString(),
-    event.params.aminalIndex.toString(),
+  log.info("New Aminal spawned: {}", [
+    event.params.child.toHexString(),
   ]);
 }
 

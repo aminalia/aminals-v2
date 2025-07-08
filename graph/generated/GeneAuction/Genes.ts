@@ -469,6 +469,59 @@ export class Genes extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
+  tokenByIndex(index: BigInt): BigInt {
+    let result = super.call("tokenByIndex", "tokenByIndex(uint256):(uint256)", [
+      ethereum.Value.fromUnsignedBigInt(index),
+    ]);
+
+    return result[0].toBigInt();
+  }
+
+  try_tokenByIndex(index: BigInt): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "tokenByIndex",
+      "tokenByIndex(uint256):(uint256)",
+      [ethereum.Value.fromUnsignedBigInt(index)],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  tokenOfOwnerByIndex(owner: Address, index: BigInt): BigInt {
+    let result = super.call(
+      "tokenOfOwnerByIndex",
+      "tokenOfOwnerByIndex(address,uint256):(uint256)",
+      [
+        ethereum.Value.fromAddress(owner),
+        ethereum.Value.fromUnsignedBigInt(index),
+      ],
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_tokenOfOwnerByIndex(
+    owner: Address,
+    index: BigInt,
+  ): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "tokenOfOwnerByIndex",
+      "tokenOfOwnerByIndex(address,uint256):(uint256)",
+      [
+        ethereum.Value.fromAddress(owner),
+        ethereum.Value.fromUnsignedBigInt(index),
+      ],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   tokenURI(tokenId: BigInt): string {
     let result = super.call("tokenURI", "tokenURI(uint256):(string)", [
       ethereum.Value.fromUnsignedBigInt(tokenId),
@@ -486,6 +539,21 @@ export class Genes extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
+  totalSupply(): BigInt {
+    let result = super.call("totalSupply", "totalSupply():(uint256)", []);
+
+    return result[0].toBigInt();
+  }
+
+  try_totalSupply(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall("totalSupply", "totalSupply():(uint256)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 }
 

@@ -25,6 +25,9 @@ export function handleGeneCreated(event: GeneCreatedEvent): void {
   geneNFT.creator = user.id;
   geneNFT.owner = user.id; // Initially owned by creator
   geneNFT.svg = event.params.svg;
+  
+  // Initialize earnings tracking
+  geneNFT.totalEarnings = BigInt.fromI32(0);
 
   // Set creation info
   geneNFT.blockNumber = event.block.number;

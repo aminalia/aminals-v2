@@ -64,6 +64,9 @@ export function handleTransfer(event: TransferEvent): void {
 
     // Set initial owner
     geneNFT.owner = creator.id;
+    
+    // Initialize earnings tracking
+    geneNFT.totalEarnings = BigInt.fromI32(0);
 
     // aminalsUsingGene field removed for performance optimization
 

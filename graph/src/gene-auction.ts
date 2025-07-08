@@ -8,12 +8,14 @@ import {
   GeneRemovalVote as GeneRemovalVoteEvent,
   GeneRemoved as GeneRemovedEvent,
   BulkVoteCast as BulkVoteCastEvent,
+  GeneCreatorPayout as GeneCreatorPayoutEvent,
 } from "../generated/GeneAuction/GeneAuction";
 import { AminalFactory as AminalFactoryContract } from "../generated/AminalFactory/AminalFactory";
 import {
   GeneAuction,
   GeneProposal,
   GeneVote,
+  GeneCreatorPayout,
   GeneNFT,
   Aminal,
   User,
@@ -127,15 +129,14 @@ export function handleVotingSettled(event: VotingSettledEvent): void {
   // Update auction with settlement data
   auction.finished = true;
   auction.winningGeneIds = event.params.winningGeneIds;
-  // childAminalId is the index, we need to resolve to address later
   auction.endBlockNumber = event.block.number;
   auction.endBlockTimestamp = event.block.timestamp;
   auction.endTransactionHash = event.transaction.hash;
   auction.save();
 
-  log.info("Gene auction settled: {} with child Aminal index {}", [
+  log.info("Gene auction settled: {} with winning genes {}", [
     event.params.auctionId.toString(),
-    event.params.childAminalId.toString(),
+    event.params.winningGeneIds.toString(),
   ]);
 }
 
@@ -474,4 +475,63 @@ export function handleBulkVoteCast(event: BulkVoteCastEvent): void {
       );
     }
   }
+}
+
+export function handleGeneCreatorPayout(event: GeneCreatorPayoutEvent): void {
+  // Load auction entity
+  let auctionIdHex = createAuctionId(event.params.auctionId);
+  let auction = GeneAuction.load(auctionIdHex);
+  if (!auction) {
+    log.error("Auction not found for gene creator payout: {}", [
+      event.params.auctionId.toString(),
+    ]);
+    return;
+  }
+
+  // Create or load user (creator)
+  let creator = User.load(event.params.creator);
+  if (!creator) {
+    creator = new User(event.params.creator);
+    creator.address = event.params.creator;
+    creator.save();
+  }
+
+  // Get the actual Genes contract address
+  let genesContractAddress = getGenesContractAddress(event.address);
+  
+  // Load the Gene NFT entity
+  let geneNFTId = createGeneNFTId(genesContractAddress, event.params.geneId);
+  let geneNFT = GeneNFT.load(geneNFTId);
+  if (!geneNFT) {
+    log.error("Gene NFT not found for creator payout: contract {} gene ID {}", [
+      genesContractAddress.toHexString(),
+      event.params.geneId.toString(),
+    ]);
+    return;
+  }
+
+  // Create payout entity
+  let payoutId = event.transaction.hash.concatI32(event.logIndex.toI32());
+  let payout = new GeneCreatorPayout(payoutId);
+  payout.auction = auction.id;
+  payout.geneNFT = geneNFT.id;
+  payout.creator = creator.id;
+  payout.amount = event.params.amount;
+  payout.auctionId = event.params.auctionId;
+  payout.geneId = event.params.geneId;
+  payout.blockNumber = event.block.number;
+  payout.blockTimestamp = event.block.timestamp;
+  payout.transactionHash = event.transaction.hash;
+  payout.save();
+
+  // Update gene NFT total earnings
+  geneNFT.totalEarnings = geneNFT.totalEarnings.plus(event.params.amount);
+  geneNFT.save();
+
+  log.info("Gene creator payout recorded: auction {} gene {} creator {} amount {}", [
+    event.params.auctionId.toString(),
+    event.params.geneId.toString(),
+    event.params.creator.toHexString(),
+    event.params.amount.toString(),
+  ]);
 }
