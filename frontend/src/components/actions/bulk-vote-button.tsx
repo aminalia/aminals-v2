@@ -230,17 +230,34 @@ export default function BulkVoteButton({
         type="button"
         onClick={action}
         disabled={!enabled || !someGenesSelected || isPending || isConfirming}
-        className={
-          enabled && someGenesSelected ? 'w-full' : 'w-full text-neutral-400'
-        }
+        className={`
+          w-full font-medium py-3 h-auto transition-all duration-200
+          ${enabled && someGenesSelected 
+            ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          }
+        `}
       >
-        {isPending || isConfirming
-          ? 'Voting...'
-          : !enabled
-          ? 'Connect Wallet'
-          : !someGenesSelected
-          ? 'Select Genes to Vote'
-          : 'Vote on Selected Traits'}
+        <span className="flex items-center justify-center gap-2">
+          {isPending || isConfirming ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              Casting Votes...
+            </>
+          ) : !enabled ? (
+            <>
+              Connect Wallet
+            </>
+          ) : !someGenesSelected ? (
+            <>
+              Select Genes to Vote
+            </>
+          ) : (
+            <>
+              🗳️ Vote on Selected Traits
+            </>
+          )}
+        </span>
       </Button>
     </div>
   );

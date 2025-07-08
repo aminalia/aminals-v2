@@ -79,26 +79,28 @@ export default function AuctionCard({ auction }: { auction: GeneAuction }) {
         <div className="flex w-full md:w-1/2 relative">
           {/* Heart connector between images */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 shadow-lg border-2 border-pink-200 group-hover:border-pink-300 transition-all">
-            <div className="text-lg text-pink-500 group-hover:scale-110 transition-transform">💕</div>
+            <div className="text-lg text-pink-500 group-hover:scale-110 transition-transform">
+              💕
+            </div>
           </div>
-          
+
           <div className="w-1/2 relative group/image aspect-square">
             <div className="h-full">
               <TokenUriImage tokenUri={aminalOne.tokenURI} />
             </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover/image:opacity-100 transition-opacity" />
-            <div className="absolute top-3 left-3 text-sm bg-white/95 backdrop-blur-sm shadow-lg px-3 py-1.5 rounded-full font-medium border border-gray-200">
-              <span className="text-blue-600">🐈</span> #{aminalOne.aminalIndex}
-            </div>
+            {/* <div className="absolute top-3 left-3 text-sm bg-white/95 backdrop-blur-sm shadow-lg px-3 py-1.5 rounded-full font-medium border border-gray-200">
+              #{aminalOne.aminalIndex}
+            </div> */}
           </div>
           <div className="w-1/2 relative group/image aspect-square">
             <div className="h-full">
               <TokenUriImage tokenUri={aminalTwo.tokenURI} />
             </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover/image:opacity-100 transition-opacity" />
-            <div className="absolute top-3 right-3 text-sm bg-white/95 backdrop-blur-sm shadow-lg px-3 py-1.5 rounded-full font-medium border border-gray-200">
-              <span className="text-purple-600">🐈</span> #{aminalTwo.aminalIndex}
-            </div>
+            {/* <div className="absolute top-3 right-3 text-sm bg-white/95 backdrop-blur-sm shadow-lg px-3 py-1.5 rounded-full font-medium border border-gray-200">
+              #{aminalTwo.aminalIndex}
+            </div> */}
           </div>
         </div>
 
@@ -108,13 +110,14 @@ export default function AuctionCard({ auction }: { auction: GeneAuction }) {
             <div className="flex-1">
               <Link href={`/breeding/${auction.auctionId}`}>
                 <h2 className="text-2xl font-bold hover:text-pink-600 transition-colors group/title">
-                  <span className="text-2xl group-hover/title:scale-110 transition-transform inline-block">🐶</span>
                   <span className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
                     #{aminalOne.aminalIndex} × #{aminalTwo.aminalIndex}
                   </span>
                 </h2>
               </Link>
-              <div className="text-sm text-gray-500 mt-1">Breeding Auction #{auction.auctionId}</div>
+              <div className="text-sm text-gray-500 mt-1">
+                Breeding Auction #{auction.auctionId}
+              </div>
             </div>
             <Badge
               variant={auction.finished ? 'secondary' : 'default'}
@@ -159,11 +162,20 @@ export default function AuctionCard({ auction }: { auction: GeneAuction }) {
               <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-4 text-center">
                 <div className="text-2xl mb-1">👶</div>
                 <div className="text-sm text-gray-600 mb-1">Child</div>
-                <div className="font-bold text-purple-700">
-                  #{auction.childAminal?.aminalIndex || 'TBD'}
-                </div>
+                {auction.childAminal ? (
+                  <Link
+                    href={`/aminals/${auction.childAminal.contractAddress}`}
+                    className="font-bold text-purple-700 hover:text-purple-800 underline transition-colors"
+                  >
+                    #{auction.childAminal.aminalIndex}
+                  </Link>
+                ) : (
+                  <div className="font-bold text-gray-500">
+                    {isAuctionEnded ? 'Settling...' : 'TBD'}
+                  </div>
+                )}
               </div>
-              
+
               <div className="bg-gradient-to-r from-pink-50 to-red-50 border border-pink-200 rounded-xl p-4 text-center">
                 <div className="text-2xl mb-1">❤️</div>
                 <div className="text-sm text-gray-600 mb-1">Total Love</div>
@@ -172,10 +184,10 @@ export default function AuctionCard({ auction }: { auction: GeneAuction }) {
                 </div>
               </div>
             </div>
-            
+
             {/* Call to Action */}
             <Link href={`/breeding/${auction.auctionId}`}>
-              <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl p-3 text-center font-medium hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105 cursor-pointer">
+              <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl p-3 text-center font-medium hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105 cursor-pointer mt-4">
                 {auction.finished ? 'View Results' : 'Join Breeding'} →
               </div>
             </Link>

@@ -39,6 +39,17 @@ query GeneAuctionsList($first: Int = 100, $skip: Int = 0) {
       id
       contractAddress
       aminalIndex
+      tokenURI
+      energy
+      totalLove
+      backId
+      armId
+      tailId
+      earsId
+      bodyId
+      faceId
+      mouthId
+      miscId
     }
     finished
     totalLove
@@ -82,6 +93,17 @@ query GeneAuction($id: ID!) {
       id
       contractAddress
       aminalIndex
+      tokenURI
+      energy
+      totalLove
+      backId
+      armId
+      tailId
+      earsId
+      bodyId
+      faceId
+      mouthId
+      miscId
     }
     finished
     totalLove
