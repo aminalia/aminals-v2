@@ -1,4 +1,4 @@
-query UserProfile($address: Bytes!) {
+query UserProfile($address: ID!) {
   user(id: $address) {
     id
     address
@@ -77,7 +77,7 @@ query UserProfile($address: Bytes!) {
   }
 }
 
-query UserEarnings($address: Bytes!) {
+query UserEarnings($address: ID!) {
   user(id: $address) {
     id
     address
@@ -111,7 +111,7 @@ query UserEarnings($address: Bytes!) {
   }
 }
 
-query UserActivity($address: Bytes!) {
+query UserActivity($address: ID!) {
   user(id: $address) {
     id
     address
