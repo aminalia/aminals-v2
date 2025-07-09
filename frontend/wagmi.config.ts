@@ -7,6 +7,7 @@ const ABI = {
   GeneAuction: require('../out/GeneAuction.sol/GeneAuction.json'),
   Genes: require('../out/Genes.sol/Genes.json'),
   GeneRegistry: require('../out/GeneRegistry.sol/GeneRegistry.json'),
+  Move2D: require('../out/Move2D.sol/Move2D.json'),
 };
 
 export default defineConfig({
@@ -33,11 +34,15 @@ export default defineConfig({
       name: 'Genes',
       address: '0x7d4672be8dfba2ee7c65e4494f00bbd2d997b157',
     },
-    // GeneRegistry not deployed to Sepolia yet
     {
       abi: ABI.GeneRegistry.abi,
       name: 'GeneRegistry',
       address: '0x4c13d55407d60646bb46a7a144fa72219abf492c',
+    },
+    {
+      abi: ABI.Move2D.abi,
+      name: 'Move2D',
+      address: '0x2e878f4b588c2b05fd7a21917e3a3561557b8a62',
     },
   ],
 });

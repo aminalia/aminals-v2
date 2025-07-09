@@ -738,47 +738,16 @@ const AminalPage: NextPage = () => {
           {/* Global Skills Section */}
           <div className="mt-4 p-6 bg-gray-50 rounded-xl border border-gray-100">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-              <h2 className="text-2xl font-bold">Global Skills</h2>
+              <h2 className="text-2xl font-bold">Skills</h2>
               <div className="text-sm text-gray-500">
-                Any Aminal can call any registered skill
+                Aminals can <em>do</em> things.
               </div>
             </div>
 
             <div className="space-y-4">
-              <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                <h3 className="text-lg font-medium text-blue-800 mb-2">
-                  🔮 Call a Global Skill
-                </h3>
-                <p className="text-sm text-blue-600 mb-4">
-                  In the new architecture, skills are globally available to any
-                  Aminal. No need to learn them individually!
-                </p>
-                <CallSkillButton
-                  aminalContractAddress={
-                    aminal.contractAddress as `0x${string}`
-                  }
-                />
-              </div>
-
-              <div className="bg-white p-4 rounded-lg border border-gray-100">
-                <h4 className="font-medium mb-2">Available Global Skills:</h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-2">
-                    <span className="text-blue-600">🏃</span>
-                    <span className="font-medium">Move2D</span>
-                    <span className="text-gray-500">
-                      - Move your Aminal in 2D space
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-blue-600">🏃‍♀️</span>
-                    <span className="font-medium">MoveTwice</span>
-                    <span className="text-gray-500">
-                      - Move your Aminal twice in one action
-                    </span>
-                  </div>
-                </div>
-              </div>
+              <CallSkillButton
+                aminalContractAddress={aminal.contractAddress as `0x${string}`}
+              />
             </div>
           </div>
         </div>

@@ -1,25 +1,22 @@
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import { encodeFunctionData } from 'viem';
 import {
   useAccount,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from 'wagmi';
-import { aminalAbi } from '../../contracts/generated';
+import { aminalAbi, move2DAbi, move2DAddress } from '../../contracts/generated';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 
 // Known skill addresses (these would be loaded from a registry or config in production)
 const KNOWN_SKILLS = [
   {
-    address: '0xcf5e739449e7a7a1b83f750e962f5dd87bb99556',
+    address: move2DAddress,
     name: 'Move2D',
     description: 'Move your Aminal in 2D space',
-  },
-  {
-    address: '0x99ea2abb821942d604b11065156fc8639dff5701',
-    name: 'MoveTwice',
-    description: 'Move your Aminal twice in one action',
+    type: 'move2d',
   },
 ] as const;
 
@@ -37,6 +34,10 @@ export default function CallSkillButton({
   const [selectedSkill, setSelectedSkill] = useState<string>('');
   const [skillData, setSkillData] = useState<string>('');
 
+  // Move2D specific state
+  const [move2DX, setMove2DX] = useState<string>('');
+  const [move2DY, setMove2DY] = useState<string>('');
+
   const {
     isLoading: isConfirming,
     isSuccess: isConfirmed,
@@ -45,6 +46,18 @@ export default function CallSkillButton({
   } = useWaitForTransactionReceipt({
     hash,
   });
+
+  // Get selected skill info
+  const selectedSkillInfo = KNOWN_SKILLS.find(
+    (skill) => skill.address === selectedSkill
+  );
+
+  // Reset skill-specific inputs when skill changes
+  useEffect(() => {
+    setSkillData('');
+    setMove2DX('');
+    setMove2DY('');
+  }, [selectedSkill]);
 
   // Log transaction initiation
   useEffect(() => {
@@ -84,15 +97,20 @@ export default function CallSkillButton({
         timestamp: new Date().toISOString(),
       });
 
-      const skillName =
-        KNOWN_SKILLS.find((skill) => skill.address === selectedSkill)?.name ||
-        'Skill';
+      const skillName = selectedSkillInfo?.name || 'Skill';
       toast.success(`🔮 ${skillName} executed successfully!`, {
         id: 'call-skill-tx',
         duration: 4000,
       });
     }
-  }, [isConfirmed, receipt, hash, aminalContractAddress, selectedSkill]);
+  }, [
+    isConfirmed,
+    receipt,
+    hash,
+    aminalContractAddress,
+    selectedSkill,
+    selectedSkillInfo,
+  ]);
 
   // Handle transaction errors
   useEffect(() => {
@@ -186,13 +204,47 @@ export default function CallSkillButton({
     }
   }, [isConfirming, hash, aminalContractAddress, selectedSkill]);
 
+  // Encode skill data based on skill type
+  function encodeSkillData(): `0x${string}` {
+    if (selectedSkillInfo?.type === 'move2d') {
+      // Validate coordinates
+      const x = parseInt(move2DX);
+      const y = parseInt(move2DY);
+
+      if (isNaN(x) || isNaN(y)) {
+        throw new Error('Invalid coordinates');
+      }
+
+      // Encode the move function call
+      return encodeFunctionData({
+        abi: move2DAbi,
+        functionName: 'move',
+        args: [BigInt(x), BigInt(y)],
+      });
+    }
+
+    // Fallback for other skills
+    return skillData ? `0x${Buffer.from(skillData).toString('hex')}` : '0x';
+  }
+
+  // Check if skill inputs are valid
+  function isSkillInputValid(): boolean {
+    if (selectedSkillInfo?.type === 'move2d') {
+      const x = parseInt(move2DX);
+      const y = parseInt(move2DY);
+      return !isNaN(x) && !isNaN(y) && x >= 0 && y >= 0;
+    }
+    return true; // For other skills, always valid for now
+  }
+
   function callSkill() {
-    if (!enabled || !selectedSkill) {
+    if (!enabled || !selectedSkill || !isSkillInputValid()) {
       console.warn(
-        '⚠️ Call skill attempted but wallet not connected or no skill selected:',
+        '⚠️ Call skill attempted but wallet not connected, no skill selected, or invalid input:',
         {
           isConnected,
           selectedSkill,
+          isInputValid: isSkillInputValid(),
           chainId: chain?.id,
           timestamp: new Date().toISOString(),
         }
@@ -200,53 +252,84 @@ export default function CallSkillButton({
       return;
     }
 
-    // Convert skill data to bytes (for now just use empty bytes)
-    const data = skillData
-      ? `0x${Buffer.from(skillData).toString('hex')}`
-      : '0x';
+    try {
+      const data = encodeSkillData();
 
-    // Log the contract call parameters
-    console.log('🚀 Initiating call skill transaction:', {
-      contractAddress: aminalContractAddress,
-      functionName: 'useSkill',
-      skillAddress: selectedSkill,
-      skillName: KNOWN_SKILLS.find((skill) => skill.address === selectedSkill)
-        ?.name,
-      data,
-      userAddress: address,
-      chainId: chain?.id,
-      timestamp: new Date().toISOString(),
-    });
+      // Log the contract call parameters
+      console.log('🚀 Initiating call skill transaction:', {
+        contractAddress: aminalContractAddress,
+        functionName: 'useSkill',
+        skillAddress: selectedSkill,
+        skillName: selectedSkillInfo?.name,
+        data,
+        userAddress: address,
+        chainId: chain?.id,
+        timestamp: new Date().toISOString(),
+      });
 
-    writeContract({
-      abi: aminalAbi,
-      address: aminalContractAddress,
-      functionName: 'useSkill',
-      args: [selectedSkill as `0x${string}`, data as `0x${string}`],
-    });
+      writeContract({
+        abi: aminalAbi,
+        address: aminalContractAddress,
+        functionName: 'useSkill',
+        args: [selectedSkill as `0x${string}`, data],
+      });
+    } catch (error) {
+      console.error('❌ Failed to encode skill data:', error);
+      toast.error('Invalid skill parameters. Please check your inputs.', {
+        id: 'call-skill-tx',
+      });
+    }
   }
 
-  return (
-    <div className="space-y-3 p-3 border rounded-lg bg-gray-50">
-      <h4 className="font-medium text-sm">🔮 Call Global Skill</h4>
+  // Render skill-specific inputs
+  function renderSkillInputs() {
+    if (selectedSkillInfo?.type === 'move2d') {
+      return (
+        <div className="space-y-3">
+          <div className="text-sm font-medium text-gray-700">
+            🎯 Move to Coordinates
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-gray-600">
+                X Coordinate
+              </label>
+              <Input
+                type="number"
+                placeholder="0"
+                value={move2DX}
+                onChange={(e) => setMove2DX(e.target.value)}
+                disabled={isPending || isConfirming}
+                className="text-sm"
+                min="0"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-gray-600">
+                Y Coordinate
+              </label>
+              <Input
+                type="number"
+                placeholder="0"
+                value={move2DY}
+                onChange={(e) => setMove2DY(e.target.value)}
+                disabled={isPending || isConfirming}
+                className="text-sm"
+                min="0"
+              />
+            </div>
+          </div>
+          {move2DX && move2DY && (
+            <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded">
+              📍 Moving to position ({move2DX}, {move2DY})
+            </div>
+          )}
+        </div>
+      );
+    }
 
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Skill</label>
-        <select
-          value={selectedSkill}
-          onChange={(e) => setSelectedSkill(e.target.value)}
-          disabled={isPending || isConfirming}
-          className="w-full p-2 border rounded-md text-sm disabled:opacity-50"
-        >
-          <option value="">Select a skill...</option>
-          {KNOWN_SKILLS.map((skill) => (
-            <option key={skill.address} value={skill.address}>
-              {skill.name} - {skill.description}
-            </option>
-          ))}
-        </select>
-      </div>
-
+    // Generic skill data input for other skills
+    return (
       <div className="space-y-2">
         <label className="text-sm font-medium">Skill Data (optional)</label>
         <Input
@@ -257,20 +340,69 @@ export default function CallSkillButton({
           className="text-sm"
         />
       </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4 p-4 border rounded-lg bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200">
+      <div className="flex items-center gap-2">
+        <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+        <h4 className="font-semibold text-sm text-gray-800">
+          Call Global Skill
+        </h4>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium text-gray-700">
+          Select Skill
+        </label>
+        <select
+          value={selectedSkill}
+          onChange={(e) => setSelectedSkill(e.target.value)}
+          disabled={isPending || isConfirming}
+          className="w-full p-2 border border-gray-300 rounded-md text-sm disabled:opacity-50 bg-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+        >
+          <option value="">Choose a skill...</option>
+          {KNOWN_SKILLS.map((skill) => (
+            <option key={skill.address} value={skill.address}>
+              {skill.name} - {skill.description}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {selectedSkill && (
+        <div className="bg-white p-3 rounded-md border border-gray-200">
+          {renderSkillInputs()}
+        </div>
+      )}
 
       <Button
         onClick={callSkill}
-        disabled={!enabled || !selectedSkill || isPending || isConfirming}
-        className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+        disabled={
+          !enabled ||
+          !selectedSkill ||
+          !isSkillInputValid() ||
+          isPending ||
+          isConfirming
+        }
+        className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium transition-all duration-200 transform hover:scale-[1.02] disabled:transform-none disabled:opacity-50"
         size="sm"
       >
-        {isPending || isConfirming ? '⏳ Calling Skill...' : '🚀 Call Skill'}
+        {isPending || isConfirming ? (
+          <span className="flex items-center gap-2">
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            Calling Skill...
+          </span>
+        ) : (
+          <span className="flex items-center gap-2">🚀 Execute Skill</span>
+        )}
       </Button>
 
       {selectedSkill && (
-        <div className="text-xs text-gray-600 mt-2">
-          <strong>Note:</strong> Skills are globally available and may consume
-          energy from your Aminal.
+        <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded border-l-4 border-purple-400">
+          <strong>💡 Note:</strong> Skills are globally available and consume
+          energy from your Aminal. Make sure your Aminal has enough energy!
         </div>
       )}
     </div>
