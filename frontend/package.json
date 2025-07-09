@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:all": "npm run graphclient:build && next build",
     "start": "next start",
     "lint": "next lint",
     "prettier": "npx prettier --check .",
