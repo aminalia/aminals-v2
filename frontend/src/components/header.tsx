@@ -39,12 +39,12 @@ export default function Header() {
               >
                 <Link href="/genes">🧬 Genes</Link>
               </NavigationMenuLink>
-              {/* <NavigationMenuLink
+              <NavigationMenuLink
                 asChild
                 className={navigationMenuTriggerStyle()}
               >
                 <Link href="/leaderboard">🏆 Leaderboard</Link>
-              </NavigationMenuLink> */}
+              </NavigationMenuLink>
               {hasMounted && address && (
                 <NavigationMenuLink
                   asChild
@@ -98,13 +98,13 @@ export default function Header() {
             <span className="text-2xl">💕</span>
             <span className="text-xs mt-1">Breeding</span>
           </Link>
-          {/* <Link
+          <Link
             href="/leaderboard"
             className="flex flex-col items-center justify-center p-2 hover:bg-accent rounded-lg"
           >
             <span className="text-2xl">🏆</span>
             <span className="text-xs mt-1">Leaderboard</span>
-          </Link> */}
+          </Link>
           <Link
             href="/genes"
             className="flex flex-col items-center justify-center p-2 hover:bg-accent rounded-lg"

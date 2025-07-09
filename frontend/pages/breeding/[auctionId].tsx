@@ -428,7 +428,7 @@ const AuctionPage: NextPage = () => {
                     <div>
                       {/* Countdown Timer or End Auction Button */}
                       {auction?.finished ? (
-                        <div className="flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1 rounded text-sm">
+                        <div className="flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1 rounded text-sm">
                           <div>✓</div>
                           <div className="font-medium">Completed</div>
                         </div>
@@ -581,22 +581,37 @@ const AuctionPage: NextPage = () => {
                       <div className="flex justify-center">
                         <div className="relative">
                           <div className="w-48 h-48 rounded-xl overflow-hidden border-4 border-green-300 shadow-lg">
-                            <AminalVisualImage aminal={{
-                              id: auction.childAminal.id,
-                              contractAddress: auction.childAminal.contractAddress,
-                              aminalIndex: auction.childAminal.aminalIndex.toString(),
-                              energy: auction.childAminal.energy.toString(),
-                              totalLove: auction.childAminal.totalLove.toString(),
-                              tokenURI: auction.childAminal.tokenURI || undefined,
-                              backId: auction.childAminal.backId?.toString() || '0',
-                              armId: auction.childAminal.armId?.toString() || '0',
-                              tailId: auction.childAminal.tailId?.toString() || '0',
-                              earsId: auction.childAminal.earsId?.toString() || '0',
-                              bodyId: auction.childAminal.bodyId?.toString() || '0',
-                              faceId: auction.childAminal.faceId?.toString() || '0',
-                              mouthId: auction.childAminal.mouthId?.toString() || '0',
-                              miscId: auction.childAminal.miscId?.toString() || '0',
-                            }} />
+                            <AminalVisualImage
+                              aminal={{
+                                id: auction.childAminal.id,
+                                contractAddress:
+                                  auction.childAminal.contractAddress,
+                                aminalIndex:
+                                  auction.childAminal.aminalIndex.toString(),
+                                energy: auction.childAminal.energy.toString(),
+                                totalLove:
+                                  auction.childAminal.totalLove.toString(),
+                                tokenURI:
+                                  auction.childAminal.tokenURI || undefined,
+                                backId:
+                                  auction.childAminal.backId?.toString() || '0',
+                                armId:
+                                  auction.childAminal.armId?.toString() || '0',
+                                tailId:
+                                  auction.childAminal.tailId?.toString() || '0',
+                                earsId:
+                                  auction.childAminal.earsId?.toString() || '0',
+                                bodyId:
+                                  auction.childAminal.bodyId?.toString() || '0',
+                                faceId:
+                                  auction.childAminal.faceId?.toString() || '0',
+                                mouthId:
+                                  auction.childAminal.mouthId?.toString() ||
+                                  '0',
+                                miscId:
+                                  auction.childAminal.miscId?.toString() || '0',
+                              }}
+                            />
                           </div>
                           <div className="absolute -top-3 -right-3 bg-green-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold shadow-lg">
                             👶
