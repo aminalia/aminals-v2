@@ -1,4 +1,4 @@
-import { Address, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, log, store } from "@graphprotocol/graph-ts";
 import {
   GeneAuction as GeneAuctionContract,
   VotingCreated as VotingCreatedEvent,
@@ -19,13 +19,14 @@ import {
   GeneNFT,
   Aminal,
   User,
+  PendingBirth,
 } from "../generated/schema";
 import { AMINAL_FACTORY_ADDRESS, GENES_NFT_ADDRESS } from "./constants";
 
 // Helper function to create consistent auction ID format
-function createAuctionId(auctionId: BigInt): Bytes {
+export function createAuctionId(auctionId: BigInt): Bytes {
   return Bytes.fromHexString(
-    "0x" + (auctionId.toI32() * 0x1000000).toString(16).padStart(8, "0")
+    "0x" + (auctionId.toI32() * 0x1000000).toString(16).padStart(8, "0"),
   );
 }
 
@@ -33,7 +34,7 @@ function createAuctionId(auctionId: BigInt): Bytes {
 function createProposalId(
   auctionId: BigInt,
   category: BigInt,
-  geneId: BigInt
+  geneId: BigInt,
 ): Bytes {
   let auctionIdHex = createAuctionId(auctionId);
   return auctionIdHex
@@ -80,7 +81,7 @@ export function handleVotingCreated(event: VotingCreatedEvent): void {
         event.params.auctionId.toString(),
         aminalOneIndex.toString(),
         aminalTwoIndex.toString(),
-      ]
+      ],
     );
     return;
   }
@@ -111,7 +112,7 @@ export function handleVotingCreated(event: VotingCreatedEvent): void {
       aminalTwoIndex.toString(),
       aminalTwoAddress.toHexString(),
       event.params.totalLove.toString(),
-    ]
+    ],
   );
 }
 
@@ -134,10 +135,21 @@ export function handleVotingSettled(event: VotingSettledEvent): void {
   auction.endTransactionHash = event.transaction.hash;
   auction.save();
 
-  log.info("Gene auction settled: {} with winning genes {}", [
-    event.params.auctionId.toString(),
-    event.params.winningGeneIds.toString(),
-  ]);
+  // Create PendingBirth entity to track that this auction is waiting for a child
+  let pendingBirth = new PendingBirth(auctionIdHex);
+  pendingBirth.auctionId = event.params.auctionId;
+  pendingBirth.auction = auction.id;
+  pendingBirth.parentOne = auction.aminalOne;
+  pendingBirth.parentTwo = auction.aminalTwo;
+  pendingBirth.blockNumber = event.block.number;
+  pendingBirth.blockTimestamp = event.block.timestamp;
+  pendingBirth.transactionHash = event.transaction.hash;
+  pendingBirth.save();
+
+  log.info(
+    "Gene auction settled: {} with winning genes {}, awaiting child birth",
+    [event.params.auctionId.toString(), event.params.winningGeneIds.toString()],
+  );
 }
 
 export function handleGeneProposed(event: GeneProposedEvent): void {
@@ -166,7 +178,7 @@ export function handleGeneProposed(event: GeneProposedEvent): void {
   let proposalId = createProposalId(
     event.params.auctionId,
     BigInt.fromI32(event.params.category),
-    event.params.geneId
+    event.params.geneId,
   );
   let proposal = new GeneProposal(proposalId);
   proposal.auction = auction.id;
@@ -192,7 +204,7 @@ export function handleGeneProposed(event: GeneProposedEvent): void {
       event.params.category.toString(),
       event.params.proposer.toHexString(),
       proposal.geneNFT.toHexString(),
-    ]
+    ],
   );
 }
 
@@ -211,7 +223,7 @@ export function handleGeneVoteCast(event: GeneVoteCastEvent): void {
   let proposalId = createProposalId(
     event.params.auctionId,
     BigInt.fromI32(event.params.category),
-    event.params.geneId
+    event.params.geneId,
   );
   let proposal = GeneProposal.load(proposalId);
   if (!proposal) {
@@ -242,7 +254,7 @@ export function handleGeneVoteCast(event: GeneVoteCastEvent): void {
   let geneAuctionContract = GeneAuctionContract.bind(event.address);
   let votingPowerResult = geneAuctionContract.try_getUserVotingPower(
     event.params.auctionId,
-    event.params.voter
+    event.params.voter,
   );
   let votingPower = votingPowerResult.reverted
     ? BigInt.fromI32(0)
@@ -265,7 +277,7 @@ export function handleGeneVoteCast(event: GeneVoteCastEvent): void {
       event.params.category.toString(),
       event.params.voter.toHexString(),
       votingPower.toString(),
-    ]
+    ],
   );
 }
 
@@ -284,7 +296,7 @@ export function handleGeneRemovalVote(event: GeneRemovalVoteEvent): void {
   let proposalId = createProposalId(
     event.params.auctionId,
     BigInt.fromI32(event.params.category),
-    event.params.geneId
+    event.params.geneId,
   );
   let proposal = GeneProposal.load(proposalId);
   if (!proposal) {
@@ -294,7 +306,7 @@ export function handleGeneRemovalVote(event: GeneRemovalVoteEvent): void {
         event.params.auctionId.toString(),
         event.params.geneId.toString(),
         event.params.category.toString(),
-      ]
+      ],
     );
     return;
   }
@@ -332,7 +344,7 @@ export function handleGeneRemovalVote(event: GeneRemovalVoteEvent): void {
       event.params.category.toString(),
       event.params.voter.toHexString(),
       event.params.voteWeight.toString(),
-    ]
+    ],
   );
 }
 
@@ -341,7 +353,7 @@ export function handleGeneRemoved(event: GeneRemovedEvent): void {
   let proposalId = createProposalId(
     event.params.auctionId,
     BigInt.fromI32(event.params.category),
-    event.params.geneId
+    event.params.geneId,
   );
   let proposal = GeneProposal.load(proposalId);
   if (!proposal) {
@@ -351,7 +363,7 @@ export function handleGeneRemoved(event: GeneRemovedEvent): void {
         event.params.auctionId.toString(),
         event.params.geneId.toString(),
         event.params.category.toString(),
-      ]
+      ],
     );
     return;
   }
@@ -390,7 +402,7 @@ export function handleBulkVoteCast(event: BulkVoteCastEvent): void {
   let geneAuctionContract = GeneAuctionContract.bind(event.address);
   let votingPowerResult = geneAuctionContract.try_getUserVotingPower(
     event.params.auctionId,
-    event.params.voter
+    event.params.voter,
   );
   let votingPower = votingPowerResult.reverted
     ? BigInt.fromI32(0)
@@ -412,14 +424,14 @@ export function handleBulkVoteCast(event: BulkVoteCastEvent): void {
       let proposalId = createProposalId(
         event.params.auctionId,
         BigInt.fromI32(i),
-        geneId
+        geneId,
       );
       let proposal = GeneProposal.load(proposalId);
 
       if (!proposal) {
         log.warning(
           "Gene proposal not found for bulk vote: auction {} gene {} trait {} - creating proposal automatically",
-          [event.params.auctionId.toString(), geneId.toString(), i.toString()]
+          [event.params.auctionId.toString(), geneId.toString(), i.toString()],
         );
 
         // Auto-create the proposal if it doesn't exist
@@ -439,7 +451,7 @@ export function handleBulkVoteCast(event: BulkVoteCastEvent): void {
 
         log.info(
           "Auto-created gene proposal for bulk vote: auction {} gene {} trait {}",
-          [event.params.auctionId.toString(), geneId.toString(), i.toString()]
+          [event.params.auctionId.toString(), geneId.toString(), i.toString()],
         );
       }
 
@@ -471,7 +483,7 @@ export function handleBulkVoteCast(event: BulkVoteCastEvent): void {
           i.toString(),
           event.params.voter.toHexString(),
           votingPower.toString(),
-        ]
+        ],
       );
     }
   }
@@ -498,7 +510,7 @@ export function handleGeneCreatorPayout(event: GeneCreatorPayoutEvent): void {
 
   // Get the actual Genes contract address
   let genesContractAddress = getGenesContractAddress(event.address);
-  
+
   // Load the Gene NFT entity
   let geneNFTId = createGeneNFTId(genesContractAddress, event.params.geneId);
   let geneNFT = GeneNFT.load(geneNFTId);
@@ -528,10 +540,13 @@ export function handleGeneCreatorPayout(event: GeneCreatorPayoutEvent): void {
   geneNFT.totalEarnings = geneNFT.totalEarnings.plus(event.params.amount);
   geneNFT.save();
 
-  log.info("Gene creator payout recorded: auction {} gene {} creator {} amount {}", [
-    event.params.auctionId.toString(),
-    event.params.geneId.toString(),
-    event.params.creator.toHexString(),
-    event.params.amount.toString(),
-  ]);
+  log.info(
+    "Gene creator payout recorded: auction {} gene {} creator {} amount {}",
+    [
+      event.params.auctionId.toString(),
+      event.params.geneId.toString(),
+      event.params.creator.toHexString(),
+      event.params.amount.toString(),
+    ],
+  );
 }

@@ -273,3 +273,15 @@ type GeneCreatorPayout @entity(immutable: true) {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
+
+type PendingBirth @entity(immutable: false) {
+  id: Bytes! # Auction ID (same as GeneAuction.id)
+  auctionId: BigInt!
+  auction: GeneAuction!
+  parentOne: Bytes! # Parent 1 address
+  parentTwo: Bytes! # Parent 2 address
+  # Creation info
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}

@@ -237,8 +237,8 @@ const VoteStats = ({ auctionId }: VoteStatsProps) => {
         )}
       </div>
 
-      {/* Preview of current winning combination */}
-      {Object.keys(winningGenes).length > 0 && (
+      {/* Preview of current winning combination - only show if auction is not finished */}
+      {Object.keys(winningGenes).length > 0 && !currentAuction?.finished && (
         <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg p-4">
           <div className="flex items-start gap-4">
             <div className="flex-1">

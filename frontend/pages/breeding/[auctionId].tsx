@@ -362,6 +362,8 @@ const AuctionPage: NextPage = () => {
 
   const { parentOne, parentTwo } = getParentAddresses();
 
+  console.log(auction);
+
   return (
     <Layout>
       <div className="container max-w-7xl mx-auto px-4 py-8">
@@ -381,10 +383,14 @@ const AuctionPage: NextPage = () => {
                 </span>
               </div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
-                Gene Selection
+                {auction?.finished && auction?.childAminal
+                  ? `Aminal #${auction.childAminal.aminalIndex}`
+                  : 'Gene Selection'}
               </h1>
               <p className="text-gray-600 mt-1">
-                Select genes for each trait category
+                {auction?.finished && auction?.childAminal
+                  ? 'Has been born!'
+                  : 'Select genes for each trait category'}
               </p>
             </div>
           </div>
@@ -441,230 +447,327 @@ const AuctionPage: NextPage = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 p-4">
-                  {/* Left Column - Preview */}
-                  <div className="xl:col-span-2">
-                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                      <h3 className="text-sm font-medium text-gray-700 mb-3">
-                        Preview
-                      </h3>
-                      <div className="aspect-square rounded-lg overflow-hidden bg-white border border-gray-300">
-                        <svg
-                          viewBox="0 0 1000 1000"
-                          className="w-full h-full"
-                          dangerouslySetInnerHTML={{
-                            __html: [
-                              // Correct rendering order: backId, armId, tailId, earsId, bodyId, faceId, mouthId, miscId
-                              'background',
-                              'arm',
-                              'tail',
-                              'ears',
-                              'body',
-                              'face',
-                              'mouth',
-                              'misc',
-                            ]
-                              .map((part) => {
-                                const index = selectedParts[part];
-                                // Handle empty gene selection (index -1)
-                                if (index === -1) return '';
-                                return parts[part][index]?.svg || '';
-                              })
-                              .join(''),
-                          }}
-                        />
+                {/* Show new Aminal if auction is finished, otherwise show builder */}
+                {auction?.finished && auction?.childAminal ? (
+                  <div className="p-4">
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6">
+                      <div className="text-center mb-6">
+                        <div className="text-4xl mb-2">🎉</div>
+                        <h2 className="text-2xl font-bold text-green-800 mb-2">
+                          New Aminal Has Been Born!
+                        </h2>
+                        <p className="text-green-700">
+                          The community has voted and created a new Aminal from
+                          this breeding auction.
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                        {/* Left Column - New Aminal Display */}
+                        <div className="flex justify-center">
+                          <div className="relative">
+                            <div className="w-80 h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-green-100 to-emerald-100 border-4 border-green-300 shadow-2xl">
+                              <AminalVisualImage
+                                aminal={{
+                                  id: auction.childAminal.id,
+                                  contractAddress:
+                                    auction.childAminal.contractAddress,
+                                  aminalIndex:
+                                    auction.childAminal.aminalIndex.toString(),
+                                  energy: auction.childAminal.energy.toString(),
+                                  totalLove:
+                                    auction.childAminal.totalLove.toString(),
+                                  tokenURI:
+                                    auction.childAminal.tokenURI || undefined,
+                                  backId:
+                                    auction.childAminal.backId?.toString() ||
+                                    '0',
+                                  armId:
+                                    auction.childAminal.armId?.toString() ||
+                                    '0',
+                                  tailId:
+                                    auction.childAminal.tailId?.toString() ||
+                                    '0',
+                                  earsId:
+                                    auction.childAminal.earsId?.toString() ||
+                                    '0',
+                                  bodyId:
+                                    auction.childAminal.bodyId?.toString() ||
+                                    '0',
+                                  faceId:
+                                    auction.childAminal.faceId?.toString() ||
+                                    '0',
+                                  mouthId:
+                                    auction.childAminal.mouthId?.toString() ||
+                                    '0',
+                                  miscId:
+                                    auction.childAminal.miscId?.toString() ||
+                                    '0',
+                                }}
+                              />
+                            </div>
+                            <div className="absolute -top-4 -right-4 bg-green-500 text-white rounded-full w-16 h-16 flex items-center justify-center text-2xl font-bold shadow-lg animate-bounce">
+                              👶
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Right Column - Aminal Details */}
+                        <div className="space-y-6">
+                          <div className="text-center lg:text-left">
+                            <Link
+                              href={`/aminals/${auction.childAminal.contractAddress}`}
+                              className="text-4xl font-bold text-green-700 hover:text-green-800 transition-colors underline decoration-2 underline-offset-4"
+                            >
+                              Aminal #{auction.childAminal.aminalIndex}
+                            </Link>
+                            <p className="text-xl text-green-600 mt-2 font-medium">
+                              Has been born!
+                            </p>
+                            <p className="text-green-600 mt-1">
+                              Child of #{auction.aminalOne.aminalIndex} × #
+                              {auction.aminalTwo.aminalIndex}
+                            </p>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="bg-white rounded-lg p-4 border border-green-200 shadow-sm">
+                              <div className="text-sm text-green-600 font-medium">
+                                Energy
+                              </div>
+                              <div className="text-2xl font-bold text-green-700">
+                                {Number(auction.childAminal.energy).toFixed(2)}{' '}
+                                ⚡
+                              </div>
+                            </div>
+                            <div className="bg-white rounded-lg p-4 border border-green-200 shadow-sm">
+                              <div className="text-sm text-green-600 font-medium">
+                                Total Love
+                              </div>
+                              <div className="text-2xl font-bold text-green-700">
+                                {Number(auction.childAminal.totalLove).toFixed(
+                                  2
+                                )}{' '}
+                                ❤️
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="bg-white rounded-lg p-4 border border-green-200 shadow-sm">
+                            <div className="text-sm text-green-600 font-medium">
+                              Contract Address
+                            </div>
+                            <div className="text-sm font-mono text-green-700 mt-1">
+                              {auction.childAminal.contractAddress}
+                            </div>
+                          </div>
+
+                          <div className="text-center lg:text-left">
+                            <Link
+                              href={`/aminals/${auction.childAminal.contractAddress}`}
+                              className="inline-flex items-center gap-3 bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all hover:shadow-lg transform hover:-translate-y-0.5"
+                            >
+                              <span>👀</span>
+                              Visit Aminal Page
+                              <span>→</span>
+                            </Link>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-
-                  {/* Right Column - Gene Selector */}
-                  <div className="space-y-4">
-                    <TraitSelector
-                      parts={parts}
-                      selectedParts={selectedParts}
-                      onPartSelection={handlePartSelection}
-                      disabled={auction?.finished || isAuctionEnded}
-                    />
-
-                    {/* Vote Button - Right next to gene selection */}
-                    {!auction?.finished && !isAuctionEnded && (
-                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-3">
-                          <h4 className="text-sm font-medium text-blue-900">
-                            Vote on Your Selection
-                          </h4>
-                          {!auction?.finished && !isAuctionEnded && (
-                            <Button
-                              onClick={() => setIsProposalModalOpen(true)}
-                              size="sm"
-                              className="bg-green-600 hover:bg-green-700 text-white text-xs px-2 py-1 h-auto"
-                            >
-                              + Propose Gene
-                            </Button>
-                          )}
-                        </div>
-                        <BulkVoteButton
-                          auctionId={auctionId}
-                          backId={
-                            selectedParts.background === -1
-                              ? '0'
-                              : parts.background[selectedParts.background]
-                                  ?.visualId || '0'
-                          }
-                          armId={
-                            selectedParts.arm === -1
-                              ? '0'
-                              : parts.arm[selectedParts.arm]?.visualId || '0'
-                          }
-                          tailId={
-                            selectedParts.tail === -1
-                              ? '0'
-                              : parts.tail[selectedParts.tail]?.visualId || '0'
-                          }
-                          earsId={
-                            selectedParts.ears === -1
-                              ? '0'
-                              : parts.ears[selectedParts.ears]?.visualId || '0'
-                          }
-                          bodyId={
-                            selectedParts.body === -1
-                              ? '0'
-                              : parts.body[selectedParts.body]?.visualId || '0'
-                          }
-                          faceId={
-                            selectedParts.face === -1
-                              ? '0'
-                              : parts.face[selectedParts.face]?.visualId || '0'
-                          }
-                          mouthId={
-                            selectedParts.mouth === -1
-                              ? '0'
-                              : parts.mouth[selectedParts.mouth]?.visualId ||
-                                '0'
-                          }
-                          miscId={
-                            selectedParts.misc === -1
-                              ? '0'
-                              : parts.misc[selectedParts.misc]?.visualId || '0'
-                          }
-                        />
-                      </div>
-                    )}
-
-                    {auction?.finished && (
-                      <div className="text-center py-4 bg-green-50 rounded-lg border border-green-200">
-                        <div className="text-green-600 font-medium">
-                          Auction Complete - New Aminal Created
+                ) : (
+                  <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 p-4">
+                    {/* Left Column - Preview */}
+                    <div className="xl:col-span-2">
+                      <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <h3 className="text-sm font-medium text-gray-700 mb-3">
+                          Preview
+                        </h3>
+                        <div className="aspect-square rounded-lg overflow-hidden bg-white border border-gray-300">
+                          <svg
+                            viewBox="0 0 1000 1000"
+                            className="w-full h-full"
+                            dangerouslySetInnerHTML={{
+                              __html: [
+                                // Correct rendering order: backId, armId, tailId, earsId, bodyId, faceId, mouthId, miscId
+                                'background',
+                                'arm',
+                                'tail',
+                                'ears',
+                                'body',
+                                'face',
+                                'mouth',
+                                'misc',
+                              ]
+                                .map((part) => {
+                                  const index = selectedParts[part];
+                                  // Handle empty gene selection (index -1)
+                                  if (index === -1) return '';
+                                  return parts[part][index]?.svg || '';
+                                })
+                                .join(''),
+                            }}
+                          />
                         </div>
                       </div>
-                    )}
+                    </div>
+
+                    {/* Right Column - Gene Selector */}
+                    <div className="space-y-4">
+                      <TraitSelector
+                        parts={parts}
+                        selectedParts={selectedParts}
+                        onPartSelection={handlePartSelection}
+                        disabled={auction?.finished || isAuctionEnded}
+                      />
+
+                      {/* Vote Button - Right next to gene selection */}
+                      {!auction?.finished && !isAuctionEnded && (
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-3">
+                            <h4 className="text-sm font-medium text-blue-900">
+                              Vote on Your Selection
+                            </h4>
+                            {!auction?.finished && !isAuctionEnded && (
+                              <Button
+                                onClick={() => setIsProposalModalOpen(true)}
+                                size="sm"
+                                className="bg-green-600 hover:bg-green-700 text-white text-xs px-2 py-1 h-auto"
+                              >
+                                + Propose Gene
+                              </Button>
+                            )}
+                          </div>
+                          <BulkVoteButton
+                            auctionId={auctionId}
+                            backId={
+                              selectedParts.background === -1
+                                ? '0'
+                                : parts.background[selectedParts.background]
+                                    ?.visualId || '0'
+                            }
+                            armId={
+                              selectedParts.arm === -1
+                                ? '0'
+                                : parts.arm[selectedParts.arm]?.visualId || '0'
+                            }
+                            tailId={
+                              selectedParts.tail === -1
+                                ? '0'
+                                : parts.tail[selectedParts.tail]?.visualId ||
+                                  '0'
+                            }
+                            earsId={
+                              selectedParts.ears === -1
+                                ? '0'
+                                : parts.ears[selectedParts.ears]?.visualId ||
+                                  '0'
+                            }
+                            bodyId={
+                              selectedParts.body === -1
+                                ? '0'
+                                : parts.body[selectedParts.body]?.visualId ||
+                                  '0'
+                            }
+                            faceId={
+                              selectedParts.face === -1
+                                ? '0'
+                                : parts.face[selectedParts.face]?.visualId ||
+                                  '0'
+                            }
+                            mouthId={
+                              selectedParts.mouth === -1
+                                ? '0'
+                                : parts.mouth[selectedParts.mouth]?.visualId ||
+                                  '0'
+                            }
+                            miscId={
+                              selectedParts.misc === -1
+                                ? '0'
+                                : parts.misc[selectedParts.misc]?.visualId ||
+                                  '0'
+                            }
+                          />
+                        </div>
+                      )}
+
+                      {auction?.finished && (
+                        <div className="text-center py-4 bg-green-50 rounded-lg border border-green-200">
+                          <div className="text-green-600 font-medium">
+                            Auction Complete - New Aminal Created
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
-              {/* Completed Breeding Results */}
+              {/* Additional breeding information section - only show if auction is finished */}
               {auction?.finished && auction?.childAminal && (
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-6">
+                <div className="bg-white rounded-lg border border-gray-200 p-6">
                   <div className="text-center mb-6">
-                    <h2 className="text-2xl font-bold text-green-800 mb-2">
-                      🎉 Breeding Complete!
-                    </h2>
-                    <p className="text-green-700">
-                      A new Aminal has been successfully created from this
-                      breeding auction.
+                    <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                      Breeding Details
+                    </h3>
+                    <p className="text-gray-600">
+                      This Aminal was created through community voting in
+                      auction #{auctionId}
                     </p>
                   </div>
 
-                  <div className="bg-white rounded-lg border border-green-200 p-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                      {/* Child Aminal Image */}
-                      <div className="flex justify-center">
-                        <div className="relative">
-                          <div className="w-48 h-48 rounded-xl overflow-hidden border-4 border-green-300 shadow-lg">
-                            <AminalVisualImage
-                              aminal={{
-                                id: auction.childAminal.id,
-                                contractAddress:
-                                  auction.childAminal.contractAddress,
-                                aminalIndex:
-                                  auction.childAminal.aminalIndex.toString(),
-                                energy: auction.childAminal.energy.toString(),
-                                totalLove:
-                                  auction.childAminal.totalLove.toString(),
-                                tokenURI:
-                                  auction.childAminal.tokenURI || undefined,
-                                backId:
-                                  auction.childAminal.backId?.toString() || '0',
-                                armId:
-                                  auction.childAminal.armId?.toString() || '0',
-                                tailId:
-                                  auction.childAminal.tailId?.toString() || '0',
-                                earsId:
-                                  auction.childAminal.earsId?.toString() || '0',
-                                bodyId:
-                                  auction.childAminal.bodyId?.toString() || '0',
-                                faceId:
-                                  auction.childAminal.faceId?.toString() || '0',
-                                mouthId:
-                                  auction.childAminal.mouthId?.toString() ||
-                                  '0',
-                                miscId:
-                                  auction.childAminal.miscId?.toString() || '0',
-                              }}
-                            />
-                          </div>
-                          <div className="absolute -top-3 -right-3 bg-green-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold shadow-lg">
-                            👶
-                          </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <h4 className="font-medium text-gray-700 flex items-center gap-2">
+                        <span>👨‍👩‍👧‍👦</span>
+                        Parent Information
+                      </h4>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                          <span className="text-sm text-gray-600">
+                            Parent A
+                          </span>
+                          <Link
+                            href={`/aminals/${auction.aminalOne.contractAddress}`}
+                            className="text-sm font-medium text-blue-600 hover:text-blue-800"
+                          >
+                            Aminal #{auction.aminalOne.aminalIndex}
+                          </Link>
+                        </div>
+                        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                          <span className="text-sm text-gray-600">
+                            Parent B
+                          </span>
+                          <Link
+                            href={`/aminals/${auction.aminalTwo.contractAddress}`}
+                            className="text-sm font-medium text-blue-600 hover:text-blue-800"
+                          >
+                            Aminal #{auction.aminalTwo.aminalIndex}
+                          </Link>
                         </div>
                       </div>
+                    </div>
 
-                      {/* Child Aminal Details */}
-                      <div className="space-y-4">
-                        <div className="text-center md:text-left">
-                          <Link
-                            href={`/aminals/${auction.childAminal.contractAddress}`}
-                            className="text-2xl font-bold text-green-700 hover:text-green-800 transition-colors underline"
-                          >
-                            Aminal #{auction.childAminal.aminalIndex}
-                          </Link>
-                          <p className="text-base text-green-600 mt-1">
-                            Child of #{auction.aminalOne.aminalIndex} × #
-                            {auction.aminalTwo.aminalIndex}
-                          </p>
+                    <div className="space-y-4">
+                      <h4 className="font-medium text-gray-700 flex items-center gap-2">
+                        <span>📊</span>
+                        Auction Statistics
+                      </h4>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                          <span className="text-sm text-gray-600">
+                            Total Voting Power
+                          </span>
+                          <span className="text-sm font-medium text-gray-800">
+                            {Number(auction.totalLove).toFixed(2)} ❤️
+                          </span>
                         </div>
-
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="bg-green-50 rounded-lg p-3 border border-green-200">
-                            <div className="text-sm text-green-600">Energy</div>
-                            <div className="text-lg font-bold text-green-700">
-                              {Number(auction.childAminal.energy).toFixed(2)} ⚡
-                            </div>
-                          </div>
-                          <div className="bg-green-50 rounded-lg p-3 border border-green-200">
-                            <div className="text-sm text-green-600">
-                              Total Love
-                            </div>
-                            <div className="text-lg font-bold text-green-700">
-                              {Number(auction.childAminal.totalLove).toFixed(2)}{' '}
-                              ❤️
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="text-center md:text-left">
-                          <Link
-                            href={`/aminals/${auction.childAminal.contractAddress}`}
-                            className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-                          >
-                            Visit Aminal Page
-                            <span>→</span>
-                          </Link>
-                        </div>
-
-                        <div className="text-xs text-green-600 mt-2">
-                          Contract:{' '}
-                          {auction.childAminal.contractAddress?.slice(0, 8)}...
+                        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                          <span className="text-sm text-gray-600">Status</span>
+                          <span className="text-sm font-medium text-green-600">
+                            ✅ Completed
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -672,7 +775,7 @@ const AuctionPage: NextPage = () => {
                 </div>
               )}
 
-              {/* Vote Statistics */}
+              {/* Vote Statistics - Always show, but "Current Winning Combination" section is hidden if auction is finished */}
               <div className="bg-white rounded-lg border border-gray-200 p-4">
                 <VoteStats auctionId={auctionId} />
               </div>

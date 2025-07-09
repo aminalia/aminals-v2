@@ -71,6 +71,8 @@ export default function AuctionCard({ auction }: { auction: GeneAuction }) {
     }
   };
 
+  console.log(auction.childAminal);
+
   return (
     <Card className="overflow-hidden bg-white hover:shadow-xl transition-all duration-300 group border-2 hover:border-pink-200">
       {/* Main container - stack on mobile, row on desktop */}
@@ -124,10 +126,10 @@ export default function AuctionCard({ auction }: { auction: GeneAuction }) {
               className={cn(
                 'transition-all duration-300 px-3 py-2 font-medium text-sm',
                 auction.finished
-                  ? 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 border-green-200'
+                  ? 'bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 border-blue-200'
                   : isAuctionEnded
                   ? 'bg-gradient-to-r from-red-100 to-orange-100 text-red-700 border-red-200'
-                  : 'bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 border-blue-200'
+                  : 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 border-green-200'
               )}
             >
               {auction.finished

@@ -1,4 +1,4 @@
-import { Address, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, log, store } from "@graphprotocol/graph-ts";
 import {
   AminalFactory as AminalFactoryContract,
   AminalSpawned as AminalSpawnedEvent,
@@ -13,7 +13,38 @@ import {
   GeneAuction,
   GeneNFT,
   User,
+  PendingBirth,
 } from "../generated/schema";
+import { createAuctionId } from "./gene-auction";
+
+// Helper function to find pending birth by parent addresses
+// Returns the oldest pending birth for the given parent pair
+function findPendingBirthByParents(
+  parentOne: Address,
+  parentTwo: Address,
+): PendingBirth | null {
+  // Since we can't do complex queries, we'll check recent pending births
+  // This is much more efficient than checking all auctions since pending births
+  // are temporary and should be a small set
+
+  // Check recent auction IDs for pending births
+  for (let i = 0; i < 1000; i++) {
+    let auctionId = createAuctionId(BigInt.fromI32(i));
+    let pendingBirth = PendingBirth.load(auctionId);
+
+    if (
+      pendingBirth &&
+      ((pendingBirth.parentOne == parentOne &&
+        pendingBirth.parentTwo == parentTwo) ||
+        (pendingBirth.parentOne == parentTwo &&
+          pendingBirth.parentTwo == parentOne))
+    ) {
+      return pendingBirth;
+    }
+  }
+
+  return null;
+}
 
 // Helper function to fetch tokenURI for an Aminal
 function fetchTokenURI(aminalAddress: Address): string | null {
@@ -50,7 +81,7 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
       factory.geneAuction = geneAuctionResult.value;
     } else {
       factory.geneAuction = Bytes.fromHexString(
-        "0x0000000000000000000000000000000000000000"
+        "0x0000000000000000000000000000000000000000",
       );
     }
 
@@ -58,7 +89,7 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
       factory.genes = GenesResult.value;
     } else {
       factory.genes = Bytes.fromHexString(
-        "0x0000000000000000000000000000000000000000"
+        "0x0000000000000000000000000000000000000000",
       );
     }
 
@@ -66,7 +97,7 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
       factory.loveVRGDA = loveVRGDAResult.value;
     } else {
       factory.loveVRGDA = Bytes.fromHexString(
-        "0x0000000000000000000000000000000000000000"
+        "0x0000000000000000000000000000000000000000",
       );
     }
 
@@ -132,6 +163,53 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
   aminal.totalLove = BigInt.fromI32(0);
   aminal.breeding = false;
 
+  // If this Aminal has parents, find and resolve the pending birth
+  if (
+    event.params.parentOne != Address.zero() &&
+    event.params.parentTwo != Address.zero()
+  ) {
+    // Set breeding to false for parent Aminals since breeding is complete
+    let parent1 = Aminal.load(event.params.parentOne);
+    let parent2 = Aminal.load(event.params.parentTwo);
+
+    if (parent1) {
+      parent1.breeding = false;
+      parent1.save();
+    }
+    if (parent2) {
+      parent2.breeding = false;
+      parent2.save();
+    }
+
+    // Find the pending birth for these parents
+    let pendingBirth = findPendingBirthByParents(
+      event.params.parentOne,
+      event.params.parentTwo,
+    );
+
+    if (pendingBirth) {
+      // Load and update the auction
+      let auction = GeneAuction.load(pendingBirth.auction);
+      if (auction) {
+        auction.childAminal = aminal.id;
+        auction.save();
+
+        log.info("Updated auction {} with child Aminal {}", [
+          auction.auctionId.toString(),
+          aminal.id.toHexString(),
+        ]);
+      }
+
+      // Clean up the pending birth entity
+      store.remove("PendingBirth", pendingBirth.id.toHexString());
+    } else {
+      log.warning("Could not find pending birth for parents {} and {}", [
+        event.params.parentOne.toHexString(),
+        event.params.parentTwo.toHexString(),
+      ]);
+    }
+  }
+
   // Creation info
   aminal.blockNumber = event.block.number;
   aminal.blockTimestamp = event.block.timestamp;
@@ -160,7 +238,7 @@ export function handleBreedAminal(event: BreedAminalEvent): void {
 
   // Create breed event entity
   let breedEvent = new BreedAminal(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
+    event.transaction.hash.concatI32(event.logIndex.toI32()),
   );
   breedEvent.aminalOne = aminalOne.id;
   breedEvent.aminalTwo = aminalTwo.id;

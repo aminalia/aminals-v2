@@ -24,7 +24,6 @@
 - Hide things in propose gene that you can't propose (Should anyone be able to propose any gene?)
 - Auction card shows child as settling even when auction is over (might be a graph issue)
 - View traits and Aminals on Open Sea
-- Get sills working
 
 #### Contracts
 
@@ -46,4 +45,3 @@
 - When breeding is done, remove breedable with
 - Switch to ponder?
 - Get how much eth a gene creator has earned (UI to allow them to claim)
-- Make sure speaks and changes in love are being indexed
