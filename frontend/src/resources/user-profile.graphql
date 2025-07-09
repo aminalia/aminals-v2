@@ -1,0 +1,150 @@
+query UserProfile($address: Bytes!) {
+  user(id: $address) {
+    id
+    address
+    lovers {
+      id
+      aminal {
+        id
+        contractAddress
+        tokenURI
+        totalLove
+        energy
+        breeding
+        blockTimestamp
+      }
+      love
+    }
+    genesCreated {
+      id
+      tokenId
+      traitType
+      name
+      description
+      svg
+      totalEarnings
+      blockTimestamp
+      payouts {
+        id
+        amount
+        auctionId
+        blockTimestamp
+      }
+    }
+    genesOwned {
+      id
+      tokenId
+      traitType
+      name
+      description
+      svg
+      totalEarnings
+      blockTimestamp
+      creator {
+        id
+        address
+      }
+    }
+    geneVotes {
+      id
+      auction {
+        id
+        auctionId
+        aminalOne {
+          id
+          contractAddress
+          tokenURI
+        }
+        aminalTwo {
+          id
+          contractAddress
+          tokenURI
+        }
+      }
+      proposal {
+        id
+        geneNFT {
+          id
+          tokenId
+          name
+          traitType
+        }
+      }
+      isRemoveVote
+      loveAmount
+      blockTimestamp
+    }
+  }
+}
+
+query UserEarnings($address: Bytes!) {
+  user(id: $address) {
+    id
+    address
+    genesCreated {
+      id
+      tokenId
+      name
+      traitType
+      totalEarnings
+      payouts {
+        id
+        amount
+        auctionId
+        blockTimestamp
+        auction {
+          id
+          auctionId
+          aminalOne {
+            id
+            contractAddress
+            tokenURI
+          }
+          aminalTwo {
+            id
+            contractAddress
+            tokenURI
+          }
+        }
+      }
+    }
+  }
+}
+
+query UserActivity($address: Bytes!) {
+  user(id: $address) {
+    id
+    address
+    # Recent love activity
+    lovers(orderBy: love, orderDirection: desc, first: 10) {
+      id
+      aminal {
+        id
+        contractAddress
+        tokenURI
+        totalLove
+      }
+      love
+    }
+    # Recent gene voting activity
+    geneVotes(orderBy: blockTimestamp, orderDirection: desc, first: 10) {
+      id
+      auction {
+        id
+        auctionId
+      }
+      proposal {
+        id
+        geneNFT {
+          id
+          tokenId
+          name
+          traitType
+        }
+      }
+      isRemoveVote
+      loveAmount
+      blockTimestamp
+    }
+  }
+}

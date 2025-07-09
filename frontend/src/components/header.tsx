@@ -8,9 +8,11 @@ import {
 import { useHasMounted } from '@/hooks/useHasMounted';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Link from 'next/link';
+import { useAccount } from 'wagmi';
 
 export default function Header() {
   const hasMounted = useHasMounted();
+  const { address } = useAccount();
 
   return (
     <>
@@ -37,12 +39,20 @@ export default function Header() {
               >
                 <Link href="/genes">🧬 Genes</Link>
               </NavigationMenuLink>
-              <NavigationMenuLink
+              {/* <NavigationMenuLink
                 asChild
                 className={navigationMenuTriggerStyle()}
               >
                 <Link href="/leaderboard">🏆 Leaderboard</Link>
-              </NavigationMenuLink>
+              </NavigationMenuLink> */}
+              {hasMounted && address && (
+                <NavigationMenuLink
+                  asChild
+                  className={navigationMenuTriggerStyle()}
+                >
+                  <Link href={`/profile/${address}`}>👤 Profile</Link>
+                </NavigationMenuLink>
+              )}
             </NavigationMenuItem>
             <NavigationMenuItem>
               {hasMounted ? (
@@ -69,7 +79,11 @@ export default function Header() {
 
       {/* Mobile Bottom Navigation */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-background/98 backdrop-blur-sm border-t z-50 shadow-lg">
-        <div className="grid grid-cols-4 gap-1 p-2">
+        <div
+          className={`grid gap-1 p-2 ${
+            hasMounted && address ? 'grid-cols-5' : 'grid-cols-4'
+          }`}
+        >
           <Link
             href="/"
             className="flex flex-col items-center justify-center p-2 hover:bg-accent rounded-lg"
@@ -84,13 +98,13 @@ export default function Header() {
             <span className="text-2xl">💕</span>
             <span className="text-xs mt-1">Breeding</span>
           </Link>
-          <Link
+          {/* <Link
             href="/leaderboard"
             className="flex flex-col items-center justify-center p-2 hover:bg-accent rounded-lg"
           >
             <span className="text-2xl">🏆</span>
             <span className="text-xs mt-1">Leaderboard</span>
-          </Link>
+          </Link> */}
           <Link
             href="/genes"
             className="flex flex-col items-center justify-center p-2 hover:bg-accent rounded-lg"
@@ -98,6 +112,15 @@ export default function Header() {
             <span className="text-2xl">🧬</span>
             <span className="text-xs mt-1">Genes</span>
           </Link>
+          {hasMounted && address && (
+            <Link
+              href={`/profile/${address}`}
+              className="flex flex-col items-center justify-center p-2 hover:bg-accent rounded-lg"
+            >
+              <span className="text-2xl">👤</span>
+              <span className="text-xs mt-1">Profile</span>
+            </Link>
+          )}
         </div>
       </nav>
     </>
