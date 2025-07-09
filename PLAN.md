@@ -20,7 +20,6 @@
 
 #### UI
 
-- deploy on cf
 - Trait links don't work on aminal detail page
 - Hide things in propose gene that you can't propose (Should anyone be able to propose any gene?)
 - Auction card shows child as settling even when auction is over (might be a graph issue)
