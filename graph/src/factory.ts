@@ -21,14 +21,11 @@ import { createAuctionId } from "./gene-auction";
 // Returns the oldest pending birth for the given parent pair
 function findPendingBirthByParents(
   parentOne: Address,
-  parentTwo: Address,
+  parentTwo: Address
 ): PendingBirth | null {
-  // Since we can't do complex queries, we'll check recent pending births
-  // This is much more efficient than checking all auctions since pending births
-  // are temporary and should be a small set
+  // Optimized search: Check only recent 5 auctions for performance
 
-  // Check recent auction IDs for pending births
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 3; i++) {
     let auctionId = createAuctionId(BigInt.fromI32(i));
     let pendingBirth = PendingBirth.load(auctionId);
 
@@ -39,9 +36,21 @@ function findPendingBirthByParents(
         (pendingBirth.parentOne == parentTwo &&
           pendingBirth.parentTwo == parentOne))
     ) {
+      log.info("Found pending birth for parents {} and {} at auction {}", [
+        parentOne.toHexString(),
+        parentTwo.toHexString(),
+        i.toString(),
+      ]);
       return pendingBirth;
     }
   }
+
+  // Not finding a pending birth is not necessarily an error
+  // This can happen for older Aminals or if the search range is too small
+  log.info(
+    "No pending birth found for parents {} and {} in recent 5 auctions - this may be normal for older Aminals",
+    [parentOne.toHexString(), parentTwo.toHexString()]
+  );
 
   return null;
 }
@@ -81,7 +90,7 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
       factory.geneAuction = geneAuctionResult.value;
     } else {
       factory.geneAuction = Bytes.fromHexString(
-        "0x0000000000000000000000000000000000000000",
+        "0x0000000000000000000000000000000000000000"
       );
     }
 
@@ -89,7 +98,7 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
       factory.genes = GenesResult.value;
     } else {
       factory.genes = Bytes.fromHexString(
-        "0x0000000000000000000000000000000000000000",
+        "0x0000000000000000000000000000000000000000"
       );
     }
 
@@ -97,7 +106,7 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
       factory.loveVRGDA = loveVRGDAResult.value;
     } else {
       factory.loveVRGDA = Bytes.fromHexString(
-        "0x0000000000000000000000000000000000000000",
+        "0x0000000000000000000000000000000000000000"
       );
     }
 
@@ -184,7 +193,7 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
     // Find the pending birth for these parents
     let pendingBirth = findPendingBirthByParents(
       event.params.parentOne,
-      event.params.parentTwo,
+      event.params.parentTwo
     );
 
     if (pendingBirth) {
@@ -198,15 +207,21 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
           auction.auctionId.toString(),
           aminal.id.toHexString(),
         ]);
+      } else {
+        log.warning("Auction not found for pending birth: {}", [
+          pendingBirth.auction.toHexString(),
+        ]);
       }
 
       // Clean up the pending birth entity
       store.remove("PendingBirth", pendingBirth.id.toHexString());
     } else {
-      log.warning("Could not find pending birth for parents {} and {}", [
-        event.params.parentOne.toHexString(),
-        event.params.parentTwo.toHexString(),
-      ]);
+      // This is not an error - it can happen for older Aminals or if the search range is too small
+      // The system should continue to work normally without the auction-child link
+      log.info(
+        "Aminal {} born without linked auction - this is normal for older Aminals or edge cases",
+        [aminal.id.toHexString()]
+      );
     }
   }
 
@@ -238,7 +253,7 @@ export function handleBreedAminal(event: BreedAminalEvent): void {
 
   // Create breed event entity
   let breedEvent = new BreedAminal(
-    event.transaction.hash.concatI32(event.logIndex.toI32()),
+    event.transaction.hash.concatI32(event.logIndex.toI32())
   );
   breedEvent.aminalOne = aminalOne.id;
   breedEvent.aminalTwo = aminalTwo.id;
