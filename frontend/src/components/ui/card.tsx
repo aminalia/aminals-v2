@@ -24,7 +24,7 @@ const CardMedia = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      'flex-shrink-0 min-w-[200px] bg-cover bg-center bg-muted rounded-t-xl',
+      'flex-shrink-0 min-w-[200px] bg-cover bg-center bg-muted',
       className
     )}
     {...props}
