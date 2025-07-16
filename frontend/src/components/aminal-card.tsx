@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/badge';
 import {
   Card,
   CardContent,
@@ -6,7 +7,6 @@ import {
   CardSection,
   CardTitle,
 } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import Link from 'next/link';
 import FeedButton from './actions/feed-button';
@@ -44,60 +44,61 @@ export default function AminalCard({ aminal }: { aminal: NewAminal }) {
   }
 
   return (
-    <Card className="overflow-hidden transition-all hover:shadow-lg flex flex-col h-full">
-      <CardMedia className="relative w-full aspect-square overflow-hidden">
-        <AminalVisualImage aminal={aminal} />
-      </CardMedia>
+    <Card className="group overflow-hidden transition-all hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 flex flex-col h-full border-2 hover:border-primary/20">
+      <Link
+        href={`/aminals/${aminal.contractAddress || 'unknown'}`}
+        className="flex flex-col h-full"
+      >
+        <CardMedia className="relative w-full aspect-square overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10" />
+          <AminalVisualImage aminal={aminal} />
+        </CardMedia>
 
-      <CardSection className="border-t flex-1 flex flex-col">
-        <CardHeader className="p-4 pb-2">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-xl font-bold">
-              <Link
-                href={`/aminals/${aminal.contractAddress || 'unknown'}`}
-                className="hover:text-primary transition-colors"
-              >
+        <CardSection className="border-t flex-1 flex flex-col">
+          <CardHeader className="p-4 pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-xl font-bold group-hover:text-primary transition-colors">
                 Aminal #{aminal.aminalIndex || 'Unknown'}
-              </Link>
-            </CardTitle>
-            <Badge variant="energy" size="sm">
-              <span>⚡</span>
-              {Number(aminal.energy || 0).toFixed(2)} Energy
-            </Badge>
-          </div>
-        </CardHeader>
+              </CardTitle>
+              <Badge variant="energy" size="sm">
+                <span>⚡</span>
+                {Number(aminal.energy || 0).toFixed(2)}
+              </Badge>
+            </div>
+          </CardHeader>
 
-        <CardContent className="p-4 space-y-4 flex-1 flex flex-col">
-          {/* Stats - back to original layout */}
-          <div className="grid grid-cols-2 gap-3 p-3 rounded-lg bg-muted border border-border">
-            <div>
-              <div className="text-sm text-muted-foreground">Total Love</div>
-              <div className="text-lg font-semibold text-love-600">
-                ❤️ {Number(aminal.totalLove || 0).toFixed(2)}
+          <CardContent className="p-4 space-y-4 flex-1 flex flex-col">
+            {/* Stats - back to original layout */}
+            <div className="grid grid-cols-2 gap-3 p-3 rounded-lg bg-muted border border-border">
+              <div>
+                <div className="text-sm text-muted-foreground">Total Love</div>
+                <div className="text-lg font-semibold text-love-600">
+                  ❤️ {Number(aminal.totalLove || 0).toFixed(2)}
+                </div>
+              </div>
+              <div>
+                <div className="text-sm text-muted-foreground">Love 4 U</div>
+                <div className="text-lg font-semibold text-energy-600">
+                  {aminal.lovers && aminal.lovers.length > 0 ? (
+                    <>💜 {Number(aminal.lovers[0].love || 0).toFixed(2)}</>
+                  ) : (
+                    <span className="text-muted-foreground">—</span>
+                  )}
+                </div>
               </div>
             </div>
-            <div>
-              <div className="text-sm text-muted-foreground">Love 4 U</div>
-              <div className="text-lg font-semibold text-energy-600">
-                {aminal.lovers && aminal.lovers.length > 0 ? (
-                  <>💜 {Number(aminal.lovers[0].love || 0).toFixed(2)}</>
-                ) : (
-                  <span className="text-muted-foreground">—</span>
-                )}
-              </div>
-            </div>
-          </div>
+          </CardContent>
+        </CardSection>
+      </Link>
 
-          {/* Actions */}
-          <div className="flex flex-col gap-2 mt-auto pt-2">
-            {aminal.contractAddress && (
-              <FeedButton
-                contractAddress={aminal.contractAddress as `0x${string}`}
-              />
-            )}
-          </div>
-        </CardContent>
-      </CardSection>
+      {/* Actions - positioned outside the link to prevent nested interactivity */}
+      <div className="p-4 pt-0">
+        {aminal.contractAddress && (
+          <FeedButton
+            contractAddress={aminal.contractAddress as `0x${string}`}
+          />
+        )}
+      </div>
     </Card>
   );
 }

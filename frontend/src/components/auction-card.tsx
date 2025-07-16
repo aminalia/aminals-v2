@@ -74,11 +74,11 @@ export default function AuctionCard({ auction }: { auction: GeneAuction }) {
   console.log(auction.childAminal);
 
   return (
-    <Card className="overflow-hidden bg-white hover:shadow-xl transition-all duration-300 group border-2 hover:border-pink-200">
+    <Card className="overflow-hidden bg-white hover:shadow-xl hover:shadow-pink-500/10 hover:-translate-y-1 transition-all duration-300 group border-2 hover:border-pink-200">
       {/* Main container - stack on mobile, row on desktop */}
-      <div className="flex w-full">
+      <div className="flex flex-col md:flex-row w-full">
         {/* Images Section - Always side by side */}
-        <div className="flex w-full md:w-1/2 relative">
+        <div className="flex w-full md:w-1/2 relative min-h-[200px] md:min-h-[300px]">
           {/* Heart connector between images */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2 shadow-lg border-2 border-pink-200 group-hover:border-pink-300 transition-all">
             <div className="text-lg text-pink-500 group-hover:scale-110 transition-transform">
@@ -86,32 +86,32 @@ export default function AuctionCard({ auction }: { auction: GeneAuction }) {
             </div>
           </div>
 
-          <div className="w-1/2 relative group/image aspect-square">
-            <div className="h-full">
+          <div className="w-1/2 relative group/image">
+            <div className="h-full min-h-[200px] md:min-h-[300px]">
               <TokenUriImage tokenUri={aminalOne.tokenURI} />
             </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover/image:opacity-100 transition-opacity" />
-            {/* <div className="absolute top-3 left-3 text-sm bg-white/95 backdrop-blur-sm shadow-lg px-3 py-1.5 rounded-full font-medium border border-gray-200">
+            <div className="absolute top-2 left-2 text-xs sm:text-sm bg-white/95 backdrop-blur-sm shadow-lg px-2 py-1 rounded-full font-medium border border-gray-200">
               #{aminalOne.aminalIndex}
-            </div> */}
+            </div>
           </div>
-          <div className="w-1/2 relative group/image aspect-square">
-            <div className="h-full">
+          <div className="w-1/2 relative group/image">
+            <div className="h-full min-h-[200px] md:min-h-[300px]">
               <TokenUriImage tokenUri={aminalTwo.tokenURI} />
             </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover/image:opacity-100 transition-opacity" />
-            {/* <div className="absolute top-3 right-3 text-sm bg-white/95 backdrop-blur-sm shadow-lg px-3 py-1.5 rounded-full font-medium border border-gray-200">
+            <div className="absolute top-2 right-2 text-xs sm:text-sm bg-white/95 backdrop-blur-sm shadow-lg px-2 py-1 rounded-full font-medium border border-gray-200">
               #{aminalTwo.aminalIndex}
-            </div> */}
+            </div>
           </div>
         </div>
 
         {/* Info Section - Full width on mobile, 50% on desktop */}
-        <div className="w-full md:w-1/2 p-6">
-          <div className="flex items-start justify-between mb-4">
+        <div className="w-full md:w-1/2 p-4 md:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 gap-3">
             <div className="flex-1">
               <Link href={`/breeding/${auction.auctionId}`}>
-                <h2 className="text-2xl font-bold hover:text-pink-600 transition-colors group/title">
+                <h2 className="text-xl sm:text-2xl font-bold hover:text-pink-600 transition-colors group/title">
                   <span className="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
                     #{aminalOne.aminalIndex} × #{aminalTwo.aminalIndex}
                   </span>
@@ -124,7 +124,7 @@ export default function AuctionCard({ auction }: { auction: GeneAuction }) {
             <Badge
               variant={auction.finished ? 'secondary' : 'default'}
               className={cn(
-                'transition-all duration-300 px-3 py-2 font-medium text-sm',
+                'transition-all duration-300 px-3 py-2 font-medium text-sm self-start',
                 auction.finished
                   ? 'bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 border-blue-200'
                   : isAuctionEnded
@@ -160,8 +160,8 @@ export default function AuctionCard({ auction }: { auction: GeneAuction }) {
               </div>
             )}
 
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-4 text-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-3 sm:p-4 text-center">
                 <div className="text-2xl mb-1">👶</div>
                 <div className="text-sm text-gray-600 mb-1">Child</div>
                 {auction.childAminal ? (
@@ -178,7 +178,7 @@ export default function AuctionCard({ auction }: { auction: GeneAuction }) {
                 )}
               </div>
 
-              <div className="bg-gradient-to-r from-pink-50 to-red-50 border border-pink-200 rounded-xl p-4 text-center">
+              <div className="bg-gradient-to-r from-pink-50 to-red-50 border border-pink-200 rounded-xl p-3 sm:p-4 text-center">
                 <div className="text-2xl mb-1">❤️</div>
                 <div className="text-sm text-gray-600 mb-1">Total Love</div>
                 <div className="font-bold text-pink-700">

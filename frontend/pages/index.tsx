@@ -1,9 +1,9 @@
 import AminalGrid from '@/components/aminal-grid';
+import { ContentContainer } from '@/components/layout/content-container';
+import { NoAminalsFound } from '@/components/ui/empty-state';
 import { AminalsFilterBar } from '@/components/ui/filter-bar';
-import { NoAminalsFound, WalletNotConnected } from '@/components/ui/empty-state';
 import { PageLoadingSpinner } from '@/components/ui/loading-spinner';
 import { useHasMounted } from '@/hooks/useHasMounted';
-import { cn } from '@/lib/utils';
 import { AminalFilter, AminalSort } from '@/resources/aminals';
 import { useAminalsDirect } from '@/resources/aminals-direct';
 import type { NextPage } from 'next';
@@ -34,8 +34,8 @@ const HomePage: NextPage = () => {
         <link href="/favicon.ico" rel="icon" />
       </Head>
       <Layout>
-        <div className="container max-w-5xl mx-auto px-4 py-8">
-          <div className="flex flex-col gap-6">
+        <div className="py-8">
+          <ContentContainer layout="single" gap="lg">
             <AminalsFilterBar
               activeFilter={filter}
               onFilterChange={(value) => setFilter(value as AminalFilter)}
@@ -58,7 +58,7 @@ const HomePage: NextPage = () => {
             ) : (
               <AminalGrid aminals={aminals || []} />
             )}
-          </div>
+          </ContentContainer>
         </div>
       </Layout>
     </>

@@ -59,7 +59,7 @@ export default function EndAuctionButton({
         timestamp: new Date().toISOString(),
       });
 
-      toast.success('🏁 Auction settled successfully! New Aminal created!', {
+      toast.success('🎉 Aminal birthed successfully! New life created!', {
         id: 'end-auction-tx',
         duration: 5000,
       });
@@ -84,7 +84,7 @@ export default function EndAuctionButton({
       console.error('❌ End auction transaction failed:', errorDetails);
 
       // More specific error messages based on error type
-      let errorMessage = 'Failed to end auction. Please try again.';
+      let errorMessage = 'Failed to birth Aminal. Please try again.';
       if (error.message.includes('insufficient funds')) {
         errorMessage = 'Insufficient funds to complete the transaction.';
       } else if (error.message.includes('user rejected')) {
@@ -117,7 +117,7 @@ export default function EndAuctionButton({
         '❌ End auction transaction receipt error:',
         receiptErrorDetails
       );
-      toast.error('Auction settlement failed. Please try again.', {
+      toast.error('Aminal birthing failed. Please try again.', {
         id: 'end-auction-tx',
       });
     }
@@ -131,7 +131,7 @@ export default function EndAuctionButton({
         userAddress: address,
         timestamp: new Date().toISOString(),
       });
-      toast.loading('Settling auction...', { id: 'end-auction-tx' });
+      toast.loading('Birthing Aminal...', { id: 'end-auction-tx' });
     }
   }, [isPending, auctionId, address]);
 
@@ -143,7 +143,7 @@ export default function EndAuctionButton({
         auctionId: auctionId.toString(),
         timestamp: new Date().toISOString(),
       });
-      toast.loading('Confirming auction settlement...', {
+      toast.loading('Confirming Aminal birth...', {
         id: 'end-auction-tx',
       });
     }
@@ -181,15 +181,15 @@ export default function EndAuctionButton({
     <Button
       onClick={handleEndAuction}
       disabled={!enabled || isPending || isConfirming}
-      variant="destructive"
+      variant="default"
       size="sm"
-      className={className}
+      className={`bg-blue-600 hover:bg-blue-700 text-white border-blue-600 hover:border-blue-700 ${className}`}
     >
       {isPending || isConfirming
-        ? 'Settling...'
+        ? '🍼 Birthing...'
         : enabled
-        ? 'End Auction'
-        : 'Connect to end auction'}
+        ? '👶 Birth Aminal'
+        : '🔗 Connect to birth aminal'}
     </Button>
   );
 }
