@@ -87,7 +87,7 @@ export default function BreedButton({
       queryClient.invalidateQueries({
         queryKey: ['aminal-by-address', contractAddress],
       });
-      queryClient.invalidateQueries({ queryKey: ['aminals-direct'] });
+      queryClient.invalidateQueries({ queryKey: ['aminals'] });
       queryClient.invalidateQueries({ queryKey: ['aminals'] });
     }
   }, [

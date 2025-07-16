@@ -23,6 +23,7 @@ query GeneNftsList {
         aminalOne {
           id
           contractAddress
+          aminalIndex
           tokenURI
           energy
           totalLove
@@ -30,6 +31,7 @@ query GeneNftsList {
         aminalTwo {
           id
           contractAddress
+          aminalIndex
           tokenURI
           energy
           totalLove
@@ -74,6 +76,7 @@ query GeneNftById($id: ID!) {
         aminalOne {
           id
           contractAddress
+          aminalIndex
           tokenURI
           energy
           totalLove
@@ -81,6 +84,7 @@ query GeneNftById($id: ID!) {
         aminalTwo {
           id
           contractAddress
+          aminalIndex
           tokenURI
           energy
           totalLove
@@ -125,6 +129,7 @@ query GenesByTraitType($traitType: Int!) {
         aminalOne {
           id
           contractAddress
+          aminalIndex
           tokenURI
           energy
           totalLove
@@ -132,6 +137,7 @@ query GenesByTraitType($traitType: Int!) {
         aminalTwo {
           id
           contractAddress
+          aminalIndex
           tokenURI
           energy
           totalLove

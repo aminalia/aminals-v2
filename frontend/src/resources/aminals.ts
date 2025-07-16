@@ -6,11 +6,10 @@ import {
   AminalsListDocument,
   execute,
 } from '../../.graphclient';
+import { queryKeys, handleGraphQLError } from '../lib/query-client';
+import { transformAminals, AminalFilter, AminalSort } from '../lib/data-transformers';
 
-const BASE_KEY = 'aminals';
-
-export type AminalFilter = 'all' | 'loved';
-export type AminalSort = 'most-loved' | 'least-loved' | 'oldest' | 'youngest';
+export type { AminalFilter, AminalSort };
 
 export const useAminals = (
   userAddress: string,
@@ -18,79 +17,58 @@ export const useAminals = (
   sort: AminalSort = 'most-loved'
 ) => {
   return useQuery<Aminal[]>({
-    queryKey: [BASE_KEY, filter, sort, userAddress],
+    queryKey: queryKeys.aminals.list(filter, sort, userAddress),
     queryFn: async () => {
-      const response = await execute(AminalsListDocument, {
-        first: 100,
-        skip: 0,
-        address: userAddress,
-      });
-      
-      if (response.errors) {
-        console.error('GraphQL errors:', response.errors);
-        throw new Error(response.errors[0].message);
+      try {
+        const response = await execute(AminalsListDocument, {
+          first: 100,
+          skip: 0,
+          address: userAddress,
+        });
+        
+        if (response.errors) {
+          console.error('GraphQL errors:', response.errors);
+          throw handleGraphQLError(response.errors);
+        }
+
+        const aminals = response.data?.aminals || [];
+
+        // Use data transformer to apply filter and sort
+        return transformAminals(aminals, filter, sort);
+      } catch (error) {
+        console.error('Failed to fetch aminals:', error);
+        throw error;
       }
-
-      let aminals = response.data?.aminals || [];
-
-      // Apply filter
-      if (filter === 'loved') {
-        aminals = aminals.filter(
-          (aminal: Aminal) =>
-            aminal.lovers &&
-            aminal.lovers.length > 0 &&
-            aminal.lovers[0]?.love &&
-            Number(aminal.lovers[0].love) > 0
-        );
-      }
-
-      // Apply sort
-      if (sort === 'most-loved') {
-        aminals.sort(
-          (a: Aminal, b: Aminal) => Number(b.totalLove) - Number(a.totalLove)
-        );
-      } else if (sort === 'least-loved') {
-        aminals.sort(
-          (a: Aminal, b: Aminal) => Number(a.totalLove) - Number(b.totalLove)
-        );
-      } else if (sort === 'oldest') {
-        aminals.sort(
-          (a: Aminal, b: Aminal) =>
-            Number(a.blockTimestamp) - Number(b.blockTimestamp)
-        );
-      } else if (sort === 'youngest') {
-        aminals.sort(
-          (a: Aminal, b: Aminal) =>
-            Number(b.blockTimestamp) - Number(a.blockTimestamp)
-        );
-      }
-
-      return aminals;
     },
   });
 };
 
 export const useAminal = (aminalId: string) => {
   return useQuery<AminalByIdQuery['aminals'][0] | undefined>({
-    queryKey: [BASE_KEY, aminalId],
+    queryKey: queryKeys.aminals.detail(aminalId),
     queryFn: async () => {
-      console.log('Fetching aminal with ID:', aminalId);
+      try {
+        console.log('Fetching aminal with ID:', aminalId);
 
-      const response = await execute(AminalByIdDocument, {
-        aminalId: aminalId, // Pass the string directly, no BigInt conversion
-      });
+        const response = await execute(AminalByIdDocument, {
+          contractAddress: aminalId, // Use contractAddress as the query parameter
+        });
 
-      console.log('GraphQL Response:', response);
+        console.log('GraphQL Response:', response);
 
-      if (response.errors) {
-        console.error('GraphQL Errors:', response.errors);
-        throw new Error(response.errors[0].message);
+        if (response.errors) {
+          console.error('GraphQL Errors:', response.errors);
+          throw handleGraphQLError(response.errors);
+        }
+
+        console.log('Aminals array:', response.data.aminals);
+        console.log('First aminal:', response.data.aminals[0]);
+
+        return response.data.aminals[0];
+      } catch (error) {
+        console.error('Failed to fetch aminal:', error);
+        throw error;
       }
-
-      console.log('Aminals array:', response.data.aminals);
-      console.log('First aminal:', response.data.aminals[0]);
-
-      return response.data.aminals[0];
     },
     enabled: !!aminalId,
   });

@@ -5,7 +5,7 @@ import { AminalsFilterBar } from '@/components/ui/filter-bar';
 import { PageLoadingSpinner } from '@/components/ui/loading-spinner';
 import { useHasMounted } from '@/hooks/useHasMounted';
 import { AminalFilter, AminalSort } from '@/resources/aminals';
-import { useAminalsDirect } from '@/resources/aminals-direct';
+import { useAminals } from '@/resources/aminals';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useState } from 'react';
@@ -21,7 +21,7 @@ const HomePage: NextPage = () => {
   console.log('HomePage - Current address:', address);
   console.log('HomePage - Address being passed to hook:', address || '');
 
-  const { data: aminals, isLoading: isLoadingAminals } = useAminalsDirect(
+  const { data: aminals, isLoading: isLoadingAminals } = useAminals(
     address || '',
     filter,
     sort
