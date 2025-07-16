@@ -36,9 +36,9 @@ function AminalsApp({ Component, pageProps }: AppProps) {
               duration: 4000,
               className: 'toast-custom',
               style: {
-                background: '#fff',
-                color: '#333',
-                border: '1px solid #e5e7eb',
+                background: 'hsl(var(--card))',
+                color: 'hsl(var(--card-foreground))',
+                border: '1px solid hsl(var(--border))',
                 borderRadius: '8px',
                 boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
               },

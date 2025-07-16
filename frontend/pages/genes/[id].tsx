@@ -1,4 +1,7 @@
-import { TokenUriImage } from '@/components/aminal-card';
+import AminalCard from '@/components/aminal-card';
+import { PageLoadingSpinner } from '@/components/ui/loading-spinner';
+import { EmptyState, NoAminalsFound } from '@/components/ui/empty-state';
+import { Badge } from '@/components/ui/badge';
 import { TRAIT_CATEGORIES } from '@/constants/trait-categories';
 import { useGene } from '@/resources/genes';
 import type { NextPage } from 'next';
@@ -24,9 +27,7 @@ const GeneDetailPage: NextPage = () => {
     return (
       <Layout>
         <div className="container max-w-5xl mx-auto px-4 py-8">
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-          </div>
+          <PageLoadingSpinner />
         </div>
       </Layout>
     );
@@ -36,9 +37,11 @@ const GeneDetailPage: NextPage = () => {
     return (
       <Layout>
         <div className="container max-w-5xl mx-auto px-4 py-8">
-          <div className="text-center py-12 bg-gray-50 rounded-lg">
-            <p className="text-gray-600">Gene not found.</p>
-          </div>
+          <EmptyState
+            icon="🧬"
+            title="Gene not found"
+            description="The gene you're looking for doesn't exist."
+          />
         </div>
       </Layout>
     );
@@ -75,13 +78,13 @@ const GeneDetailPage: NextPage = () => {
                 <span className="text-3xl">{category.emoji}</span>
                 Gene #{gene.tokenId}
               </h1>
-              <span className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-full font-medium">
+              <Badge variant="neutral" size="lg">
                 {category.name}
-              </span>
+              </Badge>
             </div>
             <Link
               href="/genes"
-              className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+              className="text-primary hover:text-primary/80 text-sm font-medium"
             >
               ← Back to all Genes
             </Link>
@@ -90,7 +93,7 @@ const GeneDetailPage: NextPage = () => {
           {/* Main Content */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left Column - SVG Display */}
-            <div className="aspect-square rounded-xl overflow-hidden bg-indigo-50 flex items-center justify-center p-6 border border-gray-200">
+            <div className="aspect-square rounded-xl overflow-hidden bg-primary/5 flex items-center justify-center p-6 border">
               <svg
                 viewBox="0 0 1000 1000"
                 className="w-full h-full"
@@ -103,15 +106,15 @@ const GeneDetailPage: NextPage = () => {
             {/* Right Column - Details */}
             <div className="space-y-6">
               {/* Creator Info */}
-              <div className="rounded-xl border border-gray-200 bg-white p-5 space-y-3">
+              <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-5 space-y-3">
                 <h2 className="text-xl font-semibold">Creator</h2>
                 <div className="flex items-center gap-3">
-                  <div className="bg-gray-100 w-12 h-12 rounded-full flex items-center justify-center text-xl">
+                  <div className="bg-muted w-12 h-12 rounded-full flex items-center justify-center text-xl">
                     👤
                   </div>
                   <div>
                     <div className="font-medium">Address</div>
-                    <div className="font-mono text-sm text-gray-600">
+                    <div className="font-mono text-sm text-muted-foreground">
                       {gene.creator.address}
                     </div>
                   </div>
@@ -119,19 +122,19 @@ const GeneDetailPage: NextPage = () => {
               </div>
 
               {/* Stats Section */}
-              <div className="rounded-xl border border-gray-200 bg-white p-5 space-y-3">
+              <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-5 space-y-3">
                 <h2 className="text-xl font-semibold">Stats</h2>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-gray-50 rounded-lg border border-gray-100">
-                    <div className="text-sm text-gray-600">Category</div>
+                  <div className="p-4 bg-muted rounded-lg border">
+                    <div className="text-sm text-muted-foreground">Category</div>
                     <div className="text-xl font-semibold flex items-center gap-2">
                       <span>{category.emoji}</span>
                       {category.name}
                     </div>
                   </div>
-                  <div className="p-4 bg-gray-50 rounded-lg border border-gray-100">
-                    <div className="text-sm text-gray-600">Used by</div>
-                    <div className="text-xl font-semibold text-purple-600">
+                  <div className="p-4 bg-muted rounded-lg border">
+                    <div className="text-sm text-muted-foreground">Used by</div>
+                    <div className="text-xl font-semibold text-energy-600">
                       {aminalCount} {aminalCount === 1 ? 'Aminal' : 'Aminals'}
                     </div>
                   </div>
@@ -144,69 +147,40 @@ const GeneDetailPage: NextPage = () => {
           <div className="mt-8 space-y-6">
             <h2 className="text-2xl font-bold">Aminals with this Gene</h2>
             {aminalCount === 0 ? (
-              <div className="text-center py-12 bg-gray-50 rounded-lg">
-                <p className="text-gray-600">No Aminals have this gene yet.</p>
-              </div>
+              <EmptyState
+                icon="🐾"
+                title="No Aminals found"
+                description="No Aminals have this gene yet."
+              />
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {uniqueAminals.map((aminal: any) => {
-                  const aminalWithDetails =
-                    aminal as unknown as AminalWithDetails;
+                  const aminalWithDetails = aminal as unknown as AminalWithDetails;
+                  
+                  // Transform the data to match AminalCard's expected interface
+                  const transformedAminal = {
+                    id: aminalWithDetails.id,
+                    contractAddress: aminalWithDetails.contractAddress,
+                    aminalIndex: aminalWithDetails.aminalIndex,
+                    energy: (Number(aminalWithDetails.energy) / 1e18).toString(),
+                    totalLove: (Number(aminalWithDetails.totalLove) / 1e18).toString(),
+                    tokenURI: aminalWithDetails.tokenURI,
+                    backId: '',
+                    armId: '',
+                    tailId: '',
+                    earsId: '',
+                    bodyId: '',
+                    faceId: '',
+                    mouthId: '',
+                    miscId: '',
+                    lovers: [],
+                  };
+                  
                   return (
-                    <div
+                    <AminalCard
                       key={aminalWithDetails.id}
-                      className="rounded-xl border border-gray-200 bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-                    >
-                      <div className="aspect-square bg-indigo-50 relative">
-                        {aminalWithDetails.tokenURI && (
-                          <TokenUriImage
-                            tokenUri={aminalWithDetails.tokenURI}
-                            aminalId={aminalWithDetails.aminalIndex}
-                          />
-                        )}
-                      </div>
-                      <div className="p-4">
-                        <Link
-                          href={`/aminals/${
-                            aminalWithDetails.contractAddress ||
-                            aminalWithDetails.aminalIndex
-                          }`}
-                          className="text-xl font-bold hover:text-blue-600 transition-colors"
-                        >
-                          Aminal #{aminalWithDetails.aminalIndex}
-                        </Link>
-
-                        <div className="grid grid-cols-2 gap-2 mt-3">
-                          <div className="text-sm">
-                            <div className="text-gray-500">Energy</div>
-                            <div className="font-medium text-purple-600">
-                              {(
-                                Number(aminalWithDetails.energy) / 1e18
-                              ).toFixed(2)}{' '}
-                              ⚡
-                            </div>
-                          </div>
-                          <div className="text-sm">
-                            <div className="text-gray-500">Love</div>
-                            <div className="font-medium text-pink-600">
-                              {(
-                                Number(aminalWithDetails.totalLove) / 1e18
-                              ).toFixed(2)}{' '}
-                              ❤️
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="mt-4">
-                          <Link
-                            href={`/aminals/${aminalWithDetails.aminalIndex}`}
-                            className="w-full inline-block text-center px-4 py-2 bg-blue-600 text-white rounded-full text-sm font-medium hover:bg-blue-700 transition-colors"
-                          >
-                            View Details
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
+                      aminal={transformedAminal}
+                    />
                   );
                 })}
               </div>
