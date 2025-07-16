@@ -363,7 +363,7 @@ const AminalPage: NextPage = () => {
                 )}
 
                 {/* Contract Address */}
-                <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
+                <div className="hidden md:block p-4 bg-blue-50 rounded-lg border border-blue-100">
                   <div className="text-sm text-gray-500">Contract Address</div>
                   <div className="text-sm font-mono text-blue-600">
                     {aminal.contractAddress}
@@ -563,9 +563,6 @@ const AminalPage: NextPage = () => {
                               >
                                 <span className="text-sm font-medium">
                                   Aminal #{partner.aminalIndex}
-                                </span>
-                                <span className="text-xs text-gray-500">
-                                  {partner.contractAddress?.slice(0, 8)}...
                                 </span>
                               </Link>
                               <div className="flex items-center gap-2">
