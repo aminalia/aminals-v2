@@ -36,7 +36,6 @@ contract GetAminalInfo is Script {
             console.log("Dad:", aminal.dadAddress());
             console.log("Total Love:", aminal.getTotalLove());
             console.log("Energy:", aminal.getEnergy());
-            console.log("Breeding:", aminal.breeding());
 
             // Get visuals
             IAminalStructs.Visuals memory visuals = aminal.getVisuals();

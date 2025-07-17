@@ -27,6 +27,11 @@ interface IAminal is IAminalStructs {
     /// @custom:deprecated This function may be deprecated in future versions
     function squeak(uint256 amount) external payable;
 
+    /// @notice Factory-only function to consume love and energy on behalf of a user
+    /// @param user The user whose love should be consumed
+    /// @param amount The amount of love and energy to consume
+    function squeakFrom(address user, uint256 amount) external;
+
     /*//////////////////////////////////////////////////////////////
                              SKILL SYSTEM
     //////////////////////////////////////////////////////////////*/
@@ -40,11 +45,8 @@ interface IAminal is IAminalStructs {
                            BREEDING MECHANICS
     //////////////////////////////////////////////////////////////*/
 
-    /// @notice Set breeding consent with another Aminal (factory only)
-    /// @param user The user address requesting breeding authorization
-    /// @param partner The Aminal address to set consent with
-    /// @param status True to allow breeding, false to revoke
-    function setBreedableWith(address user, address partner, bool status) external;
+    // Note: Breeding mechanics are now handled directly in the factory
+    // without explicit consent mechanisms
 
     /*//////////////////////////////////////////////////////////////
                            TREASURY MANAGEMENT

@@ -148,13 +148,10 @@ contract AminalFactoryTest is Test, IAminalStructs {
         aminal2.feed{value: 0.1 ether}();
         vm.stopPrank();
 
-        // Set breeding preferences through factory
+        // Initiate breeding through factory (creates auction directly)
         vm.prank(alice);
-        uint256 result = factory.breedAminals{value: 0.001 ether}(aminal1Address, aminal2Address);
-        assertEq(result, 0, "Should set consent and return 0");
-
-        assertTrue(aminal1.isBreedableWith(aminal2Address));
-        assertFalse(aminal2.isBreedableWith(aminal1Address));
+        uint256 auctionId = factory.breedAminals{value: 0.001 ether}(aminal1Address, aminal2Address);
+        assertTrue(auctionId > 0, "Should create auction and return auction ID");
     }
 
     function testAminalUniqueness() public {

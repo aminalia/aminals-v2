@@ -156,7 +156,7 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
         console.log("\n1. FEEDING AMINALS");
         _feedAminals();
 
-        // STEP 2: Initiate breeding with mutual consent
+        // STEP 2: Initiate breeding (creates auction directly)
         console.log("\n2. INITIATING BREEDING");
         uint256 auctionId = _initiateBreeding();
 
@@ -188,24 +188,17 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
         uint256 aminal1InitialLove = aminal1.getLoveByUser(alice);
         uint256 aminal2InitialLove = aminal2.getLoveByUser(alice);
 
-        // Alice feeds both Aminals with enough love to meet breeding requirements
-        // The breeding system requires love with BOTH Aminals, and minimum 10 love each
-        console.log("Feeding aminal1...");
-        vm.prank(alice);
-        aminal1.feed{value: 1 ether}();
-        console.log("Fed aminal1, love now:", aminal1.getLoveByUser(alice));
+        // All users feed both Aminals to have enough love for proposing genes
+        // Each user needs at least 10 love for both aminals to propose genes
+        address[5] memory users = [alice, bob, charlie, david, eve];
 
-        console.log("Feeding aminal2...");
-        vm.prank(alice);
-        aminal2.feed{value: 1 ether}();
-        console.log("Fed aminal2, love now:", aminal2.getLoveByUser(alice));
-
-        // Feed more to ensure we have enough love (breeding checks both aminals)
-        console.log("Additional feeding to ensure sufficient love...");
-        vm.prank(alice);
-        aminal1.feed{value: 0.1 ether}();
-        vm.prank(alice);
-        aminal2.feed{value: 0.1 ether}();
+        for (uint256 i = 0; i < users.length; i++) {
+            console.log("User feeding aminals...");
+            vm.prank(users[i]);
+            aminal1.feed{value: 0.1 ether}();
+            vm.prank(users[i]);
+            aminal2.feed{value: 0.1 ether}();
+        }
 
         // Verify feeding worked
         assertTrue(aminal1.getEnergy() > aminal1InitialEnergy, "Aminal 1 energy should increase");
@@ -218,7 +211,7 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
         console.log("Aminal 1 love from Alice:", aminal1.getLoveByUser(alice));
         console.log("Aminal 2 love from Alice:", aminal2.getLoveByUser(alice));
 
-        // Verify minimum requirements for breeding
+        // Verify minimum requirements for breeding and proposing
         uint256 aminal1Love = aminal1.getLoveByUser(alice);
         uint256 aminal2Love = aminal2.getLoveByUser(alice);
         console.log("Checking love requirements - need 10, Aminal1 has:", aminal1Love);
@@ -228,37 +221,24 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
         assertTrue(aminal2Love >= 10, "Aminal 2 needs at least 10 love");
         assertTrue(aminal1.getEnergy() >= 10, "Aminal 1 needs at least 10 energy");
         assertTrue(aminal2.getEnergy() >= 10, "Aminal 2 needs at least 10 energy");
+
+        // Verify all users have enough love to propose genes
+        address[5] memory verifyUsers = [alice, bob, charlie, david, eve];
+        for (uint256 i = 0; i < verifyUsers.length; i++) {
+            assertTrue(aminal1.getLoveByUser(verifyUsers[i]) >= 10, "Each user needs at least 10 love for aminal1");
+            assertTrue(aminal2.getLoveByUser(verifyUsers[i]) >= 10, "Each user needs at least 10 love for aminal2");
+        }
     }
 
     function _initiateBreeding() internal returns (uint256 auctionId) {
-        console.log("Initiating breeding through proper flow...");
+        console.log("Initiating breeding through simplified flow...");
 
         // Check love levels
         console.log("Aminal1 love:", aminal1.getLoveByUser(alice));
         console.log("Aminal2 love:", aminal2.getLoveByUser(alice));
 
-        console.log("Step 1: Establish mutual breeding consent");
-
-        // Step 1: Set consent in both directions through factory breeding calls
-        console.log("Setting consent aminal1 -> aminal2");
-        vm.prank(alice);
-        uint256 result1 = factory.breedAminals{value: 0.001 ether}(aminal1Address, aminal2Address);
-        assertEq(result1, 0, "First call should set consent and return 0");
-        console.log("Aminal1 now breedable with Aminal2:", aminal1.isBreedableWith(aminal2Address));
-
-        console.log("Setting consent aminal2 -> aminal1");
-        vm.prank(alice);
-        uint256 result2 = factory.breedAminals{value: 0.001 ether}(aminal2Address, aminal1Address);
-        assertEq(result2, 0, "Second call should set consent and return 0");
-        console.log("Aminal2 now breedable with Aminal1:", aminal2.isBreedableWith(aminal1Address));
-
-        console.log("Step 2: Alice calls breedAminals to create the auction");
-        console.log("This should succeed because mutual consent exists");
-
-        // Step 2: Now call breedAminals - this should create an auction because:
-        // - aminal1 IS breedable with aminal2 (true)
-        // - aminal2 IS breedable with aminal1 (true)
-        // - Both conditions = mutual consent = auction creation
+        // New simplified system: Call breedAminals once to create auction directly
+        console.log("Creating auction with single breedAminals call...");
         vm.prank(alice);
         auctionId = factory.breedAminals{value: 0.001 ether}(aminal1Address, aminal2Address);
 
@@ -481,23 +461,13 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
         vm.prank(alice);
         AminalContract(payable(testAminal2)).feed{value: 1 ether}();
 
-        // Initiate breeding using proper flow (set mutual consent through factory)
-        console.log("Setting up mutual consent through factory calls...");
+        // Initiate breeding using new simplified flow (create auction directly)
+        console.log("Creating auction with single call...");
 
-        // First call to set consent
-        vm.prank(alice);
-        uint256 consentResult = factory.breedAminals{value: 0.001 ether}(testAminal1, testAminal2);
-        assertEq(consentResult, 0, "First call should set consent");
-
-        // Second call to set mutual consent
-        vm.prank(alice);
-        uint256 consentResult2 = factory.breedAminals{value: 0.001 ether}(testAminal2, testAminal1);
-        assertEq(consentResult2, 0, "Second call should set mutual consent");
-
-        // Third call to create auction with mutual consent
+        // Single call to create auction directly
         vm.prank(alice);
         uint256 auctionId = factory.breedAminals{value: 0.001 ether}(testAminal1, testAminal2);
-        assertTrue(auctionId > 0, "Third call should create auction");
+        assertTrue(auctionId > 0, "Should create auction directly");
 
         // Don't propose any genes - let it use defaults
 

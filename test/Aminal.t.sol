@@ -156,7 +156,7 @@ contract IndividualAminalTest is Test, IAminalStructs {
     function testAminalBreedingSettings() public {
         vm.deal(alice, 1 ether);
 
-        // Feed to get love
+        // Feed both aminals to get enough love (need 10 love for each)
         vm.prank(alice);
         aminal.feed{value: 0.1 ether}();
 
@@ -168,13 +168,16 @@ contract IndividualAminalTest is Test, IAminalStructs {
         additionalVisuals[0] = Visuals(2, 2, 2, 2, 2, 2, 2, 2);
         factory.spawnInitialAminals(additionalVisuals);
         address aminal2Address = factory.getAminalByIndex(1);
+        AminalContract aminal2 = AminalContract(payable(aminal2Address));
 
-        // Set breeding preference through factory
+        // Feed the second aminal too
         vm.prank(alice);
-        uint256 result = factory.breedAminals{value: 0.001 ether}(address(aminal), aminal2Address);
-        assertEq(result, 0, "Should set consent and return 0");
+        aminal2.feed{value: 0.1 ether}();
 
-        assertTrue(aminal.isBreedableWith(aminal2Address));
+        // Initiate breeding - should create auction directly
+        vm.prank(alice);
+        uint256 auctionId = factory.breedAminals{value: 0.001 ether}(address(aminal), aminal2Address);
+        assertTrue(auctionId > 0, "Should create auction and return auction ID");
     }
 
     function testAminalBreedingSettingsWithoutLove() public {

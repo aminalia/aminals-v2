@@ -151,16 +151,6 @@ contract GeneRegistry is IAminalStructs, Ownable {
         }
     }
 
-    // TODO we should remove this
-    /**
-     * @notice Withdraw collected fees (only owner)
-     */
-    function withdrawFees() external onlyOwner {
-        uint256 balance = address(this).balance;
-        (bool success,) = payable(owner()).call{value: balance}("");
-        require(success, "Withdrawal failed");
-    }
-
     /**
      * @notice Basic SVG validation
      * @dev Checks for basic SVG structure - not comprehensive security validation

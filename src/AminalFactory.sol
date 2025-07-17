@@ -350,31 +350,28 @@ contract AminalFactory is IAminalFactory, Initializable, Ownable {
         AminalContract aminal1 = AminalContract(payable(aminalOne));
         AminalContract aminal2 = AminalContract(payable(aminalTwo));
 
+        // Check if caller has sufficient love for both Aminals
         require(aminal1.getLoveByUser(msg.sender) >= MIN_LOVE_REQUIRED, "AminalFactory: insufficient love");
+        require(aminal2.getLoveByUser(msg.sender) >= MIN_LOVE_REQUIRED, "AminalFactory: insufficient love");
 
-        // Check for mutual consent and sufficient energy to create auction
-        if (aminal1.isBreedableWith(aminalTwo) && aminal2.isBreedableWith(aminalOne)) {
-            require(
-                aminal1.getEnergy() >= MIN_ENERGY_REQUIRED && aminal2.getEnergy() >= MIN_ENERGY_REQUIRED,
-                "AminalFactory: insufficient energy for breeding"
-            );
+        // Check if both Aminals have sufficient energy to breed
+        require(
+            aminal1.getEnergy() >= MIN_ENERGY_REQUIRED && aminal2.getEnergy() >= MIN_ENERGY_REQUIRED,
+            "AminalFactory: insufficient energy for breeding"
+        );
 
-            // Calculate total love investment from caller for both Aminals
-            uint256 totalLove = aminal1.getLoveByUser(msg.sender) + aminal2.getLoveByUser(msg.sender);
+        // Calculate total love investment from caller for both Aminals
+        uint256 totalLove = aminal1.getLoveByUser(msg.sender) + aminal2.getLoveByUser(msg.sender);
 
-            // Create gene auction with combined love as initial value
-            auctionId = geneAuction.createAuction(aminal1.aminalIndex(), aminal2.aminalIndex(), totalLove);
+        // Consume Love from caller and energy via squeakFrom
+        aminal1.squeakFrom(msg.sender, MIN_LOVE_REQUIRED);
+        aminal2.squeakFrom(msg.sender, MIN_LOVE_REQUIRED);
 
-            emit BreedAminal(aminalOne, aminalTwo, auctionId);
-            return auctionId;
-        } else {
-            // Set consent if not already established
-            require(!aminal1.isBreedableWith(aminalTwo), "AminalFactory: consent already granted");
+        // Create gene auction with combined love as initial value
+        auctionId = geneAuction.createAuction(aminal1.aminalIndex(), aminal2.aminalIndex(), totalLove);
 
-            aminal1.setBreedableWith(msg.sender, aminalTwo, true);
-            emit BreedAminal(aminalOne, aminalTwo, 0);
-            return 0;
-        }
+        emit BreedAminal(aminalOne, aminalTwo, auctionId);
+        return auctionId;
     }
 
     // ═══════════════════════════════════════════════════════════════════════════════════

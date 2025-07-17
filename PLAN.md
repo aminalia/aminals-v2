@@ -2,19 +2,17 @@
 
 ## New Features Ideas
 
-- Track how much money you've made from genes
 - Give love to Aminals (check voting power) on breeding page (if you don't love them yet, it's not too late)
 - Aminals DAO (a DAO of Aminals based on Loveocracy)
 - Poo skill to create a new NFT
+- Aminal Race
 
 ## Open Design Questions
 
-- Should lovers be able to propose any gene during breeding? Only genes they created? Something else?
-- What should proposing a new gene cost? Currently there is a MIN_CREATION_FEE. Where should the funds go or does it only cost love?
-- Do we need setBreedableWith? Do Aminals need to consent before breeding? If no, it could simplify the UX.
-- Should an Aminal be able to breed with another aminal if it is already breeding?
-- If an Aminal previously breed with another aminal does it need consent to breed with them again?
-- Should contracts should be upgradable?
+- Do we need remove gene?
+- What should proposing a gene cost in terms of love? Should it scale somehow in relation to the number of proposals?
+
+In general we need a review of what things cost (even if the cost is in terms of love or energy).
 
 ## TODO
 
@@ -24,13 +22,18 @@
 - Hide things in propose gene that you can't propose (Should anyone be able to propose any gene?)
 - Auction card shows child as settling even when auction is over (might be a graph issue)
 - View traits and Aminals on Open Sea
+- Show how much ETH Aminals have
 
 #### Contracts
 
+- emit auctionId during spawnAminal?
+- start optimizing for gas (payouts need most work)
+- measure gas (see how this is done in aminalsV3)
+- remove MIN_CREATION_FEE for creating genes in GeneRegistry
 - setFactory in Genes is not good... maybe use an initializer? Owner can set factory whenever currently
 - More genes test coverage (renderer, auction, registry, NFT contract)
 - Clean up and document scripts
-- start optimizing for gas (payouts need most work)
+- Some events might be redundent
 
 #### Do last
 
@@ -43,5 +46,5 @@
 - Refine schema
 - Index Aminal ETH balance
 - When breeding is done, remove breedable with
+- Figure out childAminal... might need smart contract refactoring.
 - Switch to ponder?
-- Get how much eth a gene creator has earned (UI to allow them to claim)

@@ -98,12 +98,6 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
     /// @notice Current energy level - the life force for actions ⚡
     uint256 private energy;
 
-    /// @notice Whether this Aminal is currently in breeding mode 🧬
-    bool public breeding;
-
-    /// @notice Addresses this Aminal has consented to breed with
-    mapping(address => bool) public breedableWith;
-
     /// @notice Love balance (given - used) by each user to this Aminal
     mapping(address user => uint256 love) public lovePerUser;
 
@@ -203,9 +197,12 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
                                MODIFIERS
     //////////////////////////////////////////////////////////////*/
 
-    /// @notice Restricts function access to the AminalFactory contract only
-    modifier onlyFactory() {
-        require(msg.sender == address(factory), "Only factory can call this");
+    /// @notice Restricts function access to the AminalFactory contract and gene auction only
+    modifier onlyFactoryOrAuction() {
+        require(
+            msg.sender == address(factory) || msg.sender == address(factory.geneAuction()),
+            "Only factory or gene auction can call this"
+        );
         _;
     }
 
@@ -291,16 +288,13 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
                            EXPRESSION MECHANICS
     //////////////////////////////////////////////////////////////*/
 
-    // TODO maybe deprecate this :/
     /**
      * @notice Express yourself through this Aminal's voice 🗣️
-     * @dev Uses love and energy to create a squeak - a digital cry of expression
-     * @param amount The intensity of the squeak (love and energy required)
+     * @dev Consumes love and energy to create a squeak - a digital cry of expression
+     * @param amount The intensity of the squeak (love and energy consumed)
      *
      * "When an Aminal squeaks, it speaks with the voice of its community,
      *  channeling love into sound, energy into expression"
-     *
-     * @custom:deprecated This function may be deprecated in future versions
      */
     function squeak(uint256 amount) external payable {
         if (lovePerUser[msg.sender] < amount) revert NotEnoughLove();
@@ -311,6 +305,26 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
         totalLove -= amount;
 
         emit Squeak(msg.sender, amount, lovePerUser[msg.sender], totalLove, energy);
+    }
+
+    /**
+     * @notice Factory-only function to consume love and energy on behalf of a user for breeding
+     * @dev Only callable by the factory contract for breeding mechanics
+     * @param user The user whose love should be consumed
+     * @param amount The amount of love and energy to consume
+     *
+     * "In the sacred act of breeding, the factory channels the love of the community
+     *  to bring new life into the digital realm"
+     */
+    function squeakFrom(address user, uint256 amount) external onlyFactoryOrAuction {
+        if (lovePerUser[user] < amount) revert NotEnoughLove();
+        if (energy < amount) revert NotEnoughEnergy();
+
+        energy -= amount;
+        lovePerUser[user] -= amount;
+        totalLove -= amount;
+
+        emit Squeak(user, amount, lovePerUser[user], totalLove, energy);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -361,42 +375,15 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
         if (!success) revert SkillCallFailed();
 
         // Consume resources only after successful execution
+        // squeakFrom(msg.sender, energyCost);
         energy -= energyCost;
         lovePerUser[msg.sender] -= energyCost;
         totalLove -= energyCost;
 
+        // TODO are these events needed if we use squeakFrom?
         emit EnergyLost(msg.sender, energyCost, energy);
         emit LoveConsumed(msg.sender, energyCost, lovePerUser[msg.sender]);
         emit SkillUsed(msg.sender, energyCost, target, selector);
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                           BREEDING MECHANICS
-    //////////////////////////////////////////////////////////////*/
-
-    /**
-     * @notice Set breeding consent with another Aminal 💕
-     * @dev Requires sufficient love to establish breeding consent
-     * @param user The user address requesting breeding authorization
-     * @param partner The Aminal address to set breeding consent with
-     * @param status True to allow breeding, false to revoke consent
-     *
-     * "Love is the foundation of creation - only through mutual affection
-     *  can new digital life be brought into existence"
-     *
-     * @custom:access Only callable by AminalFactory
-     */
-    function setBreedableWith(address user, address partner, bool status) public onlyFactory {
-        require(lovePerUser[user] >= MIN_BREEDING_LOVE, "Not enough love");
-        breedableWith[partner] = status;
-        emit BreedableSet(partner, status);
-    }
-
-    /// @notice Set the global breeding status for this Aminal
-    /// @param _breeding True to enable breeding mode, false to disable
-    /// @custom:access Only callable by AminalFactory
-    function setBreeding(bool _breeding) external onlyFactory {
-        breeding = _breeding;
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -452,13 +439,6 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
     /// @return energy The current energy available for actions
     function getEnergy() external view returns (uint256) {
         return energy;
-    }
-
-    /// @notice Check if this Aminal has breeding consent with another
-    /// @param partner Address of the potential breeding partner
-    /// @return breedable True if breeding is allowed with the partner
-    function isBreedableWith(address partner) external view returns (bool) {
-        return breedableWith[partner];
     }
 
     /// @notice Get the parent addresses of this Aminal
