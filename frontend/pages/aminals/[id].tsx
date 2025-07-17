@@ -1,5 +1,4 @@
 import CallSkillButton from '@/components/actions/call-skill-button';
-import EndAuctionButton from '@/components/actions/endauction-button';
 import FeedButton from '@/components/actions/feed-button';
 import { AminalVisualImage } from '@/components/aminal-card';
 import BreedingModal from '@/components/breeding-modal';
@@ -37,11 +36,25 @@ const useAminalByAddress = (contractAddress: string, userAddress: string) => {
             id
             contractAddress
             aminalIndex
-            momAddress
-            dadAddress
+            parentOne {
+              id
+              contractAddress
+              aminalIndex
+              energy
+              totalLove
+              tokenURI
+            }
+            parentTwo {
+              id
+              contractAddress
+              aminalIndex
+              energy
+              totalLove
+              tokenURI
+            }
             energy
             totalLove
-            breeding
+            ethBalance
             blockTimestamp
             tokenURI
             backId
@@ -55,48 +68,7 @@ const useAminalByAddress = (contractAddress: string, userAddress: string) => {
             lovers(where: { user_: { address: $address } }) {
               love
             }
-            auctions(where: { finished: false }, first: 1, orderBy: blockTimestamp, orderDirection: desc) {
-              id
-              auctionId
-              finished
-              totalLove
-              blockTimestamp
-              endBlockTimestamp
-            }
-            children(first: 10) {
-              id
-              contractAddress
-              aminalIndex
-              energy
-              totalLove
-              tokenURI
-            }
-            breedableWith {
-              id
-              partner {
-                id
-                contractAddress
-                aminalIndex
-                energy
-                totalLove
-                tokenURI
-                breedableWith(where: { partner: $contractAddress }) {
-                  id
-                  consented
-                }
-              }
-              consented
-            }
             feeds(first: 10, orderBy: blockTimestamp, orderDirection: desc) {
-              id
-              sender {
-                address
-              }
-              amount
-              love
-              blockTimestamp
-            }
-            squeaks(first: 10, orderBy: blockTimestamp, orderDirection: desc) {
               id
               sender {
                 address
@@ -195,20 +167,13 @@ const AminalPage: NextPage = () => {
   // Fetch gene data for trait images
   const { data: geneData } = useGenesByIds(geneIds);
 
-  // Get children (where this aminal is the mother)
-  // Note: The schema only tracks children via mother relationship
-  // Children where this aminal is father would need to be queried separately
-  const allChildren = useMemo(() => {
-    if (!aminal?.children) return [];
-
-    return aminal.children;
-  }, [aminal]);
+  // Children tracking removed from schema
 
   // Handle breeding transaction success
   useEffect(() => {
     if (isBreedingConfirmed) {
       toast.success(
-        '🍼 Gene auction started! Community can now vote on offspring traits.',
+        '🍼 Breeding auction started! Community can now vote on offspring traits.',
         {
           id: 'breed-tx',
           duration: 6000,
@@ -261,21 +226,7 @@ const AminalPage: NextPage = () => {
     }
   }, [isBreedingConfirming]);
 
-  // Function to start breeding auction with specific partner
-  const handleStartAuction = (partnerAddress: string) => {
-    if (!address) {
-      toast.error('Please connect your wallet');
-      return;
-    }
-
-    startBreeding({
-      abi: aminalFactoryAbi,
-      address: aminalFactoryAddress,
-      functionName: 'breedAminals',
-      args: [contractAddress as `0x${string}`, partnerAddress as `0x${string}`],
-      value: parseEther('0.001'),
-    });
-  };
+  // Breeding function removed - now handled through BreedingModal
 
   if (isLoading) {
     return (
@@ -333,8 +284,8 @@ const AminalPage: NextPage = () => {
               <div className="rounded-xl border border-gray-200 bg-white p-5 space-y-4">
                 <h2 className="text-xl font-semibold">Stats</h2>
 
-                {/* Energy and Total Love */}
-                <div className="grid grid-cols-2 gap-4">
+                {/* Energy, Total Love, and ETH Balance */}
+                <div className="grid grid-cols-3 gap-4">
                   <div className="p-4 bg-gray-50 rounded-lg border border-gray-100">
                     <div className="text-sm text-gray-500">Energy</div>
                     <div className="text-xl font-semibold text-purple-600">
@@ -345,6 +296,12 @@ const AminalPage: NextPage = () => {
                     <div className="text-sm text-gray-500">Total Love</div>
                     <div className="text-xl font-semibold text-pink-600">
                       {Number(aminal.totalLove).toFixed(2)} ❤️
+                    </div>
+                  </div>
+                  <div className="p-4 bg-gray-50 rounded-lg border border-gray-100">
+                    <div className="text-sm text-gray-500">ETH Balance</div>
+                    <div className="text-xl font-semibold text-blue-600">
+                      {Number(aminal.ethBalance || 0).toFixed(4)} Ξ
                     </div>
                   </div>
                 </div>
@@ -377,34 +334,7 @@ const AminalPage: NextPage = () => {
                   contractAddress={aminal.contractAddress as `0x${string}`}
                 />
 
-                {/* End Auction Button - show if there's an active auction that has ended */}
-                {aminal.auctions &&
-                  aminal.auctions.length > 0 &&
-                  (() => {
-                    const auction = aminal.auctions[0]; // Get the most recent active auction
-                    const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
-                    const auctionEndTime = auction.endBlockTimestamp
-                      ? Number(auction.endBlockTimestamp)
-                      : 0;
-                    const hasEnded =
-                      auctionEndTime > 0 && currentTime > auctionEndTime;
-
-                    if (hasEnded && !auction.finished) {
-                      return (
-                        <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                          <div className="text-sm text-yellow-700 mb-2">
-                            🔔 Auction #{auction.auctionId.toString()} has ended
-                            and can be settled
-                          </div>
-                          <EndAuctionButton
-                            auctionId={auction.auctionId.toString()}
-                            className="w-full"
-                          />
-                        </div>
-                      );
-                    }
-                    return null;
-                  })()}
+                {/* Auction functionality removed from schema */}
               </div>
             </div>
           </div>
@@ -432,16 +362,14 @@ const AminalPage: NextPage = () => {
                       <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
                         <div className="text-sm text-gray-500">Parent A</div>
                         <div className="font-medium text-xs">
-                          {!aminal.momAddress ||
-                          aminal.momAddress ===
-                            '0x0000000000000000000000000000000000000000' ? (
+                          {!aminal.parentOne ? (
                             <span className="text-gray-400">Genesis</span>
                           ) : (
                             <Link
-                              href={`/aminals/${aminal.momAddress}`}
+                              href={`/aminals/${aminal.parentOne.contractAddress}`}
                               className="text-blue-600 hover:text-blue-800 transition-colors underline"
                             >
-                              {aminal.momAddress.slice(0, 8)}...
+                              Aminal #{aminal.parentOne.aminalIndex}
                             </Link>
                           )}
                         </div>
@@ -449,16 +377,14 @@ const AminalPage: NextPage = () => {
                       <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
                         <div className="text-sm text-gray-500">Parent B</div>
                         <div className="font-medium text-xs">
-                          {!aminal.dadAddress ||
-                          aminal.dadAddress ===
-                            '0x0000000000000000000000000000000000000000' ? (
+                          {!aminal.parentTwo ? (
                             <span className="text-gray-400">Genesis</span>
                           ) : (
                             <Link
-                              href={`/aminals/${aminal.dadAddress}`}
+                              href={`/aminals/${aminal.parentTwo.contractAddress}`}
                               className="text-blue-600 hover:text-blue-800 transition-colors underline"
                             >
-                              {aminal.dadAddress.slice(0, 8)}...
+                              Aminal #{aminal.parentTwo.aminalIndex}
                             </Link>
                           )}
                         </div>
@@ -466,47 +392,7 @@ const AminalPage: NextPage = () => {
                     </div>
                   </div>
 
-                  {/* Children */}
-                  {allChildren.length > 0 && (
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-2 px-3">
-                        Children ({allChildren.length})
-                        <span className="text-xs text-gray-500 ml-1">
-                          as Parent A
-                        </span>
-                      </h4>
-                      <div className="grid grid-cols-2 gap-3">
-                        {allChildren.slice(0, 4).map((child: any) => (
-                          <Link
-                            key={child.contractAddress}
-                            href={`/aminals/${child.contractAddress}`}
-                            className="p-3 bg-green-50 rounded-lg border border-green-100 hover:bg-green-100 transition-colors"
-                          >
-                            <div className="flex items-center gap-2">
-                              <div className="w-8 h-8 bg-white rounded border border-green-200 overflow-hidden">
-                                <AminalVisualImage aminal={child} />
-                              </div>
-                              <div>
-                                <div className="text-sm font-medium">
-                                  #{child.aminalIndex}
-                                </div>
-                                <div className="text-xs text-green-700">
-                                  {Number(child.totalLove).toFixed(0)} ❤️
-                                </div>
-                              </div>
-                            </div>
-                          </Link>
-                        ))}
-                        {allChildren.length > 4 && (
-                          <div className="p-3 bg-gray-50 rounded-lg border border-gray-100 flex items-center justify-center">
-                            <span className="text-sm text-gray-500">
-                              +{allChildren.length - 4} more
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
+                  {/* Children tracking removed from schema */}
                 </div>
 
                 {/* Breeding */}
@@ -516,99 +402,9 @@ const AminalPage: NextPage = () => {
                     Breeding
                   </h3>
 
-                  {/* Breeding Status */}
                   <div className="px-3">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-sm text-gray-500">Status:</span>
-                      <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          aminal?.breeding
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-gray-100 text-gray-800'
-                        }`}
-                      >
-                        {aminal?.breeding ? '✅ Available' : '❌ Not Available'}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Quick Actions for Existing Relationships */}
-                  {aminal?.breedableWith && aminal.breedableWith.length > 0 && (
-                    <div className="px-3">
-                      <div className="text-sm text-gray-500 mb-2">
-                        Relationships:
-                      </div>
-                      <div className="space-y-2">
-                        {aminal.breedableWith.map((consent: any) => {
-                          // Check if this aminal has consented to the partner
-                          const weConsented = consent?.consented;
-                          const partner = consent?.partner;
-
-                          if (!partner) return null;
-
-                          // Check if partner has also consented back to us
-                          const partnerConsent = partner.breedableWith?.[0];
-                          const partnerConsented =
-                            partnerConsent?.consented || false;
-                          const mutualConsent = weConsented && partnerConsented;
-
-                          return (
-                            <div
-                              key={consent.id}
-                              className="flex items-center justify-between p-2 bg-gray-50 rounded-lg border border-gray-100"
-                            >
-                              <Link
-                                href={`/aminals/${partner.contractAddress}`}
-                                className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
-                              >
-                                <span className="text-sm font-medium">
-                                  Aminal #{partner.aminalIndex}
-                                </span>
-                              </Link>
-                              <div className="flex items-center gap-2">
-                                <span
-                                  className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                                    mutualConsent
-                                      ? 'bg-green-100 text-green-700'
-                                      : weConsented
-                                      ? 'bg-yellow-100 text-yellow-700'
-                                      : 'bg-gray-100 text-gray-700'
-                                  }`}
-                                >
-                                  {mutualConsent
-                                    ? '💕 Ready to Breed'
-                                    : weConsented
-                                    ? '⏳ Awaiting Response'
-                                    : '❌ Not Consented'}
-                                </span>
-                                <Button
-                                  disabled={
-                                    !mutualConsent ||
-                                    isBreedingPending ||
-                                    isBreedingConfirming
-                                  }
-                                  size="sm"
-                                  onClick={() =>
-                                    handleStartAuction(partner.contractAddress)
-                                  }
-                                  className="bg-green-600 hover:bg-green-700 text-white text-xs px-2 py-1 h-auto disabled:opacity-50"
-                                >
-                                  {isBreedingPending || isBreedingConfirming
-                                    ? 'Starting...'
-                                    : 'Start Auction'}
-                                </Button>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="px-3">
-                    <p className="text-xs text-gray-500 mb-3">
-                      Breeding requires mutual consent and community voting via
-                      Gene Auctions.
+                    <p className="text-sm text-gray-500 mb-3">
+                      Start a breeding auction to create offspring with another Aminal.
                     </p>
                     <Button
                       onClick={() => setIsBreedingModalOpen(true)}
