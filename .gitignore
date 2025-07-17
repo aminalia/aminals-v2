@@ -19,7 +19,6 @@ lcov.info
 # Node.js
 node_modules
 build
-.yarn
 
 # Mac OS
 .DS_STORE
