@@ -90,7 +90,7 @@ type BreedAminalEvent @entity(immutable: true) {
   id: Bytes!
   aminalOne: Aminal! # Parent 1 address
   aminalTwo: Aminal! # Parent 2 address
-  auctionId: BigInt! # Gene auction ID (0 if just setting consent)
+  auctionId: BigInt! # Gene auction ID
   auction: GeneAuction # Related auction entity
   blockNumber: BigInt!
   blockTimestamp: BigInt!

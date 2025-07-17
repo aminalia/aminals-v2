@@ -1,7 +1,13 @@
 import { Aminal } from '../../.graphclient';
 
 export type AminalFilter = 'all' | 'loved';
-export type AminalSort = 'most-loved' | 'least-loved' | 'oldest' | 'youngest' | 'richest' | 'poorest';
+export type AminalSort =
+  | 'most-loved'
+  | 'least-loved'
+  | 'oldest'
+  | 'youngest'
+  | 'richest'
+  | 'poorest';
 
 /**
  * Transform and filter aminals based on user preferences
@@ -54,9 +60,10 @@ export const calculateAminalStats = (aminal: Aminal) => {
   const totalLove = Number(aminal.totalLove || 0);
   const energy = Number(aminal.energy || 0);
   const ethBalance = Number(aminal.ethBalance || 0);
-  const userLove = aminal.lovers && aminal.lovers.length > 0 && aminal.lovers[0] 
-    ? Number(aminal.lovers[0].love || 0) 
-    : 0;
+  const userLove =
+    aminal.lovers && aminal.lovers.length > 0 && aminal.lovers[0]
+      ? Number(aminal.lovers[0].love || 0)
+      : 0;
 
   return {
     totalLove,
@@ -74,7 +81,7 @@ export const calculateAminalStats = (aminal: Aminal) => {
  */
 export const formatAminalForDisplay = (aminal: Aminal) => {
   const stats = calculateAminalStats(aminal);
-  
+
   return {
     id: aminal.id,
     contractAddress: aminal.contractAddress,
@@ -99,8 +106,6 @@ export const formatAminalForDisplay = (aminal: Aminal) => {
     breeding: {
       parentOneAddress: aminal.parentOne?.contractAddress || null,
       parentTwoAddress: aminal.parentTwo?.contractAddress || null,
-      isBreedable: false, // Breeding consent system removed
-      breeding: false, // Breeding status removed
     },
     metadata: {
       blockTimestamp: Number(aminal.blockTimestamp || 0),
@@ -134,11 +139,11 @@ export const filterAminalsBySearch = (
   }
 
   const lowerSearchTerm = searchTerm.toLowerCase();
-  
+
   return aminals.filter((aminal) => {
     const aminalIndex = aminal.aminalIndex?.toString().toLowerCase() || '';
     const contractAddress = aminal.contractAddress?.toLowerCase() || '';
-    
+
     return (
       aminalIndex.includes(lowerSearchTerm) ||
       contractAddress.includes(lowerSearchTerm)
@@ -151,14 +156,14 @@ export const filterAminalsBySearch = (
  */
 export const groupAminalsByLoveRange = (aminals: Aminal[]) => {
   const groups = {
-    high: [] as Aminal[],    // > 10 love
-    medium: [] as Aminal[],  // 1-10 love
-    low: [] as Aminal[],     // 0-1 love
+    high: [] as Aminal[], // > 10 love
+    medium: [] as Aminal[], // 1-10 love
+    low: [] as Aminal[], // 0-1 love
   };
 
   aminals.forEach((aminal) => {
     const totalLove = Number(aminal.totalLove || 0);
-    
+
     if (totalLove > 10) {
       groups.high.push(aminal);
     } else if (totalLove >= 1) {
@@ -176,18 +181,26 @@ export const groupAminalsByLoveRange = (aminals: Aminal[]) => {
  */
 export const calculateCollectionStats = (aminals: Aminal[]) => {
   const totalAminals = aminals.length;
-  const totalLove = aminals.reduce((sum, aminal) => sum + Number(aminal.totalLove || 0), 0);
-  const totalEnergy = aminals.reduce((sum, aminal) => sum + Number(aminal.energy || 0), 0);
+  const totalLove = aminals.reduce(
+    (sum, aminal) => sum + Number(aminal.totalLove || 0),
+    0
+  );
+  const totalEnergy = aminals.reduce(
+    (sum, aminal) => sum + Number(aminal.energy || 0),
+    0
+  );
   const averageLove = totalAminals > 0 ? totalLove / totalAminals : 0;
   const averageEnergy = totalAminals > 0 ? totalEnergy / totalAminals : 0;
 
-  const mostLoved = aminals.reduce((max, aminal) => 
-    Number(aminal.totalLove || 0) > Number(max.totalLove || 0) ? aminal : max, 
+  const mostLoved = aminals.reduce(
+    (max, aminal) =>
+      Number(aminal.totalLove || 0) > Number(max.totalLove || 0) ? aminal : max,
     aminals[0]
   );
 
-  const mostEnergetic = aminals.reduce((max, aminal) => 
-    Number(aminal.energy || 0) > Number(max.energy || 0) ? aminal : max, 
+  const mostEnergetic = aminals.reduce(
+    (max, aminal) =>
+      Number(aminal.energy || 0) > Number(max.energy || 0) ? aminal : max,
     aminals[0]
   );
 

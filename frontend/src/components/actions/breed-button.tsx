@@ -22,7 +22,6 @@ export default function BreedButton({
   const { isConnected, chain, address } = useAccount();
   const enabled = isConnected && chain;
   const [partnerAddress, setPartnerAddress] = useState<string>('');
-  const [step, setStep] = useState<'consent' | 'auction'>('consent');
   const { writeContract, isPending, data: hash, error } = useWriteContract();
   const queryClient = useQueryClient();
 
@@ -40,7 +39,6 @@ export default function BreedButton({
     if (hash) {
       console.log('💕 Breed transaction initiated:', {
         hash,
-        step,
         aminalAddress: contractAddress,
         partnerAddress,
         userAddress: address,
@@ -49,7 +47,7 @@ export default function BreedButton({
         timestamp: new Date().toISOString(),
       });
     }
-  }, [hash, step, contractAddress, partnerAddress, address, chain?.id]);
+  }, [hash, contractAddress, partnerAddress, address, chain?.id]);
 
   // Handle transaction success
   useEffect(() => {
@@ -62,27 +60,18 @@ export default function BreedButton({
         effectiveGasPrice: receipt.effectiveGasPrice?.toString(),
         status: receipt.status,
         transactionIndex: receipt.transactionIndex,
-        step,
         aminalAddress: contractAddress,
         partnerAddress,
         timestamp: new Date().toISOString(),
       });
 
-      if (step === 'consent') {
-        toast.success('💕 Breeding consent given successfully!', {
+      toast.success(
+        '🍼 Gene auction started! Community can now vote on offspring traits.',
+        {
           id: 'breed-tx',
-          duration: 5000,
-        });
-        setStep('auction');
-      } else if (step === 'auction') {
-        toast.success(
-          '🍼 Gene auction started! Community can now vote on offspring traits.',
-          {
-            id: 'breed-tx',
-            duration: 6000,
-          }
-        );
-      }
+          duration: 6000,
+        }
+      );
 
       queryClient.invalidateQueries({
         queryKey: ['aminal-by-address', contractAddress],
@@ -94,7 +83,6 @@ export default function BreedButton({
     isConfirmed,
     receipt,
     hash,
-    step,
     contractAddress,
     partnerAddress,
     queryClient,
@@ -108,7 +96,6 @@ export default function BreedButton({
         name: error.name,
         cause: error.cause,
         stack: error.stack,
-        step,
         aminalAddress: contractAddress,
         partnerAddress,
         userAddress: address,
@@ -135,7 +122,7 @@ export default function BreedButton({
 
       toast.error(errorMessage, { id: 'breed-tx' });
     }
-  }, [error, step, contractAddress, partnerAddress, address, chain?.id]);
+  }, [error, contractAddress, partnerAddress, address, chain?.id]);
 
   // Handle receipt errors
   useEffect(() => {
@@ -145,7 +132,6 @@ export default function BreedButton({
         name: receiptError.name,
         cause: receiptError.cause,
         hash,
-        step,
         aminalAddress: contractAddress,
         partnerAddress,
         timestamp: new Date().toISOString(),
@@ -154,13 +140,12 @@ export default function BreedButton({
       console.error('❌ Breed transaction receipt error:', receiptErrorDetails);
       toast.error('Transaction failed. Please try again.', { id: 'breed-tx' });
     }
-  }, [receiptError, hash, step, contractAddress, partnerAddress]);
+  }, [receiptError, hash, contractAddress, partnerAddress]);
 
   // Handle pending state
   useEffect(() => {
     if (isPending) {
       console.log('⏳ Breed transaction pending...', {
-        step,
         aminalAddress: contractAddress,
         partnerAddress,
         userAddress: address,
@@ -168,62 +153,30 @@ export default function BreedButton({
       });
       toast.loading('Preparing transaction...', { id: 'breed-tx' });
     }
-  }, [isPending, step, contractAddress, partnerAddress, address]);
+  }, [isPending, contractAddress, partnerAddress, address]);
 
   // Handle confirmation state
   useEffect(() => {
     if (isConfirming) {
       console.log('🔄 Breed transaction confirming...', {
         hash,
-        step,
         aminalAddress: contractAddress,
         partnerAddress,
         timestamp: new Date().toISOString(),
       });
 
-      const message =
-        step === 'consent'
-          ? 'Giving breeding consent...'
-          : 'Starting gene auction...';
-      toast.loading(message, { id: 'breed-tx' });
+      toast.loading('Starting gene auction...', { id: 'breed-tx' });
     }
-  }, [isConfirming, hash, step, contractAddress, partnerAddress]);
+  }, [isConfirming, hash, contractAddress, partnerAddress]);
 
-  function giveConsent() {
+  function startBreeding() {
     if (!enabled || !isAddress(partnerAddress)) {
       toast.error('Please enter a valid partner contract address');
       return;
     }
 
     // Log the contract call parameters
-    console.log('🚀 Initiating breed consent transaction:', {
-      contractAddress: aminalFactoryAddress,
-      functionName: 'breedAminals',
-      aminalAddress: contractAddress,
-      partnerAddress,
-      value: parseEther('0.001').toString(),
-      userAddress: address,
-      chainId: chain?.id,
-      timestamp: new Date().toISOString(),
-    });
-
-    writeContract({
-      abi: aminalFactoryAbi,
-      address: aminalFactoryAddress,
-      functionName: 'breedAminals',
-      args: [contractAddress, partnerAddress as `0x${string}`],
-      value: parseEther('0.001'),
-    });
-  }
-
-  function startAuction() {
-    if (!enabled || !isAddress(partnerAddress)) {
-      toast.error('Please enter a valid partner contract address');
-      return;
-    }
-
-    // Log the contract call parameters
-    console.log('🚀 Initiating breed auction transaction:', {
+    console.log('🚀 Initiating breed transaction:', {
       contractAddress: aminalFactoryAddress,
       functionName: 'breedAminals',
       aminalAddress: contractAddress,
@@ -253,38 +206,17 @@ export default function BreedButton({
         className="w-full"
       />
 
-      {step === 'consent' ? (
-        <Button
-          onClick={giveConsent}
-          disabled={
-            !enabled || !isAddress(partnerAddress) || isPending || isConfirming
-          }
-          variant="outline"
-          className="w-full"
-        >
-          {isPending || isConfirming
-            ? '⏳ Giving Consent...'
-            : '💕 Give Breeding Consent'}
-        </Button>
-      ) : (
-        <Button
-          onClick={startAuction}
-          disabled={
-            !enabled || !isAddress(partnerAddress) || isPending || isConfirming
-          }
-          className="w-full bg-pink-600 hover:bg-pink-700 text-white"
-        >
-          {isPending || isConfirming
-            ? '⏳ Starting Auction...'
-            : '🍼 Start Gene Auction (0.001 ETH)'}
-        </Button>
-      )}
-
-      {step === 'auction' && (
-        <p className="text-sm text-gray-600">
-          Consent given! Now start the gene auction to create offspring.
-        </p>
-      )}
+      <Button
+        onClick={startBreeding}
+        disabled={
+          !enabled || !isAddress(partnerAddress) || isPending || isConfirming
+        }
+        className="w-full bg-pink-600 hover:bg-pink-700 text-white"
+      >
+        {isPending || isConfirming
+          ? '⏳ Starting Auction...'
+          : '🍼 Start Gene Auction (0.001 ETH)'}
+      </Button>
     </div>
   );
 }

@@ -138,7 +138,7 @@ contract AminalFactory is IAminalFactory, Initializable, Ownable {
      * @notice Emitted when breeding is initiated between two Aminals
      * @param aminalOne First Aminal in the breeding pair
      * @param aminalTwo Second Aminal in the breeding pair
-     * @param auctionId Gene auction ID (0 if just setting consent)
+     * @param auctionId Gene auction ID
      */
     event BreedAminal(address indexed aminalOne, address indexed aminalTwo, uint256 auctionId);
 
@@ -287,11 +287,12 @@ contract AminalFactory is IAminalFactory, Initializable, Ownable {
      * @param winningGeneIds Array of 8 gene IDs selected by auction for each trait
      * @return childAddress Address of the newly spawned Aminal
      */
-    function spawnAminal(address parentOne, address parentTwo, uint256 auctionId, uint256[TRAIT_CATEGORIES] calldata winningGeneIds)
-        external
-        onlyAuction
-        returns (address childAddress)
-    {
+    function spawnAminal(
+        address parentOne,
+        address parentTwo,
+        uint256 auctionId,
+        uint256[TRAIT_CATEGORIES] calldata winningGeneIds
+    ) external onlyAuction returns (address childAddress) {
         require(isAminal[parentOne], "AminalFactory: invalid parent one");
         require(isAminal[parentTwo], "AminalFactory: invalid parent two");
 
@@ -314,21 +315,18 @@ contract AminalFactory is IAminalFactory, Initializable, Ownable {
 
     /**
      * @notice Initiate breeding ceremony between two Aminals 💕
-     * @dev Handles consent mechanics and launches gene auctions for offspring
+     * @dev Launches gene auctions for offspring
      *
-     * The breeding process follows a two-step consent model:
-     * 1. First call sets consent from one Aminal to another
-     * 2. Second call (with mutual consent) creates gene auction
      *
      * Requirements:
      * - Minimum breeding fee must be paid
      * - Both addresses must be valid Aminals
-     * - Caller must have sufficient love for at least one Aminal
-     * - For auction creation: both Aminals need sufficient energy and mutual consent
+     * - Caller must have sufficient love for at both Aminals
+     * - Both Aminals must have sufficient energy to breed
      *
      * @param aminalOne First parent Aminal address
      * @param aminalTwo Second parent Aminal address
-     * @return auctionId Gene auction ID (0 if setting initial consent)
+     * @return auctionId Gene auction ID
      *
      * "When two Aminals unite in love, their digital essence mingles
      *  through algorithms of affection, creating new life from pure emotion"
@@ -459,10 +457,10 @@ contract AminalFactory is IAminalFactory, Initializable, Ownable {
         totalAminals++;
 
         emit AminalSpawned(
-            childAddress, 
-            parentOne, 
-            parentTwo, 
-            auctionId, 
+            childAddress,
+            parentOne,
+            parentTwo,
+            auctionId,
             [backId, armId, tailId, earsId, bodyId, faceId, mouthId, miscId]
         );
 

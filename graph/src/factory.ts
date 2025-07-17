@@ -132,9 +132,6 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
     let parent1 = Aminal.load(event.params.parentOne);
     let parent2 = Aminal.load(event.params.parentTwo);
 
-    // Parents are loaded but no longer need breeding status updates
-    // since breeding consent system was removed
-
     // Directly link the auction to the child using the auctionId from the event
     if (event.params.auctionId.gt(BigInt.fromI32(0))) {
       let auctionId = createAuctionId(event.params.auctionId);
@@ -192,8 +189,6 @@ export function handleBreedAminal(event: BreedAminalEvent): void {
   // Link to auction if one was created
   if (event.params.auctionId.gt(BigInt.fromI32(0))) {
     breedEvent.auction = Bytes.fromI32(event.params.auctionId.toI32());
-
-    // Breeding consent system removed - no status updates needed
   }
 
   breedEvent.blockNumber = event.block.number;

@@ -207,9 +207,6 @@ The deployment script creates 16 initial Gene NFTs with these themes:
 5. **Test Breeding**
 
    ```bash
-   # Set breeding consent
-   cast send $AMINAL_ADDRESS "setBreedableWith(address,bool)" $PARTNER_ADDRESS true --rpc-url sepolia --private-key $PRIVATE_KEY
-
    # Initiate breeding
    cast send $FACTORY_ADDRESS "breed(address,address)" $AMINAL_ADDRESS $PARTNER_ADDRESS --rpc-url sepolia --private-key $PRIVATE_KEY
    ```

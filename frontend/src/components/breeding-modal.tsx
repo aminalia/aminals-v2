@@ -31,7 +31,6 @@ export default function BreedingModal({
   const [manualAddress, setManualAddress] = useState<string>('');
   const [useManualAddress, setUseManualAddress] = useState(false);
   const [filter, setFilter] = useState<'all' | 'loved'>('all');
-  const [action, setAction] = useState<'consent' | 'start-auction'>('consent');
 
   const { writeContract, isPending, data: hash, error } = useWriteContract();
   const { isConnected, chain, address } = useAccount();
@@ -52,73 +51,29 @@ export default function BreedingModal({
     'most-loved'
   );
 
-  // Filter out current aminal and process breeding relationships
+  // Filter out current aminal
   const availableAminals = useMemo(() => {
     if (!aminals) return [];
 
     return aminals
       .filter((a: any) => a.contractAddress !== aminal.contractAddress)
-      .map((a: any) => {
-        // Check if there's an existing relationship with this aminal
-        const existingRelation = aminal.breedableWith?.find(
-          (rel: any) => rel.partner.contractAddress === a.contractAddress
-        );
-        const reverseRelation = a.breedableWith?.find(
-          (rel: any) => rel.partner.contractAddress === aminal.contractAddress
-        );
-
-        const weLikedThem = !!existingRelation?.consented;
-        const theyLikedUs = !!reverseRelation?.consented;
-        const canStartBreeding = weLikedThem && theyLikedUs;
-
-        return {
-          ...a,
-          hasLikedUs: theyLikedUs,
-          weLikedThem: weLikedThem,
-          canStartBreeding: canStartBreeding,
-          relationshipStatus: existingRelation
-            ? existingRelation.consented
-              ? 'consented'
-              : 'pending'
-            : 'none',
-        };
-      })
       .sort((a: any, b: any) => {
-        // Prioritize mutual relationships, then those who liked us, then others
-        if (a.canStartBreeding && !b.canStartBreeding) return -1;
-        if (!a.canStartBreeding && b.canStartBreeding) return 1;
-        if (a.hasLikedUs && !b.hasLikedUs) return -1;
-        if (!a.hasLikedUs && b.hasLikedUs) return 1;
+        // Sort by total love in descending order
         return Number(b.totalLove) - Number(a.totalLove);
       });
   }, [aminals, aminal]);
 
-  // Determine current action based on selection
-  useEffect(() => {
-    if (selectedPartner?.canStartBreeding) {
-      setAction('start-auction');
-    } else {
-      setAction('consent');
-    }
-  }, [selectedPartner]);
 
   // Handle transaction success
   useEffect(() => {
     if (isConfirmed) {
-      if (action === 'consent') {
-        toast.success('💕 Breeding consent given successfully!', {
+      toast.success(
+        '🍼 Gene auction started! Community can now vote on offspring traits.',
+        {
           id: 'breed-tx',
-          duration: 5000,
-        });
-      } else {
-        toast.success(
-          '🍼 Gene auction started! Community can now vote on offspring traits.',
-          {
-            id: 'breed-tx',
-            duration: 6000,
-          }
-        );
-      }
+          duration: 6000,
+        }
+      );
       onSuccess?.();
       onClose();
       // Reset form
@@ -126,7 +81,7 @@ export default function BreedingModal({
       setManualAddress('');
       setUseManualAddress(false);
     }
-  }, [isConfirmed, action, onSuccess, onClose]);
+  }, [isConfirmed, onSuccess, onClose]);
 
   // Handle transaction errors
   useEffect(() => {
@@ -161,13 +116,9 @@ export default function BreedingModal({
   // Handle confirmation state
   useEffect(() => {
     if (isConfirming) {
-      const message =
-        action === 'consent'
-          ? 'Giving breeding consent...'
-          : 'Starting gene auction...';
-      toast.loading(message, { id: 'breed-tx' });
+      toast.loading('Starting gene auction...', { id: 'breed-tx' });
     }
-  }, [isConfirming, action]);
+  }, [isConfirming]);
 
   const handleBreeding = () => {
     if (!enabled) return;
@@ -192,37 +143,11 @@ export default function BreedingModal({
   const getActionText = () => {
     if (!enabled) return 'Connect Wallet';
     if (isPending || isConfirming) {
-      return action === 'consent' ? 'Giving Consent...' : 'Starting Auction...';
+      return 'Starting Auction...';
     }
-    return action === 'consent'
-      ? '💕 Give Breeding Consent'
-      : '🍼 Start Gene Auction (0.001 ETH)';
+    return '🍼 Start Gene Auction (0.001 ETH)';
   };
 
-  const getRelationshipBadge = (aminal: any) => {
-    if (aminal.canStartBreeding) {
-      return (
-        <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium">
-          💕 Ready to Breed
-        </span>
-      );
-    }
-    if (aminal.hasLikedUs) {
-      return (
-        <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full font-medium">
-          💌 Likes You
-        </span>
-      );
-    }
-    if (aminal.weLikedThem) {
-      return (
-        <span className="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded-full font-medium">
-          ⏳ Awaiting Response
-        </span>
-      );
-    }
-    return null;
-  };
 
   if (!isOpen) return null;
 
@@ -353,7 +278,6 @@ export default function BreedingModal({
                           <div className="text-xs text-gray-600">
                             {Number(aminalOption.totalLove).toFixed(0)} ❤️
                           </div>
-                          {getRelationshipBadge(aminalOption)}
                         </div>
                       </div>
                     ))}
@@ -386,11 +310,6 @@ export default function BreedingModal({
                     <div className="text-sm text-blue-700">
                       {selectedPartner.contractAddress}
                     </div>
-                    {selectedPartner.canStartBreeding && (
-                      <div className="text-sm font-medium text-green-700">
-                        ✅ Both parties have consented - ready to start auction!
-                      </div>
-                    )}
                   </div>
                 </div>
               )}
@@ -401,9 +320,7 @@ export default function BreedingModal({
         {/* Footer */}
         <div className="border-t border-gray-200 p-4 sm:p-6 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between shrink-0">
           <div className="text-xs sm:text-sm text-gray-600 order-2 sm:order-1">
-            {action === 'consent'
-              ? 'Give consent to show interest in breeding'
-              : 'Start the gene auction to create offspring (requires mutual consent)'}
+            Start the gene auction to create offspring with your selected partner
           </div>
           <div className="flex gap-3 order-1 sm:order-2">
             <Button
@@ -424,9 +341,7 @@ export default function BreedingModal({
                 isConfirming
               }
               className={cn(
-                action === 'consent'
-                  ? 'bg-pink-600 hover:bg-pink-700 text-white'
-                  : 'bg-green-600 hover:bg-green-700 text-white',
+                'bg-green-600 hover:bg-green-700 text-white',
                 'disabled:opacity-50 flex-1 sm:flex-initial'
               )}
             >

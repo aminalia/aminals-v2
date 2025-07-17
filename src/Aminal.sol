@@ -64,7 +64,7 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
     /// @notice Initial energy for new Aminals (0.005 ETH worth)
     uint256 public constant INITIAL_ENERGY = 50;
 
-    /// @notice Minimum love required for breeding consent
+    /// @notice Minimum love required for breeding
     uint256 public constant MIN_BREEDING_LOVE = 10;
 
     /// @notice Maximum skill cost to prevent accidental huge costs
@@ -128,11 +128,6 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
     /// @param totalLove Total love remaining
     /// @param energy Remaining energy
     event Squeak(address indexed sender, uint256 amount, uint256 love, uint256 totalLove, uint256 energy);
-
-    /// @notice Emitted when breeding consent is set with another Aminal
-    /// @param partner Address of the partner Aminal
-    /// @param status True if breeding is allowed, false otherwise
-    event BreedableSet(address indexed partner, bool status);
 
     /// @notice Emitted when energy is consumed for skill usage
     /// @param user Address of the skill user

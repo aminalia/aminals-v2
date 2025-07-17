@@ -26,6 +26,7 @@ In general we need a review of what things cost (even if the cost is in terms of
 
 #### Contracts
 
+- Remove MIN_BREEDING_FEE in breedAminals
 - setFactory in Genes is not good... maybe use an initializer? Owner can set factory whenever. Need to initialize initial genes, but maybe there is a different pattern we can use?
 - start optimizing for gas (payouts need most work)
 - measure gas (see how this is done in aminalsV3)

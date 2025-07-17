@@ -16,7 +16,7 @@ import {IAminalStructs} from "src/interfaces/IAminalStructs.sol";
  * @title AminalBreedingIntegration
  * @dev Comprehensive integration test covering the complete breeding flow:
  * 1. Aminals are fed to build love and energy
- * 2. Breeding is initiated with mutual consent
+ * 2. Breeding is initiated
  * 3. Gene auction is created with voting and proposals
  * 4. Child is born based on voted genes (or random if no votes)
  * 5. Holders of selected gene NFTs are paid out
