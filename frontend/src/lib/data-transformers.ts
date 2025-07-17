@@ -49,6 +49,7 @@ export const transformAminals = (
 export const calculateAminalStats = (aminal: Aminal) => {
   const totalLove = Number(aminal.totalLove || 0);
   const energy = Number(aminal.energy || 0);
+  const ethBalance = Number(aminal.ethBalance || 0);
   const userLove = aminal.lovers && aminal.lovers.length > 0 && aminal.lovers[0] 
     ? Number(aminal.lovers[0].love || 0) 
     : 0;
@@ -56,6 +57,7 @@ export const calculateAminalStats = (aminal: Aminal) => {
   return {
     totalLove,
     energy,
+    ethBalance,
     userLove,
     hasUserLove: userLove > 0,
     energyPercentage: Math.min(energy / 100, 1) * 100, // Assuming max energy is 100
@@ -76,6 +78,7 @@ export const formatAminalForDisplay = (aminal: Aminal) => {
     displayName: `Aminal #${aminal.aminalIndex || 'Unknown'}`,
     energy: stats.energy.toFixed(2),
     totalLove: stats.totalLove.toFixed(2),
+    ethBalance: stats.ethBalance.toFixed(4),
     userLove: stats.userLove.toFixed(2),
     hasUserLove: stats.hasUserLove,
     tokenURI: aminal.tokenURI,
@@ -90,10 +93,10 @@ export const formatAminalForDisplay = (aminal: Aminal) => {
       miscId: aminal.miscId?.toString() || '0',
     },
     breeding: {
-      momAddress: aminal.momAddress,
-      dadAddress: aminal.dadAddress,
-      isBreedable: aminal.breedableWith && aminal.breedableWith.length > 0,
-      breeding: aminal.breeding || false,
+      parentOneAddress: aminal.parentOne?.contractAddress || null,
+      parentTwoAddress: aminal.parentTwo?.contractAddress || null,
+      isBreedable: false, // Breeding consent system removed
+      breeding: false, // Breeding status removed
     },
     metadata: {
       blockTimestamp: Number(aminal.blockTimestamp || 0),

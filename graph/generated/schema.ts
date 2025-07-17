@@ -461,6 +461,19 @@ export class Aminal extends Entity {
     this.set("totalLove", Value.fromBigInt(value));
   }
 
+  get ethBalance(): BigInt {
+    let value = this.get("ethBalance");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set ethBalance(value: BigInt) {
+    this.set("ethBalance", Value.fromBigInt(value));
+  }
+
   get lovers(): RelationshipLoader {
     return new RelationshipLoader(
       "Aminal",

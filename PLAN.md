@@ -36,8 +36,6 @@ In general we need a review of what things cost (even if the cost is in terms of
 
 #### Indexer
 
-- Refine schema
-- Index Aminal ETH balance on feed aminal and spawn aminal
 - Switch to ponder?
 
 #### Do last

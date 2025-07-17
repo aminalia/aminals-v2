@@ -59,18 +59,3 @@ query SkillUsedBySkill($skillAddress: Bytes!) {
   }
 }
 
-query GlobalSkillsList($first: Int = 100, $skip: Int = 0) {
-  globalSkills(
-    first: $first
-    skip: $skip
-    orderBy: callCount
-    orderDirection: desc
-  ) {
-    id
-    skillAddress
-    name
-    callCount
-    totalSqueakCost
-    blockTimestamp
-  }
-}

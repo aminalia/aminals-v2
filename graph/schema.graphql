@@ -44,6 +44,7 @@ type Aminal @entity(immutable: false) {
   # State
   energy: BigInt!
   totalLove: BigInt!
+  ethBalance: BigInt! # ETH balance of the Aminal contract
 
 
 

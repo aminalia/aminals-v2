@@ -13,6 +13,13 @@ import {
   Relationship
 } from "../generated/schema";
 
+// Helper function to track ETH balance changes
+// Note: The Graph Protocol doesn't support direct balance queries
+// Instead, we'll track the cumulative ETH sent to the contract through events
+function updateEthBalance(currentBalance: BigInt, ethReceived: BigInt): BigInt {
+  return currentBalance.plus(ethReceived);
+}
+
 export function handleFeedAminal(event: FeedAminalEvent): void {
   // Load the Aminal entity
   let aminal = Aminal.load(event.address);
@@ -29,13 +36,16 @@ export function handleFeedAminal(event: FeedAminalEvent): void {
     user.save();
   }
   
+  // Get ETH amount from transaction value (feeding sends ETH to the Aminal)
+  let ethAmount = event.transaction.value;
+  
   // Create feed event entity
   let feedEvent = new FeedAminal(
     event.transaction.hash.concat(event.address).concatI32(event.logIndex.toI32())
   );
   feedEvent.aminal = aminal.id;
   feedEvent.sender = user.id;
-  feedEvent.amount = BigInt.fromI32(0); // ETH amount (not in event params)
+  feedEvent.amount = ethAmount; // ETH amount from transaction value
   feedEvent.love = event.params.love;
   feedEvent.totalLove = event.params.totalLove; 
   feedEvent.energy = event.params.energy;
@@ -47,6 +57,7 @@ export function handleFeedAminal(event: FeedAminalEvent): void {
   // Update Aminal state
   aminal.energy = event.params.energy;
   aminal.totalLove = event.params.totalLove;
+  aminal.ethBalance = updateEthBalance(aminal.ethBalance, ethAmount);
   aminal.save();
   
   // Update or create relationship

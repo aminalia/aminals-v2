@@ -872,6 +872,7 @@ export const aminalFactoryAbi = [
     inputs: [
       { name: 'parentOne', internalType: 'address', type: 'address' },
       { name: 'parentTwo', internalType: 'address', type: 'address' },
+      { name: 'auctionId', internalType: 'uint256', type: 'uint256' },
       {
         name: 'winningGeneIds',
         internalType: 'uint256[8]',
@@ -944,51 +945,15 @@ export const aminalFactoryAbi = [
         indexed: true,
       },
       {
-        name: 'backId',
+        name: 'auctionId',
         internalType: 'uint256',
         type: 'uint256',
         indexed: false,
       },
       {
-        name: 'armId',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'tailId',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'earsId',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'bodyId',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'faceId',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'mouthId',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'miscId',
-        internalType: 'uint256',
-        type: 'uint256',
+        name: 'geneIds',
+        internalType: 'uint256[8]',
+        type: 'uint256[8]',
         indexed: false,
       },
     ],
@@ -1049,7 +1014,7 @@ export const aminalFactoryAbi = [
 ] as const
 
 export const aminalFactoryAddress =
-  '0x1c709d848E1aBf0eB5E738229646E1B90287C840' as const
+  '0x37bd5f9dEc75DEAA689f7a3d517B62424CAba8bA' as const
 
 export const aminalFactoryConfig = {
   address: aminalFactoryAddress,
@@ -1111,13 +1076,6 @@ export const geneAuctionAbi = [
     outputs: [
       { name: '', internalType: 'contract IAminalFactory', type: 'address' },
     ],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'aminalsContract',
-    outputs: [{ name: '', internalType: 'address', type: 'address' }],
     stateMutability: 'view',
   },
   {
@@ -1359,7 +1317,6 @@ export const geneAuctionAbi = [
   {
     type: 'function',
     inputs: [
-      { name: '_aminalsContract', internalType: 'address', type: 'address' },
       { name: '_aminalFactory', internalType: 'address', type: 'address' },
     ],
     name: 'setup',
@@ -1691,7 +1648,7 @@ export const geneAuctionAbi = [
 ] as const
 
 export const geneAuctionAddress =
-  '0x7cbBc91326fDF023428C942d1027Ff33B4239BF8' as const
+  '0xB1C434Fb9fB47Cd5e0fd274D0F3Bfec5f66b3D7C' as const
 
 export const geneAuctionConfig = {
   address: geneAuctionAddress,
@@ -1895,7 +1852,7 @@ export const geneRegistryAbi = [
 ] as const
 
 export const geneRegistryAddress =
-  '0x4c13D55407D60646BB46a7A144FA72219Abf492c' as const
+  '0x1fa4C76903DCE4Ad3a3AA95ae1c44D70DFAd471d' as const
 
 export const geneRegistryConfig = {
   address: geneRegistryAddress,
@@ -2282,7 +2239,7 @@ export const genesAbi = [
 ] as const
 
 export const genesAddress =
-  '0x7D4672BE8dFba2EE7c65e4494f00bbd2d997b157' as const
+  '0x5938ad3Cd862Dd08Bd78BA1b92Eb2D54E7842eE9' as const
 
 export const genesConfig = { address: genesAddress, abi: genesAbi } as const
 
@@ -2366,6 +2323,6 @@ export const move2DAbi = [
 ] as const
 
 export const move2DAddress =
-  '0x2e878f4B588C2b05fD7A21917e3A3561557B8a62' as const
+  '0x71F0a8E4eE88b5E77d61077ec97F75260E095b89' as const
 
 export const move2DConfig = { address: move2DAddress, abi: move2DAbi } as const

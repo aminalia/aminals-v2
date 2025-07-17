@@ -30,6 +30,12 @@ function fetchTokenURI(aminalAddress: Address): string | null {
   }
 }
 
+// Helper function to initialize ETH balance for new Aminals
+// Note: New Aminals start with 0 ETH balance
+function initializeEthBalance(): BigInt {
+  return BigInt.fromI32(0);
+}
+
 export function handleAminalSpawned(event: AminalSpawnedEvent): void {
   // Create or load factory entity
   let factory = AminalFactory.load(event.address);
@@ -115,6 +121,7 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
   // Initialize state
   aminal.energy = BigInt.fromI32(50); // Default starting energy
   aminal.totalLove = BigInt.fromI32(0);
+  aminal.ethBalance = initializeEthBalance();
 
   // If this Aminal has parents, update the auction and parent states
   if (

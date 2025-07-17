@@ -10,7 +10,7 @@ query UserProfile($address: ID!) {
         tokenURI
         totalLove
         energy
-        breeding
+        ethBalance
         blockTimestamp
       }
       love

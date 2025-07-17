@@ -4,10 +4,19 @@ query AminalsList($first: Int = 100, $skip: Int = 0, $address: Bytes = "") {
     id
     contractAddress
     aminalIndex
-    momAddress
-    dadAddress
+    parentOne {
+      id
+      contractAddress
+      aminalIndex
+    }
+    parentTwo {
+      id
+      contractAddress
+      aminalIndex
+    }
     energy
     totalLove
+    ethBalance
     blockTimestamp
     tokenURI
     backId
@@ -18,13 +27,6 @@ query AminalsList($first: Int = 100, $skip: Int = 0, $address: Bytes = "") {
     faceId
     mouthId
     miscId
-    breedableWith {
-      partner {
-        id
-        contractAddress
-        aminalIndex
-      }
-    }
     lovers(where: { user_: { address: $address } }) {
       love
     }
@@ -36,11 +38,19 @@ query AminalById($contractAddress: Bytes, $address: Bytes = "") {
     id
     contractAddress
     aminalIndex
-    momAddress
-    dadAddress
+    parentOne {
+      id
+      contractAddress
+      aminalIndex
+    }
+    parentTwo {
+      id
+      contractAddress
+      aminalIndex
+    }
     energy
     totalLove
-    breeding
+    ethBalance
     blockTimestamp
     tokenURI
     backId
@@ -51,30 +61,10 @@ query AminalById($contractAddress: Bytes, $address: Bytes = "") {
     faceId
     mouthId
     miscId
-    breedableWith {
-      id
-      partner {
-        id
-        contractAddress
-        aminalIndex
-      }
-    }
     lovers(where: { user_: { address: $address } }) {
       love
     }
     feeds {
-      id
-      sender {
-        id
-        address
-      }
-      amount
-      love
-      totalLove
-      energy
-      blockTimestamp
-    }
-    squeaks {
       id
       sender {
         id
@@ -110,6 +100,7 @@ query AminalFactory {
       aminalIndex
       energy
       totalLove
+      ethBalance
       tokenURI
     }
   }
