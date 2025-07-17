@@ -35,36 +35,12 @@ export class AminalSpawned__Params {
     return this._event.parameters[2].value.toAddress();
   }
 
-  get backId(): BigInt {
+  get auctionId(): BigInt {
     return this._event.parameters[3].value.toBigInt();
   }
 
-  get armId(): BigInt {
-    return this._event.parameters[4].value.toBigInt();
-  }
-
-  get tailId(): BigInt {
-    return this._event.parameters[5].value.toBigInt();
-  }
-
-  get earsId(): BigInt {
-    return this._event.parameters[6].value.toBigInt();
-  }
-
-  get bodyId(): BigInt {
-    return this._event.parameters[7].value.toBigInt();
-  }
-
-  get faceId(): BigInt {
-    return this._event.parameters[8].value.toBigInt();
-  }
-
-  get mouthId(): BigInt {
-    return this._event.parameters[9].value.toBigInt();
-  }
-
-  get miscId(): BigInt {
-    return this._event.parameters[10].value.toBigInt();
+  get geneIds(): Array<BigInt> {
+    return this._event.parameters[4].value.toBigIntArray();
   }
 }
 
@@ -556,14 +532,16 @@ export class AminalFactory extends ethereum.SmartContract {
   spawnAminal(
     parentOne: Address,
     parentTwo: Address,
+    auctionId: BigInt,
     winningGeneIds: Array<BigInt>,
   ): Address {
     let result = super.call(
       "spawnAminal",
-      "spawnAminal(address,address,uint256[8]):(address)",
+      "spawnAminal(address,address,uint256,uint256[8]):(address)",
       [
         ethereum.Value.fromAddress(parentOne),
         ethereum.Value.fromAddress(parentTwo),
+        ethereum.Value.fromUnsignedBigInt(auctionId),
         ethereum.Value.fromUnsignedBigIntArray(winningGeneIds),
       ],
     );
@@ -574,14 +552,16 @@ export class AminalFactory extends ethereum.SmartContract {
   try_spawnAminal(
     parentOne: Address,
     parentTwo: Address,
+    auctionId: BigInt,
     winningGeneIds: Array<BigInt>,
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "spawnAminal",
-      "spawnAminal(address,address,uint256[8]):(address)",
+      "spawnAminal(address,address,uint256,uint256[8]):(address)",
       [
         ethereum.Value.fromAddress(parentOne),
         ethereum.Value.fromAddress(parentTwo),
+        ethereum.Value.fromUnsignedBigInt(auctionId),
         ethereum.Value.fromUnsignedBigIntArray(winningGeneIds),
       ],
     );
@@ -787,8 +767,12 @@ export class SpawnAminalCall__Inputs {
     return this._call.inputValues[1].value.toAddress();
   }
 
+  get auctionId(): BigInt {
+    return this._call.inputValues[2].value.toBigInt();
+  }
+
   get winningGeneIds(): Array<BigInt> {
-    return this._call.inputValues[2].value.toBigIntArray();
+    return this._call.inputValues[3].value.toBigIntArray();
   }
 }
 

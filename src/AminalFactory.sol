@@ -123,27 +123,15 @@ contract AminalFactory is IAminalFactory, Initializable, Ownable {
      * @param child Address of the newly created Aminal
      * @param parentOne First parent (mother) - can be address(0) for genesis
      * @param parentTwo Second parent (father) - can be address(0) for genesis
-     * @param backId Background/environment trait gene ID
-     * @param armId Limb/appendage trait gene ID
-     * @param tailId Tail variation trait gene ID
-     * @param earsId Ear shape trait gene ID
-     * @param bodyId Body structure trait gene ID
-     * @param faceId Facial features trait gene ID
-     * @param mouthId Mouth/expression trait gene ID
-     * @param miscId Accessory/special trait gene ID
+     * @param auctionId Gene auction ID that created this child (0 for genesis)
+     * @param geneIds Array of 8 gene IDs for traits [BACK, ARM, TAIL, EARS, BODY, FACE, MOUTH, MISC]
      */
     event AminalSpawned(
         address indexed child,
         address indexed parentOne,
         address indexed parentTwo,
-        uint256 backId,
-        uint256 armId,
-        uint256 tailId,
-        uint256 earsId,
-        uint256 bodyId,
-        uint256 faceId,
-        uint256 mouthId,
-        uint256 miscId
+        uint256 auctionId,
+        uint256[TRAIT_CATEGORIES] geneIds
     );
 
     /**
@@ -267,6 +255,7 @@ contract AminalFactory is IAminalFactory, Initializable, Ownable {
             _spawnAminal(
                 address(0), // No parents for genesis Aminals
                 address(0),
+                0, // No auction ID for genesis Aminals
                 _visuals[i].backId,
                 _visuals[i].armId,
                 _visuals[i].tailId,
@@ -294,10 +283,11 @@ contract AminalFactory is IAminalFactory, Initializable, Ownable {
      *
      * @param parentOne Address of the first parent Aminal
      * @param parentTwo Address of the second parent Aminal
+     * @param auctionId Gene auction ID that created this child
      * @param winningGeneIds Array of 8 gene IDs selected by auction for each trait
      * @return childAddress Address of the newly spawned Aminal
      */
-    function spawnAminal(address parentOne, address parentTwo, uint256[TRAIT_CATEGORIES] calldata winningGeneIds)
+    function spawnAminal(address parentOne, address parentTwo, uint256 auctionId, uint256[TRAIT_CATEGORIES] calldata winningGeneIds)
         external
         onlyAuction
         returns (address childAddress)
@@ -310,6 +300,7 @@ contract AminalFactory is IAminalFactory, Initializable, Ownable {
         return _spawnAminal(
             parentOne,
             parentTwo,
+            auctionId,
             winningGeneIds[0], // BACK
             winningGeneIds[1], // ARM
             winningGeneIds[2], // TAIL
@@ -412,6 +403,7 @@ contract AminalFactory is IAminalFactory, Initializable, Ownable {
      *
      * @param parentOne First parent address (address(0) for genesis)
      * @param parentTwo Second parent address (address(0) for genesis)
+     * @param auctionId Gene auction ID that created this child (0 for genesis)
      * @param backId Background trait gene ID
      * @param armId Arm trait gene ID
      * @param tailId Tail trait gene ID
@@ -425,6 +417,7 @@ contract AminalFactory is IAminalFactory, Initializable, Ownable {
     function _spawnAminal(
         address parentOne,
         address parentTwo,
+        uint256 auctionId,
         uint256 backId,
         uint256 armId,
         uint256 tailId,
@@ -466,7 +459,11 @@ contract AminalFactory is IAminalFactory, Initializable, Ownable {
         totalAminals++;
 
         emit AminalSpawned(
-            childAddress, parentOne, parentTwo, backId, armId, tailId, earsId, bodyId, faceId, mouthId, miscId
+            childAddress, 
+            parentOne, 
+            parentTwo, 
+            auctionId, 
+            [backId, armId, tailId, earsId, bodyId, faceId, mouthId, miscId]
         );
 
         return childAddress;

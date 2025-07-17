@@ -481,6 +481,29 @@ export class GeneAuction extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
+  PROPOSE_GENE_COST(): BigInt {
+    let result = super.call(
+      "PROPOSE_GENE_COST",
+      "PROPOSE_GENE_COST():(uint256)",
+      [],
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_PROPOSE_GENE_COST(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "PROPOSE_GENE_COST",
+      "PROPOSE_GENE_COST():(uint256)",
+      [],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   TRAIT_CATEGORIES(): BigInt {
     let result = super.call(
       "TRAIT_CATEGORIES",
@@ -560,29 +583,6 @@ export class GeneAuction extends ethereum.SmartContract {
     let result = super.tryCall(
       "aminalFactory",
       "aminalFactory():(address)",
-      [],
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
-
-  aminalsContract(): Address {
-    let result = super.call(
-      "aminalsContract",
-      "aminalsContract():(address)",
-      [],
-    );
-
-    return result[0].toAddress();
-  }
-
-  try_aminalsContract(): ethereum.CallResult<Address> {
-    let result = super.tryCall(
-      "aminalsContract",
-      "aminalsContract():(address)",
       [],
     );
     if (result.reverted) {
@@ -1280,12 +1280,8 @@ export class SetupCall__Inputs {
     this._call = call;
   }
 
-  get _aminalsContract(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
   get _aminalFactory(): Address {
-    return this._call.inputValues[1].value.toAddress();
+    return this._call.inputValues[0].value.toAddress();
   }
 }
 

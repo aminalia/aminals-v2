@@ -13,47 +13,8 @@ import {
   GeneAuction,
   GeneNFT,
   User,
-  PendingBirth,
 } from "../generated/schema";
 import { createAuctionId } from "./gene-auction";
-
-// Helper function to find pending birth by parent addresses
-// Returns the oldest pending birth for the given parent pair
-function findPendingBirthByParents(
-  parentOne: Address,
-  parentTwo: Address
-): PendingBirth | null {
-  // Optimized search: Check only recent 5 auctions for performance
-
-  for (let i = 0; i < 3; i++) {
-    let auctionId = createAuctionId(BigInt.fromI32(i));
-    let pendingBirth = PendingBirth.load(auctionId);
-
-    if (
-      pendingBirth &&
-      ((pendingBirth.parentOne == parentOne &&
-        pendingBirth.parentTwo == parentTwo) ||
-        (pendingBirth.parentOne == parentTwo &&
-          pendingBirth.parentTwo == parentOne))
-    ) {
-      log.info("Found pending birth for parents {} and {} at auction {}", [
-        parentOne.toHexString(),
-        parentTwo.toHexString(),
-        i.toString(),
-      ]);
-      return pendingBirth;
-    }
-  }
-
-  // Not finding a pending birth is not necessarily an error
-  // This can happen for older Aminals or if the search range is too small
-  log.info(
-    "No pending birth found for parents {} and {} in recent 5 auctions - this may be normal for older Aminals",
-    [parentOne.toHexString(), parentTwo.toHexString()]
-  );
-
-  return null;
-}
 
 // Helper function to fetch tokenURI for an Aminal
 function fetchTokenURI(aminalAddress: Address): string | null {
@@ -136,15 +97,19 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
     aminal.father = event.params.parentTwo;
   }
 
-  // Set visual traits (Gene NFT IDs)
-  aminal.backId = event.params.backId;
-  aminal.armId = event.params.armId;
-  aminal.tailId = event.params.tailId;
-  aminal.earsId = event.params.earsId;
-  aminal.bodyId = event.params.bodyId;
-  aminal.faceId = event.params.faceId;
-  aminal.mouthId = event.params.mouthId;
-  aminal.miscId = event.params.miscId;
+  // Set auction information
+  aminal.auctionId = event.params.auctionId;
+
+  // Set visual traits (Gene NFT IDs) from array
+  // Array order: [BACK, ARM, TAIL, EARS, BODY, FACE, MOUTH, MISC]
+  aminal.backId = event.params.geneIds[0];
+  aminal.armId = event.params.geneIds[1];
+  aminal.tailId = event.params.geneIds[2];
+  aminal.earsId = event.params.geneIds[3];
+  aminal.bodyId = event.params.geneIds[4];
+  aminal.faceId = event.params.geneIds[5];
+  aminal.mouthId = event.params.geneIds[6];
+  aminal.miscId = event.params.geneIds[7];
 
   // Gene NFT usage tracking removed for performance optimization
   // This relationship can be queried on-demand if needed
@@ -172,7 +137,7 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
   aminal.totalLove = BigInt.fromI32(0);
   aminal.breeding = false;
 
-  // If this Aminal has parents, find and resolve the pending birth
+  // If this Aminal has parents, update the auction and parent states
   if (
     event.params.parentOne != Address.zero() &&
     event.params.parentTwo != Address.zero()
@@ -190,15 +155,10 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
       parent2.save();
     }
 
-    // Find the pending birth for these parents
-    let pendingBirth = findPendingBirthByParents(
-      event.params.parentOne,
-      event.params.parentTwo
-    );
-
-    if (pendingBirth) {
-      // Load and update the auction
-      let auction = GeneAuction.load(pendingBirth.auction);
+    // Directly link the auction to the child using the auctionId from the event
+    if (event.params.auctionId.gt(BigInt.fromI32(0))) {
+      let auctionId = createAuctionId(event.params.auctionId);
+      let auction = GeneAuction.load(auctionId);
       if (auction) {
         auction.childAminal = aminal.id;
         auction.save();
@@ -208,20 +168,10 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
           aminal.id.toHexString(),
         ]);
       } else {
-        log.warning("Auction not found for pending birth: {}", [
-          pendingBirth.auction.toHexString(),
+        log.warning("Auction not found for ID: {}", [
+          event.params.auctionId.toString(),
         ]);
       }
-
-      // Clean up the pending birth entity
-      store.remove("PendingBirth", pendingBirth.id.toHexString());
-    } else {
-      // This is not an error - it can happen for older Aminals or if the search range is too small
-      // The system should continue to work normally without the auction-child link
-      log.info(
-        "Aminal {} born without linked auction - this is normal for older Aminals or edge cases",
-        [aminal.id.toHexString()]
-      );
     }
   }
 

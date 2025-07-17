@@ -59,7 +59,7 @@ dataSources:
         - name: Aminal
           file: ../out/Aminal.sol/Aminal.json
       eventHandlers:
-        - event: AminalSpawned(indexed address,indexed address,indexed address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+        - event: AminalSpawned(indexed address,indexed address,indexed address,uint256,uint256[8])
           handler: handleAminalSpawned
         - event: BreedAminal(indexed address,indexed address,uint256)
           handler: handleBreedAminal

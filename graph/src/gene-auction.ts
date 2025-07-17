@@ -19,7 +19,6 @@ import {
   GeneNFT,
   Aminal,
   User,
-  PendingBirth,
 } from "../generated/schema";
 import { AMINAL_FACTORY_ADDRESS, GENES_NFT_ADDRESS } from "./constants";
 
@@ -135,19 +134,8 @@ export function handleVotingSettled(event: VotingSettledEvent): void {
   auction.endTransactionHash = event.transaction.hash;
   auction.save();
 
-  // Create PendingBirth entity to track that this auction is waiting for a child
-  let pendingBirth = new PendingBirth(auctionIdHex);
-  pendingBirth.auctionId = event.params.auctionId;
-  pendingBirth.auction = auction.id;
-  pendingBirth.parentOne = auction.aminalOne;
-  pendingBirth.parentTwo = auction.aminalTwo;
-  pendingBirth.blockNumber = event.block.number;
-  pendingBirth.blockTimestamp = event.block.timestamp;
-  pendingBirth.transactionHash = event.transaction.hash;
-  pendingBirth.save();
-
   log.info(
-    "Gene auction settled: {} with winning genes {}, awaiting child birth",
+    "Gene auction settled: {} with winning genes {}, child will be linked via AminalSpawned event",
     [event.params.auctionId.toString(), event.params.winningGeneIds.toString()],
   );
 }

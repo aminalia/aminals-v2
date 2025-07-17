@@ -399,7 +399,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
 
         // Call spawnAminal as GeneAuction would
         vm.prank(address(geneAuction));
-        address childAminal = aminalFactory.spawnAminal(parent1, parent2, winningGenes);
+        address childAminal = aminalFactory.spawnAminal(parent1, parent2, 1, winningGenes);
 
         // Verify child was spawned
         assertTrue(aminalFactory.isAminal(childAminal));

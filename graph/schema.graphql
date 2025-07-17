@@ -21,12 +21,15 @@ type Aminal @entity(immutable: false) {
   aminalIndex: BigInt! # Index in factory
   factory: AminalFactory! # Factory that created this Aminal
   # Parent relationships (addresses, not indices)
+  # TODO remove. Redundant.
   momAddress: Bytes # Mother Aminal contract address (null for genesis)
   dadAddress: Bytes # Father Aminal contract address (null for genesis)
-  # TODO no "mother" and "father" language
+  # TODO no "mother" and "father" language. Rename to parentOne and parentTwo.
   mother: Aminal # Mother Aminal entity
   father: Aminal # Father Aminal entity
-  # TODO this is not 100% correct, we should be using the parentOne *and* parentTwo fields
+  # Auction information
+  auctionId: BigInt # Gene auction ID that created this child (0 for genesis)
+  # TODO this is not 100% correct, we should be deriving from the parentOne *and* parentTwo fields if possible
   children: [Aminal!]! @derivedFrom(field: "mother")
 
   # Visual traits (Gene NFT IDs)
@@ -44,8 +47,11 @@ type Aminal @entity(immutable: false) {
   # State
   energy: BigInt!
   totalLove: BigInt!
+
+  # TODO remove. Aminals no longer have breeding consent.
   breeding: Boolean!
 
+  # TODO remove. Aminals no longer have breeding consent.
   # Breeding consent (derived from events)
   breedableWith: [BreedingConsent!]! @derivedFrom(field: "aminal")
 
@@ -54,6 +60,7 @@ type Aminal @entity(immutable: false) {
 
   # Skills and activities
   skillUsed: [SkillUsed!]! @derivedFrom(field: "aminal")
+  # TODO remove. Not needed.
   squeaks: [Squeak!]! @derivedFrom(field: "aminal")
   feeds: [FeedAminalEvent!]! @derivedFrom(field: "aminal")
 
@@ -87,8 +94,7 @@ type Relationship @entity(immutable: false) {
   love: BigInt!
 }
 
-# Remove old Trait entity as it's replaced by GeneNFT
-
+# TODO remove. Aminals no longer have breeding consent.
 type BreedingConsent @entity(immutable: false) {
   id: Bytes! # aminal address + partner address
   aminal: Aminal!
@@ -137,6 +143,7 @@ type SkillUsed @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
+# TODO remove. There is no skill registry now.
 type GlobalSkill @entity(immutable: false) {
   id: Bytes! # Skill contract address
   skillAddress: Bytes! # Skill contract address
@@ -154,8 +161,7 @@ type GlobalSkill @entity(immutable: false) {
   transactionHash: Bytes!
 }
 
-# Remove SkillProposal and SkillVote entities as skills are now globally accessible
-
+# TODO remove. Not needed.
 type Squeak @entity(immutable: true) {
   id: Bytes!
   aminal: Aminal! # Aminal contract that squeaked
@@ -274,6 +280,7 @@ type GeneCreatorPayout @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
+# TODO remove. Not needed anymore.
 type PendingBirth @entity(immutable: false) {
   id: Bytes! # Auction ID (same as GeneAuction.id)
   auctionId: BigInt!

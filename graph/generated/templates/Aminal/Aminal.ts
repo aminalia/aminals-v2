@@ -615,42 +615,6 @@ export class Aminal extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  breedableWith(param0: Address): boolean {
-    let result = super.call("breedableWith", "breedableWith(address):(bool)", [
-      ethereum.Value.fromAddress(param0),
-    ]);
-
-    return result[0].toBoolean();
-  }
-
-  try_breedableWith(param0: Address): ethereum.CallResult<boolean> {
-    let result = super.tryCall(
-      "breedableWith",
-      "breedableWith(address):(bool)",
-      [ethereum.Value.fromAddress(param0)],
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBoolean());
-  }
-
-  breeding(): boolean {
-    let result = super.call("breeding", "breeding():(bool)", []);
-
-    return result[0].toBoolean();
-  }
-
-  try_breeding(): ethereum.CallResult<boolean> {
-    let result = super.tryCall("breeding", "breeding():(bool)", []);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBoolean());
-  }
-
   constructTokenURI(
     params: Aminal__constructTokenURIInputParamsStruct,
   ): string {
@@ -979,29 +943,6 @@ export class Aminal extends ethereum.SmartContract {
       "isApprovedForAll",
       "isApprovedForAll(address,address):(bool)",
       [ethereum.Value.fromAddress(owner), ethereum.Value.fromAddress(operator)],
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBoolean());
-  }
-
-  isBreedableWith(partner: Address): boolean {
-    let result = super.call(
-      "isBreedableWith",
-      "isBreedableWith(address):(bool)",
-      [ethereum.Value.fromAddress(partner)],
-    );
-
-    return result[0].toBoolean();
-  }
-
-  try_isBreedableWith(partner: Address): ethereum.CallResult<boolean> {
-    let result = super.tryCall(
-      "isBreedableWith",
-      "isBreedableWith(address):(bool)",
-      [ethereum.Value.fromAddress(partner)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -1371,74 +1312,6 @@ export class PayoutCall__Outputs {
   }
 }
 
-export class SetBreedableWithCall extends ethereum.Call {
-  get inputs(): SetBreedableWithCall__Inputs {
-    return new SetBreedableWithCall__Inputs(this);
-  }
-
-  get outputs(): SetBreedableWithCall__Outputs {
-    return new SetBreedableWithCall__Outputs(this);
-  }
-}
-
-export class SetBreedableWithCall__Inputs {
-  _call: SetBreedableWithCall;
-
-  constructor(call: SetBreedableWithCall) {
-    this._call = call;
-  }
-
-  get user(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
-  get partner(): Address {
-    return this._call.inputValues[1].value.toAddress();
-  }
-
-  get status(): boolean {
-    return this._call.inputValues[2].value.toBoolean();
-  }
-}
-
-export class SetBreedableWithCall__Outputs {
-  _call: SetBreedableWithCall;
-
-  constructor(call: SetBreedableWithCall) {
-    this._call = call;
-  }
-}
-
-export class SetBreedingCall extends ethereum.Call {
-  get inputs(): SetBreedingCall__Inputs {
-    return new SetBreedingCall__Inputs(this);
-  }
-
-  get outputs(): SetBreedingCall__Outputs {
-    return new SetBreedingCall__Outputs(this);
-  }
-}
-
-export class SetBreedingCall__Inputs {
-  _call: SetBreedingCall;
-
-  constructor(call: SetBreedingCall) {
-    this._call = call;
-  }
-
-  get _breeding(): boolean {
-    return this._call.inputValues[0].value.toBoolean();
-  }
-}
-
-export class SetBreedingCall__Outputs {
-  _call: SetBreedingCall;
-
-  constructor(call: SetBreedingCall) {
-    this._call = call;
-  }
-}
-
 export class SqueakCall extends ethereum.Call {
   get inputs(): SqueakCall__Inputs {
     return new SqueakCall__Inputs(this);
@@ -1465,6 +1338,40 @@ export class SqueakCall__Outputs {
   _call: SqueakCall;
 
   constructor(call: SqueakCall) {
+    this._call = call;
+  }
+}
+
+export class SqueakFromCall extends ethereum.Call {
+  get inputs(): SqueakFromCall__Inputs {
+    return new SqueakFromCall__Inputs(this);
+  }
+
+  get outputs(): SqueakFromCall__Outputs {
+    return new SqueakFromCall__Outputs(this);
+  }
+}
+
+export class SqueakFromCall__Inputs {
+  _call: SqueakFromCall;
+
+  constructor(call: SqueakFromCall) {
+    this._call = call;
+  }
+
+  get user(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get amount(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+}
+
+export class SqueakFromCall__Outputs {
+  _call: SqueakFromCall;
+
+  constructor(call: SqueakFromCall) {
     this._call = call;
   }
 }

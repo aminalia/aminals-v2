@@ -33,6 +33,7 @@ interface IAminalFactory is IAminalStructs {
      *
      * @param momAddress Address of the mother Aminal (address(0) for genesis)
      * @param dadAddress Address of the father Aminal (address(0) for genesis)
+     * @param auctionId Gene auction ID that created this child
      * @param winningGeneIds Array of 8 winning gene IDs for each trait category:
      *   [0] BACK - Background/environment gene ID
      *   [1] ARM - Limb/appendage gene ID
@@ -47,7 +48,7 @@ interface IAminalFactory is IAminalStructs {
      *
      * @custom:emits AminalSpawned
      */
-    function spawnAminal(address momAddress, address dadAddress, uint256[8] calldata winningGeneIds)
+    function spawnAminal(address momAddress, address dadAddress, uint256 auctionId, uint256[8] calldata winningGeneIds)
         external
         returns (address newAminalAddress);
 

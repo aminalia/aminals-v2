@@ -26,8 +26,7 @@ In general we need a review of what things cost (even if the cost is in terms of
 
 #### Contracts
 
-- setFactory in Genes is not good... maybe use an initializer? Owner can set factory whenever currently
-- emit auctionId during spawnAminal?
+- setFactory in Genes is not good... maybe use an initializer? Owner can set factory whenever. Need to initialize initial genes, but maybe there is a different pattern we can use?
 - start optimizing for gas (payouts need most work)
 - measure gas (see how this is done in aminalsV3)
 - More genes test coverage (renderer, auction, registry, NFT contract, payouts to owners)
@@ -38,9 +37,7 @@ In general we need a review of what things cost (even if the cost is in terms of
 #### Indexer
 
 - Refine schema
-- Index Aminal ETH balance
-- When breeding is done, remove breedable with
-- Figure out childAminal... might need smart contract refactoring.
+- Index Aminal ETH balance on feed aminal and spawn aminal
 - Switch to ponder?
 
 #### Do last

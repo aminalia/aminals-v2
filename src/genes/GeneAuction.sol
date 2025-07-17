@@ -336,7 +336,7 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         emit VotingSettled(auctionId, winningGeneIds, totalTreasuryTransferred);
 
         // Spawn the child Aminal with winning traits
-        aminalFactory.spawnAminal(aminalOneAddress, aminalTwoAddress, winningGeneIds);
+        aminalFactory.spawnAminal(aminalOneAddress, aminalTwoAddress, auctionId, winningGeneIds);
     }
 
     /**

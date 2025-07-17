@@ -121,21 +121,27 @@ export class GeneRegistry extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  MIN_CREATION_FEE(): BigInt {
+  createGene(svg: string, category: i32): BigInt {
     let result = super.call(
-      "MIN_CREATION_FEE",
-      "MIN_CREATION_FEE():(uint256)",
-      [],
+      "createGene",
+      "createGene(string,uint8):(uint256)",
+      [
+        ethereum.Value.fromString(svg),
+        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(category)),
+      ],
     );
 
     return result[0].toBigInt();
   }
 
-  try_MIN_CREATION_FEE(): ethereum.CallResult<BigInt> {
+  try_createGene(svg: string, category: i32): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
-      "MIN_CREATION_FEE",
-      "MIN_CREATION_FEE():(uint256)",
-      [],
+      "createGene",
+      "createGene(string,uint8):(uint256)",
+      [
+        ethereum.Value.fromString(svg),
+        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(category)),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -500,32 +506,6 @@ export class TransferOwnershipCall__Outputs {
   _call: TransferOwnershipCall;
 
   constructor(call: TransferOwnershipCall) {
-    this._call = call;
-  }
-}
-
-export class WithdrawFeesCall extends ethereum.Call {
-  get inputs(): WithdrawFeesCall__Inputs {
-    return new WithdrawFeesCall__Inputs(this);
-  }
-
-  get outputs(): WithdrawFeesCall__Outputs {
-    return new WithdrawFeesCall__Outputs(this);
-  }
-}
-
-export class WithdrawFeesCall__Inputs {
-  _call: WithdrawFeesCall;
-
-  constructor(call: WithdrawFeesCall) {
-    this._call = call;
-  }
-}
-
-export class WithdrawFeesCall__Outputs {
-  _call: WithdrawFeesCall;
-
-  constructor(call: WithdrawFeesCall) {
     this._call = call;
   }
 }
