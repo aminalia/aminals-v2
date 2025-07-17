@@ -26,6 +26,10 @@ export function handleGeneCreated(event: GeneCreatedEvent): void {
   geneNFT.owner = user.id; // Initially owned by creator
   geneNFT.svg = event.params.svg;
   
+  // Set metadata fields
+  geneNFT.name = "Aminal Gene #" + event.params.geneId.toString();
+  geneNFT.description = "A gene NFT representing a trait for Aminals";
+  
   // Initialize earnings tracking
   geneNFT.totalEarnings = BigInt.fromI32(0);
 
