@@ -288,6 +288,7 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
                            EXPRESSION MECHANICS
     //////////////////////////////////////////////////////////////*/
 
+    // TODO maybe kill and just make it a skill. : /
     /**
      * @notice Express yourself through this Aminal's voice 🗣️
      * @dev Consumes love and energy to create a squeak - a digital cry of expression
@@ -307,6 +308,7 @@ contract Aminal is IAminalStructs, ERC721, ReentrancyGuard, GeneRenderer {
         emit Squeak(msg.sender, amount, lovePerUser[msg.sender], totalLove, energy);
     }
 
+    // TODO consider renaming, do we need a separate Squeak event? Maybe just use EnergyLost / LoveConsumed?
     /**
      * @notice Factory-only function to consume love and energy on behalf of a user for breeding
      * @dev Only callable by the factory contract for breeding mechanics

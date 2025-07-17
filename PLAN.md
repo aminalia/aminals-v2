@@ -2,10 +2,10 @@
 
 ## New Features Ideas
 
+- Aminal Race
 - Give love to Aminals (check voting power) on breeding page (if you don't love them yet, it's not too late)
 - Aminals DAO (a DAO of Aminals based on Loveocracy)
 - Poo skill to create a new NFT
-- Aminal Race
 
 ## Open Design Questions
 
@@ -26,20 +26,14 @@ In general we need a review of what things cost (even if the cost is in terms of
 
 #### Contracts
 
+- setFactory in Genes is not good... maybe use an initializer? Owner can set factory whenever currently
 - emit auctionId during spawnAminal?
 - start optimizing for gas (payouts need most work)
 - measure gas (see how this is done in aminalsV3)
-- remove MIN_CREATION_FEE for creating genes in GeneRegistry
-- setFactory in Genes is not good... maybe use an initializer? Owner can set factory whenever currently
-- More genes test coverage (renderer, auction, registry, NFT contract)
+- More genes test coverage (renderer, auction, registry, NFT contract, payouts to owners)
 - Clean up and document scripts
-- Some events might be redundent
-
-#### Do last
-
-- Rename "Visuals" to "GeneIds", maybe explore using an array that could be variable length? Do we need backId, armsId, etc. if we are just rendering a stack?
-- More docs
-- Landing page about the Aminals project
+- Some events might be redundent (squeak vs EnergyChange / LoveChange)
+- Investigate whether there should be some limits on gene proposals during auctions
 
 #### Indexer
 
@@ -48,3 +42,9 @@ In general we need a review of what things cost (even if the cost is in terms of
 - When breeding is done, remove breedable with
 - Figure out childAminal... might need smart contract refactoring.
 - Switch to ponder?
+
+#### Do last
+
+- Rename "Visuals" to "GeneIds", maybe explore using an array that could be variable length? Do we need backId, armsId, etc. if we are just rendering a stack?
+- More docs
+- Landing page about the Aminals project

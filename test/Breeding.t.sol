@@ -79,7 +79,7 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
         // Setup contracts
         genes.setup(address(factory));
         genes.setRegistry(address(geneRegistry));
-        geneAuction.setup(address(factory), address(factory)); // AminalFactory is the aminalsContract
+        geneAuction.setup(address(factory)); // AminalFactory is the aminalsContract
         proposals.setup(address(factory));
         factory.setup();
 
@@ -589,7 +589,7 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
         testFactory.setup();
 
         // Set up the test gene auction to accept calls from our test factory
-        testGeneAuction.setup(address(testFactory), address(testFactory));
+        testGeneAuction.setup(address(testFactory));
 
         testFactory.spawnInitialAminals(testParents);
 

@@ -74,7 +74,7 @@ contract DeployAminals is Script {
         _factory.initialize(address(_geneAuction), address(_proposals), address(_Genes));
 
         // Setup dependencies
-        _geneAuction.setup(address(_factory), address(_factory));
+        _geneAuction.setup(address(_factory));
         _proposals.setup(address(_factory));
         _Genes.setup(address(_factory));
 

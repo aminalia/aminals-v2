@@ -64,10 +64,7 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
     /// @notice Gene registry for validating and retrieving gene information
     GeneRegistry public geneRegistry;
 
-    /// @notice Address of the Aminals contract (for access control)
-    address public aminalsContract;
-
-    /// @notice Factory contract for Aminal management
+    /// @notice Factory contract for Aminal management (also acts as Aminals contract)
     IAminalFactory public aminalFactory;
 
     /// @notice Counter for unique auction IDs
@@ -230,7 +227,7 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
 
     /// @notice Restricts function access to the Factory contract only
     modifier onlyFactory() {
-        if (msg.sender != aminalsContract) revert OnlyFactory();
+        if (msg.sender != address(aminalFactory)) revert OnlyFactory();
         _;
     }
 
@@ -253,13 +250,10 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         geneRegistry = GeneRegistry(_geneRegistry);
     }
 
-    // TODO only needs on argument _aminalsFactory, it's the same contract
-    /// @notice Setup function to initialize factory and aminals contract addresses
-    /// @param _aminalsContract Address of the Aminals contract
-    /// @param _aminalFactory Address of the AminalFactory contract
+    /// @notice Setup function to initialize the aminal factory contract address
+    /// @param _aminalFactory Address of the AminalFactory contract (also acts as Aminals contract)
     /// @custom:access Only owner can call during initialization
-    function setup(address _aminalsContract, address _aminalFactory) external initializer onlyOwner {
-        aminalsContract = _aminalsContract;
+    function setup(address _aminalFactory) external initializer onlyOwner {
         aminalFactory = IAminalFactory(_aminalFactory);
     }
 

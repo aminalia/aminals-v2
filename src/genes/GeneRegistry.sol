@@ -5,7 +5,6 @@ import {Genes} from "src/genes/Genes.sol";
 import {IAminalStructs} from "src/interfaces/IAminalStructs.sol";
 import {Ownable} from "oz/access/Ownable.sol";
 
-// TODO rename to registry? Merge with Genes?
 /**
  * @title GeneRegistry
  * @dev Factory for creating Gene NFTs representing traits for Aminals, also serves as a registry for Gene NFTs

@@ -39,7 +39,7 @@ contract SkillComposabilityTest is Test, IAminalStructs {
         // Setup contracts properly
         genes.setup(address(factory));
         genes.setRegistry(address(geneRegistry));
-        geneAuction.setup(address(factory), address(factory));
+        geneAuction.setup(address(factory));
         proposals.setup(address(factory));
         factory.setup();
 

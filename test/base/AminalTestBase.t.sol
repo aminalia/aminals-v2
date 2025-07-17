@@ -43,7 +43,7 @@ abstract contract AminalTestBase is Test, IAminalStructs {
         // Setup contracts
         genes.setup(address(factory));
         genes.setRegistry(address(geneRegistry));
-        geneAuction.setup(address(factory), address(factory)); // AminalFactory is the aminalsContract
+        geneAuction.setup(address(factory)); // AminalFactory is the aminalsContract
         proposals.setup(address(factory));
         factory.setup();
 

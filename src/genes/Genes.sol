@@ -102,6 +102,7 @@ contract Genes is ERC721Enumerable, Initializable, Ownable {
         emit Setup(aminalFactory_);
     }
 
+    // TODO kill, set the registry in setup
     /// @notice Set the Gene Registry contract address
     /// @dev TODO: Consider using a more secure access pattern instead of onlyOwner
     /// @param geneRegistry_ Address of the Gene Registry contract
