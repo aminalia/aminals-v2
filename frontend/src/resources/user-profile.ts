@@ -13,7 +13,7 @@ interface UserProfileData {
       tokenURI: string;
       totalLove: string;
       energy: string;
-      breeding: boolean;
+      ethBalance: string;
       blockTimestamp: string;
     };
     love: string;
@@ -138,7 +138,7 @@ export const useUserProfile = (address: string) => {
                       tokenURI
                       totalLove
                       energy
-                      breeding
+                      ethBalance
                       blockTimestamp
                     }
                     love
