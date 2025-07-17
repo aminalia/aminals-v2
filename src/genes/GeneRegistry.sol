@@ -30,13 +30,9 @@ contract GeneRegistry is IAminalStructs, Ownable {
     /// @notice Counter for tracking total genes created
     uint256 public totalGenesCreated;
 
-    /// @notice Minimum ETH required to create a Gene NFT (prevents spam)
-    uint256 public constant MIN_CREATION_FEE = 0.001 ether;
-
     /// @notice Maximum SVG length to prevent bloated storage
     uint256 public constant MAX_SVG_LENGTH = 50_000; // 50KB limit
 
-    error InsufficientFee();
     error SVGTooLarge();
     error EmptySVG();
     error InvalidSVG();
@@ -54,8 +50,7 @@ contract GeneRegistry is IAminalStructs, Ownable {
      * @param category The visual category for the trait
      * @return geneId The ID of the created Gene NFT
      */
-    function createGene(string calldata svg, VisualsCat category) external payable returns (uint256 geneId) {
-        if (msg.value < MIN_CREATION_FEE) revert InsufficientFee();
+    function createGene(string calldata svg, VisualsCat category) external returns (uint256 geneId) {
         if (bytes(svg).length == 0) revert EmptySVG();
         if (bytes(svg).length > MAX_SVG_LENGTH) revert SVGTooLarge();
 

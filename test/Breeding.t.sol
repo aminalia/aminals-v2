@@ -114,35 +114,35 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
     function _createGeneNFTs() internal {
         // Alice creates background gene
         vm.prank(alice);
-        backgroundGeneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_BACKGROUND, VisualsCat.BACK);
+        backgroundGeneId = geneRegistry.createGene(SAMPLE_BACKGROUND, VisualsCat.BACK);
 
         // Bob creates arms gene
         vm.prank(bob);
-        armsGeneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_ARMS, VisualsCat.ARM);
+        armsGeneId = geneRegistry.createGene(SAMPLE_ARMS, VisualsCat.ARM);
 
         // Charlie creates tail gene
         vm.prank(charlie);
-        tailGeneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_TAIL, VisualsCat.TAIL);
+        tailGeneId = geneRegistry.createGene(SAMPLE_TAIL, VisualsCat.TAIL);
 
         // David creates ears gene
         vm.prank(david);
-        earsGeneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_EARS, VisualsCat.EARS);
+        earsGeneId = geneRegistry.createGene(SAMPLE_EARS, VisualsCat.EARS);
 
         // Eve creates body gene
         vm.prank(eve);
-        bodyGeneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_BODY, VisualsCat.BODY);
+        bodyGeneId = geneRegistry.createGene(SAMPLE_BODY, VisualsCat.BODY);
 
         // Alice creates face gene
         vm.prank(alice);
-        faceGeneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_FACE, VisualsCat.FACE);
+        faceGeneId = geneRegistry.createGene(SAMPLE_FACE, VisualsCat.FACE);
 
         // Bob creates mouth gene
         vm.prank(bob);
-        mouthGeneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_MOUTH, VisualsCat.MOUTH);
+        mouthGeneId = geneRegistry.createGene(SAMPLE_MOUTH, VisualsCat.MOUTH);
 
         // Charlie creates misc gene
         vm.prank(charlie);
-        miscGeneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_MISC, VisualsCat.MISC);
+        miscGeneId = geneRegistry.createGene(SAMPLE_MISC, VisualsCat.MISC);
     }
 
     /**

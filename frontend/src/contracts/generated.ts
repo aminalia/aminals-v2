@@ -91,20 +91,6 @@ export const aminalAbi = [
   },
   {
     type: 'function',
-    inputs: [{ name: '', internalType: 'address', type: 'address' }],
-    name: 'breedableWith',
-    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'breeding',
-    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
     inputs: [
       {
         name: 'params',
@@ -278,13 +264,6 @@ export const aminalAbi = [
   },
   {
     type: 'function',
-    inputs: [{ name: 'partner', internalType: 'address', type: 'address' }],
-    name: 'isBreedableWith',
-    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
     inputs: [{ name: 'user', internalType: 'address', type: 'address' }],
     name: 'lovePerUser',
     outputs: [{ name: 'love', internalType: 'uint256', type: 'uint256' }],
@@ -365,28 +344,20 @@ export const aminalAbi = [
   },
   {
     type: 'function',
-    inputs: [
-      { name: 'user', internalType: 'address', type: 'address' },
-      { name: 'partner', internalType: 'address', type: 'address' },
-      { name: 'status', internalType: 'bool', type: 'bool' },
-    ],
-    name: 'setBreedableWith',
-    outputs: [],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
-    inputs: [{ name: '_breeding', internalType: 'bool', type: 'bool' }],
-    name: 'setBreeding',
-    outputs: [],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
     inputs: [{ name: 'amount', internalType: 'uint256', type: 'uint256' }],
     name: 'squeak',
     outputs: [],
     stateMutability: 'payable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'user', internalType: 'address', type: 'address' },
+      { name: 'amount', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'squeakFrom',
+    outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
@@ -1108,6 +1079,13 @@ export const geneAuctionAbi = [
   {
     type: 'function',
     inputs: [],
+    name: 'PROPOSE_GENE_COST',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
     name: 'TRAIT_CATEGORIES',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
     stateMutability: 'view',
@@ -1706,7 +1684,7 @@ export const geneAuctionAbi = [
   { type: 'error', inputs: [], name: 'InvalidCategory' },
   { type: 'error', inputs: [], name: 'InvalidGene' },
   { type: 'error', inputs: [], name: 'NoVotingPower' },
-  { type: 'error', inputs: [], name: 'OnlyAminals' },
+  { type: 'error', inputs: [], name: 'OnlyFactory' },
   { type: 'error', inputs: [], name: 'VotingAlreadySettled' },
   { type: 'error', inputs: [], name: 'VotingNotActive' },
   { type: 'error', inputs: [], name: 'VotingNotEnded' },
@@ -1739,13 +1717,6 @@ export const geneRegistryAbi = [
   },
   {
     type: 'function',
-    inputs: [],
-    name: 'MIN_CREATION_FEE',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
     inputs: [
       { name: 'svg', internalType: 'string', type: 'string' },
       {
@@ -1756,7 +1727,7 @@ export const geneRegistryAbi = [
     ],
     name: 'createGene',
     outputs: [{ name: 'geneId', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'payable',
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
@@ -1874,13 +1845,6 @@ export const geneRegistryAbi = [
     stateMutability: 'nonpayable',
   },
   {
-    type: 'function',
-    inputs: [],
-    name: 'withdrawFees',
-    outputs: [],
-    stateMutability: 'nonpayable',
-  },
-  {
     type: 'event',
     anonymous: false,
     inputs: [
@@ -1926,7 +1890,6 @@ export const geneRegistryAbi = [
     name: 'OwnershipTransferred',
   },
   { type: 'error', inputs: [], name: 'EmptySVG' },
-  { type: 'error', inputs: [], name: 'InsufficientFee' },
   { type: 'error', inputs: [], name: 'InvalidSVG' },
   { type: 'error', inputs: [], name: 'SVGTooLarge' },
 ] as const

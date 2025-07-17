@@ -126,7 +126,6 @@ function CreateGeneModal({ isOpen, onClose, onSuccess }: CreateGeneModalProps) {
         svg, // svg
         category, // category (0-7)
       ],
-      value: BigInt('1000000000000000'), // 0.001 ETH in wei
     });
   };
 
@@ -228,15 +227,15 @@ function CreateGeneModal({ isOpen, onClose, onSuccess }: CreateGeneModalProps) {
                   </div>
                 </div>
 
-                {/* Fee Info */}
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                {/* Info */}
+                <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
                   <div className="flex items-center gap-2">
-                    <span className="text-amber-600">⚠️</span>
-                    <div className="text-sm text-amber-800">
-                      <p className="font-medium">Creation Fee: 0.001 ETH</p>
+                    <span className="text-green-600">✨</span>
+                    <div className="text-sm text-green-800">
+                      <p className="font-medium">Free Gene Creation</p>
                       <p className="text-xs">
-                        This fee helps maintain the Gene NFT system and prevents
-                        spam.
+                        Create unlimited gene NFTs at no cost! Help expand the
+                        Aminal trait ecosystem.
                       </p>
                     </div>
                   </div>

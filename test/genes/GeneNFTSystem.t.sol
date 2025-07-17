@@ -72,7 +72,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
         vm.startPrank(alice);
 
         // Create a background gene
-        uint256 geneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_BACKGROUND, VisualsCat.BACK);
+        uint256 geneId = geneRegistry.createGene(SAMPLE_BACKGROUND, VisualsCat.BACK);
 
         vm.stopPrank();
 
@@ -96,15 +96,15 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
     function testMultipleGeneCreation() public {
         // Alice creates background gene
         vm.prank(alice);
-        uint256 backgroundGene = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_BACKGROUND, VisualsCat.BACK);
+        uint256 backgroundGene = geneRegistry.createGene(SAMPLE_BACKGROUND, VisualsCat.BACK);
 
         // Bob creates face gene
         vm.prank(bob);
-        uint256 faceGene = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_FACE, VisualsCat.FACE);
+        uint256 faceGene = geneRegistry.createGene(SAMPLE_FACE, VisualsCat.FACE);
 
         // Charlie creates body gene
         vm.prank(charlie);
-        uint256 bodyGene = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_BODY, VisualsCat.BODY);
+        uint256 bodyGene = geneRegistry.createGene(SAMPLE_BODY, VisualsCat.BODY);
 
         // Verify ownership
         assertEq(genes.ownerOf(backgroundGene), alice);
@@ -125,7 +125,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
 
     function testGeneTransferability() public {
         vm.prank(alice);
-        uint256 geneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_BACKGROUND, VisualsCat.BACK);
+        uint256 geneId = geneRegistry.createGene(SAMPLE_BACKGROUND, VisualsCat.BACK);
 
         // Alice transfers gene to Bob
         vm.prank(alice);
@@ -174,7 +174,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
 
         // Create a gene
         vm.prank(alice);
-        uint256 geneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_BACKGROUND, VisualsCat.BACK);
+        uint256 geneId = geneRegistry.createGene(SAMPLE_BACKGROUND, VisualsCat.BACK);
 
         // Create auction
         uint256 auctionId = geneAuction.createAuction(0, 1, 100 ether);
@@ -205,7 +205,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
 
         // Create a gene
         vm.prank(alice);
-        uint256 geneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_BACKGROUND, VisualsCat.BACK);
+        uint256 geneId = geneRegistry.createGene(SAMPLE_BACKGROUND, VisualsCat.BACK);
 
         // Create voting
         uint256 auctionId = geneAuction.createAuction(0, 1, 100 ether);
@@ -243,7 +243,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
 
         // Create a gene
         vm.prank(alice);
-        uint256 geneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_BACKGROUND, VisualsCat.BACK);
+        uint256 geneId = geneRegistry.createGene(SAMPLE_BACKGROUND, VisualsCat.BACK);
 
         // Create voting
         uint256 auctionId = geneAuction.createAuction(0, 1, 100 ether);
@@ -277,7 +277,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
 
         // Create a gene
         vm.prank(alice);
-        uint256 geneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_BACKGROUND, VisualsCat.BACK);
+        uint256 geneId = geneRegistry.createGene(SAMPLE_BACKGROUND, VisualsCat.BACK);
 
         // Create voting
         uint256 auctionId = geneAuction.createAuction(0, 1, 100 ether);
@@ -311,29 +311,22 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
         // (The settlement should still work but with default/random trait selection)
     }
 
-    function testInsufficientCreationFeeFails() public {
-        vm.prank(alice);
-        vm.expectRevert(GeneRegistry.InsufficientFee.selector);
-        geneRegistry.createGene{value: 0.0005 ether}( // Below minimum
-        SAMPLE_BACKGROUND, VisualsCat.BACK);
-    }
-
     function testEmptySVGFails() public {
         vm.prank(alice);
         vm.expectRevert(GeneRegistry.EmptySVG.selector);
-        geneRegistry.createGene{value: 0.001 ether}("", VisualsCat.BACK);
+        geneRegistry.createGene("", VisualsCat.BACK);
     }
 
     function testGetGenesByCreator() public {
         // Alice creates multiple genes
         vm.startPrank(alice);
-        geneRegistry.createGene{value: 0.001 ether}(SAMPLE_BACKGROUND, VisualsCat.BACK);
-        geneRegistry.createGene{value: 0.001 ether}(SAMPLE_FACE, VisualsCat.FACE);
+        geneRegistry.createGene(SAMPLE_BACKGROUND, VisualsCat.BACK);
+        geneRegistry.createGene(SAMPLE_FACE, VisualsCat.FACE);
         vm.stopPrank();
 
         // Bob creates one gene
         vm.prank(bob);
-        geneRegistry.createGene{value: 0.001 ether}(SAMPLE_BODY, VisualsCat.BODY);
+        geneRegistry.createGene(SAMPLE_BODY, VisualsCat.BODY);
 
         // Check Alice's genes
         uint256[] memory aliceGenes = geneRegistry.getGenesByCreator(alice);
@@ -350,15 +343,13 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
     function testGetGenesByCategory() public {
         // Create genes in different categories
         vm.prank(alice);
-        geneRegistry.createGene{value: 0.001 ether}(SAMPLE_BACKGROUND, VisualsCat.BACK);
+        geneRegistry.createGene(SAMPLE_BACKGROUND, VisualsCat.BACK);
 
         vm.prank(bob);
-        geneRegistry.createGene{value: 0.001 ether}(SAMPLE_FACE, VisualsCat.FACE);
+        geneRegistry.createGene(SAMPLE_FACE, VisualsCat.FACE);
 
         vm.prank(charlie);
-        geneRegistry.createGene{value: 0.001 ether}(
-            '<rect width="1000" height="1000" fill="#00FF00"/>', VisualsCat.BACK
-        );
+        geneRegistry.createGene('<rect width="1000" height="1000" fill="#00FF00"/>', VisualsCat.BACK);
 
         // Check background genes
         uint256[] memory backgroundGenes = geneRegistry.getGenesByCategory(VisualsCat.BACK);
@@ -418,7 +409,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
 
         // Create a gene that Bob will try to propose
         vm.prank(bob);
-        uint256 geneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_BACKGROUND, VisualsCat.BACK);
+        uint256 geneId = geneRegistry.createGene(SAMPLE_BACKGROUND, VisualsCat.BACK);
 
         // Create auction
         uint256 auctionId = geneAuction.createAuction(0, 1, 100 ether);
@@ -445,7 +436,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
 
         // Create a gene that Charlie will try to propose
         vm.prank(charlie);
-        uint256 geneId = geneRegistry.createGene{value: 0.001 ether}(SAMPLE_BACKGROUND, VisualsCat.BACK);
+        uint256 geneId = geneRegistry.createGene(SAMPLE_BACKGROUND, VisualsCat.BACK);
 
         // Charlie feeds only ONE aminal (not both)
         vm.prank(charlie);

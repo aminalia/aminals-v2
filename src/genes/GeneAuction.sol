@@ -904,30 +904,19 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         address aminalTwoAddress
     ) internal returns (uint256 totalTransferred) {
         if (treasuryPerGeneHalf > 0) {
-            // Get gene creator (not current owner)
-            (address geneCreator,,) = geneRegistry.getGeneInfo(selectedGeneId);
+            // Get current owner of the gene NFT
+            address geneOwner = genes.ownerOf(selectedGeneId);
 
-            // Transfer treasury from parents to gene creator (split equally)
-            bool successOne = false;
-            bool successTwo = false;
+            // Transfer treasury from parents to gene owner (split equally)
+            bool successOne = IAminal(aminalOneAddress).payout(treasuryPerGeneHalf, geneOwner);
+            bool successTwo = IAminal(aminalTwoAddress).payout(treasuryPerGeneHalf, geneOwner);
 
-            try IAminal(aminalOneAddress).payout(treasuryPerGeneHalf, geneCreator) returns (bool success) {
-                successOne = success;
-                if (success) totalTransferred += treasuryPerGeneHalf;
-            } catch {
-                // Treasury transfer failed - continue with other genes
-            }
+            if (successOne) totalTransferred += treasuryPerGeneHalf;
+            if (successTwo) totalTransferred += treasuryPerGeneHalf;
 
-            try IAminal(aminalTwoAddress).payout(treasuryPerGeneHalf, geneCreator) returns (bool success) {
-                successTwo = success;
-                if (success) totalTransferred += treasuryPerGeneHalf;
-            } catch {
-                // Treasury transfer failed - continue with other genes
-            }
-
-            // Emit payout event for successful transfers
+            // Emit payout event if any transfers succeeded
             if (successOne || successTwo) {
-                emit GeneCreatorPayout(auctionId, selectedGeneId, geneCreator, totalTransferred);
+                emit GeneCreatorPayout(auctionId, selectedGeneId, geneOwner, totalTransferred);
             }
         }
 
