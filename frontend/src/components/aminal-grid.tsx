@@ -15,6 +15,7 @@ function convertAminalForDisplay(aminal: Aminal | any) {
     aminalIndex: safeToString(aminal.aminalIndex),
     energy: safeToString(aminal.energy),
     totalLove: safeToString(aminal.totalLove),
+    ethBalance: safeToString(aminal.ethBalance),
     tokenURI: aminal.tokenURI || undefined,
     momAddress: aminal.momAddress ? safeToString(aminal.momAddress) : '0x0000000000000000000000000000000000000000',
     dadAddress: aminal.dadAddress ? safeToString(aminal.dadAddress) : '0x0000000000000000000000000000000000000000',

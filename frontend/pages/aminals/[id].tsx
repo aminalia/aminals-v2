@@ -15,7 +15,7 @@ import { aminalFactoryAbi, aminalFactoryAddress } from '@/contracts/generated';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { parseEther } from 'viem';
+import { parseEther, formatEther } from 'viem';
 import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 
 // Direct fetch for individual Aminal by contract address
@@ -301,7 +301,7 @@ const AminalPage: NextPage = () => {
                   <div className="p-4 bg-gray-50 rounded-lg border border-gray-100">
                     <div className="text-sm text-gray-500">ETH Balance</div>
                     <div className="text-xl font-semibold text-blue-600">
-                      {Number(aminal.ethBalance || 0).toFixed(4)} Ξ
+                      {Number(formatEther(BigInt(aminal.ethBalance || 0))).toFixed(4)} Ξ
                     </div>
                   </div>
                 </div>

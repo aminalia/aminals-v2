@@ -1,7 +1,7 @@
 import { Aminal } from '../../.graphclient';
 
 export type AminalFilter = 'all' | 'loved';
-export type AminalSort = 'most-loved' | 'least-loved' | 'oldest' | 'youngest';
+export type AminalSort = 'most-loved' | 'least-loved' | 'oldest' | 'youngest' | 'richest' | 'poorest';
 
 /**
  * Transform and filter aminals based on user preferences
@@ -35,6 +35,10 @@ export const transformAminals = (
         return Number(a.blockTimestamp) - Number(b.blockTimestamp);
       case 'youngest':
         return Number(b.blockTimestamp) - Number(a.blockTimestamp);
+      case 'richest':
+        return Number(b.ethBalance) - Number(a.ethBalance);
+      case 'poorest':
+        return Number(a.ethBalance) - Number(b.ethBalance);
       default:
         return 0;
     }

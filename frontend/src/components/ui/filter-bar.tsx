@@ -165,6 +165,8 @@ export function AminalsFilterBar({
   const sortOptions: SortOption[] = [
     { value: 'most-loved', label: 'Most Loved' },
     { value: 'least-loved', label: 'Least Loved' },
+    { value: 'richest', label: 'Richest' },
+    { value: 'poorest', label: 'Poorest' },
     { value: 'oldest', label: 'Oldest' },
     { value: 'youngest', label: 'Youngest' },
   ];

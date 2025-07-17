@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/card';
 import Image from 'next/image';
 import Link from 'next/link';
+import { formatEther } from 'viem';
 import FeedButton from './actions/feed-button';
 
 // New Aminal type for the refactored architecture
@@ -18,6 +19,7 @@ interface NewAminal {
   aminalIndex: string;
   energy: string;
   totalLove: string;
+  ethBalance?: string;
   tokenURI?: string;
   backId: string;
   armId: string;
@@ -68,22 +70,28 @@ export default function AminalCard({ aminal }: { aminal: NewAminal }) {
           </CardHeader>
 
           <CardContent className="p-4 space-y-4 flex-1 flex flex-col">
-            {/* Stats - back to original layout */}
-            <div className="grid grid-cols-2 gap-3 p-3 rounded-lg bg-muted border border-border">
+            {/* Stats - expanded to 3 columns */}
+            <div className="grid grid-cols-3 gap-2 p-3 rounded-lg bg-muted border border-border">
               <div>
-                <div className="text-sm text-muted-foreground">Total Love</div>
-                <div className="text-lg font-semibold text-love-600">
-                  ❤️ {Number(aminal.totalLove || 0).toFixed(2)}
+                <div className="text-xs text-muted-foreground">Total Love</div>
+                <div className="text-sm font-semibold text-love-600">
+                  ❤️ {Number(aminal.totalLove || 0).toFixed(1)}
                 </div>
               </div>
               <div>
-                <div className="text-sm text-muted-foreground">Love 4 U</div>
-                <div className="text-lg font-semibold text-energy-600">
+                <div className="text-xs text-muted-foreground">Love 4 U</div>
+                <div className="text-sm font-semibold text-energy-600">
                   {aminal.lovers && aminal.lovers.length > 0 ? (
-                    <>💜 {Number(aminal.lovers[0].love || 0).toFixed(2)}</>
+                    <>💜 {Number(aminal.lovers[0].love || 0).toFixed(1)}</>
                   ) : (
                     <span className="text-muted-foreground">—</span>
                   )}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground">ETH Balance</div>
+                <div className="text-sm font-semibold text-blue-600">
+                  Ξ {Number(formatEther(BigInt(aminal.ethBalance || 0))).toFixed(3)}
                 </div>
               </div>
             </div>
