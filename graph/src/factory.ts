@@ -11,7 +11,6 @@ import {
   Aminal,
   BreedAminalEvent as BreedAminal,
   GeneAuction,
-  GeneNFT,
   User,
 } from "../generated/schema";
 import { createAuctionId } from "./gene-auction";
@@ -30,8 +29,6 @@ function fetchTokenURI(aminalAddress: Address): string | null {
     return null;
   }
 }
-
-// Gene NFT usage tracking removed for performance optimization
 
 export function handleAminalSpawned(event: AminalSpawnedEvent): void {
   // Create or load factory entity
@@ -86,15 +83,13 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
   factory.totalAminals = factory.totalAminals.plus(BigInt.fromI32(1));
   factory.save();
 
-  // Set parent addresses directly from event params
+  // Set parent relationships from event params
   if (event.params.parentOne != Address.zero()) {
-    aminal.momAddress = event.params.parentOne;
-    aminal.mother = event.params.parentOne;
+    aminal.parentOne = event.params.parentOne;
   }
 
   if (event.params.parentTwo != Address.zero()) {
-    aminal.dadAddress = event.params.parentTwo;
-    aminal.father = event.params.parentTwo;
+    aminal.parentTwo = event.params.parentTwo;
   }
 
   // Set auction information
@@ -111,21 +106,6 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
   aminal.mouthId = event.params.geneIds[6];
   aminal.miscId = event.params.geneIds[7];
 
-  // Gene NFT usage tracking removed for performance optimization
-  // This relationship can be queried on-demand if needed
-  // let GenesAddress = Address.fromBytes(factory.Genes);
-  // let allGeneIds: BigInt[] = [
-  //   event.params.backId,
-  //   event.params.armId,
-  //   event.params.tailId,
-  //   event.params.earsId,
-  //   event.params.bodyId,
-  //   event.params.faceId,
-  //   event.params.mouthId,
-  //   event.params.miscId
-  // ];
-  // batchUpdateGeneNFTUsage(GenesAddress, allGeneIds, event.params.child);
-
   // Fetch tokenURI for the Aminal
   let tokenURI = fetchTokenURI(event.params.child);
   if (tokenURI) {
@@ -135,25 +115,18 @@ export function handleAminalSpawned(event: AminalSpawnedEvent): void {
   // Initialize state
   aminal.energy = BigInt.fromI32(50); // Default starting energy
   aminal.totalLove = BigInt.fromI32(0);
-  aminal.breeding = false;
 
   // If this Aminal has parents, update the auction and parent states
   if (
     event.params.parentOne != Address.zero() &&
     event.params.parentTwo != Address.zero()
   ) {
-    // Set breeding to false for parent Aminals since breeding is complete
+    // Load parent Aminals for any needed updates
     let parent1 = Aminal.load(event.params.parentOne);
     let parent2 = Aminal.load(event.params.parentTwo);
 
-    if (parent1) {
-      parent1.breeding = false;
-      parent1.save();
-    }
-    if (parent2) {
-      parent2.breeding = false;
-      parent2.save();
-    }
+    // Parents are loaded but no longer need breeding status updates
+    // since breeding consent system was removed
 
     // Directly link the auction to the child using the auctionId from the event
     if (event.params.auctionId.gt(BigInt.fromI32(0))) {
@@ -213,12 +186,7 @@ export function handleBreedAminal(event: BreedAminalEvent): void {
   if (event.params.auctionId.gt(BigInt.fromI32(0))) {
     breedEvent.auction = Bytes.fromI32(event.params.auctionId.toI32());
 
-    // Set breeding status
-    aminalOne.breeding = true;
-    aminalTwo.breeding = true;
-
-    aminalOne.save();
-    aminalTwo.save();
+    // Breeding consent system removed - no status updates needed
   }
 
   breedEvent.blockNumber = event.block.number;

@@ -14,9 +14,7 @@ templates:
       entities:
         - Aminal
         - FeedAminalEvent
-        - Squeak
         - SkillUsed
-        - BreedingConsent
         - User
         - Relationship
       abis:
@@ -27,12 +25,8 @@ templates:
       eventHandlers:
         - event: FeedAminal(indexed address,uint256,uint256,uint256,uint256,uint256)
           handler: handleFeedAminal
-        - event: Squeak(indexed address,uint256,uint256,uint256,uint256)
-          handler: handleSqueak
         - event: SkillUsed(indexed address,uint256,indexed address,indexed bytes4)
           handler: handleSkillUsed
-        - event: BreedableSet(indexed address,bool)
-          handler: handleBreedableSet
         - event: EnergyLost(indexed address,uint256,uint256)
           handler: handleEnergyLost
       file: ./src/aminal.ts

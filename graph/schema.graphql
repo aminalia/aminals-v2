@@ -20,17 +20,14 @@ type Aminal @entity(immutable: false) {
   contractAddress: Bytes! # Contract address (same as id)
   aminalIndex: BigInt! # Index in factory
   factory: AminalFactory! # Factory that created this Aminal
-  # Parent relationships (addresses, not indices)
-  # TODO remove. Redundant.
-  momAddress: Bytes # Mother Aminal contract address (null for genesis)
-  dadAddress: Bytes # Father Aminal contract address (null for genesis)
-  # TODO no "mother" and "father" language. Rename to parentOne and parentTwo.
-  mother: Aminal # Mother Aminal entity
-  father: Aminal # Father Aminal entity
+  # Parent relationships
+  parentOne: Aminal # Parent 1 Aminal entity (null for genesis)
+  parentTwo: Aminal # Parent 2 Aminal entity (null for genesis)
   # Auction information
   auctionId: BigInt # Gene auction ID that created this child (0 for genesis)
-  # TODO this is not 100% correct, we should be deriving from the parentOne *and* parentTwo fields if possible
-  children: [Aminal!]! @derivedFrom(field: "mother")
+  # Children - derived from being either parent
+  childrenAsParentOne: [Aminal!]! @derivedFrom(field: "parentOne")
+  childrenAsParentTwo: [Aminal!]! @derivedFrom(field: "parentTwo")
 
   # Visual traits (Gene NFT IDs)
   backId: BigInt!
@@ -48,20 +45,13 @@ type Aminal @entity(immutable: false) {
   energy: BigInt!
   totalLove: BigInt!
 
-  # TODO remove. Aminals no longer have breeding consent.
-  breeding: Boolean!
 
-  # TODO remove. Aminals no longer have breeding consent.
-  # Breeding consent (derived from events)
-  breedableWith: [BreedingConsent!]! @derivedFrom(field: "aminal")
 
   # Relationships
   lovers: [Relationship]! @derivedFrom(field: "aminal")
 
   # Skills and activities
   skillUsed: [SkillUsed!]! @derivedFrom(field: "aminal")
-  # TODO remove. Not needed.
-  squeaks: [Squeak!]! @derivedFrom(field: "aminal")
   feeds: [FeedAminalEvent!]! @derivedFrom(field: "aminal")
 
   # Breeding activities
@@ -94,18 +84,6 @@ type Relationship @entity(immutable: false) {
   love: BigInt!
 }
 
-# TODO remove. Aminals no longer have breeding consent.
-type BreedingConsent @entity(immutable: false) {
-  id: Bytes! # aminal address + partner address
-  aminal: Aminal!
-  partner: Aminal!
-  consented: Boolean!
-
-  # Creation info
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
 
 type BreedAminalEvent @entity(immutable: true) {
   id: Bytes!
@@ -143,37 +121,7 @@ type SkillUsed @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-# TODO remove. There is no skill registry now.
-type GlobalSkill @entity(immutable: false) {
-  id: Bytes! # Skill contract address
-  skillAddress: Bytes! # Skill contract address
-  name: String # Skill name if available
-  # Usage statistics
-  callCount: BigInt!
-  totalSqueakCost: BigInt!
 
-  # Derived relationships - removed due to type mismatch
-  # calls: [SkillCall!]! @derivedFrom(field: "skillAddress")
-
-  # Creation info
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-# TODO remove. Not needed.
-type Squeak @entity(immutable: true) {
-  id: Bytes!
-  aminal: Aminal! # Aminal contract that squeaked
-  sender: User! # User who triggered the squeak
-  amount: BigInt! # Love amount used
-  love: BigInt! # Love remaining for user
-  totalLove: BigInt! # Total love for Aminal
-  energy: BigInt! # Energy after squeak
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
 
 type GeneAuction @entity(immutable: false) {
   id: Bytes! # Auction ID
@@ -280,15 +228,3 @@ type GeneCreatorPayout @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-# TODO remove. Not needed anymore.
-type PendingBirth @entity(immutable: false) {
-  id: Bytes! # Auction ID (same as GeneAuction.id)
-  auctionId: BigInt!
-  auction: GeneAuction!
-  parentOne: Bytes! # Parent 1 address
-  parentTwo: Bytes! # Parent 2 address
-  # Creation info
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
