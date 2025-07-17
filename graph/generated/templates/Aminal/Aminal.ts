@@ -62,28 +62,6 @@ export class ApprovalForAll__Params {
   }
 }
 
-export class BreedableSet extends ethereum.Event {
-  get params(): BreedableSet__Params {
-    return new BreedableSet__Params(this);
-  }
-}
-
-export class BreedableSet__Params {
-  _event: BreedableSet;
-
-  constructor(event: BreedableSet) {
-    this._event = event;
-  }
-
-  get partner(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
-  get status(): boolean {
-    return this._event.parameters[1].value.toBoolean();
-  }
-}
-
 export class EnergyLost extends ethereum.Event {
   get params(): EnergyLost__Params {
     return new EnergyLost__Params(this);

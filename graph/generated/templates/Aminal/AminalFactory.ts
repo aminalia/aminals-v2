@@ -149,29 +149,6 @@ export class AminalFactory extends ethereum.SmartContract {
     return new AminalFactory("AminalFactory", address);
   }
 
-  MIN_BREEDING_FEE(): BigInt {
-    let result = super.call(
-      "MIN_BREEDING_FEE",
-      "MIN_BREEDING_FEE():(uint256)",
-      [],
-    );
-
-    return result[0].toBigInt();
-  }
-
-  try_MIN_BREEDING_FEE(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "MIN_BREEDING_FEE",
-      "MIN_BREEDING_FEE():(uint256)",
-      [],
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
   MIN_ENERGY_REQUIRED(): BigInt {
     let result = super.call(
       "MIN_ENERGY_REQUIRED",
@@ -354,6 +331,38 @@ export class AminalFactory extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  breedAminals(aminalOne: Address, aminalTwo: Address): BigInt {
+    let result = super.call(
+      "breedAminals",
+      "breedAminals(address,address):(uint256)",
+      [
+        ethereum.Value.fromAddress(aminalOne),
+        ethereum.Value.fromAddress(aminalTwo),
+      ],
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_breedAminals(
+    aminalOne: Address,
+    aminalTwo: Address,
+  ): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "breedAminals",
+      "breedAminals(address,address):(uint256)",
+      [
+        ethereum.Value.fromAddress(aminalOne),
+        ethereum.Value.fromAddress(aminalTwo),
+      ],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
   geneAuction(): Address {

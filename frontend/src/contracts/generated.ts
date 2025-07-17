@@ -466,20 +466,6 @@ export const aminalAbi = [
     type: 'event',
     anonymous: false,
     inputs: [
-      {
-        name: 'partner',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      { name: 'status', internalType: 'bool', type: 'bool', indexed: false },
-    ],
-    name: 'BreedableSet',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
       { name: 'user', internalType: 'address', type: 'address', indexed: true },
       {
         name: 'amount',
@@ -683,13 +669,6 @@ export const aminalFactoryAbi = [
   {
     type: 'function',
     inputs: [],
-    name: 'MIN_BREEDING_FEE',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
     name: 'MIN_ENERGY_REQUIRED',
     outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
     stateMutability: 'view',
@@ -751,7 +730,7 @@ export const aminalFactoryAbi = [
     ],
     name: 'breedAminals',
     outputs: [{ name: 'auctionId', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'payable',
+    stateMutability: 'nonpayable',
   },
   {
     type: 'function',
@@ -1014,7 +993,7 @@ export const aminalFactoryAbi = [
 ] as const
 
 export const aminalFactoryAddress =
-  '0x10c6D67f0E1999C306959Ffcbee0d2ef00907C1a' as const
+  '0x487a60B69Bd81D3BD6D35C0D632b849B44F4A55D' as const
 
 export const aminalFactoryConfig = {
   address: aminalFactoryAddress,
@@ -1648,7 +1627,7 @@ export const geneAuctionAbi = [
 ] as const
 
 export const geneAuctionAddress =
-  '0xa14e5C3724FA283d5b4A1Ef94738De6F4f13deB7' as const
+  '0xB10aFa4C9F04242FECcC8015822Dfc5d39b58B07' as const
 
 export const geneAuctionConfig = {
   address: geneAuctionAddress,
@@ -1852,7 +1831,7 @@ export const geneRegistryAbi = [
 ] as const
 
 export const geneRegistryAddress =
-  '0x038ca6D6Da4deE3056bcdCc319F0814e032B5eFe' as const
+  '0xD5ca2E91099d47E204ce47d3f293b82647756947' as const
 
 export const geneRegistryConfig = {
   address: geneRegistryAddress,
@@ -2239,7 +2218,7 @@ export const genesAbi = [
 ] as const
 
 export const genesAddress =
-  '0x9f7a897b309C277C7C47108c7C81F601204607Bd' as const
+  '0x673bfeA6D500CCef982499146F58D610CcfCAaD9' as const
 
 export const genesConfig = { address: genesAddress, abi: genesAbi } as const
 
@@ -2323,6 +2302,6 @@ export const move2DAbi = [
 ] as const
 
 export const move2DAddress =
-  '0x7B5Be9871564CDd09c4f82ad2397CB4eB0baCB1A' as const
+  '0x41063967Aa8337Ab89a2F69cA8FF54BA13Ce1f06' as const
 
 export const move2DConfig = { address: move2DAddress, abi: move2DAbi } as const

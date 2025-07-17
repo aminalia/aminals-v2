@@ -83,7 +83,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
         address aminalTwo = aminalFactory.getAminalByIndex(1);
 
         // Breed the aminals to create an auction
-        return aminalFactory.breedAminals{value: 0.001 ether}(aminalOne, aminalTwo);
+        return aminalFactory.breedAminals(aminalOne, aminalTwo);
     }
 
     function testGeneNFTCreation() public {
@@ -170,7 +170,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
 
         // Alice breeds the aminals to create an auction (she has love for both)
         vm.prank(alice);
-        uint256 auctionId = aminalFactory.breedAminals{value: 0.001 ether}(aminalOne, aminalTwo);
+        uint256 auctionId = aminalFactory.breedAminals(aminalOne, aminalTwo);
 
         (
             uint256 aminalOneIndex,
@@ -208,7 +208,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
         // Alice creates gene, breeds aminals, and proposes gene
         vm.startPrank(alice);
         uint256 geneId = geneRegistry.createGene(SAMPLE_BACKGROUND, VisualsCat.BACK);
-        uint256 auctionId = aminalFactory.breedAminals{value: 0.001 ether}(aminal1, aminal2);
+        uint256 auctionId = aminalFactory.breedAminals(aminal1, aminal2);
         geneAuction.proposeGene(auctionId, VisualsCat.BACK, geneId);
         vm.stopPrank();
 
@@ -235,7 +235,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
         // Alice creates gene, breeds aminals, proposes gene, and votes
         vm.startPrank(alice);
         uint256 geneId = geneRegistry.createGene(SAMPLE_BACKGROUND, VisualsCat.BACK);
-        uint256 auctionId = aminalFactory.breedAminals{value: 0.001 ether}(aminal1, aminal2);
+        uint256 auctionId = aminalFactory.breedAminals(aminal1, aminal2);
         geneAuction.proposeGene(auctionId, VisualsCat.BACK, geneId);
         geneAuction.voteOnGene(auctionId, VisualsCat.BACK, geneId);
         vm.stopPrank();
@@ -266,7 +266,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
         // Alice creates gene, breeds aminals, and proposes gene
         vm.startPrank(alice);
         uint256 geneId = geneRegistry.createGene(SAMPLE_BACKGROUND, VisualsCat.BACK);
-        uint256 auctionId = aminalFactory.breedAminals{value: 0.001 ether}(aminal1, aminal2);
+        uint256 auctionId = aminalFactory.breedAminals(aminal1, aminal2);
         geneAuction.proposeGene(auctionId, VisualsCat.BACK, geneId);
         vm.stopPrank();
 
@@ -299,7 +299,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
 
         // Create voting through breeding
         vm.prank(alice);
-        uint256 auctionId = aminalFactory.breedAminals{value: 0.001 ether}(aminal1, aminal2);
+        uint256 auctionId = aminalFactory.breedAminals(aminal1, aminal2);
 
         // Propose gene but don't vote (user has no love for the parents)
         vm.prank(alice);
@@ -442,7 +442,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
 
         // Create auction through breeding (Alice has love from feeding)
         vm.prank(alice);
-        uint256 auctionId = aminalFactory.breedAminals{value: 0.001 ether}(aminal1, aminal2);
+        uint256 auctionId = aminalFactory.breedAminals(aminal1, aminal2);
 
         // Bob tries to propose gene without having any love for the aminals
         // This should fail because proposeGene requires 10 love for both aminals
@@ -486,7 +486,7 @@ contract GeneNFTSystemTest is Test, IAminalStructs {
 
         // Create auction through breeding
         vm.prank(alice);
-        uint256 auctionId = aminalFactory.breedAminals{value: 0.001 ether}(aminal1, aminal2);
+        uint256 auctionId = aminalFactory.breedAminals(aminal1, aminal2);
 
         // Charlie tries to propose gene but only has love for one aminal
         // This should fail because proposeGene requires 10 love for BOTH aminals

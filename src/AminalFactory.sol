@@ -58,8 +58,6 @@ contract AminalFactory is IAminalFactory, Initializable, Ownable {
     //                                     📊 CONSTANTS
     // ═══════════════════════════════════════════════════════════════════════════════════
 
-    /// @notice Minimum payment required to initiate breeding ceremony
-    uint256 public constant MIN_BREEDING_FEE = 0.001 ether;
 
     /// @notice Minimum love required from user to breed an Aminal
     uint256 public constant MIN_LOVE_REQUIRED = 10;
@@ -331,8 +329,7 @@ contract AminalFactory is IAminalFactory, Initializable, Ownable {
      * "When two Aminals unite in love, their digital essence mingles
      *  through algorithms of affection, creating new life from pure emotion"
      */
-    function breedAminals(address aminalOne, address aminalTwo) external payable returns (uint256 auctionId) {
-        require(msg.value >= MIN_BREEDING_FEE, "AminalFactory: insufficient breeding fee");
+    function breedAminals(address aminalOne, address aminalTwo) external returns (uint256 auctionId) {
         require(isAminal[aminalOne] && isAminal[aminalTwo], "AminalFactory: invalid Aminal addresses");
         require(aminalOne != aminalTwo, "AminalFactory: cannot breed with self");
 

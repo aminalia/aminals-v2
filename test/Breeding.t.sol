@@ -240,7 +240,7 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
         // New simplified system: Call breedAminals once to create auction directly
         console.log("Creating auction with single breedAminals call...");
         vm.prank(alice);
-        auctionId = factory.breedAminals{value: 0.001 ether}(aminal1Address, aminal2Address);
+        auctionId = factory.breedAminals(aminal1Address, aminal2Address);
 
         console.log("Auction created with ID:", auctionId);
 
@@ -466,7 +466,7 @@ contract AminalBreedingIntegrationTest is Test, IAminalStructs {
 
         // Single call to create auction directly
         vm.prank(alice);
-        uint256 auctionId = factory.breedAminals{value: 0.001 ether}(testAminal1, testAminal2);
+        uint256 auctionId = factory.breedAminals(testAminal1, testAminal2);
         assertTrue(auctionId > 0, "Should create auction directly");
 
         // Don't propose any genes - let it use defaults

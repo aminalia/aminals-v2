@@ -3,7 +3,7 @@ import { useAminals } from '@/resources/aminals';
 import { X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
-import { isAddress, parseEther } from 'viem';
+import { isAddress } from 'viem';
 import {
   useAccount,
   useWaitForTransactionReceipt,
@@ -90,7 +90,7 @@ export default function BreedingModal({
       let errorMessage = 'Transaction failed. Please try again.';
       if (error.message.includes('insufficient funds')) {
         errorMessage =
-          'Insufficient funds. You need at least 0.001 ETH plus gas fees.';
+          'Insufficient funds. You need ETH for gas fees.';
       } else if (error.message.includes('user rejected')) {
         errorMessage = 'Transaction was cancelled by user.';
       }
@@ -136,7 +136,6 @@ export default function BreedingModal({
       address: aminalFactoryAddress,
       functionName: 'breedAminals',
       args: [aminal.contractAddress, partnerAddress as `0x${string}`],
-      value: parseEther('0.001'),
     });
   };
 
@@ -145,7 +144,7 @@ export default function BreedingModal({
     if (isPending || isConfirming) {
       return 'Starting Auction...';
     }
-    return '🍼 Start Gene Auction (0.001 ETH)';
+    return '🍼 Start Gene Auction';
   };
 
 

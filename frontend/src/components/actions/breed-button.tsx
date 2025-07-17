@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { isAddress, parseEther } from 'viem';
+import { isAddress } from 'viem';
 import {
   useAccount,
   useWaitForTransactionReceipt,
@@ -110,7 +110,7 @@ export default function BreedButton({
       let errorMessage = 'Transaction failed. Please try again.';
       if (error.message.includes('insufficient funds')) {
         errorMessage =
-          'Insufficient funds. You need at least 0.001 ETH plus gas fees.';
+          'Insufficient funds. You need ETH for gas fees.';
       } else if (error.message.includes('user rejected')) {
         errorMessage = 'Transaction was cancelled by user.';
       } else if (error.message.includes('network')) {
@@ -181,7 +181,6 @@ export default function BreedButton({
       functionName: 'breedAminals',
       aminalAddress: contractAddress,
       partnerAddress,
-      value: parseEther('0.001').toString(),
       userAddress: address,
       chainId: chain?.id,
       timestamp: new Date().toISOString(),
@@ -192,7 +191,6 @@ export default function BreedButton({
       address: aminalFactoryAddress,
       functionName: 'breedAminals',
       args: [contractAddress, partnerAddress as `0x${string}`],
-      value: parseEther('0.001'),
     });
   }
 
@@ -215,7 +213,7 @@ export default function BreedButton({
       >
         {isPending || isConfirming
           ? '⏳ Starting Auction...'
-          : '🍼 Start Gene Auction (0.001 ETH)'}
+          : '🍼 Start Gene Auction'}
       </Button>
     </div>
   );
