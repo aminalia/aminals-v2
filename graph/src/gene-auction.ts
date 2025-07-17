@@ -88,13 +88,40 @@ export function handleVotingCreated(event: VotingCreatedEvent): void {
   let aminalOneAddress = aminalOneAddressResult.value;
   let aminalTwoAddress = aminalTwoAddressResult.value;
 
+  // Ensure Aminal entities exist before referencing them
+  let aminalOne = Aminal.load(aminalOneAddress);
+  if (!aminalOne) {
+    log.error(
+      "Aminal entity not found for address {} (index {}), cannot create auction {}",
+      [
+        aminalOneAddress.toHexString(),
+        aminalOneIndex.toString(),
+        event.params.auctionId.toString(),
+      ]
+    );
+    return;
+  }
+
+  let aminalTwo = Aminal.load(aminalTwoAddress);
+  if (!aminalTwo) {
+    log.error(
+      "Aminal entity not found for address {} (index {}), cannot create auction {}",
+      [
+        aminalTwoAddress.toHexString(),
+        aminalTwoIndex.toString(),
+        event.params.auctionId.toString(),
+      ]
+    );
+    return;
+  }
+
   // Create auction entity with proper ID format that matches frontend expectations
   let auctionIdHex = createAuctionId(event.params.auctionId);
   let auction = new GeneAuction(auctionIdHex);
   auction.auctionId = event.params.auctionId;
-  // Reference Aminal entities by their addresses
-  auction.aminalOne = aminalOneAddress;
-  auction.aminalTwo = aminalTwoAddress;
+  // Reference Aminal entities by their IDs
+  auction.aminalOne = aminalOne.id;
+  auction.aminalTwo = aminalTwo.id;
   auction.totalLove = event.params.totalLove;
   auction.finished = false;
   auction.blockNumber = event.block.number;
