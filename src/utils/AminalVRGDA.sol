@@ -129,17 +129,14 @@ contract AminalVRGDA is LogisticVRGDA {
         loveGained = (baseUnits * loveMultiplier) / 1 ether;
     }
 
-
     /**
      * @notice Calculate how much energy is gained for a given ETH amount
      * @return energyGained Amount of energy that will be gained (in energy units)
      */
-    function getEnergyForETH(
-        uint256 ethAmount
-    ) public view returns (uint256 energyGained) {
+    function getEnergyForETH(uint256 ethAmount) public view returns (uint256 energyGained) {
         if (ethAmount == 0) return 0;
 
-	return ethAmount * ENERGY_PER_ETH / 1 ether;
+        return ethAmount * ENERGY_PER_ETH / 1 ether;
     }
 
     /**

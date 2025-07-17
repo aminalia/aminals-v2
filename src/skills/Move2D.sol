@@ -38,23 +38,23 @@ contract Move2D is Skill {
      */
     function skillCost(bytes calldata data) external view override returns (uint256) {
         bytes4 selector = bytes4(data);
-        
+
         if (selector == this.move.selector) {
             (uint256 x, uint256 y) = abi.decode(data[4:], (uint256, uint256));
-            
+
             // Get current position
             uint256 currentX = Coords2D[msg.sender].x;
             uint256 currentY = Coords2D[msg.sender].y;
-            
+
             // Calculate Manhattan distance
             uint256 deltaX = x > currentX ? x - currentX : currentX - x;
             uint256 deltaY = y > currentY ? y - currentY : currentY - y;
             uint256 distance = deltaX + deltaY;
-            
+
             // Base cost of 1 + distance/10 (rounded up)
             return 1 + (distance + 9) / 10;
         }
-        
+
         // Default cost for unknown actions
         return 1;
     }

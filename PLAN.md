@@ -3,6 +3,7 @@
 ## New Features Ideas
 
 - Aminal Race
+- Bribing
 - Give love to Aminals (check voting power) on breeding page (if you don't love them yet, it's not too late)
 - Aminals DAO (a DAO of Aminals based on Loveocracy)
 - Poo skill to create a new NFT

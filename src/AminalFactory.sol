@@ -58,7 +58,6 @@ contract AminalFactory is IAminalFactory, Initializable, Ownable {
     //                                     📊 CONSTANTS
     // ═══════════════════════════════════════════════════════════════════════════════════
 
-
     /// @notice Minimum love required from user to breed an Aminal
     uint256 public constant MIN_LOVE_REQUIRED = 10;
 

@@ -11,7 +11,7 @@ import {Skill} from "./Skill.sol";
 contract ExampleSkill is Skill {
     event Greeted(address aminal, string message);
     event Danced(address aminal, uint256 intensity);
-    
+
     /**
      * @dev Greet with a custom message
      * @param message The greeting message
@@ -19,7 +19,7 @@ contract ExampleSkill is Skill {
     function greet(string calldata message) external {
         emit Greeted(msg.sender, message);
     }
-    
+
     /**
      * @dev Dance with varying intensity
      * @param intensity How intensely to dance (1-10)
@@ -28,7 +28,7 @@ contract ExampleSkill is Skill {
         require(intensity >= 1 && intensity <= 10, "Invalid intensity");
         emit Danced(msg.sender, intensity);
     }
-    
+
     /**
      * @dev Calculate cost based on the action being performed
      * @dev The returned cost is deducted from both:
@@ -39,7 +39,7 @@ contract ExampleSkill is Skill {
      */
     function skillCost(bytes calldata data) external pure override returns (uint256) {
         bytes4 selector = bytes4(data);
-        
+
         if (selector == this.greet.selector) {
             // Greeting costs 10 energy
             return 10;
@@ -48,7 +48,7 @@ contract ExampleSkill is Skill {
             (, uint256 intensity) = abi.decode(data[4:], (string, uint256));
             return intensity * 5; // 5 energy per intensity level
         }
-        
+
         // Default cost for unknown actions
         return 1;
     }
