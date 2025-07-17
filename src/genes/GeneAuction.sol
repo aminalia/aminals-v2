@@ -384,8 +384,14 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         if (auction.settled) revert VotingAlreadySettled();
         if (uint256(category) >= TRAIT_CATEGORIES) revert InvalidCategory();
 
-        // Calculate user's voting power based on love given to parent Aminals
-        uint256 userVotingPower = _calculateVotingPower(auction, msg.sender);
+        // Cache external calls for gas efficiency
+        address aminalOneAddress = aminalFactory.getAminalByIndex(auction.aminalOne);
+        address aminalTwoAddress = aminalFactory.getAminalByIndex(auction.aminalTwo);
+
+        uint256 loveToAminalOne = IAminal(aminalOneAddress).getLoveByUser(msg.sender);
+        uint256 loveToAminalTwo = IAminal(aminalTwoAddress).getLoveByUser(msg.sender);
+        uint256 userVotingPower = loveToAminalOne + loveToAminalTwo;
+
         if (userVotingPower == 0) revert NoVotingPower();
 
         // Verify gene is valid for voting (either proposed or parent trait)
@@ -422,11 +428,25 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
         if (block.timestamp >= auction.endTime) revert VotingNotActive();
         if (auction.settled) revert VotingAlreadySettled();
 
-        // Calculate user's voting power once and reuse
-        uint256 userVotingPower = _calculateVotingPower(auction, msg.sender);
+        // Cache external calls to avoid repeated expensive operations
+        address aminalOneAddress = aminalFactory.getAminalByIndex(auction.aminalOne);
+        address aminalTwoAddress = aminalFactory.getAminalByIndex(auction.aminalTwo);
+
+        uint256 loveToAminalOne = IAminal(aminalOneAddress).getLoveByUser(msg.sender);
+        uint256 loveToAminalTwo = IAminal(aminalTwoAddress).getLoveByUser(msg.sender);
+        uint256 userVotingPower = loveToAminalOne + loveToAminalTwo;
+
         if (userVotingPower == 0) revert NoVotingPower();
 
-        // Process votes for each category
+        // Batch validate all genes upfront to fail fast
+        for (uint256 i = 0; i < TRAIT_CATEGORIES; i++) {
+            if (geneIds[i] != 0) {
+                VisualsCat category = VisualsCat(i);
+                if (!_isGeneValidForVoting(auction, category, geneIds[i])) revert InvalidGene();
+            }
+        }
+
+        // Process votes for each category with cached values
         for (uint256 i = 0; i < TRAIT_CATEGORIES; i++) {
             if (geneIds[i] != 0) {
                 VisualsCat category = VisualsCat(i);
@@ -443,9 +463,6 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
     function _processSingleVote(Auction storage auction, VisualsCat category, uint256 geneId, uint256 userVotingPower)
         internal
     {
-        // Verify gene is valid for voting (either proposed or parent trait)
-        if (!_isGeneValidForVoting(auction, category, geneId)) revert InvalidGene();
-
         CategoryVoting storage categoryVoting = auction.categoryVotes[category];
 
         // Remove previous vote if exists
@@ -565,38 +582,36 @@ contract GeneAuction is IAminalStructs, Initializable, Ownable, ReentrancyGuard 
 
     /**
      * @notice Update category winner and handle ties
+     * @dev Optimized for gas efficiency with deferred tie array management
      */
     function _updateCategoryWinner(CategoryVoting storage categoryVoting, uint256 geneId) internal {
         uint256 currentVotes = categoryVoting.geneVotes[geneId];
 
         if (currentVotes > categoryVoting.highestVotes) {
-            // New highest, clear ties and set winner
+            // New highest votes - update winner and highest vote count
             categoryVoting.highestVotes = currentVotes;
             categoryVoting.winningGeneId = geneId;
 
-            // Clear tied genes mappings and array
-            for (uint256 i = 0; i < categoryVoting.tiedGenes.length; i++) {
-                categoryVoting.isGeneTied[categoryVoting.tiedGenes[i]] = false;
+            // Clear previous tied gene markers (but defer array cleanup)
+            if (categoryVoting.tiedGenes.length > 0) {
+                for (uint256 i = 0; i < categoryVoting.tiedGenes.length; i++) {
+                    categoryVoting.isGeneTied[categoryVoting.tiedGenes[i]] = false;
+                }
+                delete categoryVoting.tiedGenes;
             }
-            delete categoryVoting.tiedGenes;
 
-            // Add new winner to tied genes
+            // Mark new winner as tied (for consistency)
             categoryVoting.isGeneTied[geneId] = true;
             categoryVoting.tiedGenes.push(geneId);
         } else if (currentVotes == categoryVoting.highestVotes && currentVotes > 0) {
-            // First vote or tie detected
-            if (categoryVoting.tiedGenes.length == 0) {
-                // First vote with this amount, initialize tiedGenes
+            // Tie situation - only add to tied array if not already there
+            if (!categoryVoting.isGeneTied[geneId]) {
                 categoryVoting.isGeneTied[geneId] = true;
                 categoryVoting.tiedGenes.push(geneId);
-                categoryVoting.winningGeneId = geneId;
-            } else {
-                // Gas optimization: O(1) lookup instead of O(n) search
-                if (!categoryVoting.isGeneTied[geneId]) {
-                    categoryVoting.isGeneTied[geneId] = true;
-                    categoryVoting.tiedGenes.push(geneId);
-                }
             }
+
+            // Keep existing winner for now (tie resolution happens at settlement)
+            if (categoryVoting.winningGeneId == 0) categoryVoting.winningGeneId = geneId;
         }
     }
 
