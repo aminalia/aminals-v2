@@ -39,6 +39,7 @@ In your Cloudflare Pages dashboard:
 - **Framework preset**: Next.js
 - **Build command**: `npm run build:all && npm run build:cf`
 - **Build output directory**: `.vercel/output/static`
+- **Root directory**: `frontend` (if deploying from monorepo)
 - **Node.js version**: `18.x` or higher
 
 ### 4. Custom Domain (Optional)
