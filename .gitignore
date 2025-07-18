@@ -19,6 +19,7 @@ lcov.info
 # Node.js
 node_modules
 build
+.vercel
 
 # Mac OS
 .DS_STORE
