@@ -8,14 +8,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
+import { GeneNftsListQuery } from '../../.graphclient';
 import Layout from '../_layout';
 
 import { Button } from '@/components/ui/button';
-import { aminalFactoryAbi, aminalFactoryAddress } from '@/contracts/generated';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { parseEther, formatEther } from 'viem';
+import { formatEther } from 'viem';
 import { useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 
 // Direct fetch for individual Aminal by contract address
@@ -102,8 +102,6 @@ const useAminalByAddress = (contractAddress: string, userAddress: string) => {
 
       const data = await response.json();
 
-      console.log(data);
-
       if (data.errors) {
         console.error('Aminal fetch errors:', data.errors);
         throw new Error(data.errors[0].message);
@@ -125,7 +123,8 @@ const AminalPage: NextPage = () => {
   const queryClient = useQueryClient();
 
   // Show loading state if router is not ready or ID is not available
-  const isRouterReady = router.isReady && id && typeof id === 'string' && id !== 'undefined';
+  const isRouterReady =
+    router.isReady && id && typeof id === 'string' && id !== 'undefined';
 
   const {
     data: aminal,
@@ -318,7 +317,10 @@ const AminalPage: NextPage = () => {
                   <div className="p-4 bg-gray-50 rounded-lg border border-gray-100">
                     <div className="text-sm text-gray-500">ETH Balance</div>
                     <div className="text-xl font-semibold text-blue-600">
-                      {Number(formatEther(BigInt(aminal.ethBalance || 0))).toFixed(4)} Ξ
+                      {Number(
+                        formatEther(BigInt(aminal.ethBalance || 0))
+                      ).toFixed(4)}{' '}
+                      Ξ
                     </div>
                   </div>
                 </div>
@@ -421,7 +423,8 @@ const AminalPage: NextPage = () => {
 
                   <div className="px-3">
                     <p className="text-sm text-gray-500 mb-3">
-                      Start a breeding auction to create offspring with another Aminal.
+                      Start a breeding auction to create offspring with another
+                      Aminal.
                     </p>
                     <Button
                       onClick={() => setIsBreedingModalOpen(true)}
@@ -497,7 +500,8 @@ const AminalPage: NextPage = () => {
                     ].map((gene, i) => {
                       // Find gene data for this trait
                       const geneInfo = geneData?.find(
-                        (g) => g?.tokenId === gene.id?.toString()
+                        (g: GeneNftsListQuery['geneNFTs'][number]) =>
+                          g?.tokenId === gene.id?.toString()
                       );
 
                       return (
