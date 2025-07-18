@@ -1,160 +1,231 @@
-type Aminal @entity {
-  id: Bytes!
-  aminalId: BigInt! # uint256
-  mom: BigInt! # uint256
-  dad: BigInt! # uint256
-  tokenUri: String! # string
-  energy: BigInt! # uint256
-  totalLove: BigInt! # uint256
-  breeding: Boolean!
-  breedableWith: [BreedAminalEvent]! @derivedFrom(field: "aminalOne")
-
-  # Derived from FeedAminal events
-  lovers: [Relationship]! @derivedFrom(field: "aminal")
+type AminalFactory @entity(immutable: false) {
+  id: Bytes! # Factory contract address
+  totalAminals: BigInt!
+  geneAuction: Bytes! # GeneAuction contract address
+  genes: Bytes! # Genes contract address
+  loveVRGDA: Bytes! # Love VRGDA contract address
+  initialAminalSpawned: Boolean!
 
   # Creation info
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 
-  skills: [Skill]! @derivedFrom(field: "aminal")
-  traits: [Trait!]! @derivedFrom(field: "aminals")
+  # Derived relationships
+  aminals: [Aminal!]! @derivedFrom(field: "factory")
 }
 
-type User @entity {
+type Aminal @entity(immutable: false) {
+  id: Bytes! # Contract address
+  contractAddress: Bytes! # Contract address (same as id)
+  aminalIndex: BigInt! # Index in factory
+  factory: AminalFactory! # Factory that created this Aminal
+  # Parent relationships
+  parentOne: Aminal # Parent 1 Aminal entity (null for genesis)
+  parentTwo: Aminal # Parent 2 Aminal entity (null for genesis)
+  # Auction information
+  auctionId: BigInt # Gene auction ID that created this child (0 for genesis)
+  # Children - derived from being either parent
+  childrenAsParentOne: [Aminal!]! @derivedFrom(field: "parentOne")
+  childrenAsParentTwo: [Aminal!]! @derivedFrom(field: "parentTwo")
+
+  # Visual traits (Gene NFT IDs)
+  backId: BigInt!
+  armId: BigInt!
+  tailId: BigInt!
+  earsId: BigInt!
+  bodyId: BigInt!
+  faceId: BigInt!
+  mouthId: BigInt!
+  miscId: BigInt!
+
+  # Metadata
+  tokenURI: String # TokenURI with base64 encoded JSON metadata
+  # State
+  energy: BigInt!
+  totalLove: BigInt!
+  ethBalance: BigInt! # ETH balance of the Aminal contract
+
+
+
+  # Relationships
+  lovers: [Relationship]! @derivedFrom(field: "aminal")
+
+  # Skills and activities
+  skillUsed: [SkillUsed!]! @derivedFrom(field: "aminal")
+  feeds: [FeedAminalEvent!]! @derivedFrom(field: "aminal")
+
+  # Breeding activities
+  breedingEventsAsParentOne: [BreedAminalEvent!]!
+    @derivedFrom(field: "aminalOne")
+  breedingEventsAsParentTwo: [BreedAminalEvent!]!
+    @derivedFrom(field: "aminalTwo")
+  auctions: [GeneAuction!]! @derivedFrom(field: "aminalOne")
+
+  # Creation info
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type User @entity(immutable: false) {
   id: Bytes!
   address: Bytes! # address
   lovers: [Relationship]! @derivedFrom(field: "user")
-  proposedVisuals: [VisualProposal]! @derivedFrom(field: "proposer")
-  traits: [Trait!] @derivedFrom(field: "creator")
+  geneProposals: [GeneProposal]! @derivedFrom(field: "proposer")
+  genesCreated: [GeneNFT]! @derivedFrom(field: "creator")
+  genesOwned: [GeneNFT]! @derivedFrom(field: "owner")
+  geneVotes: [GeneVote]! @derivedFrom(field: "voter")
 }
 
-type Relationship @entity {
+type Relationship @entity(immutable: false) {
   id: Bytes!
   user: User!
   aminal: Aminal!
   love: BigInt!
 }
 
-type Trait @entity {
-  id: Bytes!
-  visualId: BigInt!
-  catEnum: Int!
-  svg: String!
-  creator: User!
-  aminals: [Aminal!]!
-}
 
 type BreedAminalEvent @entity(immutable: true) {
   id: Bytes!
-  aminalOne: Aminal! # uint256
-  aminalTwo: Aminal! # uint256
-  auctionId: BigInt! # uint256
+  aminalOne: Aminal! # Parent 1 address
+  aminalTwo: Aminal! # Parent 2 address
+  auctionId: BigInt! # Gene auction ID
+  auction: GeneAuction # Related auction entity
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
 
-type FeedAminalEvent @entity {
+type FeedAminalEvent @entity(immutable: true) {
   id: Bytes!
-  aminal: Aminal! # uint256
-  sender: User! # address
-  amount: BigInt! # uint256
-  love: BigInt! # uint256
-  totalLove: BigInt! # uint256
-  energy: BigInt! # uint256
+  aminal: Aminal! # Contract address
+  sender: User! # Feeder address
+  amount: BigInt! # ETH amount
+  love: BigInt! # Love gained by user
+  totalLove: BigInt! # Total love for Aminal
+  energy: BigInt! # Energy after feeding
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
 
-type Skill @entity {
+type SkillUsed @entity(immutable: true) {
   id: Bytes!
-  aminal: Aminal! # uint256
-  skillAddress: Bytes! # address
-  removed: Boolean!
+  aminal: Aminal! # Aminal contract that used skill
+  caller: User! # User who initiated the skill call
+  skillAddress: Bytes! # Skill contract address
+  selector: Bytes! # Function selector that was called
+  newEnergy: BigInt! # Energy after skill use
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
 
-type SkillProposal @entity {
-  id: Bytes!
-  aminalId: BigInt! # uint256
-  proposalId: BigInt! # uint256
-  skillName: String! # string
-  skillAddress: Bytes! # address
-  sender: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-  removed: Boolean!
-}
 
-type SkillVote @entity(immutable: true) {
-  id: Bytes!
-  aminalId: BigInt! # uint256
-  sender: Bytes! # address
-  proposalId: BigInt! # uint256
-  yesNo: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
 
-type Squeak @entity(immutable: true) {
-  id: Bytes!
-  sender: Bytes! # address
-  aminalId: BigInt! # uint256
-  amount: BigInt! # uint256
-  energy: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Auction @entity {
-  id: Bytes!
-  auctionId: BigInt! # uint256
-  aminalOne: Aminal!
-  aminalTwo: Aminal!
-  childAminalId: BigInt! # uint256
-  totalLove: BigInt! # uint256
+type GeneAuction @entity(immutable: false) {
+  id: Bytes! # Auction ID
+  auctionId: BigInt!
+  aminalOne: Aminal! # Parent 1
+  aminalTwo: Aminal! # Parent 2
+  totalLove: BigInt! # Combined love for voting power
   finished: Boolean!
 
-  # End data
-  winningIds: [BigInt!] # uint256[8]
-  # Start data
+  # Result data
+  childAminal: Aminal # Spawned child (when auction completes)
+  winningGeneIds: [BigInt!] # Winning gene IDs [8]
+  # Gene proposals and votes
+  proposals: [GeneProposal!]! @derivedFrom(field: "auction")
+  votes: [GeneVote!]! @derivedFrom(field: "auction")
+
+  # Creator payouts
+  payouts: [GeneCreatorPayout!]! @derivedFrom(field: "auction")
+
+  # Timing
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+  endBlockNumber: BigInt
+  endBlockTimestamp: BigInt
+  endTransactionHash: Bytes
+}
+
+type GeneNFT @entity(immutable: false) {
+  id: Bytes! # Gene NFT contract address + token ID
+  tokenId: BigInt!
+  traitType: Int! # 0-7 for different trait categories
+  owner: User!
+  creator: User!
+
+  # Metadata
+  svg: String
+  name: String
+  description: String
+
+  # Usage in Aminals - removed for performance as this can be expensive
+  # aminalsUsingGene: [Aminal!]! # Aminals that have this gene
+
+  # Auction usage
+  proposalsUsingGene: [GeneProposal!]! @derivedFrom(field: "geneNFT")
+
+  # Earnings tracking
+  totalEarnings: BigInt! # Total amount earned from auction payouts
+  payouts: [GeneCreatorPayout!]! @derivedFrom(field: "geneNFT")
+
+  # Creation info
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
 
-type VisualProposal @entity {
-  id: Bytes!
-  auctionId: BigInt! # uint256
-  visualId: BigInt! # uint256
-  proposer: User! # address
-  catEnum: Int! # uint8
-  loveVote: BigInt! # uint256
-  removeVote: BigInt! # uint256
+type GeneProposal @entity(immutable: false) {
+  id: Bytes! # auction ID + trait type + gene ID
+  auction: GeneAuction!
+  geneNFT: GeneNFT!
+  traitType: Int! # 0-7 for different trait categories
+  proposer: User!
+
+  # Voting stats
+  loveVotes: BigInt!
+  removeVotes: BigInt!
   removed: Boolean!
-  svg: String!
+
+  # Votes for this proposal
+  votes: [GeneVote!]! @derivedFrom(field: "proposal")
+
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
 
-type VisualsVote @entity(immutable: true) {
+type GeneVote @entity(immutable: true) {
   id: Bytes!
-  auctionId: BigInt! # uint256
-  visualId: BigInt! # uint256
-  sender: Bytes! # address
-  catEnum: Int! # uint8
-  remove: Boolean!
-  userLoveVote: BigInt! # uint256
-  totalLove: BigInt! # uint256
+  auction: GeneAuction!
+  proposal: GeneProposal!
+  voter: User!
+
+  # Vote details
+  isRemoveVote: Boolean!
+  loveAmount: BigInt!
+
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
+
+type GeneCreatorPayout @entity(immutable: true) {
+  id: Bytes! # tx hash + log index for uniqueness
+  auction: GeneAuction!
+  geneNFT: GeneNFT!
+  creator: User!
+  amount: BigInt! # Payout amount in wei
+  # Metadata for dashboard display
+  auctionId: BigInt!
+  geneId: BigInt!
+
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+

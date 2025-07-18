@@ -1,43 +1,219 @@
-import { useWriteAminalsBreedWith } from '@/contracts/generated';
-import { isBigInt } from '@/lib/utils';
-import { ChangeEvent, useState } from 'react';
-import { parseEther } from 'viem';
-import { useAccount } from 'wagmi';
+import { useQueryClient } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { isAddress } from 'viem';
+import {
+  useAccount,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from 'wagmi';
+import {
+  aminalFactoryAbi,
+  aminalFactoryAddress,
+} from '../../contracts/generated';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 
-export default function BreedButton({ id }: { id: string }) {
-  const { isConnected, chain } = useAccount();
+export default function BreedButton({
+  contractAddress,
+}: {
+  contractAddress: `0x${string}`;
+}) {
+  const { isConnected, chain, address } = useAccount();
   const enabled = isConnected && chain;
-  const [breedWithId, setBreedWithId] = useState<string>('');
-  const breedWith = useWriteAminalsBreedWith();
+  const [partnerAddress, setPartnerAddress] = useState<string>('');
+  const { writeContract, isPending, data: hash, error } = useWriteContract();
+  const queryClient = useQueryClient();
 
-  async function action() {
-    if (enabled && isBigInt(breedWithId)) {
-      await breedWith.writeContractAsync({
-        args: [BigInt(id), BigInt(breedWithId)],
-        value: parseEther('0.001'),
+  const {
+    isLoading: isConfirming,
+    isSuccess: isConfirmed,
+    error: receiptError,
+    data: receipt,
+  } = useWaitForTransactionReceipt({
+    hash,
+  });
+
+  // Log transaction initiation
+  useEffect(() => {
+    if (hash) {
+      console.log('💕 Breed transaction initiated:', {
+        hash,
+        aminalAddress: contractAddress,
+        partnerAddress,
+        userAddress: address,
+        chainId: chain?.id,
+        contractAddress: aminalFactoryAddress,
+        timestamp: new Date().toISOString(),
       });
     }
+  }, [hash, contractAddress, partnerAddress, address, chain?.id]);
+
+  // Handle transaction success
+  useEffect(() => {
+    if (isConfirmed && receipt) {
+      console.log('✅ Breed transaction confirmed:', {
+        hash,
+        blockNumber: receipt.blockNumber,
+        blockHash: receipt.blockHash,
+        gasUsed: receipt.gasUsed?.toString(),
+        effectiveGasPrice: receipt.effectiveGasPrice?.toString(),
+        status: receipt.status,
+        transactionIndex: receipt.transactionIndex,
+        aminalAddress: contractAddress,
+        partnerAddress,
+        timestamp: new Date().toISOString(),
+      });
+
+      toast.success(
+        '🍼 Gene auction started! Community can now vote on offspring traits.',
+        {
+          id: 'breed-tx',
+          duration: 6000,
+        }
+      );
+
+      queryClient.invalidateQueries({
+        queryKey: ['aminal-by-address', contractAddress],
+      });
+      queryClient.invalidateQueries({ queryKey: ['aminals'] });
+      queryClient.invalidateQueries({ queryKey: ['aminals'] });
+    }
+  }, [
+    isConfirmed,
+    receipt,
+    hash,
+    contractAddress,
+    partnerAddress,
+    queryClient,
+  ]);
+
+  // Handle transaction errors
+  useEffect(() => {
+    if (error) {
+      const errorDetails = {
+        message: error.message,
+        name: error.name,
+        cause: error.cause,
+        stack: error.stack,
+        aminalAddress: contractAddress,
+        partnerAddress,
+        userAddress: address,
+        chainId: chain?.id,
+        contractAddress: aminalFactoryAddress,
+        timestamp: new Date().toISOString(),
+      };
+
+      console.error('❌ Breed transaction failed:', errorDetails);
+
+      // More specific error messages based on error type
+      let errorMessage = 'Transaction failed. Please try again.';
+      if (error.message.includes('insufficient funds')) {
+        errorMessage =
+          'Insufficient funds. You need ETH for gas fees.';
+      } else if (error.message.includes('user rejected')) {
+        errorMessage = 'Transaction was cancelled by user.';
+      } else if (error.message.includes('network')) {
+        errorMessage = 'Network error. Please check your connection.';
+      } else if (error.message.includes('breeding')) {
+        errorMessage =
+          'Breeding error. Check if both Aminals are eligible to breed.';
+      }
+
+      toast.error(errorMessage, { id: 'breed-tx' });
+    }
+  }, [error, contractAddress, partnerAddress, address, chain?.id]);
+
+  // Handle receipt errors
+  useEffect(() => {
+    if (receiptError) {
+      const receiptErrorDetails = {
+        message: receiptError.message,
+        name: receiptError.name,
+        cause: receiptError.cause,
+        hash,
+        aminalAddress: contractAddress,
+        partnerAddress,
+        timestamp: new Date().toISOString(),
+      };
+
+      console.error('❌ Breed transaction receipt error:', receiptErrorDetails);
+      toast.error('Transaction failed. Please try again.', { id: 'breed-tx' });
+    }
+  }, [receiptError, hash, contractAddress, partnerAddress]);
+
+  // Handle pending state
+  useEffect(() => {
+    if (isPending) {
+      console.log('⏳ Breed transaction pending...', {
+        aminalAddress: contractAddress,
+        partnerAddress,
+        userAddress: address,
+        timestamp: new Date().toISOString(),
+      });
+      toast.loading('Preparing transaction...', { id: 'breed-tx' });
+    }
+  }, [isPending, contractAddress, partnerAddress, address]);
+
+  // Handle confirmation state
+  useEffect(() => {
+    if (isConfirming) {
+      console.log('🔄 Breed transaction confirming...', {
+        hash,
+        aminalAddress: contractAddress,
+        partnerAddress,
+        timestamp: new Date().toISOString(),
+      });
+
+      toast.loading('Starting gene auction...', { id: 'breed-tx' });
+    }
+  }, [isConfirming, hash, contractAddress, partnerAddress]);
+
+  function startBreeding() {
+    if (!enabled || !isAddress(partnerAddress)) {
+      toast.error('Please enter a valid partner contract address');
+      return;
+    }
+
+    // Log the contract call parameters
+    console.log('🚀 Initiating breed transaction:', {
+      contractAddress: aminalFactoryAddress,
+      functionName: 'breedAminals',
+      aminalAddress: contractAddress,
+      partnerAddress,
+      userAddress: address,
+      chainId: chain?.id,
+      timestamp: new Date().toISOString(),
+    });
+
+    writeContract({
+      abi: aminalFactoryAbi,
+      address: aminalFactoryAddress,
+      functionName: 'breedAminals',
+      args: [contractAddress, partnerAddress as `0x${string}`],
+    });
   }
 
   return (
-    <div className="flex gap-2">
-      <Input 
-        placeholder="Enter mate ID" 
-        value={breedWithId}
-        onChange={(e) => setBreedWithId(e.target.value)}
-        type="number"
-        min="0"
-        className="flex-1"
+    <div className="space-y-2">
+      <Input
+        placeholder="Enter partner contract address (0x...)"
+        value={partnerAddress}
+        onChange={(e) => setPartnerAddress(e.target.value)}
+        disabled={isPending || isConfirming}
+        className="w-full"
       />
+
       <Button
-        onClick={action}
-        disabled={!enabled || !breedWithId}
-        variant="outline"
-        className="whitespace-nowrap"
+        onClick={startBreeding}
+        disabled={
+          !enabled || !isAddress(partnerAddress) || isPending || isConfirming
+        }
+        className="w-full bg-pink-600 hover:bg-pink-700 text-white"
       >
-        Breed (0.001 ETH)
+        {isPending || isConfirming
+          ? '⏳ Starting Auction...'
+          : '🍼 Start Gene Auction'}
       </Button>
     </div>
   );

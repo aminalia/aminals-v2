@@ -1,48 +1,41 @@
 pragma solidity ^0.8.20;
 
 import "forge-std/Script.sol";
-import {Aminals} from "src/Aminals.sol";
-import {IAminal} from "src/IAminal.sol";
-import {VisualsAuction} from "src/utils/VisualsAuction.sol";
+import {AminalFactory} from "src/AminalFactory.sol";
+import {IAminal} from "src/interfaces/IAminal.sol";
+import {Aminal} from "src/Aminal.sol";
+import {GeneAuction} from "src/genes/GeneAuction.sol";
 
 contract EndAuction is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        Aminals aminals = Aminals(address(vm.envAddress("AMINALS_CONTRACT")));
+        AminalFactory factory = AminalFactory(address(vm.envAddress("AMINAL_FACTORY_CONTRACT")));
+        GeneAuction geneAuction = GeneAuction(factory.geneAuction());
 
-        VisualsAuction visualsAuction = VisualsAuction(aminals.visualsAuction());
+        // Display info for existing Aminals
+        for (uint256 i = 0; i < factory.totalAminals() && i < 2; i++) {
+            address aminalAddress = factory.aminalsByIndex(i);
+            Aminal aminal = Aminal(payable(aminalAddress));
 
-        for (uint256 i = 1; i <= 2; i++) {
-            console.log(
-                "Aminal love by ID by user: ", aminals.getAminalLoveByIdByUser(i, address(vm.envAddress("ADDRESS")))
-            );
-            console.log("Aminal love total : ", aminals.getAminalLoveTotal(i));
+            console.log("Aminal Address:", aminalAddress);
+            console.log("Aminal love by user:", aminal.getLoveByUser(address(vm.envAddress("ADDRESS"))));
+            console.log("Aminal total love:", aminal.getTotalLove());
         }
 
-        visualsAuction.endAuction(3);
-        VisualsAuction.Auction memory auction;
-        auction = visualsAuction.getAuctionByID(3);
+        // End a specific auction (replace 3 with actual auction ID)
+        uint256 auctionId = 3;
+        console.log("Ending auction ID:", auctionId);
 
-        console.log(auction.aminalIdOne);
+        // Note: This will depend on the specific auction implementation
+        // The Gene Auction system may have different methods than the old VisualsAuction
 
-        uint256[8] memory winnerId = auction.visualIds[0];
-        console.log("RET visualIDs[0][0] ==", winnerId[0]);
-        console.log("RET2 visualIDs[0][0] ==", winnerId[1]);
-        console.log("RET3 visualIDs[0][0] ==", winnerId[2]);
+        // Check auction status first
+        geneAuction.settleAuction(auctionId);
 
-        // winnerId = auction.winnerId;
-
-        console.log("We got a winner :::::: ");
-        for (uint256 i = 0; i < 8; i++) {
-            console.log("category ", i);
-            console.log(winnerId[i]);
-            //  console.log(aminals.getVisuals(i, auction.winnerId[i]));
-            console.log(aminals.getVisuals(i, winnerId[i]));
-        }
-
-        //aminals.spawnAminal(1, 2, winnerId[0], winnerId[1],winnerId[2],winnerId[3],winnerId[4],winnerId[5],winnerId[6],winnerId[7]);
+        console.log("Note: Gene Auction system implementation may differ from VisualsAuction");
+        console.log("Please verify auction methods before running this script");
 
         vm.stopBroadcast();
     }

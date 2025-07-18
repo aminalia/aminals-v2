@@ -7,3 +7,6 @@
 [submodule "lib/openzeppelin-contracts"]
 	path = lib/openzeppelin-contracts
 	url = https://github.com/openzeppelin/openzeppelin-contracts
+[submodule "lib/VRGDAs"]
+	path = lib/VRGDAs
+	url = https://github.com/transmissions11/VRGDAs

@@ -5,10 +5,15 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
+import { useHasMounted } from '@/hooks/useHasMounted';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Link from 'next/link';
+import { useAccount } from 'wagmi';
 
 export default function Header() {
+  const hasMounted = useHasMounted();
+  const { address } = useAccount();
+
   return (
     <>
       {/* Desktop Header */}
@@ -32,17 +37,29 @@ export default function Header() {
                 asChild
                 className={navigationMenuTriggerStyle()}
               >
-                <Link href="/leaderboard">🏆 Leaderboard</Link>
+                <Link href="/genes">🧬 Genes</Link>
               </NavigationMenuLink>
               <NavigationMenuLink
                 asChild
                 className={navigationMenuTriggerStyle()}
               >
-                <Link href="/traits">🧬 Traits</Link>
+                <Link href="/leaderboard">🏆 Leaderboard</Link>
               </NavigationMenuLink>
+              {hasMounted && address && (
+                <NavigationMenuLink
+                  asChild
+                  className={navigationMenuTriggerStyle()}
+                >
+                  <Link href={`/profile/${address}`}>👤 Profile</Link>
+                </NavigationMenuLink>
+              )}
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <ConnectButton />
+              {hasMounted ? (
+                <ConnectButton />
+              ) : (
+                <div className="h-10 w-32 bg-gray-200 rounded-lg animate-pulse" />
+              )}
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
@@ -53,12 +70,20 @@ export default function Header() {
         <Link href="/">
           <h1 className="text-xl font-bold">👾 Aminals</h1>
         </Link>
-        <ConnectButton />
+        {hasMounted ? (
+          <ConnectButton />
+        ) : (
+          <div className="h-10 w-32 bg-gray-200 rounded-lg animate-pulse" />
+        )}
       </header>
 
       {/* Mobile Bottom Navigation */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-background/98 backdrop-blur-sm border-t z-50 shadow-lg">
-        <div className="grid grid-cols-4 gap-1 p-2">
+        <div
+          className={`grid gap-1 p-2 ${
+            hasMounted && address ? 'grid-cols-5' : 'grid-cols-4'
+          }`}
+        >
           <Link
             href="/"
             className="flex flex-col items-center justify-center p-2 hover:bg-accent rounded-lg"
@@ -81,12 +106,21 @@ export default function Header() {
             <span className="text-xs mt-1">Leaderboard</span>
           </Link>
           <Link
-            href="/traits"
+            href="/genes"
             className="flex flex-col items-center justify-center p-2 hover:bg-accent rounded-lg"
           >
             <span className="text-2xl">🧬</span>
-            <span className="text-xs mt-1">Traits</span>
+            <span className="text-xs mt-1">Genes</span>
           </Link>
+          {hasMounted && address && (
+            <Link
+              href={`/profile/${address}`}
+              className="flex flex-col items-center justify-center p-2 hover:bg-accent rounded-lg"
+            >
+              <span className="text-2xl">👤</span>
+              <span className="text-xs mt-1">Profile</span>
+            </Link>
+          )}
         </div>
       </nav>
     </>

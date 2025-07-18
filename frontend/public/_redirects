@@ -1,0 +1,2 @@
+# Cloudflare Pages redirects - handled by @cloudflare/next-on-pages
+# Dynamic routes are now handled by server-side rendering

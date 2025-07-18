@@ -1,0 +1,159 @@
+# Updated for new schema: Added totalEarnings and payouts fields, removed aminalIndex
+query GeneNftsList {
+  geneNFTs(orderBy: tokenId, orderDirection: asc) {
+    id
+    tokenId
+    traitType
+    name
+    description
+    svg
+    owner {
+      id
+      address
+    }
+    creator {
+      id
+      address
+    }
+    totalEarnings
+    proposalsUsingGene {
+      id
+      auction {
+        id
+        aminalOne {
+          id
+          contractAddress
+          aminalIndex
+          tokenURI
+          energy
+          totalLove
+        }
+        aminalTwo {
+          id
+          contractAddress
+          aminalIndex
+          tokenURI
+          energy
+          totalLove
+        }
+      }
+    }
+    payouts {
+      id
+      amount
+      auctionId
+      blockTimestamp
+      auction {
+        id
+        auctionId
+      }
+    }
+    blockTimestamp
+  }
+}
+
+query GeneNftById($id: ID!) {
+  geneNFT(id: $id) {
+    id
+    tokenId
+    traitType
+    name
+    description
+    svg
+    owner {
+      id
+      address
+    }
+    creator {
+      id
+      address
+    }
+    totalEarnings
+    proposalsUsingGene {
+      id
+      auction {
+        id
+        aminalOne {
+          id
+          contractAddress
+          aminalIndex
+          tokenURI
+          energy
+          totalLove
+        }
+        aminalTwo {
+          id
+          contractAddress
+          aminalIndex
+          tokenURI
+          energy
+          totalLove
+        }
+      }
+    }
+    payouts {
+      id
+      amount
+      auctionId
+      blockTimestamp
+      auction {
+        id
+        auctionId
+      }
+    }
+    blockTimestamp
+  }
+}
+
+query GenesByTraitType($traitType: Int!) {
+  geneNFTs(where: { traitType: $traitType }, orderBy: tokenId, orderDirection: asc) {
+    id
+    tokenId
+    traitType
+    name
+    description
+    svg
+    owner {
+      id
+      address
+    }
+    creator {
+      id
+      address
+    }
+    totalEarnings
+    proposalsUsingGene {
+      id
+      auction {
+        id
+        aminalOne {
+          id
+          contractAddress
+          aminalIndex
+          tokenURI
+          energy
+          totalLove
+        }
+        aminalTwo {
+          id
+          contractAddress
+          aminalIndex
+          tokenURI
+          energy
+          totalLove
+        }
+      }
+    }
+    payouts {
+      id
+      amount
+      auctionId
+      blockTimestamp
+      auction {
+        id
+        auctionId
+      }
+    }
+    blockTimestamp
+  }
+}

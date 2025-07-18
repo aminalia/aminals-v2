@@ -1,58 +1,107 @@
+# Updated for new schema: skillCalls -> skillUsed, data -> selector, squeakCost -> newEnergy
 query AminalsList($first: Int = 100, $skip: Int = 0, $address: Bytes = "") {
   aminals(first: $first, skip: $skip) {
-    aminalId
-    mom
-    dad
-    tokenUri
+    id
+    contractAddress
+    aminalIndex
+    parentOne {
+      id
+      contractAddress
+      aminalIndex
+    }
+    parentTwo {
+      id
+      contractAddress
+      aminalIndex
+    }
     energy
+    totalLove
+    ethBalance
+    blockTimestamp
+    tokenURI
+    backId
+    armId
+    tailId
+    earsId
+    bodyId
+    faceId
+    mouthId
+    miscId
     lovers(where: { user_: { address: $address } }) {
       love
-    }
-    totalLove
-    blockTimestamp
-    breedableWith {
-      aminalTwo {
-        aminalId
-      }
     }
   }
 }
 
-query AminalById($aminalId: BigInt) {
-  aminals(where: { aminalId: $aminalId }) {
+query AminalById($contractAddress: Bytes, $address: Bytes = "") {
+  aminals(where: { contractAddress: $contractAddress }) {
     id
-    aminalId
-    mom
-    dad
-    tokenUri
+    contractAddress
+    aminalIndex
+    parentOne {
+      id
+      contractAddress
+      aminalIndex
+    }
+    parentTwo {
+      id
+      contractAddress
+      aminalIndex
+    }
     energy
     totalLove
-    breeding
+    ethBalance
     blockTimestamp
-    lovers {
-      id
+    tokenURI
+    backId
+    armId
+    tailId
+    earsId
+    bodyId
+    faceId
+    mouthId
+    miscId
+    lovers(where: { user_: { address: $address } }) {
       love
-      user {
+    }
+    feeds {
+      id
+      sender {
+        id
         address
       }
+      amount
+      love
+      totalLove
+      energy
+      blockTimestamp
     }
-    breedableWith {
+    skillUsed {
       id
-      aminalTwo {
+      caller {
         id
-        aminalId
+        address
       }
-    }
-    skills {
-      id
       skillAddress
-      removed
+      selector
+      newEnergy
+      blockTimestamp
     }
-    traits {
+  }
+}
+
+query AminalFactory {
+  aminalFactories(first: 1) {
+    id
+    totalAminals
+    aminals {
       id
-      visualId
-      catEnum
-      svg
+      contractAddress
+      aminalIndex
+      energy
+      totalLove
+      ethBalance
+      tokenURI
     }
   }
 }

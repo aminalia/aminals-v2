@@ -1,29 +1,61 @@
-query SkillsList {
-  skills {
+# Updated for new schema: skillCalls -> skillUsed, data -> selector, squeakCost -> newEnergy
+query SkillUsedList($first: Int = 100, $skip: Int = 0) {
+  skillUseds(
+    first: $first
+    skip: $skip
+    orderBy: blockTimestamp
+    orderDirection: desc
+  ) {
     id
     aminal {
       id
-      aminalId
+    }
+    caller {
+      id
+      address
     }
     skillAddress
-    removed
-    blockNumber
+    selector
+    newEnergy
     blockTimestamp
-    transactionHash
   }
 }
 
-query SkillById($id: ID!) {
-  skill(id: $id) {
+query SkillUsedByAminal($aminalId: String!) {
+  skillUseds(
+    where: { aminal: $aminalId }
+    orderBy: blockTimestamp
+    orderDirection: desc
+  ) {
+    id
+    caller {
+      id
+      address
+    }
+    skillAddress
+    selector
+    newEnergy
+    blockTimestamp
+  }
+}
+
+query SkillUsedBySkill($skillAddress: Bytes!) {
+  skillUseds(
+    where: { skillAddress: $skillAddress }
+    orderBy: blockTimestamp
+    orderDirection: desc
+  ) {
     id
     aminal {
       id
-      aminalId
     }
-    skillAddress
-    removed
-    blockNumber
+    caller {
+      id
+      address
+    }
+    selector
+    newEnergy
     blockTimestamp
-    transactionHash
   }
 }
+

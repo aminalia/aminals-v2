@@ -17,7 +17,7 @@ const LeaderboardPage = () => {
             </div>
 
             <p className="text-gray-600 mb-6">
-              We're working hard to bring you the most exciting leaderboard
+              We&apos;re working hard to bring you the most exciting leaderboard
               ever! Get ready to see who are the most loving and active Aminal
               fans in the community.
             </p>

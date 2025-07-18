@@ -1,27 +1,25 @@
 import { useQuery } from '@tanstack/react-query';
-import { SkillsListDocument, SkillsListQuery, SkillByIdDocument, SkillByIdQuery, execute } from '../../.graphclient';
+import { SkillUsedListDocument, SkillUsedListQuery, execute } from '../../.graphclient';
 
 const BASE_KEY = 'skills';
 
-export const useSkills = () => {
-  return useQuery<SkillsListQuery['skills']>({
-    queryKey: [BASE_KEY],
+// Note: GlobalSkills entity was removed from the schema
+// Skills are now globally accessible without individual tracking entities
+// Use skill usage data instead
+
+export const useSkillUsage = () => {
+  return useQuery<SkillUsedListQuery['skillUseds']>({
+    queryKey: [BASE_KEY, 'usage'],
     queryFn: async () => {
-      const response = await execute(SkillsListDocument, {});
+      const response = await execute(SkillUsedListDocument, {});
       if (response.errors) throw new Error(response.errors[0].message);
-      return response.data.skills;
+      return response.data.skillUseds;
     },
   });
 };
 
-export const useSkill = (id: string) => {
-  return useQuery<SkillByIdQuery['skill']>({
-    queryKey: [BASE_KEY, id],
-    queryFn: async () => {
-      const response = await execute(SkillByIdDocument, { id });
-      if (response.errors) throw new Error(response.errors[0].message);
-      return response.data.skill;
-    },
-    enabled: !!id,
-  });
+// For backwards compatibility, export a deprecated useSkills hook
+export const useSkills = () => {
+  console.warn('useSkills is deprecated. Use useSkillUsage instead.');
+  return useSkillUsage();
 };

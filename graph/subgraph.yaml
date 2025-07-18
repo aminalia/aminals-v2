@@ -1,85 +1,147 @@
 specVersion: 1.2.0
 schema:
   file: ./schema.graphql
+templates:
+  - kind: ethereum/contract
+    name: Aminal
+    network: sepolia
+    source:
+      abi: Aminal
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - Aminal
+        - FeedAminalEvent
+        - SkillUsed
+        - User
+        - Relationship
+      abis:
+        - name: Aminal
+          file: ../out/Aminal.sol/Aminal.json
+        - name: AminalFactory
+          file: ../out/AminalFactory.sol/AminalFactory.json
+      eventHandlers:
+        - event: FeedAminal(indexed address,uint256,uint256,uint256,uint256,uint256)
+          handler: handleFeedAminal
+        - event: SkillUsed(indexed address,uint256,indexed address,indexed bytes4)
+          handler: handleSkillUsed
+        - event: EnergyLost(indexed address,uint256,uint256)
+          handler: handleEnergyLost
+      file: ./src/aminal.ts
 dataSources:
   - kind: ethereum
-    name: Aminals
-    network: holesky
+    name: AminalFactory
+    network: sepolia
     source:
-      address: "0xe8c32532c1599279a8016c7b3a5fc777f22c672c"
-      abi: Aminals
-      startBlock: 2758719
+      address: "0x487a60b69bd81d3bd6d35c0d632b849b44f4a55d"
+      abi: AminalFactory
+      startBlock: 8786150
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
       language: wasm/assemblyscript
       entities:
+        - AminalFactory
+        - Aminal
         - BreedAminalEvent
-        - FeedAminalEvent
-        - SkillProposal
-        - Skills
-        - SkillVote
-        - SpawnAminal
-        - Squeak
         - User
       abis:
-        - name: Aminals
-          file: ../out/Aminals.sol/Aminals.json
+        - name: AminalFactory
+          file: ../out/AminalFactory.sol/AminalFactory.json
+        - name: Aminal
+          file: ../out/Aminal.sol/Aminal.json
       eventHandlers:
-        - event: AddSkillProposal(indexed uint256,uint256,string,address,address)
-          handler: handleAddSkillProposal
-        - event: BreedAminal(indexed uint256,indexed uint256,uint256)
+        - event: AminalSpawned(indexed address,indexed address,indexed address,uint256,uint256[8])
+          handler: handleAminalSpawned
+        - event: BreedAminal(indexed address,indexed address,uint256)
           handler: handleBreedAminal
-        - event: FeedAminal(indexed uint256,address,uint256,uint256,uint256,uint256)
-          handler: handleFeedAminal
-        - event: RemoveSkillProposal(indexed uint256,uint256,address,address)
-          handler: handleRemoveSkillProposal
-        - event: SkillAdded(indexed uint256,address)
-          handler: handleSkillAdded
-        - event: SkillRemoved(indexed uint256,address)
-          handler: handleSkillRemoved
-        - event: SkillVote(indexed uint256,address,uint256,bool)
-          handler: handleSkillVote
-        - event: SpawnAminal(indexed uint256,indexed uint256,indexed uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
-          handler: handleSpawnAminal
-        - event: Squeak(indexed uint256,uint256,uint256,uint256,address)
-          handler: handleSqueak
-        - event: TraitAdded(uint256,uint8,string,address)
-          handler: handleTraitAdded
-      file: ./src/aminals.ts
+      file: ./src/factory.ts
   - kind: ethereum
-    name: Auction
-    network: holesky
+    name: GeneAuction
+    network: sepolia
     source:
-      address: "0xe4d8c56167c6508588a84a64d9234bad238cd95b"
-      abi: Auction
-      startBlock: 2758719
+      address: "0xb10afa4c9f04242feccc8015822dfc5d39b58b07"
+      abi: GeneAuction
+      startBlock: 8786150
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
       language: wasm/assemblyscript
       entities:
-        - Auction
-        - EndAuction
-        - StartAuction
-        - VisualProposal
-        - VistualsVote
+        - GeneAuction
+        - GeneProposal
+        - GeneVote
+        - GeneCreatorPayout
+        - User
+        - Aminal
       abis:
-        - name: Auction
-          file: ../out/VisualsAuction.sol/VisualsAuction.json
-        - name: Aminals
-          file: ../out/Aminals.sol/Aminals.json
+        - name: GeneAuction
+          file: ../out/GeneAuction.sol/GeneAuction.json
+        - name: AminalFactory
+          file: ../out/AminalFactory.sol/AminalFactory.json
+        - name: Genes
+          file: ../out/Genes.sol/Genes.json
       eventHandlers:
-        - event: EndAuction(indexed uint256,uint256,uint256,uint256,uint256[8])
-          handler: handleEndAuction
-        - event: ProposeVisual(indexed uint256,address,uint256,uint8)
-          handler: handleProposeVisual
-        - event: RemoveVisual(indexed uint256,address,uint256,uint8)
-          handler: handleRemoveVisual
-        - event: RemoveVisualVote(indexed uint256,uint256,address,uint8,uint256,uint256)
-          handler: handleRemoveVisualVote
-        - event: StartAuction(indexed uint256,indexed uint256,indexed uint256,uint256,uint256[8][10])
-          handler: handleStartAuction
-        - event: VisualsVote(indexed uint256,uint256,address,uint8,uint256,uint256)
-          handler: handleVisualsVote
-      file: ./src/auction.ts
+        - event: VotingCreated(indexed uint256,indexed uint256,indexed uint256,uint256,uint256,uint256)
+          handler: handleVotingCreated
+        - event: VotingSettled(indexed uint256,uint256[8],uint256)
+          handler: handleVotingSettled
+        - event: GeneProposed(indexed uint256,indexed uint8,indexed uint256,address)
+          handler: handleGeneProposed
+        - event: GeneVoteCast(indexed uint256,indexed uint8,indexed uint256,address)
+          handler: handleGeneVoteCast
+        - event: GeneRemovalVote(indexed uint256,indexed uint8,indexed uint256,address,uint256)
+          handler: handleGeneRemovalVote
+        - event: GeneRemoved(indexed uint256,indexed uint8,indexed uint256)
+          handler: handleGeneRemoved
+        - event: BulkVoteCast(indexed uint256,indexed address,uint256[8])
+          handler: handleBulkVoteCast
+        - event: GeneCreatorPayout(indexed uint256,indexed uint256,indexed address,uint256)
+          handler: handleGeneCreatorPayout
+      file: ./src/gene-auction.ts
+  - kind: ethereum
+    name: Genes
+    network: sepolia
+    source:
+      address: "0x673bfea6d500ccef982499146f58d610ccfcaad9"
+      abi: Genes
+      startBlock: 8786150
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - GeneNFT
+        - User
+      abis:
+        - name: Genes
+          file: ../out/Genes.sol/Genes.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/genes-nft.ts
+  - kind: ethereum
+    name: GeneRegistry
+    network: sepolia
+    source:
+      address: "0xd5ca2e91099d47e204ce47d3f293b82647756947"
+      abi: GeneRegistry
+      startBlock: 8786150
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - GeneNFT
+        - User
+      abis:
+        - name: GeneRegistry
+          file: ../out/GeneRegistry.sol/GeneRegistry.json
+        - name: Genes
+          file: ../out/Genes.sol/Genes.json
+      eventHandlers:
+        - event: GeneCreated(indexed uint256,indexed address,indexed uint8,string)
+          handler: handleGeneCreated
+      file: ./src/gene-nft-factory.ts

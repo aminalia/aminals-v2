@@ -1,89 +1,230 @@
-query AuctionsList($first: Int = 100, $skip: Int = 0) {
-  auctions(
+query GeneAuctionsList($first: Int = 100, $skip: Int = 0) {
+  geneAuctions(
     first: $first
     skip: $skip
-    orderBy: auctionId
+    orderBy: id
     orderDirection: desc
   ) {
+    id
     auctionId
     aminalOne {
-      aminalId
-      tokenUri
+      id
+      contractAddress
+      aminalIndex
+      tokenURI
+      backId
+      armId
+      tailId
+      earsId
+      bodyId
+      faceId
+      mouthId
+      miscId
     }
     aminalTwo {
-      aminalId
-      tokenUri
+      id
+      contractAddress
+      aminalIndex
+      tokenURI
+      backId
+      armId
+      tailId
+      earsId
+      bodyId
+      faceId
+      mouthId
+      miscId
     }
-    childAminalId
+    childAminal {
+      id
+      contractAddress
+      aminalIndex
+      tokenURI
+      energy
+      totalLove
+      backId
+      armId
+      tailId
+      earsId
+      bodyId
+      faceId
+      mouthId
+      miscId
+    }
     finished
-  }
-}
-
-query Auction($auctionId: BigInt) {
-  auctions(where: { auctionId: $auctionId }) {
-    auctionId
-    aminalOne {
-      aminalId
-      tokenUri
-      traits {
-        catEnum
-        visualId
-        svg
-        creator {
-          address
-        }
-      }
-    }
-    aminalTwo {
-      aminalId
-      tokenUri
-      traits {
-        catEnum
-        visualId
-        svg
-        creator {
-          address
-        }
-      }
-    }
-    childAminalId
-    finished
-  }
-}
-
-query AuctionProposeVisualList($auctionId: BigInt) {
-  visualProposals(where: { auctionId: $auctionId }) {
-    proposer {
-      address
-    }
-    auctionId
-    visualId
-    catEnum
-    blockNumber
+    totalLove
     blockTimestamp
-    transactionHash
-    svg
-    loveVote
   }
 }
 
-query ProposeVisualList($first: Int = 100, $skip: Int = 0) {
-  visualProposals(
+query GeneAuction($id: ID!) {
+  geneAuction(id: $id) {
+    id
+    auctionId
+    aminalOne {
+      id
+      contractAddress
+      aminalIndex
+      tokenURI
+      backId
+      armId
+      tailId
+      earsId
+      bodyId
+      faceId
+      mouthId
+      miscId
+    }
+    aminalTwo {
+      id
+      contractAddress
+      aminalIndex
+      tokenURI
+      backId
+      armId
+      tailId
+      earsId
+      bodyId
+      faceId
+      mouthId
+      miscId
+    }
+    childAminal {
+      id
+      contractAddress
+      aminalIndex
+      tokenURI
+      energy
+      totalLove
+      backId
+      armId
+      tailId
+      earsId
+      bodyId
+      faceId
+      mouthId
+      miscId
+    }
+    finished
+    totalLove
+    blockTimestamp
+    proposals {
+      id
+      geneNFT {
+        id
+        tokenId
+        name
+        svg
+      }
+      traitType
+      proposer {
+        id
+        address
+      }
+      loveVotes
+      removeVotes
+      removed
+      blockTimestamp
+    }
+    votes {
+      id
+      proposal {
+        id
+        geneNFT {
+          id
+          tokenId
+        }
+        traitType
+      }
+      voter {
+        id
+        address
+      }
+      isRemoveVote
+      loveAmount
+      blockTimestamp
+    }
+  }
+}
+
+query GeneProposalsList($first: Int = 100, $skip: Int = 0) {
+  geneProposals(
     first: $first
     skip: $skip
-    orderBy: auctionId
+    orderBy: blockTimestamp
     orderDirection: desc
   ) {
-    auctionId
+    id
+    auction {
+      id
+      auctionId
+    }
+    geneNFT {
+      id
+      tokenId
+      name
+      svg
+    }
+    traitType
     proposer {
+      id
       address
     }
-    visualId
-    catEnum
-    blockNumber
+    loveVotes
+    removeVotes
+    removed
     blockTimestamp
-    transactionHash
-    svg
-    loveVote
+  }
+}
+
+query GeneVotesList($auctionId: String!, $traitType: Int!) {
+  geneVotes(
+    where: { auction: $auctionId, proposal_: { traitType: $traitType } }
+    orderBy: loveAmount
+    orderDirection: desc
+  ) {
+    id
+    proposal {
+      id
+      geneNFT {
+        id
+        tokenId
+      }
+      traitType
+    }
+    voter {
+      id
+      address
+    }
+    isRemoveVote
+    loveAmount
+    blockTimestamp
+  }
+}
+
+query GeneVotesByAuction($auctionId: String!) {
+  geneVotes(
+    where: { auction: $auctionId }
+    orderBy: loveAmount
+    orderDirection: desc
+  ) {
+    id
+    proposal {
+      id
+      geneNFT {
+        id
+        tokenId
+        name
+        svg
+      }
+      traitType
+    }
+    voter {
+      id
+      address
+    }
+    isRemoveVote
+    loveAmount
+    blockTimestamp
   }
 }

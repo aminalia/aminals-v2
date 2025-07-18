@@ -19,6 +19,14 @@ lcov.info
 # Node.js
 node_modules
 build
+.vercel
 
 # Mac OS
 .DS_STORE
+
+# Claude Code
+anvil
+cast
+chisel
+forge
+foundry.tar.gz
