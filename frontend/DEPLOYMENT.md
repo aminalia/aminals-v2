@@ -44,15 +44,17 @@ In your Cloudflare Pages dashboard:
 
 ### 4. Node.js Compatibility
 
-The `wrangler.toml` file enables Node.js compatibility flags required for Next.js to work properly on Cloudflare Pages. This file contains:
+**IMPORTANT**: You must enable Node.js compatibility in your Cloudflare Pages project settings:
 
-```toml
-name = "aminals-frontend"
-compatibility_date = "2024-01-01"
-compatibility_flags = ["nodejs_compat"]
-```
+1. Go to your Cloudflare Pages project dashboard
+2. Navigate to **Settings** → **Functions**
+3. In the **Compatibility flags** section, add: `nodejs_compat`
+4. In the **Compatibility date** field, set: `2024-01-01`
+5. Save the settings
 
-This ensures that Node.js built-in modules work correctly in the Cloudflare Workers environment.
+This enables Node.js built-in modules (`node:buffer`, `node:async_hooks`, etc.) that Next.js requires to work properly in the Cloudflare Workers environment.
+
+**Alternative**: If you have access to the project via Wrangler CLI, you can set these flags programmatically, but the dashboard method is recommended for Cloudflare Pages.
 
 ### 5. Custom Domain (Optional)
 
