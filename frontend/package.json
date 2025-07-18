@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "build:all": "NODE_ENV=production npm run graphclient:build && next build",
-    "build:cf": "SKIP_DEPENDENCY_INSTALL=true npx @cloudflare/next-on-pages --skip-build",
+    "build:cf": "NODE_ENV=production npm run graphclient:build && SKIP_DEPENDENCY_INSTALL=true npx @cloudflare/next-on-pages",
     "start": "next start",
     "start:cf": "npx wrangler pages dev .vercel/output/static",
     "lint": "next lint",
