@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:static": "NODE_ENV=production next build",
-    "build:all": "npm run graphclient:build && next build",
+    "build:all": "NODE_ENV=production npm run graphclient:build && next build",
     "start": "next start",
     "start:static": "npx serve out",
     "lint": "next lint",
