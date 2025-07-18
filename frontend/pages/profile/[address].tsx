@@ -22,13 +22,36 @@ const ProfilePage: NextPage = () => {
   const hasMounted = useHasMounted();
   const [activeTab, setActiveTab] = useState<'loved' | 'genes' | 'earnings' | 'activity'>('loved');
 
+  // Show loading state if router is not ready or address is not available
+  const isRouterReady = router.isReady && address && typeof address === 'string' && address !== 'undefined';
+
   const profileAddress = address as string;
   const isOwnProfile = hasMounted && connectedAddress && profileAddress?.toLowerCase() === connectedAddress.toLowerCase();
 
-  const { data: userProfile, isLoading: profileLoading } = useUserProfile(profileAddress);
-  const { data: userEarnings, isLoading: earningsLoading } = useUserEarnings(profileAddress);
+  const { data: userProfile, isLoading: profileLoading } = useUserProfile(isRouterReady ? profileAddress : '');
+  const { data: userEarnings, isLoading: earningsLoading } = useUserEarnings(isRouterReady ? profileAddress : '');
 
-  if (!hasMounted || profileLoading || earningsLoading) {
+  // Handle fallback state for static export
+  if (router.isFallback) {
+    return (
+      <>
+        <Head>
+          <title>Profile - Aminals</title>
+          <link href="/favicon.ico" rel="icon" />
+        </Head>
+        <Layout>
+          <div className="container max-w-5xl mx-auto px-4 py-8">
+            <div className="text-center py-20">
+              <div className="text-4xl mb-4">⏳</div>
+              <div className="text-gray-500">Loading profile...</div>
+            </div>
+          </div>
+        </Layout>
+      </>
+    );
+  }
+
+  if (!isRouterReady || !hasMounted || profileLoading || earningsLoading) {
     return (
       <>
         <Head>
@@ -387,3 +410,21 @@ const ProfilePage: NextPage = () => {
 };
 
 export default ProfilePage;
+
+export async function getStaticPaths() {
+  // For development, use blocking fallback
+  // For production static export, use false fallback
+  return {
+    paths: [],
+    fallback: process.env.NODE_ENV === 'production' ? false : 'blocking',
+  };
+}
+
+export async function getStaticProps({ params }: { params: { address: string } }) {
+  // Return empty props, let client-side rendering handle the data
+  return {
+    props: {
+      address: params.address,
+    },
+  };
+}

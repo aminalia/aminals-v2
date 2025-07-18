@@ -24,19 +24,19 @@ const AuctionPage: NextPage = () => {
   const router = useRouter();
   const auctionId = router.query.auctionId as string;
 
+  // Show loading state if router is not ready or ID is not available
+  const isRouterReady = router.isReady && auctionId && typeof auctionId === 'string' && auctionId !== 'undefined';
+
   const {
     data: auction,
     isLoading: isLoadingAuction,
     error,
-  } = useAuction(auctionId);
+  } = useAuction(isRouterReady ? auctionId : '');
   const {
     data: proposeGenes,
     isLoading: isLoadingProposeGenes,
     error: proposeGenesError,
-  } = useAuctionProposeGenes(auctionId);
-
-  console.log('auction data:', auction, error);
-  console.log('propose genes:', proposeGenes, proposeGenesError);
+  } = useAuctionProposeGenes(isRouterReady ? auctionId : '');
 
   // Calculate auction end time
   const auctionEndTime = useMemo(() => {
@@ -362,7 +362,25 @@ const AuctionPage: NextPage = () => {
 
   const { parentOne, parentTwo } = getParentAddresses();
 
+  console.log('auction data:', auction, error);
+  console.log('propose genes:', proposeGenes, proposeGenesError);
   console.log(auction);
+
+  // Handle fallback state for static export (production only)
+  if (router.isFallback) {
+    return (
+      <Layout>
+        <div className="container max-w-7xl mx-auto px-4 py-8">
+          <div className="flex justify-center items-center h-64">
+            <div className="flex flex-col items-center gap-4">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+              <div className="text-gray-600">Loading auction...</div>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -395,7 +413,7 @@ const AuctionPage: NextPage = () => {
             </div>
           </div>
 
-          {isLoadingAuction || isLoadingGenes ? (
+          {!isRouterReady || isLoadingAuction || isLoadingGenes ? (
             <div className="flex justify-center items-center h-64">
               <div className="flex flex-col items-center gap-4">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
@@ -797,3 +815,21 @@ const AuctionPage: NextPage = () => {
 };
 
 export default AuctionPage;
+
+export async function getStaticPaths() {
+  // For development, use blocking fallback
+  // For production static export, use false fallback
+  return {
+    paths: [],
+    fallback: process.env.NODE_ENV === 'production' ? false : 'blocking',
+  };
+}
+
+export async function getStaticProps({ params }: { params: { auctionId: string } }) {
+  // Return empty props, let client-side rendering handle the data
+  return {
+    props: {
+      auctionId: params.auctionId,
+    },
+  };
+}

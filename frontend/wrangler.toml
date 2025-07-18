@@ -1,0 +1,14 @@
+# Cloudflare Pages configuration for the Aminals frontend
+# This is optional - Cloudflare Pages can work without this file
+
+name = "aminals-frontend"
+compatibility_date = "2024-01-01"
+
+[env.production]
+  # Production environment settings
+  NODE_ENV = "production"
+
+[build]
+  # These settings are for reference - configure in Cloudflare Pages dashboard
+  command = "npm run build:static"
+  publish = "out"

@@ -124,11 +124,14 @@ const AminalPage: NextPage = () => {
   const [isBreedingModalOpen, setIsBreedingModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
+  // Show loading state if router is not ready or ID is not available
+  const isRouterReady = router.isReady && id && typeof id === 'string' && id !== 'undefined';
+
   const {
     data: aminal,
     isLoading,
     refetch,
-  } = useAminalByAddress(contractAddress, address || '');
+  } = useAminalByAddress(isRouterReady ? contractAddress : '', address || '');
 
   // Breeding transaction hooks
   const {
@@ -228,7 +231,21 @@ const AminalPage: NextPage = () => {
 
   // Breeding function removed - now handled through BreedingModal
 
-  if (isLoading) {
+  // Handle fallback state for static export
+  if (router.isFallback) {
+    return (
+      <Layout>
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex items-center justify-center h-[50vh]">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Show loading state if router is not ready or data is loading
+  if (!isRouterReady || isLoading) {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-6">
@@ -561,3 +578,21 @@ const AminalPage: NextPage = () => {
 };
 
 export default AminalPage;
+
+export async function getStaticPaths() {
+  // For development, use blocking fallback
+  // For production static export, use false fallback
+  return {
+    paths: [],
+    fallback: process.env.NODE_ENV === 'production' ? false : 'blocking',
+  };
+}
+
+export async function getStaticProps({ params }: { params: { id: string } }) {
+  // Return empty props, let client-side rendering handle the data
+  return {
+    props: {
+      id: params.id,
+    },
+  };
+}

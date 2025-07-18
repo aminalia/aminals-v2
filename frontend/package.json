@@ -5,8 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:static": "NODE_ENV=production next build",
     "build:all": "npm run graphclient:build && next build",
     "start": "next start",
+    "start:static": "npx serve out",
     "lint": "next lint",
     "prettier": "npx prettier --check .",
     "prettier:fix": "npx prettier --write .",
@@ -15,6 +17,7 @@
     "wagmi:generate": "wagmi generate"
   },
   "dependencies": {
+    "@cloudflare/next-on-pages": "^1.13.12",
     "@esbuild/linux-arm64": "^0.25.6",
     "@graphprotocol/client-cli": "^3.0.0",
     "@radix-ui/react-icons": "^1.3.0",

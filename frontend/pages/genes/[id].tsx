@@ -21,9 +21,26 @@ interface AminalWithDetails {
 const GeneDetailPage: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
-  const { data: gene, isLoading } = useGene(id as string);
+  
+  // Show loading state if router is not ready or ID is not available
+  const isRouterReady = router.isReady && id && typeof id === 'string' && id !== 'undefined';
+  
+  const { data: gene, isLoading } = useGene(isRouterReady ? (id as string) : '');
 
-  if (isLoading) {
+  // Handle fallback state for static export
+  if (router.isFallback) {
+    return (
+      <Layout>
+        <div className="container max-w-5xl mx-auto px-4 py-8">
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!isRouterReady || isLoading) {
     return (
       <Layout>
         <div className="container max-w-5xl mx-auto px-4 py-8">
@@ -193,3 +210,21 @@ const GeneDetailPage: NextPage = () => {
 };
 
 export default GeneDetailPage;
+
+export async function getStaticPaths() {
+  // For development, use blocking fallback
+  // For production static export, use false fallback
+  return {
+    paths: [],
+    fallback: process.env.NODE_ENV === 'production' ? false : 'blocking',
+  };
+}
+
+export async function getStaticProps({ params }: { params: { id: string } }) {
+  // Return empty props, let client-side rendering handle the data
+  return {
+    props: {
+      id: params.id,
+    },
+  };
+}

@@ -4,8 +4,7 @@ import { NoAminalsFound } from '@/components/ui/empty-state';
 import { AminalsFilterBar } from '@/components/ui/filter-bar';
 import { PageLoadingSpinner } from '@/components/ui/loading-spinner';
 import { useHasMounted } from '@/hooks/useHasMounted';
-import { AminalFilter, AminalSort } from '@/resources/aminals';
-import { useAminals } from '@/resources/aminals';
+import { AminalFilter, AminalSort, useAminals } from '@/resources/aminals';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useState } from 'react';
@@ -17,9 +16,6 @@ const HomePage: NextPage = () => {
   const { address } = useAccount();
   const [filter, setFilter] = useState<AminalFilter>('all');
   const [sort, setSort] = useState<AminalSort>('most-loved');
-
-  console.log('HomePage - Current address:', address);
-  console.log('HomePage - Address being passed to hook:', address || '');
 
   const { data: aminals, isLoading: isLoadingAminals } = useAminals(
     address || '',
