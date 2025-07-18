@@ -5,11 +5,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Only export for production builds
-  ...(process.env.NODE_ENV === 'production' && {
-    output: 'export',
-    distDir: 'out',
-  }),
   webpack: (config) => {
     config.resolve.fallback = { fs: false, net: false, tls: false };
 

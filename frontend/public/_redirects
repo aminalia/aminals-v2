@@ -1,9 +1,2 @@
-# Cloudflare Pages redirects for Next.js dynamic routes
-# Since we're using static export, these files will be generated in the out directory
-/breeding/:auctionId /breeding/[auctionId].html 200
-/aminals/:id /aminals/[id].html 200
-/genes/:id /genes/[id].html 200
-/profile/:address /profile/[address].html 200
-
-# Fallback for all other routes
-/* /index.html 200
+# Cloudflare Pages redirects - handled by @cloudflare/next-on-pages
+# Dynamic routes are now handled by server-side rendering

@@ -1,70 +1,157 @@
 # Deployment Guide
 
-## Development vs Production
+This document explains how to deploy the Aminals frontend to Cloudflare Pages using @cloudflare/next-on-pages.
 
-This Next.js app is configured to work differently in development and production:
+## Overview
 
-### Development
-- Uses Next.js server-side rendering with `fallback: 'blocking'`
-- Dynamic routes work with hot reload
-- Run with: `npm run dev`
+The frontend is configured to work with Cloudflare Pages using the `@cloudflare/next-on-pages` adapter. This approach provides:
+- Full Next.js compatibility including SSR and dynamic routes
+- Better performance through Cloudflare's edge network
+- Automatic handling of dynamic routes without fallback configuration
+- Native support for Next.js features like API routes and middleware
 
-### Production (Cloudflare Pages)
-- Uses static export with `fallback: false`
-- Pre-generates static pages
-- Build with: `npm run build:static`
+## Cloudflare Pages Setup
 
-## Cloudflare Pages Deployment
+### 1. Build Configuration
 
-### Build Configuration
-In your Cloudflare Pages project settings:
+The project uses `@cloudflare/next-on-pages` to convert Next.js output for Cloudflare Pages:
 
-- **Build command**: `npm run build:static`
-- **Build output directory**: `out`
+```bash
+# Build for Cloudflare Pages
+npm run build:cf
+
+# Test locally with Wrangler
+npm run start:cf
+```
+
+### 2. Environment Variables
+
+Set these environment variables in your Cloudflare Pages project:
+
+```bash
+NODE_ENV=production
+```
+
+### 3. Build Settings
+
+In your Cloudflare Pages dashboard:
+
+- **Framework preset**: Next.js
+- **Build command**: `npm run build:all && npm run build:cf`
+- **Build output directory**: `.vercel/output/static`
 - **Node.js version**: `18.x` or higher
 
-### Environment Variables
-Make sure to set:
-- `NODE_ENV=production` (automatically set by build:static command)
+### 4. Custom Domain (Optional)
 
-### Redirects
-The `public/_redirects` file handles dynamic route redirects:
-```
-/breeding/:auctionId /breeding/[auctionId].html 200
-/aminals/:id /aminals/[id].html 200
-/genes/:id /genes/[id].html 200
-/profile/:address /profile/[address].html 200
-/* /index.html 200
-```
+If you want to use a custom domain:
 
-## Testing Static Export Locally
+1. Go to your Cloudflare Pages dashboard
+2. Navigate to "Custom domains"
+3. Add your domain and configure DNS settings
 
-1. Build the static export:
-   ```bash
-   npm run build:static
-   ```
+## Technical Details
 
-2. Serve the static files:
-   ```bash
-   npm run start:static
-   ```
+### Next.js Configuration
 
-3. Test dynamic routes by visiting:
-   - `http://localhost:3000/aminals/some-contract-address`
-   - `http://localhost:3000/breeding/some-auction-id`
-   - etc.
+The `next.config.js` file is configured to:
+- Work with standard Next.js features
+- Support dynamic routes natively
+- Optimize images for edge deployment
+- Handle client-side routing properly
+
+### Dynamic Routes
+
+Dynamic routes like `/aminals/[id]` are handled through:
+- Server-side rendering on Cloudflare's edge
+- Automatic route resolution
+- No need for static path generation
+- Real-time data fetching
+
+### Cloudflare Adapter
+
+The `@cloudflare/next-on-pages` adapter:
+- Converts Next.js build output to Cloudflare Pages format
+- Handles SSR and dynamic routes
+- Provides better performance than static export
+- Maintains Next.js feature compatibility
+
+## Deployment Process
+
+1. **Connect Repository**: Link your GitHub repository to Cloudflare Pages
+
+2. **Configure Build Settings**: Set the build command and output directory
+
+3. **Deploy**: Cloudflare Pages will automatically build and deploy your app
+
+4. **Custom Domain** (optional): Configure your custom domain in the dashboard
 
 ## Troubleshooting
 
-### 404 Errors on Refresh
-- Make sure `_redirects` file is in the build output
-- Check that Cloudflare Pages is properly configured
-- Verify build output directory is set to `out`
+### Build Failures
 
-### Development Server Issues
-- Use `npm run dev` for development (not `npm run build:static`)
-- Development server uses different routing configuration
+- Check that all dependencies are listed in `package.json`
+- Verify Node.js version compatibility (18.x+)
+- Review build logs for specific error messages
+- Ensure `@cloudflare/next-on-pages` is properly installed
 
-### Build Issues
-- Run `npm run build:static` to test production build locally
-- Check that all environment variables are set correctly
+### 404 Errors
+
+- Dynamic routes should work automatically with the adapter
+- Check that the build output directory is correct
+- Verify the wrangler.toml configuration
+
+### Performance Issues
+
+- Use Next.js Image component for optimized images
+- Enable caching headers through Cloudflare settings
+- Consider using a CDN for static assets
+
+## Local Development
+
+To test the production build locally:
+
+```bash
+# Build for Cloudflare Pages
+npm run build:all && npm run build:cf
+
+# Serve with Wrangler
+npm run start:cf
+```
+
+This will serve the app using Cloudflare's local development environment.
+
+## Monitoring
+
+Monitor your deployment through:
+- Cloudflare Pages dashboard
+- Build logs
+- Analytics (if enabled)
+- Performance metrics
+- Real-time function logs
+
+## Security
+
+The `@cloudflare/next-on-pages` approach provides:
+- Server-side rendering security
+- Automatic HTTPS through Cloudflare
+- DDoS protection through Cloudflare's CDN
+- Edge computing benefits
+- Reduced latency through global distribution
+
+## Migration from Static Export
+
+If you're migrating from a static export setup:
+
+1. Remove static export configuration from `next.config.js`
+2. Remove `getStaticPaths` and `getStaticProps` from dynamic routes
+3. Update build commands to use `@cloudflare/next-on-pages`
+4. Update `wrangler.toml` configuration
+5. Test locally before deploying
+
+## Benefits of This Approach
+
+- **Better SEO**: Server-side rendering improves search engine optimization
+- **Faster Loading**: Dynamic routes load faster without client-side data fetching
+- **Better UX**: No blank pages during route transitions
+- **Full Next.js Support**: All Next.js features work as expected
+- **Edge Performance**: Cloudflare's global edge network provides fast response times

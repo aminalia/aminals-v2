@@ -816,20 +816,4 @@ const AuctionPage: NextPage = () => {
 
 export default AuctionPage;
 
-export async function getStaticPaths() {
-  // For development, use blocking fallback
-  // For production static export, use false fallback
-  return {
-    paths: [],
-    fallback: process.env.NODE_ENV === 'production' ? false : 'blocking',
-  };
-}
-
-export async function getStaticProps({ params }: { params: { auctionId: string } }) {
-  // Return empty props, let client-side rendering handle the data
-  return {
-    props: {
-      auctionId: params.auctionId,
-    },
-  };
-}
+// Remove static generation - use server-side rendering for dynamic routes

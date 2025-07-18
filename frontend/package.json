@@ -6,8 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "build:all": "NODE_ENV=production npm run graphclient:build && next build",
+    "build:cf": "SKIP_DEPENDENCY_INSTALL=true npx @cloudflare/next-on-pages --skip-build",
     "start": "next start",
-    "start:static": "npx serve out",
+    "start:cf": "npx wrangler pages dev .vercel/output/static",
     "lint": "next lint",
     "prettier": "npx prettier --check .",
     "prettier:fix": "npx prettier --write .",
@@ -38,7 +39,8 @@
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
     "viem": "^2.21.47",
-    "wagmi": "^2.12.33"
+    "wagmi": "^2.12.33",
+    "wrangler": "^4.25.0"
   },
   "devDependencies": {
     "@types/node": "^18.16.12",
