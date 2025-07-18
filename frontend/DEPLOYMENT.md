@@ -42,7 +42,19 @@ In your Cloudflare Pages dashboard:
 - **Root directory**: `frontend` (if deploying from monorepo)
 - **Node.js version**: `18.x` or higher
 
-### 4. Custom Domain (Optional)
+### 4. Node.js Compatibility
+
+The `wrangler.toml` file enables Node.js compatibility flags required for Next.js to work properly on Cloudflare Pages. This file contains:
+
+```toml
+name = "aminals-frontend"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+```
+
+This ensures that Node.js built-in modules work correctly in the Cloudflare Workers environment.
+
+### 5. Custom Domain (Optional)
 
 If you want to use a custom domain:
 
